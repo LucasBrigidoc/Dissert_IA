@@ -11,6 +11,10 @@ import Pricing from "@/pages/pricing";
 import Dashboard from "@/pages/dashboard";
 import Features from "@/pages/features";
 import About from "@/pages/about";
+import Argumentos from "@/pages/argumentos";
+import Repertorio from "@/pages/repertorio";
+import Simulador from "@/pages/simulador";
+import Estilo from "@/pages/estilo";
 
 function Router() {
   return (
@@ -22,6 +26,10 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/features" component={Features} />
       <Route path="/about" component={About} />
+      <Route path="/argumentos" component={Argumentos} />
+      <Route path="/repertorio" component={Repertorio} />
+      <Route path="/simulador" component={Simulador} />
+      <Route path="/estilo" component={Estilo} />
       <Route component={NotFound} />
     </Switch>
   );

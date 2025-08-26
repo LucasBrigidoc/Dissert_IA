@@ -27,7 +27,21 @@ export default function Dashboard() {
 
   const handleQuickAccess = (tool: string) => {
     console.log(`Acessando ferramenta: ${tool}`);
-    // In a real app, this would navigate to the specific tool page
+    // Navigate to the specific tool page
+    switch(tool) {
+      case 'argumentos':
+        setLocation('/argumentos');
+        break;
+      case 'repertorio':
+        setLocation('/repertorio');
+        break;
+      case 'simulador':
+        setLocation('/simulador');
+        break;
+      case 'estilo':
+        setLocation('/estilo');
+        break;
+    }
   };
 
   const handleReadNewsletter = () => {
@@ -37,7 +51,15 @@ export default function Dashboard() {
 
   const handleSuggestedAction = (action: string) => {
     console.log(`Executando ação: ${action}`);
-    // In a real app, this would navigate to the specific action
+    // Navigate to the specific action
+    switch(action) {
+      case 'argumentacao':
+        setLocation('/argumentos');
+        break;
+      case 'repertorio':
+        setLocation('/repertorio');
+        break;
+    }
   };
 
   return (
@@ -84,10 +106,10 @@ export default function Dashboard() {
           {/* Left Column (30%) */}
           <div className="lg:col-span-4 space-y-5">
             {/* Welcome Card */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-purple-500/5 border-bright-blue/20" data-testid="card-welcome">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xl font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-purple-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <GraduationCap className="text-white" size={20} />
                 </div>
               </div>
@@ -101,10 +123,10 @@ export default function Dashboard() {
             </LiquidGlassCard>
 
             {/* Progress Card */}
-            <LiquidGlassCard className="bg-gradient-to-br from-green-500/5 to-emerald-500/5 border-green-500/20" data-testid="card-progress">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-semibold text-dark-blue">Progresso Geral</h4>
-                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <TrendingUp className="text-white" size={16} />
                 </div>
               </div>
@@ -133,8 +155,8 @@ export default function Dashboard() {
                     />
                     <defs>
                       <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#10b981" />
-                        <stop offset="100%" stopColor="#059669" />
+                        <stop offset="0%" stopColor="#5087ff" />
+                        <stop offset="100%" stopColor="#09072e" />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -151,10 +173,10 @@ export default function Dashboard() {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-soft-gray">Meta: {targetScore}</span>
-                  <span className="text-green-600 font-semibold" data-testid="text-progress-percentage">{progressPercentage}%</span>
+                  <span className="text-bright-blue font-semibold" data-testid="text-progress-percentage">{progressPercentage}%</span>
                 </div>
                 <Progress value={progressPercentage} className="h-3 bg-gray-200">
-                  <div className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
+                  <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
                 </Progress>
               </div>
             </LiquidGlassCard>
@@ -163,28 +185,28 @@ export default function Dashboard() {
           {/* Center Column (45%) */}
           <div className="lg:col-span-5 space-y-5">
             {/* Activity Stats */}
-            <LiquidGlassCard className="bg-gradient-to-br from-orange-500/5 to-red-500/5 border-orange-500/20" data-testid="card-activity-stats">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-activity-stats">
               <div className="flex items-center justify-between mb-6">
                 <h4 className="font-semibold text-dark-blue">Estatísticas de Atividade</h4>
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Book className="text-white" size={16} />
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg border border-blue-500/20">
-                  <div className="text-2xl font-bold text-blue-600 mb-1" data-testid="text-essays-count">
+                <div className="text-center p-4 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                  <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-essays-count">
                     {essaysCount}
                   </div>
                   <div className="text-xs text-soft-gray font-medium">Redações</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-lg border border-purple-500/20">
-                  <div className="text-2xl font-bold text-purple-600 mb-1" data-testid="text-study-hours">
+                <div className="text-center p-4 bg-gradient-to-br from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
+                  <div className="text-2xl font-bold text-dark-blue mb-1" data-testid="text-study-hours">
                     {studyHours}h
                   </div>
                   <div className="text-xs text-soft-gray font-medium">Estudo</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-lg border border-orange-500/20">
-                  <div className="text-2xl font-bold text-orange-600 mb-1" data-testid="text-streak">
+                <div className="text-center p-4 bg-gradient-to-br from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
+                  <div className="text-2xl font-bold text-dark-blue mb-1" data-testid="text-streak">
                     {streak}
                   </div>
                   <div className="text-xs text-soft-gray font-medium">Dias Seguidos</div>
@@ -193,16 +215,16 @@ export default function Dashboard() {
             </LiquidGlassCard>
 
             {/* Evolution Chart */}
-            <LiquidGlassCard className="bg-gradient-to-br from-indigo-500/5 to-blue-600/5 border-indigo-500/20" data-testid="card-evolution-chart">
+            <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-evolution-chart">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center">
                     <TrendingUp className="text-white" size={16} />
                   </div>
                   <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
                 </div>
                 <Select defaultValue="30-days" data-testid="select-chart-period">
-                  <SelectTrigger className="w-32 border-indigo-500/30">
+                  <SelectTrigger className="w-32 border-bright-blue/30">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -212,32 +234,32 @@ export default function Dashboard() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="h-48 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg border border-indigo-200/50" data-testid="chart-evolution">
+              <div className="h-48 flex items-center justify-center bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20" data-testid="chart-evolution">
                 <div className="text-center text-soft-gray">
-                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-4">
                     <TrendingUp className="text-white" size={24} />
                   </div>
-                  <div className="text-lg font-semibold text-indigo-600 mb-2">Gráfico de Evolução</div>
-                  <div className="text-sm text-indigo-500">Em breve: análise detalhada do seu progresso</div>
+                  <div className="text-lg font-semibold text-bright-blue mb-2">Gráfico de Evolução</div>
+                  <div className="text-sm text-dark-blue">Em breve: análise detalhada do seu progresso</div>
                 </div>
               </div>
             </LiquidGlassCard>
 
             {/* Suggested Actions */}
-            <LiquidGlassCard className="bg-gradient-to-br from-yellow-500/5 to-amber-500/5 border-yellow-500/20" data-testid="card-suggested-actions">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-suggested-actions">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-semibold text-dark-blue">Próximas Ações Sugeridas</h4>
-                <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Lightbulb className="text-white" size={16} />
                 </div>
               </div>
               <div className="space-y-3">
                 <button 
                   onClick={() => handleSuggestedAction('argumentacao')}
-                  className="w-full flex items-center p-4 bg-gradient-to-r from-bright-blue/10 to-blue-600/10 rounded-lg border border-bright-blue/20 hover:from-bright-blue/20 hover:to-blue-600/20 transition-all duration-200 group"
+                  className="w-full flex items-center p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20 hover:from-bright-blue/20 hover:to-dark-blue/20 transition-all duration-200 group"
                   data-testid="button-suggested-arguments"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-blue-600 rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                     <Lightbulb className="text-white" size={18} />
                   </div>
                   <div className="text-left">
@@ -247,10 +269,10 @@ export default function Dashboard() {
                 </button>
                 <button 
                   onClick={() => handleSuggestedAction('repertorio')}
-                  className="w-full flex items-center p-4 bg-gradient-to-r from-green-500/10 to-emerald-600/10 rounded-lg border border-green-500/20 hover:from-green-500/20 hover:to-emerald-600/20 transition-all duration-200 group"
+                  className="w-full flex items-center p-4 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20 hover:from-dark-blue/20 hover:to-soft-gray/20 transition-all duration-200 group"
                   data-testid="button-suggested-repertoire"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                     <Book className="text-white" size={18} />
                   </div>
                   <div className="text-left">
@@ -265,10 +287,10 @@ export default function Dashboard() {
           {/* Right Column (25%) */}
           <div className="lg:col-span-3 space-y-5">
             {/* Newsletter */}
-            <LiquidGlassCard className="bg-gradient-to-br from-pink-500/5 to-rose-500/5 border-pink-500/20" data-testid="card-newsletter">
+            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
-                <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
                   <Book className="text-white" size={16} />
                 </div>
               </div>
@@ -278,7 +300,7 @@ export default function Dashboard() {
                 <Button 
                   onClick={handleReadNewsletter}
                   variant="outline"
-                  className="w-full text-pink-600 border-pink-500/30 hover:bg-pink-500/10 hover:border-pink-500"
+                  className="w-full text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 hover:border-bright-blue"
                   data-testid="button-read-newsletter"
                 >
                   Ler Completa
@@ -287,10 +309,10 @@ export default function Dashboard() {
             </LiquidGlassCard>
 
             {/* Quick Access */}
-            <LiquidGlassCard className="bg-gradient-to-br from-teal-500/5 to-cyan-500/5 border-teal-500/20" data-testid="card-quick-access">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-quick-access">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-semibold text-dark-blue">Acesso Rápido</h4>
-                <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Plus className="text-white" size={16} />
                 </div>
               </div>
@@ -298,10 +320,10 @@ export default function Dashboard() {
                 <Button 
                   onClick={() => handleQuickAccess('argumentos')}
                   variant="outline" 
-                  className="p-4 h-auto flex flex-col items-center border-bright-blue/30 hover:bg-gradient-to-br hover:from-bright-blue/10 hover:to-blue-600/10 hover:border-bright-blue/50 transition-all duration-200 group"
+                  className="p-4 h-auto flex flex-col items-center border-bright-blue/30 hover:bg-gradient-to-br hover:from-bright-blue/10 hover:to-dark-blue/10 hover:border-bright-blue/50 transition-all duration-200 group"
                   data-testid="button-quick-arguments"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-blue-600 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                     <MessageCircle className="text-white" size={16} />
                   </div>
                   <div className="text-xs text-dark-blue font-medium">Argumentos</div>
@@ -309,10 +331,10 @@ export default function Dashboard() {
                 <Button 
                   onClick={() => handleQuickAccess('repertorio')}
                   variant="outline" 
-                  className="p-4 h-auto flex flex-col items-center border-green-500/30 hover:bg-gradient-to-br hover:from-green-500/10 hover:to-emerald-600/10 hover:border-green-500/50 transition-all duration-200 group"
+                  className="p-4 h-auto flex flex-col items-center border-dark-blue/30 hover:bg-gradient-to-br hover:from-dark-blue/10 hover:to-soft-gray/10 hover:border-dark-blue/50 transition-all duration-200 group"
                   data-testid="button-quick-repertoire"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                     <Search className="text-white" size={16} />
                   </div>
                   <div className="text-xs text-dark-blue font-medium">Repertório</div>
@@ -320,10 +342,10 @@ export default function Dashboard() {
                 <Button 
                   onClick={() => handleQuickAccess('simulador')}
                   variant="outline" 
-                  className="p-4 h-auto flex flex-col items-center border-purple-500/30 hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-violet-600/10 hover:border-purple-500/50 transition-all duration-200 group"
+                  className="p-4 h-auto flex flex-col items-center border-bright-blue/30 hover:bg-gradient-to-br hover:from-bright-blue/10 hover:to-dark-blue/10 hover:border-bright-blue/50 transition-all duration-200 group"
                   data-testid="button-quick-simulator"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-violet-600 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                     <GraduationCap className="text-white" size={16} />
                   </div>
                   <div className="text-xs text-dark-blue font-medium">Simulador</div>
@@ -331,10 +353,10 @@ export default function Dashboard() {
                 <Button 
                   onClick={() => handleQuickAccess('estilo')}
                   variant="outline" 
-                  className="p-4 h-auto flex flex-col items-center border-orange-500/30 hover:bg-gradient-to-br hover:from-orange-500/10 hover:to-amber-600/10 hover:border-orange-500/50 transition-all duration-200 group"
+                  className="p-4 h-auto flex flex-col items-center border-soft-gray/30 hover:bg-gradient-to-br hover:from-soft-gray/10 hover:to-bright-blue/10 hover:border-soft-gray/50 transition-all duration-200 group"
                   data-testid="button-quick-style"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                     <Sliders className="text-white" size={16} />
                   </div>
                   <div className="text-xs text-dark-blue font-medium">Estilo</div>
