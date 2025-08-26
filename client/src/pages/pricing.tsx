@@ -1,0 +1,186 @@
+import { useState } from "react";
+import { Link } from "wouter";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+import { LiquidGlassCard } from "@/components/liquid-glass-card";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { mockPricingPlans, mockFAQ } from "@/lib/mock-data";
+import { Check, X } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+export default function Pricing() {
+  const [isAnnual, setIsAnnual] = useState(false);
+
+  return (
+    <div className="min-h-screen gradient-bg">
+      <Navigation />
+      
+      <div className="container mx-auto px-6 pt-24 pb-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-white mb-4" data-testid="text-pricing-title">
+            Escolha o Plano Ideal para Você:
+          </h1>
+          <div className="flex items-center justify-center space-x-4">
+            <span className="text-white">Mensal</span>
+            <Switch 
+              checked={isAnnual} 
+              onCheckedChange={setIsAnnual}
+              data-testid="switch-billing-period"
+            />
+            <span className="text-white">Anual</span>
+            <Badge className="bg-yellow-400 text-dark-blue" data-testid="badge-save-annual">
+              ECONOMIZE 40%
+            </Badge>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+          {mockPricingPlans.map((plan, index) => (
+            <LiquidGlassCard 
+              key={plan.id} 
+              dark={plan.id === "free" || plan.id === "pro"}
+              className={`relative ${plan.popular ? "border-2 border-bright-blue" : ""}`}
+              data-testid={`card-plan-${plan.id}`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-bright-blue text-white" data-testid="badge-most-popular">
+                    MAIS PROCURADO
+                  </Badge>
+                </div>
+              )}
+              
+              <div className="text-center mb-8">
+                <h3 className={`text-3xl font-bold mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                  {plan.price}
+                  {plan.period && <span className="text-lg">{plan.period}</span>}
+                </h3>
+                {plan.annualPrice && isAnnual && (
+                  <p className={`${plan.id === "free" || plan.id === "pro" ? "text-white/70" : "text-soft-gray"}`}>
+                    {plan.annualPrice}
+                  </p>
+                )}
+                <p className={`font-semibold ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                  {plan.name}
+                </p>
+              </div>
+              
+              <ul className="space-y-4 mb-8">
+                {plan.features.map((feature, featureIndex) => {
+                  const hasFeature = !feature.includes("limitado") && !feature.includes("limitada");
+                  return (
+                    <li key={featureIndex} className={`flex items-center ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                      {hasFeature ? (
+                        <Check className="text-green-400 mr-3" size={16} />
+                      ) : (
+                        <X className="text-red-400 mr-3" size={16} />
+                      )}
+                      {feature}
+                    </li>
+                  );
+                })}
+              </ul>
+              
+              <Button
+                asChild
+                className={`w-full py-3 rounded-lg smooth-transition hover-scale ${
+                  plan.id === "free" 
+                    ? "bg-white/10 text-white border border-white/20 hover:bg-white/20" 
+                    : "bg-bright-blue text-white hover:bg-blue-600"
+                }`}
+                data-testid={`button-plan-${plan.id}`}
+              >
+                <Link href={plan.id === "free" ? "/signup" : "/signup"}>
+                  {plan.buttonText}
+                </Link>
+              </Button>
+            </LiquidGlassCard>
+          ))}
+        </div>
+
+        {/* Comparison Table */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <h3 className="text-2xl font-bold text-white text-center mb-8" data-testid="text-comparison-title">
+            Comparação entre os Planos:
+          </h3>
+          <LiquidGlassCard className="p-0 overflow-hidden" data-testid="table-comparison">
+            <table className="w-full">
+              <thead className="bg-bright-blue text-white">
+                <tr>
+                  <th className="p-4 text-left">Funcionalidade</th>
+                  <th className="p-4 text-center">Gratuito</th>
+                  <th className="p-4 text-center">Base</th>
+                  <th className="p-4 text-center">Pro</th>
+                </tr>
+              </thead>
+              <tbody className="text-dark-blue">
+                <tr className="border-b border-gray-200">
+                  <td className="p-4">Arquiteto de Argumentos</td>
+                  <td className="p-4 text-center">Limitado</td>
+                  <td className="p-4 text-center">Completo</td>
+                  <td className="p-4 text-center">Completo</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="p-4">Explorador de Repertório</td>
+                  <td className="p-4 text-center">Limitado</td>
+                  <td className="p-4 text-center">Completo</td>
+                  <td className="p-4 text-center">Completo</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="p-4">Dashboard com IA</td>
+                  <td className="p-4 text-center text-red-500">❌</td>
+                  <td className="p-4 text-center text-red-500">❌</td>
+                  <td className="p-4 text-center text-green-500">✅</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="p-4">Material Complementar</td>
+                  <td className="p-4 text-center text-red-500">❌</td>
+                  <td className="p-4 text-center text-red-500">❌</td>
+                  <td className="p-4 text-center text-green-500">✅</td>
+                </tr>
+              </tbody>
+            </table>
+          </LiquidGlassCard>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="max-w-2xl mx-auto mb-12" id="faq">
+          <h3 className="text-2xl font-bold text-white text-center mb-8" data-testid="text-faq-title">
+            Seção de Perguntas Frequentes (FAQ):
+          </h3>
+          <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
+            {mockFAQ.map((faq) => (
+              <AccordionItem key={faq.id} value={`item-${faq.id}`}>
+                <LiquidGlassCard className="p-0">
+                  <AccordionTrigger className="px-6 py-4 font-semibold text-dark-blue hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-4 text-soft-gray text-sm">
+                    {faq.answer}
+                  </AccordionContent>
+                </LiquidGlassCard>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        <div className="text-center">
+          <Button
+            asChild
+            className="bg-white text-dark-blue px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale"
+            data-testid="button-ready-start"
+          >
+            <Link href="/signup">Pronto para Começar?</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

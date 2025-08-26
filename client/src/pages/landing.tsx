@@ -1,0 +1,193 @@
+import { Link } from "wouter";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+import { LiquidGlassCard } from "@/components/liquid-glass-card";
+import { HeroCharacter } from "@/components/hero-character";
+import { mockFeatures, mockTestimonials } from "@/lib/mock-data";
+import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users } from "lucide-react";
+
+const iconMap = {
+  brain: Brain,
+  book: Book,
+  clock: Clock,
+  comments: MessageCircle,
+  search: Search,
+  edit: Edit,
+  newspaper: Newspaper,
+  sliders: Sliders,
+  "graduation-cap": GraduationCap,
+  lightbulb: Lightbulb,
+  archive: Archive
+};
+
+export default function Landing() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      
+      {/* Hero Section */}
+      <section className="gradient-bg pt-24 pb-16 relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="flex items-center justify-between min-h-[80vh]">
+            <div className="w-full lg:w-1/2 text-white">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6" data-testid="text-hero-title">
+                Revolucione Sua Escrita com IA
+              </h1>
+              <p className="text-xl lg:text-2xl mb-4 text-white/90" data-testid="text-hero-subtitle">
+                Sua Redação Nota 1000 Apenas a Passos de Distância
+              </p>
+              <p className="text-lg mb-8 text-white/80" data-testid="text-hero-description">
+                O Dissert AI é seu assistente pessoal 24/7 para dominar a arte de escrever redações incríveis para vestibulares e concursos
+              </p>
+              <Link href="/signup" className="bg-white text-dark-blue px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale inline-block" data-testid="button-hero-signup">
+                Começar Agora
+              </Link>
+              <div className="mt-8 text-white/70" data-testid="text-online-students">
+                <Users className="inline mr-2" size={16} />
+                <span>2.847 estudantes online agora</span>
+              </div>
+            </div>
+            
+            <div className="hidden lg:block w-1/2 relative">
+              <HeroCharacter variant="default" size="lg" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Challenge Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold text-dark-blue mb-8" data-testid="text-challenge-title">
+            Por Que 73% dos Estudantes Brasileiros Têm Dificuldade com Redação?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <LiquidGlassCard className="smooth-transition hover-scale">
+              <div className="text-4xl text-bright-blue mb-4">
+                <Brain className="mx-auto" size={48} />
+              </div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Falta de Estrutura</h3>
+              <p className="text-soft-gray">Dificuldade em organizar ideias de forma lógica e coerente</p>
+            </LiquidGlassCard>
+            <LiquidGlassCard className="smooth-transition hover-scale">
+              <div className="text-4xl text-bright-blue mb-4">
+                <Book className="mx-auto" size={48} />
+              </div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Repertório Limitado</h3>
+              <p className="text-soft-gray">Falta de referências atualizadas e relevantes para argumentação</p>
+            </LiquidGlassCard>
+            <LiquidGlassCard className="smooth-transition hover-scale">
+              <div className="text-4xl text-bright-blue mb-4">
+                <Clock className="mx-auto" size={48} />
+              </div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Tempo Insuficiente</h3>
+              <p className="text-soft-gray">Pressão do tempo limita a capacidade de revisão e aperfeiçoamento</p>
+            </LiquidGlassCard>
+          </div>
+          <Link href="/features" className="bg-bright-blue text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale" data-testid="button-discover-solution">
+            Descubra a Solução
+          </Link>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center text-dark-blue mb-16" data-testid="text-features-title">
+            Funcionalidades em Destaque
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {mockFeatures.map((feature) => {
+              const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
+              return (
+                <LiquidGlassCard key={feature.id} className="feature-card" data-testid={`card-feature-${feature.id}`}>
+                  <div className="text-3xl text-bright-blue mb-4">
+                    <IconComponent className="mx-auto" size={32} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-dark-blue mb-3">{feature.name}</h3>
+                  <p className="text-soft-gray text-sm">{feature.description}</p>
+                </LiquidGlassCard>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* How it Works */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center text-dark-blue mb-16" data-testid="text-how-works-title">Como Funciona</h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="text-center" data-testid="step-1">
+              <div className="w-24 h-24 bg-bright-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">1</div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Analise seu estilo</h3>
+              <p className="text-soft-gray">Nossa IA analisa seu perfil e identifica pontos de melhoria personalizados</p>
+            </div>
+            <div className="text-center" data-testid="step-2">
+              <div className="w-24 h-24 bg-bright-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">2</div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Pratique com IA</h3>
+              <p className="text-soft-gray">Utilize nosso simulador para praticar em ambiente realista com feedback imediato</p>
+            </div>
+            <div className="text-center" data-testid="step-3">
+              <div className="w-24 h-24 bg-bright-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">3</div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Evolua continuamente</h3>
+              <p className="text-soft-gray">Acompanhe seu progresso e alcance a nota 1000 com métricas detalhadas</p>
+            </div>
+          </div>
+          <div className="text-center mt-12">
+            <Link href="/signup" className="bg-bright-blue text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale" data-testid="button-start-plan">
+              Iniciar Meu Plano de Estudos
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center text-dark-blue mb-8" data-testid="text-testimonials-title">De Alunos para Alunos: Resultados Reais</h2>
+          <div className="text-center mb-12">
+            <div className="text-5xl font-bold gradient-text mb-2" data-testid="text-success-rate">87%</div>
+            <p className="text-soft-gray">dos usuários aumentaram suas notas em média 180 pontos</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {mockTestimonials.map((testimonial) => (
+              <LiquidGlassCard key={testimonial.id} className="text-center" data-testid={`testimonial-${testimonial.id}`}>
+                <div className="w-16 h-16 bg-bright-blue rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold">
+                  {testimonial.initials}
+                </div>
+                <h4 className="font-semibold text-dark-blue mb-2">{testimonial.name}</h4>
+                <p className="text-soft-gray text-sm mb-4">"{testimonial.text}"</p>
+                <div className="text-yellow-400" data-testid={`rating-${testimonial.id}`}>
+                  {"★".repeat(testimonial.rating)}
+                </div>
+              </LiquidGlassCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="gradient-bg py-16">
+        <div className="container mx-auto px-6 text-center text-white">
+          <h2 className="text-4xl font-bold mb-4" data-testid="text-cta-title">Pronto para Transformar Sua Escrita?</h2>
+          <p className="text-xl mb-8 text-white/90" data-testid="text-cta-subtitle">Junte-se a milhares de estudantes que já estão alcançando seus objetivos</p>
+          <div className="max-w-md mx-auto">
+            <input 
+              type="email" 
+              placeholder="Seu melhor email" 
+              className="w-full px-4 py-3 rounded-lg text-dark-blue mb-4" 
+              data-testid="input-cta-email"
+            />
+            <Link href="/signup" className="w-full bg-white text-dark-blue px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 smooth-transition inline-block" data-testid="button-cta-signup">
+              Começar Gratuitamente
+            </Link>
+          </div>
+          <p className="text-sm text-white/70 mt-4" data-testid="text-trial-info">7 dias grátis. Cancele quando quiser.</p>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}

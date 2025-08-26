@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(224 71.4% 4.1%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(224 71.4% 4.1%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(224 71.4% 4.1%);
+  --primary: hsl(215 89% 64%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(220 14.3% 95.9%);
+  --secondary-foreground: hsl(220.9 39.3% 11%);
+  --muted: hsl(220 14.3% 95.9%);
+  --muted-foreground: hsl(220 8.9% 46.1%);
+  --accent: hsl(220 14.3% 95.9%);
+  --accent-foreground: hsl(220.9 39.3% 11%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 20% 98%);
+  --border: hsl(220 13% 91%);
+  --input: hsl(220 13% 91%);
+  --ring: hsl(215 89% 64%);
+  --chart-1: hsl(215 89% 64%);
+  --chart-2: hsl(173 58% 39%);
+  --chart-3: hsl(197 37% 24%);
+  --chart-4: hsl(43 74% 66%);
+  --chart-5: hsl(27 87% 67%);
+  --radius: 1rem;
+
+  /* Custom DissertAI Colors */
+  --dark-blue: hsl(243 82% 11%);
+  --bright-blue: hsl(215 89% 64%);
+  --soft-gray: hsl(240 6% 67%);
+  --pure-white: hsl(0 0% 100%);
+  
+  /* Liquid Glass Effects */
+  --liquid-glass-bg: hsla(0 0% 100% / 0.85);
+  --liquid-glass-dark-bg: hsla(243 82% 11% / 0.9);
+  --liquid-glass-border: hsla(0 0% 100% / 0.2);
+  --liquid-glass-shadow: hsla(243 82% 11% / 0.15);
+  --liquid-glass-dark-shadow: hsla(215 89% 64% / 0.2);
+}
+
+.dark {
+  --background: hsl(224 71.4% 4.1%);
+  --foreground: hsl(210 20% 98%);
+  --card: hsl(224 71.4% 4.1%);
+  --card-foreground: hsl(210 20% 98%);
+  --popover: hsl(224 71.4% 4.1%);
+  --popover-foreground: hsl(210 20% 98%);
+  --primary: hsl(215 89% 64%);
+  --primary-foreground: hsl(224 71.4% 4.1%);
+  --secondary: hsl(215 27.9% 16.9%);
+  --secondary-foreground: hsl(210 20% 98%);
+  --muted: hsl(215 27.9% 16.9%);
+  --muted-foreground: hsl(217.9 10.6% 64.9%);
+  --accent: hsl(215 27.9% 16.9%);
+  --accent-foreground: hsl(210 20% 98%);
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(210 20% 98%);
+  --border: hsl(215 27.9% 16.9%);
+  --input: hsl(215 27.9% 16.9%);
+  --ring: hsl(215 89% 64%);
+  --chart-1: hsl(220 70% 50%);
+  --chart-2: hsl(160 60% 45%);
+  --chart-3: hsl(30 80% 55%);
+  --chart-4: hsl(280 65% 60%);
+  --chart-5: hsl(340 75% 55%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .liquid-glass {
+    backdrop-filter: blur(20px);
+    background: var(--liquid-glass-bg);
+    box-shadow: 0 20px 40px var(--liquid-glass-shadow);
+    border: 1px solid var(--liquid-glass-border);
+  }
+  
+  .liquid-glass-dark {
+    backdrop-filter: blur(20px);
+    background: var(--liquid-glass-dark-bg);
+    box-shadow: 0 20px 40px var(--liquid-glass-dark-shadow);
+    border: 1px solid var(--liquid-glass-border);
+  }
+  
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, var(--dark-blue) 0%, var(--bright-blue) 100%);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, var(--bright-blue) 0%, var(--dark-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  .feature-card {
+    transition: all 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px var(--liquid-glass-shadow);
+  }
+}
+
+@layer utilities {
+  .text-dark-blue {
+    color: var(--dark-blue);
+  }
+  
+  .text-bright-blue {
+    color: var(--bright-blue);
+  }
+  
+  .text-soft-gray {
+    color: var(--soft-gray);
+  }
+  
+  .bg-dark-blue {
+    background-color: var(--dark-blue);
+  }
+  
+  .bg-bright-blue {
+    background-color: var(--bright-blue);
+  }
+  
+  .bg-soft-gray {
+    background-color: var(--soft-gray);
+  }
+  
+  .border-bright-blue {
+    border-color: var(--bright-blue);
+  }
+}

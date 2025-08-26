@@ -1,0 +1,142 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { insertUserSchema } from "@shared/schema";
+import bcrypt from "bcrypt";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Newsletter signup endpoint
+  app.post("/api/newsletter", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // In a real app, this would save to a newsletter database table
+      // For now, just return success
+      res.json({ message: "Successfully subscribed to newsletter" });
+    } catch (error) {
+      console.error("Newsletter signup error:", error);
+      res.status(500).json({ message: "Failed to subscribe to newsletter" });
+    }
+  });
+
+  // User registration endpoint
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(validatedData.email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      
+      // Hash password
+      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+      
+      // Create user
+      const user = await storage.createUser({
+        ...validatedData,
+        password: hashedPassword,
+      });
+      
+      // Don't return password in response
+      const { password: _, ...userResponse } = user;
+      res.status(201).json(userResponse);
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(400).json({ message: "Invalid registration data" });
+    }
+  });
+
+  // User login endpoint
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+      
+      // Find user
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Don't return password in response
+      const { password: _, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Get user progress endpoint
+  app.get("/api/users/:userId/progress", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: "User progress not found" });
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      console.error("Get progress error:", error);
+      res.status(500).json({ message: "Failed to get user progress" });
+    }
+  });
+
+  // Get user essays endpoint
+  app.get("/api/users/:userId/essays", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const essays = await storage.getEssaysByUser(userId);
+      res.json(essays);
+    } catch (error) {
+      console.error("Get essays error:", error);
+      res.status(500).json({ message: "Failed to get user essays" });
+    }
+  });
+
+  // Create essay endpoint
+  app.post("/api/essays", async (req, res) => {
+    try {
+      const { userId, title, content } = req.body;
+      
+      if (!userId || !title || !content) {
+        return res.status(400).json({ message: "userId, title, and content are required" });
+      }
+      
+      const essay = await storage.createEssay({
+        userId,
+        title,
+        content,
+        score: null,
+        feedback: null,
+        isCompleted: false
+      });
+      
+      res.status(201).json(essay);
+    } catch (error) {
+      console.error("Create essay error:", error);
+      res.status(500).json({ message: "Failed to create essay" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
