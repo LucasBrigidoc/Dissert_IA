@@ -1,10 +1,10 @@
-import { Navigation } from "@/components/navigation";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Link } from "wouter";
 
 export default function Dashboard() {
   const { 
@@ -20,13 +20,21 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
       {/* Dashboard Header */}
-      <div className="bg-white shadow-sm border-b pt-16">
+      <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-dark-blue" data-testid="text-dashboard-title">Dashboard</h1>
+            <div className="flex items-center space-x-8">
+              <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-home">
+                <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
+                  <Plus className="text-white text-sm" />
+                </div>
+                <span className="text-2xl font-bold text-dark-blue">
+                  DISSERT<span className="text-bright-blue">AI</span>
+                </span>
+              </Link>
+              <h1 className="text-xl font-semibold text-dark-blue" data-testid="text-dashboard-title">Dashboard</h1>
+            </div>
             <div className="flex items-center space-x-4">
               <button className="text-soft-gray hover:text-bright-blue" data-testid="button-notifications">
                 <Bell size={20} />
