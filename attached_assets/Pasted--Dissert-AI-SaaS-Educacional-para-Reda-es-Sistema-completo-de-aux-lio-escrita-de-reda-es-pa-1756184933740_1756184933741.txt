@@ -1,0 +1,433 @@
+# Dissert AI - SaaS Educacional para Redações
+**Sistema completo de auxílio à escrita de redações para concursos e vestibulares**
+
+## 1. VISÃO GERAL DO PRODUTO
+O **Dissert AI** é uma plataforma SaaS inovadora que revoluciona o processo de aprendizagem e escrita de redações para concursos e vestibulares. Utilizando inteligência artificial avançada, o sistema oferece um ecossistema completo que acompanha o estudante desde a pré-escrita até a finalização do texto, com funcionalidades pedagógicas baseadas em teorias de andaime cognitivo e aprendizagem personalizada.
+
+### Funcionalidades Centrais:
+- **Arquiteto de Argumentos:** Diálogo socrático para construção de argumentos sólidos através de perguntas guiadas que desconstróem o tema proposto
+- **Explorador de Repertório:** Banco de dados inteligente de referências atualizadas conectado a fontes de notícias, artigos acadêmicos e bases de dados estatísticas
+- **Criador de Estrutura Personalizada:** Análise do estilo de escrita do usuário para gerar estruturas de redação modelo que incorporam suas preferências
+- **Newsletter Educacional:** Curadoria semanal de temas relevantes com análise contextualizada para provas
+- **Controlador de Estilo:** Ajustes interativos de formalidade, tom e complexidade vocabular com visualização em tempo real
+- **Simulador de Prova:** Ambiente realista que reproduz as condições reais de exames com cronômetro e feedback imediato
+- **Criador de Propostas:** Ferramenta para elaborar temas de redação com textos motivadores
+- **Biblioteca Pessoal:** Repositório inteligente de todo o aprendizado do usuário
+
+## 2. DIRETRIZES DE DESIGN E USABILIDADE
+### 2.1 Design System
+- **Cores Primárias:**
+  - Azul escuro: `#09072e` (fundos, títulos, elementos de destaque)
+  - Azul vivo: `#5087ff` (CTAs, ícones ativos, botões primários)
+  - Cinza suave: `#adacb7` (textos secundários, bordas sutis)
+  - Branco puro: `#ffffff` (fundos de cards, texto sobre cores escuras)
+  - Gradientes: Combinações suaves entre azul escuro e azul vivo
+- **Tipografia:** Inter (Google Fonts)
+  - **Títulos principais:** Bold, 32-40px
+  - **Subtítulos:** Medium, 24-28px
+  - **Corpo de texto:** Regular, 16px
+  - **Textos secundários:** Regular, 14px
+  - **Labels e botões:** Medium, 14-16px
+- **Estilo "Liquid Glass":**
+  - Efeito principal: `backdrop-filter: blur(20px)` + `background: rgba(255, 255, 255, 0.85)`
+  - Sombras elegantes: `box-shadow: 0 20px 40px rgba(9, 7, 46, 0.15)`
+  - Bordas arredondadas: 16px para cards grandes, 12px para elementos menores
+  - Transições suaves: `transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)`
+
+### 2.2 Componentes Padrão
+- **Botões Primários:** Fundo `#5087ff`, texto branco, hover com transform scale(1.02)
+- **Botões Secundários:** Borda `#5087ff`, texto `#5087ff`, hover com fundo `rgba(80, 135, 255, 0.1)`
+- **Cards:** Fundo branco translúcido, padding 24px, sombra liquid glass
+- **Inputs:** Borda `#adacb7`, focus com borda `#5087ff` e glow sutil
+- **Navegação:** Sticky header com blur backdrop, transições suaves
+
+### 2.3 Princípios de UX
+- **Fluxo Natural:** Progressão lógica entre funcionalidades
+- **Feedback Imediato:** Respostas visuais instantâneas
+- **Personalização Inteligente:** Adaptação baseada no comportamento do usuário
+- **Acessibilidade Total:** Compatível com leitores de tela e navegação por teclado
+
+---
+
+## 3. ESTRUTURA COMPLETA DAS TELAS
+### 3.1 LANDING PAGE - Página Principal
+**Layout Hero Section:**
+- **Header fixo translúcido** com efeito "Liquid Glass" (`backdrop-filter: blur(20px)` + `background: rgba(255, 255, 255, 0.85)`)
+  - Logo Dissert AI à esquerda com tipografia personalizada
+  - Menu de navegação: Início, Funcionalidades, Planos, Sobre, FAQ, Entrar/Cadastrar
+  - Botão "Entrar" com estilo secundário e "Começar Agora" com estilo primário
+- **Hero principal** ocupando 80% da viewport com fundo gradiente suave (azul escuro `#09072e` para azul vivo `#5087ff`):
+  - Título impactante: "Revolucione Sua Escrita com IA - Sua Redação Nota 1000 Apenas a Passos de Distância"
+  - Subtítulo explicativo: "O Dissert AI é seu assistente pessoal 24/7 para dominar a arte de escrever redações incríveis para vestibulares e concursos"
+  - CTA: "Começar Agora"
+  - Ilustração à direita mostrando personagem estudante em ambiente confortável:
+    - **Cadeira amarela** moderna (estilo bean bag)
+    - **Notebook** aberto com interface do Dissert AI visível
+    - **Estante** azul com livros organizados
+    - **Planta** verde em vaso azul e branco
+    - **Luminária** amarela de design minimalista
+
+**Seções Principais:**
+1. **O Desafio da Escrita no Brasil** (seção de problematização):
+   - Título: "Por Que 73% dos Estudantes Brasileiros Têm Dificuldade com Redação?"
+   - Estatísticas visuais sobre os desafios de escrita no contexto educacional brasileiro
+   - Breve texto explicando como a tecnologia pode transformar este cenário
+   - CTA: "Descubra a Solução"
+
+2. **Funcionalidades em Destaque** (grid 2x4 com animações):
+   - Cards com efeito "Liquid Glass" e ícones personalizados para cada funcionalidade:
+     - **Arquiteto de Argumentos:** Diálogo socrático para construção de argumentos sólidos
+     - **Explorador de Repertório:** Banco de dados inteligente com referências atualizadas
+     - **Criador de Estrutura Personalizada:** Adaptação ao seu estilo único de escrita
+     - **Newsletter Educacional:** Curadoria semanal dos temas mais relevantes
+     - **Controlador de Estilo:** Ajustes interativos de formalidade e tom
+     - **Simulador de Prova:** Ambiente realista idêntico ao dia da prova
+     - **Criador de Propostas:** Ferramenta para elaborar temas de redação
+     - **Biblioteca Pessoal:** Repositório inteligente de todo seu aprendizado
+   - Hover effects com preview da funcionalidade e breve descrição
+
+3. **Como Funciona** (3 passos visuais com ilustrações):
+   - Design em timeline horizontal com ícones animados
+   - Passo 1: "Analise seu estilo" - Ilustração do analisador de perfil com IA
+   - Passo 2: "Pratique com IA" - Preview do simulador com interface de prova
+   - Passo 3: "Evolva continuamente" - Gráficos de progresso e métricas de melhoria
+   - CTA ao final: "Iniciar Meu Plano de Estudos"
+
+4. **Depoimentos e Resultados:**
+   - Título: "De Alunos para Alunos: Resultados Reais"
+   - Carrossel de testimonials com fotos e nomes dos estudantes
+   - Estatísticas de melhoria em destaque: "87% dos usuários aumentaram suas notas em média 180 pontos"
+   - Selos de aprovação em vestibulares renomados
+   - CTA: "Ver Histórias de Sucesso"
+
+5. **Sobre Nós** (mini seção):
+   - Título: "Democratizando a Excelência na Escrita"
+   - Breve texto sobre a missão da empresa: "Combinamos tecnologia de ponta e ciências cognitivas para criar um assistente de escrita que funciona como um tutor pessoal 24/7"
+   - Ícones representando os 4 valores fundamentais da empresa
+   - CTA: "Conheça Nossa História"
+
+6. **Planos em Destaque** (versão simplificada da página de planos):
+   - Título: "Escolha Seu Caminho para o Sucesso"
+   - Cards dos 3 planos (Gratuito, Base, Pro) em destaque
+   - Toggle mensal/anual com destaque para economia no plano anual
+   - Comparação visual dos principais benefícios
+   - CTA: "Ver Todos os Detalhes dos Planos"
+
+7. **FAQ em Destaque** (seção expansível):
+   - Título: "Perguntas Frequentes"
+   - 5 perguntas mais relevantes com respostas concisas
+   - Link para página completa de FAQ
+   - CTA: "Mais Dúvidas? Fale Conosco"
+
+8. **CTA Final** (seção de conversão):
+   - Fundo com gradiente azul escuro para azul vivo
+   - Título: "Pronto para Transformar Sua Escrita?"
+   - Subtítulo: "Junte-se a milhares de estudantes que já estão alcançando seus objetivos"
+   - Formulário de cadastro simplificado (apenas email)
+   - Botão primário: "Começar Gratuitamente"
+   - Texto de segurança: "7 dias grátis."
+
+9. **Footer completo** com:
+   - Logo e breve descrição da empresa
+   - Links organizados em colunas (Produto, Empresa, Recursos, Suporte)
+   - Redes sociais com ícones
+   - Newsletter de dicas de redação
+   - Informações legais e direitos autorais
+   - Selos de segurança e certificações
+
+**Elementos Adicionais de Design:**
+- **Microinterações:** Animações suaves ao rolar a página, efeitos de paralaxe na seção hero
+- **Elementos de Prova Social:** Contador de usuários ativos em tempo real ("2.847 estudantes online agora")
+- **Consistência Visual:** Manter o estilo das ilustrações com personagens em ambientes de estudo confortáveis e modernos
+- **Responsividade:** Versão mobile com menu hambúrguer e seções empilhadas verticalmente
+- **Performance:** Otimização de imagens e lazy loading para garantir carregamento rápido
+
+### 3.2 PÁGINA DE PLANOS E PREÇOS
+**Header:** Mesmo padrão da landing page
+**Seção Principal:**
+- **Título centralizado:** "Escolha o Plano Ideal Para Seu Sucesso"
+- **Toggle mensal/anual** com desconto anual destacado
+
+**Comparação de Planos (3 colunas):**
+**Plano Gratuito:**
+- Acesso a Newsletter
+- Cronograma simples
+- Newsletter semanal
+- Acesso limitado:
+  → Arquiteto de Argumentos
+  → Explorador de Repertório
+  → Simulador de Prova
+
+**Plano Base: R$39,90/Mês R$439/Ano** "plano mais procurado"
+- Acesso a todas as funcionalidades
+- Dashboard e Cronograma
+- Resposta aprofundada
+- Sem anúncios
+- Limite maior das funcionalidades
+
+**Plano Pro: R$59,90/Mês R$599/Ano**
+- Acesso a toda as funcionalidades
+- Dashboard e Cronograma com IA
+- Resposta aprofundada
+- Sem anúncios
+- Limite máximo das funcionalidades
+- Material complementar
+
+**Tabela Comparativa:**
+| Funcionalidade | Plano Gratuito | Plano Base | Plano Pro |
+|----------------|----------------|------------|-----------|
+| Arquiteto de Argumentos | Limitado | Completo | Completo |
+| Explorador de Repertório | Limitado | Completo | Completo |
+| Criador de Estrutura Personalizada | ❌ | Completo | Completo |
+| Newsletter Educacional | ✅ | ✅ | ✅ |
+| Controlador de Estilo | ❌ | Completo | Completo |
+| Simulador de Prova | Limitado | Completo | Completo |
+| Criador de Propostas | ❌ | Limitado | Completo |
+| Biblioteca Pessoal | ❌ | Completo | Completo |
+| Dashboard Básico | ✅ | ✅ | ✅ |
+| Dashboard com IA | ❌ | ❌ | ✅ |
+| Material Complementar | ❌ | ❌ | ✅ |
+| Anúncios | ✅ | ❌ | ❌ |
+
+**FAQ Integrada:** Seção expansível com dúvidas sobre pagamento e funcionalidades
+
+### 3.3 TELA DE LOGIN
+**Layout Centralizado:**
+- Card principal com efeito liquid glass
+- Logo do Dissert AI no topo
+- Formulário limpo:
+  - Input email com validação em tempo real (exemplo: "hello@reallygreatsite.com")
+  - Input senha com toggle de visibilidade (mostrando "******")
+  - Checkbox "Lembrar-me"
+  - Botão "Entrar" em destaque
+- Link "Esqueci minha senha" discreto
+- Divisor com "ou"
+- Botão "Entrar com Google" (opcional)
+- Link para cadastro: "Não tem conta? Cadastre-se"
+- Ilustração lateral com personagem estudante em ambiente confortável
+
+### 3.4 TELA DE CADASTRO
+**Layout Similar ao Login:**
+- Card principal mais alto para acomodar mais campos
+- Formulário de registro:
+  - Nome completo (exemplo: "Lucas Brigido")
+  - Email com validação (exemplo: "hello@reallygreatsite.com")
+  - Senha com indicador de força
+  - Confirmação de senha
+  - Checkbox de aceite dos termos
+  - Seleção de objetivo: Vestibular, Concurso, Melhoria Geral
+- Botão "Criar Conta" em destaque
+- Link para login: "Já tem conta? Faça login"
+- Ilustração lateral com personagem estudante com ícone de IA e livros
+
+### 3.5 DASHBOARD PRINCIPAL (HOME INTERNA)
+**Header Interno:**
+- Logo à esquerda
+- Menu de navegação das funcionalidades
+- Perfil do usuário à direita com dropdown
+
+**Layout Principal (3 colunas assimétricas):**
+**Coluna Esquerda (30%):**
+- **Card de Boas-vindas** personalizado
+- **Progresso Geral:**
+  - Ring progress das 5 competências do ENEM
+  - Nota média atual
+  - Meta definida pelo usuário
+
+**Coluna Central (45%):**
+- **Estatísticas de Atividade:**
+  - Total de redações feitas
+  - Tempo total de estudo
+  - Streak de dias consecutivos
+- **Gráfico de Evolução:**
+  - Line chart com histórico de notas
+  - Filtros por período (7 dias, 30 dias, 6 meses)
+- **Próximas Ações Sugeridas:**
+  - Cards com ações recomendadas pela IA
+
+**Coluna Direita (25%):**
+- **Newsletter Mais Recente:**
+  - Preview do tema da semana
+  - Botão para ler completa
+- **Acesso Rápido às Funcionalidades:**
+  - Grid 2x4 com ícones das ferramentas
+  - Hover effects com descrição rápida
+
+### 3.6 ARQUITETO DE ARGUMENTOS
+**Layout de Conversa:**
+- **Header:** Título da funcionalidade + progresso da sessão
+- **Área Principal:**
+  - Interface de chat com a IA à esquerda
+  - Painel lateral direito mostrando o mapa mental em construção
+- **Fluxo Interativo:**
+  1. Input do tema pelo usuário
+  2. Sequência de perguntas socráticas da IA:
+     - "Qual é o problema central abordado pelo tema?"
+     - "Quem são os principais grupos afetados por essa questão?"
+     - "Que causas históricas ou sociais contribuem para este problema?"
+     - "Que solução concreta você proporia?"
+  3. Construção progressiva do mapa mental
+  4. Finalização com estrutura argumentativa completa
+
+**Elementos Únicos:**
+- Bubbles de chat diferenciadas (usuário vs IA)
+- Animações de digitação da IA
+- Mapa mental interativo e editável
+- Opção de exportar estrutura para outras funcionalidades
+
+### 3.7 EXPLORADOR DE REPERTÓRIO
+**Layout Split:**
+- **Editor Principal (60%):** Onde o usuário escreve
+- **Painel de Sugestões (40%):** Alimentado pela IA
+
+**Funcionalidades do Painel:**
+- **Abas Organizadas:**
+  - Dados Estatísticos (IBGE, ONU, etc.)
+  - Referências Legislativas
+  - Citações de Especialistas
+  - Eventos Históricos
+- **Sistema de Inserção:**
+  - Drag & drop para o editor
+  - Preview antes da inserção
+  - Formatação automática
+
+**Integração Inteligente:**
+- Análise em tempo real do texto sendo escrito
+- Sugestões contextualizadas
+- Sistema de relevância por estrelas
+
+### 3.8 CRIADOR DE ESTRUTURA PERSONALIZADA
+**Fluxo em Etapas:**
+1. **Análise do Perfil:**
+   - Upload/seleção de redações anteriores
+   - Questionário de preferências estilísticas
+   - Progress bar mostrando análise da IA
+
+2. **Configuração de Parâmetros:**
+   - Sliders para formalidade, complexidade, originalidade
+   - Preview em tempo real das mudanças
+   - Comparação lado a lado
+
+3. **Geração da Estrutura:**
+   - Redação modelo gerada pela IA
+   - Anotações explicativas em cada parágrafo
+   - Painel lateral com análise detalhada
+
+4. **Exportação e Salvamento:**
+   - Opções de usar a estrutura imediatamente
+   - Salvamento na biblioteca pessoal
+   - Compartilhamento com professores
+
+### 3.9 NEWSLETTER EDUCACIONAL
+**Layout Magazine:**
+- **Header Editorial:**
+  - Data da edição
+  - Tema principal da semana
+  - Indicador de relevância para provas
+
+- **Sumário Executivo:**
+  - Cards visuais dos 5 temas principais
+  - Sistema de votação de relevância
+
+- **Artigos Expandidos:**
+  - Layout de revista com imagens
+  - Seções: A Notícia, Conexões com Redação, Repertório Sugerido
+  - CTAs para praticar redação sobre cada tema
+
+- **Recursos Interativos:**
+  - Quiz ao final de cada artigo
+  - Sistema de bookmarks
+  - Comentários da comunidade
+
+### 3.10 CONTROLADOR DE ESTILO
+**Interface de Laboratório:**
+- **Editor Principal (Centro):**
+  - Área de texto com highlighting de mudanças
+  - Comparação lado a lado (original vs modificado)
+
+- **Painel de Controles (Esquerda):**
+  - Sliders interativos para cada parâmetro:
+    - Nível de Formalidade: Informal (1) → Neutro (5) → Acadêmico (10)
+    - Tom do Texto: Objetivo (1) → Analítico (5) → Persuasivo (10)
+    - Complexidade Vocabular: Simples (1) → Moderado (5) → Técnico (10)
+  - Presets salvos pelo usuário
+  - Visualização das alterações em tempo real
+
+- **Análise Detalhada (Direita):**
+  - Explicações das mudanças
+  - Métricas de legibilidade
+  - Adequação por tipo de prova
+
+### 3.11 SIMULADOR DE PROVA
+**Ambiente Realístico:**
+- **Reprodução Fiel:**
+  - Interface idêntica ao ENEM/vestibulares
+  - Cronômetro regressivo prominente
+  - Limitações de caracteres visíveis
+
+- **Fases Cronometradas:**
+  - Planejamento (15 min)
+  - Escrita (35 min)
+  - Revisão (10 min)
+
+- **Feedback Imediato Pós-Prova:**
+  - Nota simulada por competência
+  - Análise temporal de desempenho
+  - Sugestões personalizadas de melhoria
+
+### 3.12 CRIADOR DE PROPOSTAS
+**Interface de Construção:**
+- **Wizard em Etapas:**
+  1. Seleção do tema base
+  2. Escolha de textos motivadores
+  3. Formulação do comando
+  4. Validação pela IA
+
+- **Banco de Recursos:**
+  - Biblioteca de imagens, gráficos e textos
+  - Sistema de busca semântica
+  - Preview da proposta final
+
+- **Publicação e Compartilhamento:**
+  - Opções de visibilidade
+  - Sistema de avaliação comunitária
+  - Integração com turmas
+
+### 3.13 BIBLIOTECA PESSOAL
+**Dashboard de Conhecimento:**
+- **Visão Geral:**
+  - Métricas de conteúdo salvo
+  - Gráfico de evolução do aprendizado
+  - Sugestões de revisão espaçada
+
+- **Organização Inteligente:**
+  - Categorização automática por IA
+  - Sistema de tags semânticas
+  - Busca avançada com filtros múltiplos
+
+- **Insights Personalizados:**
+  - Padrões de aprendizado identificados
+  - Gaps de conhecimento detectados
+  - Recomendações de estudo
+
+---
+
+## 4. FLUXOS DE USUÁRIO PRINCIPAIS
+### 4.1 Primeiro Acesso (Onboarding)
+1. Cadastro → Questionário de perfil → Tour das funcionalidades → Primeira redação de diagnóstico → Dashboard personalizado
+
+### 4.2 Sessão de Estudo Típica
+1. Dashboard → Verificação de sugestões da IA → Escolha de funcionalidade → Prática/estudo → Salvamento na biblioteca → Feedback de progresso
+
+### 4.3 Preparação para Prova
+1. Simulador → Análise de resultados → Identificação de lacunas → Estudo direcionado nas funcionalidades específicas → Novo simulado
+
+---
+
+## 5. DIFERENCIAIS COMPETITIVOS
+- **IA Pedagógica Avançada:** Não apenas corrige, mas ensina através do diálogo socrático
+- **Personalização Absoluta:** Cada funcionalidade se adapta ao perfil individual do usuário
+- **Ecossistema Integrado:** Todas as funcionalidades conversam entre si
+- **Base Científica:** Fundamentado em teorias educacionais comprovadas (Zona de Desenvolvimento Proximal de Vygotsky)
+- **Feedback Construtivo:** Sempre explicativo, nunca apenas corretivo
+- **Evolução Contínua:** Sistema que aprende com cada interação do usuário
