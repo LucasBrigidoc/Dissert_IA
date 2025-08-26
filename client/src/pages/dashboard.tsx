@@ -1,12 +1,13 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function Dashboard() {
+  const [, setLocation] = useLocation();
   const { 
     name, 
     averageScore, 
@@ -17,6 +18,12 @@ export default function Dashboard() {
     progressPercentage, 
     nextExam 
   } = mockUserData;
+
+  const handleLogout = () => {
+    // In a real app, this would clear authentication tokens/session
+    // For demo purposes, just redirect to landing page
+    setLocation("/");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -39,6 +46,15 @@ export default function Dashboard() {
               <button className="text-soft-gray hover:text-bright-blue" data-testid="button-notifications">
                 <Bell size={20} />
               </button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
+                data-testid="button-logout"
+              >
+                <LogOut size={16} />
+                <span>Sair</span>
+              </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
                 {name.split(' ').map(n => n[0]).join('')}
               </div>
