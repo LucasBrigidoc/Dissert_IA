@@ -84,10 +84,10 @@ export default function Dashboard() {
                   <Home size={18} />
                   <span className="font-medium">Home</span>
                 </Link>
-                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
+                <Link href="/configuracoes" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
                   <Settings size={18} />
                   <span className="font-medium">Configurações</span>
-                </button>
+                </Link>
               </div>
             </div>
             
