@@ -84,10 +84,10 @@ export default function Dashboard() {
                   <Home size={18} />
                   <span className="font-medium">Home</span>
                 </Link>
-                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
+                <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
                   <Settings size={18} />
                   <span className="font-medium">Configurações</span>
-                </button>
+                </Link>
               </div>
             </div>
             
@@ -355,7 +355,7 @@ export default function Dashboard() {
         {/* Fourth Row: System Features - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-6">
-            <h4 className="font-semibold text-dark-blue text-lg">Funcionalidades do Sistema</h4>
+            <h4 className="font-semibold text-dark-blue text-lg">Acesso rapido das principais Funcionalidades</h4>
             <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
               <Plus className="text-white" size={16} />
             </div>

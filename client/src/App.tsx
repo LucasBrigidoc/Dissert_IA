@@ -15,6 +15,7 @@ import Argumentos from "@/pages/argumentos";
 import Repertorio from "@/pages/repertorio";
 import Simulador from "@/pages/simulador";
 import Estilo from "@/pages/estilo";
+import Settings from "@/pages/settings";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/repertorio" component={Repertorio} />
       <Route path="/simulador" component={Simulador} />
       <Route path="/estilo" component={Estilo} />
+      <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );
