@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -64,12 +64,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Dashboard Header */}
-      <div className="bg-white shadow-sm border-b">
+      {/* Fixed Navigation Bar */}
+      <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
-              <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-home">
+              <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
                 <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
                   <Plus className="text-white text-sm" />
                 </div>
@@ -77,10 +77,22 @@ export default function Dashboard() {
                   DISSERT<span className="text-bright-blue">AI</span>
                 </span>
               </Link>
-              <h1 className="text-xl font-semibold text-dark-blue" data-testid="text-dashboard-title">Dashboard</h1>
+              
+              {/* Navigation Menu */}
+              <div className="flex items-center space-x-6">
+                <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-home">
+                  <Home size={18} />
+                  <span className="font-medium">Home</span>
+                </Link>
+                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
+                  <Settings size={18} />
+                  <span className="font-medium">Configurações</span>
+                </button>
+              </div>
             </div>
+            
             <div className="flex items-center space-x-4">
-              <button className="text-soft-gray hover:text-bright-blue" data-testid="button-notifications">
+              <button className="text-soft-gray hover:text-bright-blue transition-colors" data-testid="button-notifications">
                 <Bell size={20} />
               </button>
               <Button
@@ -98,10 +110,10 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
+      </nav>
 
       {/* Dashboard Content */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 pt-24">
         <div className="grid lg:grid-cols-12 gap-6">
           {/* Left Column (30%) */}
           <div className="lg:col-span-4 space-y-5">
