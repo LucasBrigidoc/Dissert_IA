@@ -355,7 +355,7 @@ export default function Dashboard() {
         {/* Fourth Row: System Features - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-6">
-            <h4 className="font-semibold text-dark-blue text-lg">Funcionalidades do Sistema</h4>
+            <h4 className="font-semibold text-dark-blue text-lg">Acesso Rapido </h4>
             <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
               <Plus className="text-white" size={16} />
             </div>
