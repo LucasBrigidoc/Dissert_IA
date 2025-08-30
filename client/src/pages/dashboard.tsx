@@ -116,7 +116,7 @@ export default function Dashboard() {
       <div className="container mx-auto px-6 py-8 pt-24 space-y-6">
         
         {/* First Row: Welcome + Activity Stats + Goals */}
-        <div className="grid lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {/* Welcome Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome">
             <div className="flex items-center justify-between mb-3">
@@ -194,7 +194,7 @@ export default function Dashboard() {
         </div>
 
         {/* Second Row: Progress + Evolution Chart + Simulator Time */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
           {/* Progress Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
             <div className="flex items-center justify-between mb-4">
