@@ -34,17 +34,17 @@ export default function Landing() {
                 Revolucione Sua Escrita com IA
               </h1>
               <p className="text-xl lg:text-2xl mb-4 text-white/90" data-testid="text-hero-subtitle">
-                Sua Redação Nota 1000 Apenas a Passos de Distância
+                O Dissert AI é seu assistente pessoal 24/7 para dominar a arte de escrever redações incríveis para vestibulares e concursos
               </p>
               <p className="text-lg mb-8 text-white/80" data-testid="text-hero-description">
-                O Dissert AI é seu assistente pessoal 24/7 para dominar a arte de escrever redações incríveis para vestibulares e concursos
+                Sua Redação Nota 1000 Apenas a Passos de Distância 
               </p>
               <Link href="/signup" className="bg-white text-dark-blue px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale inline-block" data-testid="button-hero-signup">
                 Começar Agora
               </Link>
               <div className="mt-8 text-white/70" data-testid="text-online-students">
                 <Users className="inline mr-2" size={16} />
-                <span>2.847 estudantes online agora</span>
+                <span>Mais de 2.000 estudantes refinando sua escrita</span>
               </div>
             </div>
             
@@ -59,7 +59,7 @@ export default function Landing() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold text-dark-blue mb-8" data-testid="text-challenge-title">
-            Por Que 73% dos Estudantes Brasileiros Têm Dificuldade com Redação?
+            Por Que mais de 70% dos Estudantes têm Dificuldade com Redação?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <LiquidGlassCard className="smooth-transition hover-scale">
@@ -85,7 +85,7 @@ export default function Landing() {
             </LiquidGlassCard>
           </div>
           <Link href="/features" className="bg-bright-blue text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale" data-testid="button-discover-solution">
-            Descubra a Solução
+            Descubra a solução com nossas Funcionalidades
           </Link>
         </div>
       </section>
@@ -120,8 +120,8 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-12">
             <div className="text-center" data-testid="step-1">
               <div className="w-24 h-24 bg-bright-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">1</div>
-              <h3 className="text-xl font-semibold text-dark-blue mb-4">Analise seu estilo</h3>
-              <p className="text-soft-gray">Nossa IA analisa seu perfil e identifica pontos de melhoria personalizados</p>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Ferramentas de Pré-escrita</h3>
+              <p className="text-soft-gray">Nossa plataforma tem ferramnetas com IA que te ajudam desde o momento inicial de escrever</p>
             </div>
             <div className="text-center" data-testid="step-2">
               <div className="w-24 h-24 bg-bright-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">2</div>
@@ -145,7 +145,7 @@ export default function Landing() {
       {/* Testimonials */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center text-dark-blue mb-8" data-testid="text-testimonials-title">De Alunos para Alunos: Resultados Reais</h2>
+          <h2 className="text-4xl font-bold text-center text-dark-blue mb-8" data-testid="text-testimonials-title">Resultado dos nosso alunos:</h2>
           <div className="text-center mb-12">
             <div className="text-5xl font-bold gradient-text mb-2" data-testid="text-success-rate">87%</div>
             <p className="text-soft-gray">dos usuários aumentaram suas notas em média 180 pontos</p>

@@ -105,7 +105,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/70">
-          <p>&copy; 2024 DissertAI. Todos os direitos reservados.</p>
+          <p>&copy; 2025 DissertAI. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

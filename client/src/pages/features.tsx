@@ -38,7 +38,7 @@ export default function Features() {
       <div className="container mx-auto px-6 pt-24 pb-12">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-dark-blue mb-4" data-testid="text-features-title">
-            Soluções e Funcionalidades
+            Conheça as Principais Funcionalidades
           </h1>
           <p className="text-xl text-soft-gray">Ferramentas inteligentes para revolucionar sua escrita</p>
         </div>
@@ -48,10 +48,10 @@ export default function Features() {
           <div className="flex items-center justify-between">
             <div className="w-1/2">
               <h2 className="text-3xl font-bold text-dark-blue mb-4">
-                Desperte Seu Juízo Pessoal de Escrita, Esqueça as Regras!
+                Refine seu processo de escrita com IA
               </h2>
               <p className="text-soft-gray mb-6">
-                Nosso Módulo de IA te entende através de respostas específicas. O que escrever em cada questão nunca mais será um mistério para você! Nosso IA tem dados de mais de 100 mil redações nota 1000.
+                Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Então desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
               </p>
               <Button asChild className="bg-bright-blue text-white px-6 py-3 rounded-lg hover:bg-blue-600 smooth-transition hover-scale" data-testid="button-try-now">
                 <Link href="/signup">Experimente Agora</Link>
@@ -68,7 +68,7 @@ export default function Features() {
         {/* Challenge Section */}
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-dark-blue mb-8" data-testid="text-challenge-title">
-            O Desafio da Escrita no Brasil
+            Funcionalidades para os principais Desafio da Escrita
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <LiquidGlassCard className="p-8" data-testid="card-statistics">
