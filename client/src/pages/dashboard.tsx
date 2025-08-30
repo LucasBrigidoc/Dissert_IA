@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -115,8 +115,8 @@ export default function Dashboard() {
       {/* Dashboard Content */}
       <div className="container mx-auto px-6 py-8 pt-24 space-y-6">
         
-        {/* First Row: Welcome + Activity Stats */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        {/* First Row: Welcome + Activity Stats + Goals */}
+        <div className="grid lg:grid-cols-4 gap-6">
           {/* Welcome Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome">
             <div className="flex items-center justify-between mb-3">
@@ -130,6 +130,32 @@ export default function Dashboard() {
               <div className="flex items-center text-bright-blue" data-testid="text-next-exam">
                 <Calendar className="mr-2" size={16} />
                 <span className="font-medium">Próxima prova: {nextExam}</span>
+              </div>
+            </div>
+          </LiquidGlassCard>
+
+          {/* Goals Card */}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Target className="text-white" size={16} />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                <CheckCircle2 className="text-bright-blue mr-3" size={18} />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-dark-blue">Fazer 2 redações</div>
+                  <div className="text-xs text-soft-gray">1/2 concluídas</div>
+                </div>
+              </div>
+              <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
+                <Target className="text-soft-gray mr-3" size={18} />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-dark-blue">Estudar 10h</div>
+                  <div className="text-xs text-soft-gray">8.9/10h concluídas</div>
+                </div>
               </div>
             </div>
           </LiquidGlassCard>
@@ -167,8 +193,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Second Row: Progress + Evolution Chart */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        {/* Second Row: Progress + Evolution Chart + Simulator Time */}
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Progress Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
             <div className="flex items-center justify-between mb-4">
@@ -225,6 +251,47 @@ export default function Dashboard() {
               <Progress value={progressPercentage} className="h-3 bg-gray-200">
                 <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
               </Progress>
+            </div>
+          </LiquidGlassCard>
+
+          {/* Simulator Time Card */}
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
+              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                <Clock className="text-white" size={16} />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="text-center p-4 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-total-time">
+                  2h 15min
+                </div>
+                <div className="text-xs text-soft-gray font-medium">Tempo Total</div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
+                  <div className="flex items-center">
+                    <Lightbulb className="text-bright-blue mr-2" size={14} />
+                    <span className="text-sm text-dark-blue">Brainstorm</span>
+                  </div>
+                  <span className="text-sm font-medium text-bright-blue" data-testid="text-brainstorm-time">25min</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
+                  <div className="flex items-center">
+                    <MessageCircle className="text-dark-blue mr-2" size={14} />
+                    <span className="text-sm text-dark-blue">Rascunho</span>
+                  </div>
+                  <span className="text-sm font-medium text-dark-blue" data-testid="text-draft-time">1h 20min</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-soft-gray/10">
+                  <div className="flex items-center">
+                    <CheckCircle2 className="text-soft-gray mr-2" size={14} />
+                    <span className="text-sm text-dark-blue">A limpo</span>
+                  </div>
+                  <span className="text-sm font-medium text-soft-gray" data-testid="text-final-time">30min</span>
+                </div>
+              </div>
             </div>
           </LiquidGlassCard>
 
