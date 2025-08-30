@@ -45,8 +45,7 @@ export default function Dashboard() {
   };
 
   const handleReadNewsletter = () => {
-    console.log("Abrindo newsletter completa");
-    // In a real app, this would open the full newsletter
+    setLocation("/newsletter");
   };
 
   const handleSuggestedAction = (action: string) => {
@@ -87,6 +86,10 @@ export default function Dashboard() {
                 <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
                   <Plus size={18} />
                   <span className="font-medium">Funcionalidades</span>
+                </Link>
+                <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
+                  <Book size={18} />
+                  <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
                   <Settings size={18} />

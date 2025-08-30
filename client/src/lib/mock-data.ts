@@ -175,3 +175,46 @@ export const mockFAQ = [
     answer: "Sim! O plano Base anual custa R$439 (economia de R$39,80) e o plano Pro anual custa R$599 (economia de R$119,80). Você economiza até 2 meses de anuidade."
   }
 ];
+
+export const mockNewsletters = [
+  {
+    id: 1,
+    title: "Tecnologia e Sociedade 🤖",
+    excerpt: "Explore como a inteligência artificial está transformando o mundo moderno e descubra como incorporar esse tema em suas redações com repertório atualizado e exemplos práticos.",
+    content: "A inteligência artificial (IA) está revolucionando diversos setores da sociedade moderna, desde a medicina até a educação. Este tema é extremamente relevante para redações do ENEM e vestibulares, pois permite discussões sobre ética, transformação social e impactos tecnológicos.\n\nPontos importantes para abordar:\n\n1. **Transformação do mercado de trabalho**: A IA está automatizando diversas profissões, criando novas oportunidades enquanto elimina outras. Exemplo: chatbots substituindo atendentes, mas criando empregos para desenvolvedores de IA.\n\n2. **Ética na tecnologia**: Questões sobre privacidade, viés algorítmico e responsabilidade das empresas tecnológicas. Caso do reconhecimento facial que apresenta erros em pessoas negras.\n\n3. **Democratização do conhecimento**: Ferramentas como ChatGPT tornam informação acessível, mas levantam questões sobre veracidade e dependência tecnológica.\n\n**Repertório Cultural:**\n- Filme 'Ex Machina' (2014): Explora relações humano-máquina\n- Livro '1984' de George Orwell: Vigilância e controle social\n- Black Mirror: Série que critica excessos tecnológicos\n\n**Dados e Estatísticas:**\n- 47% dos empregos correm risco de automação nos próximos 20 anos\n- Brasil é o 4º país em uso de IA na América Latina\n- Investimento global em IA: US$ 91,5 bilhões em 2022",
+    publishDate: "2024-01-22",
+    readTime: "8 min",
+    category: "Atualidades",
+    isNew: true
+  },
+  {
+    id: 2,
+    title: "Sustentabilidade e Meio Ambiente 🌱",
+    excerpt: "Análise completa sobre mudanças climáticas, políticas ambientais e desenvolvimento sustentável para enriquecer suas redações sobre meio ambiente.",
+    content: "As questões ambientais estão no centro dos debates contemporâneos, sendo tema recorrente em provas de redação. O aquecimento global, desmatamento e políticas de sustentabilidade são tópicos essenciais para uma argumentação sólida.\n\nPontos de análise:\n\n1. **Mudanças climáticas**: Causas antropogênicas e consequências globais\n2. **Políticas públicas**: Acordos internacionais e legislação ambiental\n3. **Desenvolvimento sustentável**: Equilíbrio entre crescimento econômico e preservação\n\n**Repertório essencial:**\n- Acordo de Paris (2015)\n- Conferência ECO-92 no Rio de Janeiro\n- Greta Thunberg e ativismo jovem\n- Amazônia como pulmão do mundo",
+    publishDate: "2024-01-15",
+    readTime: "6 min",
+    category: "Meio Ambiente",
+    isNew: false
+  },
+  {
+    id: 3,
+    title: "Educação no Século XXI 📚",
+    excerpt: "Como a pandemia transformou a educação e quais são os desafios para democratizar o ensino de qualidade no Brasil.",
+    content: "A pandemia de COVID-19 acelerou transformações na educação que já estavam em curso. O ensino remoto, a educação híbrida e as tecnologias educacionais se tornaram protagonistas, revelando tanto oportunidades quanto desigualdades.\n\nTemas para desenvolver:\n\n1. **Desigualdade digital**: Nem todos os estudantes têm acesso à internet e equipamentos\n2. **Metodologias ativas**: Ensino centrado no aluno vs. métodos tradicionais\n3. **Formação de professores**: Necessidade de capacitação tecnológica\n\n**Dados relevantes:**\n- 4,8 milhões de estudantes sem acesso à internet durante a pandemia\n- 39% dos professores não tinham formação para ensino remoto\n- Investimento brasileiro em educação: 6% do PIB",
+    publishDate: "2024-01-08",
+    readTime: "7 min",
+    category: "Educação",
+    isNew: false
+  },
+  {
+    id: 4,
+    title: "Democracia e Participação Cidadã 🏛️",
+    excerpt: "Reflexões sobre o papel da juventude na democracia, participação política e importância do voto consciente.",
+    content: "A participação cidadã é fundamental para o fortalecimento da democracia. No Brasil, temas como voto obrigatório, participação jovem e educação política são centrais para compreender nossa realidade social.\n\nAspectos importantes:\n\n1. **Voto consciente**: Importância da informação e análise crítica\n2. **Participação juvenil**: Movimentos estudantis e engajamento político\n3. **Democracia digital**: Redes sociais como espaço de debate político\n\n**Referências históricas:**\n- Diretas Já (1984)\n- Constituição de 1988\n- Lei da Ficha Limpa (2010)\n- Jornadas de Junho (2013)",
+    publishDate: "2024-01-01",
+    readTime: "5 min",
+    category: "Política",
+    isNew: false
+  }
+];

@@ -17,6 +17,7 @@ import Simulador from "@/pages/simulador";
 import Estilo from "@/pages/estilo";
 import Settings from "@/pages/settings";
 import Functionalities from "@/pages/functionalities";
+import Newsletter from "@/pages/newsletter";
 
 function Router() {
   return (
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/estilo" component={Estilo} />
       <Route path="/settings" component={Settings} />
       <Route path="/functionalities" component={Functionalities} />
+      <Route path="/newsletter" component={Newsletter} />
       <Route component={NotFound} />
     </Switch>
   );

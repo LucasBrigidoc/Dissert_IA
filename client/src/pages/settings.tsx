@@ -78,6 +78,10 @@ export default function SettingsPage() {
                   <Plus size={18} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
+                <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
+                  <Book size={18} />
+                  <span className="font-medium">Newsletter</span>
+                </Link>
                 <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-settings">
                   <Settings size={18} />
                   <span className="font-medium">Configurações</span>
