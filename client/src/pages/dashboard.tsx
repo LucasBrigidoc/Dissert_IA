@@ -200,8 +200,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Second Row: Configurações + Progress + Evolution Chart + Simulator Time */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        {/* Second Row: Configurações Expandidas */}
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Configurações Personalizadas */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-personal-config">
             <div className="flex items-center justify-between mb-4">
@@ -275,60 +275,6 @@ export default function Dashboard() {
             </div>
           </LiquidGlassCard>
 
-          {/* Cronograma de Provas */}
-          <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-exam-schedule">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="font-semibold text-dark-blue">Cronograma de Provas</h4>
-              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center">
-                <Calendar className="text-white" size={16} />
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-dark-blue hover:text-bright-blue hover:bg-dark-blue/10"
-                data-testid="button-manage-schedule"
-              >
-                Gerenciar
-              </Button>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <Calendar className="text-bright-blue mr-3" size={18} />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-dark-blue">ENEM 2024 - 1º Dia</div>
-                  <div className="text-xs text-soft-gray">3 de novembro • Linguagens e Humanas</div>
-                </div>
-                <div className="text-xs font-bold text-bright-blue bg-bright-blue/10 px-2 py-1 rounded" data-testid="countdown-exam1">
-                  12 dias
-                </div>
-              </div>
-              <div className="flex items-center p-3 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
-                <Calendar className="text-dark-blue mr-3" size={18} />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-dark-blue">ENEM 2024 - 2º Dia</div>
-                  <div className="text-xs text-soft-gray">10 de novembro • Exatas e Redação</div>
-                </div>
-                <div className="text-xs font-bold text-dark-blue bg-dark-blue/10 px-2 py-1 rounded" data-testid="countdown-exam2">
-                  19 dias
-                </div>
-              </div>
-              <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
-                <Plus className="text-soft-gray mr-3" size={18} />
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-left p-0 text-soft-gray hover:text-bright-blue"
-                  data-testid="button-add-exam"
-                >
-                  <span className="text-sm font-medium">Adicionar nova prova</span>
-                </Button>
-              </div>
-            </div>
-          </LiquidGlassCard>
-        </div>
-
-        {/* Third Row: Progress + Evolution Chart + Simulator Time */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
           {/* Progress Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
             <div className="flex items-center justify-between mb-4">
@@ -425,6 +371,60 @@ export default function Dashboard() {
                   </div>
                   <span className="text-sm font-medium text-soft-gray" data-testid="text-final-time">30min</span>
                 </div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Third Row: Cronograma de Provas + Evolution Chart */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Cronograma de Provas */}
+          <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-exam-schedule">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-dark-blue">Cronograma de Provas</h4>
+              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center">
+                <Calendar className="text-white" size={16} />
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-dark-blue hover:text-bright-blue hover:bg-dark-blue/10"
+                data-testid="button-manage-schedule"
+              >
+                Gerenciar
+              </Button>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                <Calendar className="text-bright-blue mr-3" size={18} />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-dark-blue">ENEM 2024 - 1º Dia</div>
+                  <div className="text-xs text-soft-gray">3 de novembro • Linguagens e Humanas</div>
+                </div>
+                <div className="text-xs font-bold text-bright-blue bg-bright-blue/10 px-2 py-1 rounded" data-testid="countdown-exam1">
+                  12 dias
+                </div>
+              </div>
+              <div className="flex items-center p-3 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
+                <Calendar className="text-dark-blue mr-3" size={18} />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-dark-blue">ENEM 2024 - 2º Dia</div>
+                  <div className="text-xs text-soft-gray">10 de novembro • Exatas e Redação</div>
+                </div>
+                <div className="text-xs font-bold text-dark-blue bg-dark-blue/10 px-2 py-1 rounded" data-testid="countdown-exam2">
+                  19 dias
+                </div>
+              </div>
+              <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
+                <Plus className="text-soft-gray mr-3" size={18} />
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-left p-0 text-soft-gray hover:text-bright-blue"
+                  data-testid="button-add-exam"
+                >
+                  <span className="text-sm font-medium">Adicionar nova prova</span>
+                </Button>
               </div>
             </div>
           </LiquidGlassCard>
