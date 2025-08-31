@@ -165,10 +165,22 @@ export default function Dashboard() {
           {/* Goals Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <Target className="text-white" size={16} />
+              <div className="flex items-center space-x-3">
+                <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Target className="text-white" size={16} />
+                </div>
               </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                onClick={() => setLocation('/settings')}
+                data-testid="button-customize-goals"
+              >
+                <Settings size={16} className="mr-2" />
+                Personalizar
+              </Button>
             </div>
             <div className="space-y-3">
               <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
