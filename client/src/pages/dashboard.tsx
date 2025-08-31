@@ -152,7 +152,7 @@ export default function Dashboard() {
             </div>
             
             <Button 
-              onClick={() => setLocation('/settings')}
+              onClick={() => setLocation('/exams')}
               variant="outline" 
               size="sm" 
               className="w-full mt-4 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
