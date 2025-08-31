@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,8 @@ import { Link, useLocation } from "wouter";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [newTargetScore, setNewTargetScore] = useState(mockUserData.targetScore);
   const { 
     name, 
     averageScore, 
@@ -311,8 +314,19 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-semibold text-dark-blue">Progresso Geral</h4>
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <TrendingUp className="text-white" size={16} />
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditingTarget(true)}
+                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 p-1 h-8"
+                  data-testid="button-edit-target"
+                >
+                  <Edit3 size={12} />
+                </Button>
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <TrendingUp className="text-white" size={16} />
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-center mb-4">
@@ -356,10 +370,52 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-soft-gray">Meta: {targetScore}</span>
-                <span className="text-bright-blue font-semibold" data-testid="text-progress-percentage">{progressPercentage}%</span>
-              </div>
+              {editingTarget ? (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-soft-gray">Nova meta:</span>
+                    <input
+                      type="number"
+                      value={newTargetScore}
+                      onChange={(e) => setNewTargetScore(Number(e.target.value))}
+                      className="w-16 px-2 py-1 text-sm border border-bright-blue/30 rounded focus:outline-none focus:border-bright-blue"
+                      data-testid="input-target-score"
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        mockUserData.targetScore = newTargetScore;
+                        setEditingTarget(false);
+                      }}
+                      className="text-xs bg-bright-blue text-white hover:bg-bright-blue/90"
+                      data-testid="button-save-target"
+                    >
+                      Salvar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setNewTargetScore(targetScore);
+                        setEditingTarget(false);
+                      }}
+                      className="text-xs"
+                      data-testid="button-cancel-target"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-between text-sm">
+                  <span className="text-soft-gray">Meta: {targetScore}</span>
+                  <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal">
+                    {targetScore > averageScore ? `${targetScore - averageScore} pontos para a meta` : 'Meta atingida! 🎉'}
+                  </span>
+                </div>
+              )}
               <Progress value={progressPercentage} className="h-3 bg-gray-200">
                 <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
               </Progress>
