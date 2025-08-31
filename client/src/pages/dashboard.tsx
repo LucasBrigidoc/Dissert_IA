@@ -2,15 +2,50 @@ import { useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+interface ScoreData {
+  id: number;
+  date: string;
+  totalScore: number;
+  competence1?: number;
+  competence2?: number;
+  competence3?: number;
+  competence4?: number;
+  competence5?: number;
+  source: 'platform' | 'external';
+  examName?: string;
+}
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [editingTarget, setEditingTarget] = useState(false);
   const [newTargetScore, setNewTargetScore] = useState(mockUserData.targetScore);
+  const [showAddScore, setShowAddScore] = useState(false);
+  
+  const [scores, setScores] = useState<ScoreData[]>([
+    { id: 1, date: '2024-01-10', totalScore: 720, competence1: 160, competence2: 140, competence3: 180, competence4: 120, competence5: 120, source: 'platform', examName: 'Simulado 1' },
+    { id: 2, date: '2024-01-17', totalScore: 750, competence1: 170, competence2: 150, competence3: 160, competence4: 140, competence5: 130, source: 'platform', examName: 'Simulado 2' },
+    { id: 3, date: '2024-01-24', totalScore: 785, competence1: 160, competence2: 140, competence3: 180, competence4: 120, competence5: 185, source: 'platform', examName: 'Simulado 3' }
+  ]);
+  
+  const [newScore, setNewScore] = useState({
+    date: '',
+    totalScore: '',
+    competence1: '',
+    competence2: '',
+    competence3: '',
+    competence4: '',
+    competence5: '',
+    examName: ''
+  });
   const { 
     name, 
     averageScore, 
@@ -21,6 +56,41 @@ export default function Dashboard() {
     progressPercentage, 
     nextExam 
   } = mockUserData;
+
+  const handleAddScore = () => {
+    if (newScore.date && newScore.totalScore) {
+      const score: ScoreData = {
+        id: Date.now(),
+        date: newScore.date,
+        totalScore: Number(newScore.totalScore),
+        competence1: newScore.competence1 ? Number(newScore.competence1) : undefined,
+        competence2: newScore.competence2 ? Number(newScore.competence2) : undefined,
+        competence3: newScore.competence3 ? Number(newScore.competence3) : undefined,
+        competence4: newScore.competence4 ? Number(newScore.competence4) : undefined,
+        competence5: newScore.competence5 ? Number(newScore.competence5) : undefined,
+        source: 'external',
+        examName: newScore.examName || 'Nota Externa'
+      };
+      setScores([...scores, score]);
+      setNewScore({
+        date: '',
+        totalScore: '',
+        competence1: '',
+        competence2: '',
+        competence3: '',
+        competence4: '',
+        competence5: '',
+        examName: ''
+      });
+      setShowAddScore(false);
+    }
+  };
+
+  const chartData = scores.map(score => ({
+    date: new Date(score.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+    nota: score.totalScore,
+    nome: score.examName
+  })).sort((a, b) => new Date(scores.find(s => s.totalScore === a.nota)?.date || 0).getTime() - new Date(scores.find(s => s.totalScore === b.nota)?.date || 0).getTime());
 
   const handleLogout = () => {
     // In a real app, this would clear authentication tokens/session
@@ -472,28 +542,173 @@ export default function Dashboard() {
                 </div>
                 <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
               </div>
-              <Select defaultValue="30-days" data-testid="select-chart-period">
-                <SelectTrigger className="w-32 border-bright-blue/30">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7-days">Últimos 7 dias</SelectItem>
-                  <SelectItem value="30-days">Últimos 30 dias</SelectItem>
-                  <SelectItem value="6-months">Últimos 6 meses</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="h-48 flex items-center justify-center bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20" data-testid="chart-evolution">
-              <div className="text-center text-soft-gray">
-                <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="text-white" size={24} />
-                </div>
-                <div className="text-lg font-semibold text-bright-blue mb-2">Gráfico de Evolução</div>
-                <div className="text-sm text-dark-blue">Em breve: análise detalhada do seu progresso</div>
+              <div className="flex items-center space-x-2">
+                <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                      data-testid="button-add-score"
+                    >
+                      <Plus size={14} className="mr-1" />
+                      Adicionar Nota
+                    </Button>
+                  </DialogTrigger>
+                </Dialog>
+                <Select defaultValue="30-days" data-testid="select-chart-period">
+                  <SelectTrigger className="w-32 border-bright-blue/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7-days">Últimos 7 dias</SelectItem>
+                    <SelectItem value="30-days">Últimos 30 dias</SelectItem>
+                    <SelectItem value="6-months">Últimos 6 meses</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
+            <div className="h-48 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20 p-4" data-testid="chart-evolution">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#5087ff20" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#09072e"
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    stroke="#09072e"
+                    fontSize={12}
+                    domain={[400, 1000]}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                      border: '1px solid #5087ff30',
+                      borderRadius: '8px',
+                      fontSize: '12px'
+                    }}
+                    formatter={(value: any, name: any, props: any) => [
+                      `${value} pontos`, 
+                      props.payload.nome
+                    ]}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="nota" 
+                    stroke="url(#lineGradient)" 
+                    strokeWidth={3}
+                    dot={{ fill: '#5087ff', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#09072e', strokeWidth: 2 }}
+                  />
+                  <defs>
+                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#5087ff" />
+                      <stop offset="100%" stopColor="#09072e" />
+                    </linearGradient>
+                  </defs>
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </LiquidGlassCard>
         </div>
+
+        {/* Add Score Dialog */}
+        <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-dark-blue flex items-center">
+                <Plus className="mr-2" size={20} />
+                Adicionar Nova Nota
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm text-dark-blue">Nome da Prova/Simulado</Label>
+                  <Input
+                    value={newScore.examName}
+                    onChange={(e) => setNewScore({...newScore, examName: e.target.value})}
+                    placeholder="Ex: Simulado ENEM"
+                    className="mt-1"
+                    data-testid="input-exam-name"
+                  />
+                </div>
+                
+                <div>
+                  <Label className="text-sm text-dark-blue">Data</Label>
+                  <Input
+                    type="date"
+                    value={newScore.date}
+                    onChange={(e) => setNewScore({...newScore, date: e.target.value})}
+                    className="mt-1"
+                    data-testid="input-score-date"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm text-dark-blue font-medium">Nota Total (obrigatório)</Label>
+                <Input
+                  type="number"
+                  value={newScore.totalScore}
+                  onChange={(e) => setNewScore({...newScore, totalScore: e.target.value})}
+                  placeholder="Ex: 850"
+                  className="mt-1"
+                  max="1000"
+                  min="0"
+                  data-testid="input-total-score"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-sm text-dark-blue font-medium mb-3 block">Pontuação por Competência (opcional)</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                  {[
+                    { key: 'competence1', label: 'Comp. 1', desc: 'Norma Culta' },
+                    { key: 'competence2', label: 'Comp. 2', desc: 'Compreensão' },
+                    { key: 'competence3', label: 'Comp. 3', desc: 'Argumentação' },
+                    { key: 'competence4', label: 'Comp. 4', desc: 'Coesão' },
+                    { key: 'competence5', label: 'Comp. 5', desc: 'Proposta' }
+                  ].map((comp) => (
+                    <div key={comp.key}>
+                      <Label className="text-xs text-soft-gray">{comp.label}</Label>
+                      <Input
+                        type="number"
+                        value={newScore[comp.key as keyof typeof newScore]}
+                        onChange={(e) => setNewScore({...newScore, [comp.key]: e.target.value})}
+                        placeholder="0-200"
+                        className="mt-1 text-sm"
+                        max="200"
+                        min="0"
+                        data-testid={`input-${comp.key}`}
+                      />
+                      <div className="text-xs text-soft-gray mt-1">{comp.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  onClick={handleAddScore}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 flex-1"
+                  data-testid="button-save-score"
+                >
+                  Salvar Nota
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAddScore(false)}
+                  data-testid="button-cancel-score"
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
 
         
