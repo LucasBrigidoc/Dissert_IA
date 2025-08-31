@@ -8,16 +8,9 @@ import { useState } from "react";
 
 export default function SettingsPage() {
   const [, setLocation] = useLocation();
-  const [isEditingGoals, setIsEditingGoals] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   
   // Mock data for user settings
-  const [userGoals, setUserGoals] = useState({
-    weeklyEssays: 2,
-    weeklyStudyHours: 10,
-    targetScore: 900
-  });
-  
   const [userProfile, setUserProfile] = useState({
     name: "Lucas Silva",
     email: "lucas.silva@email.com",
@@ -25,21 +18,10 @@ export default function SettingsPage() {
     school: "Colégio Exemplo"
   });
 
-  const [tempGoals, setTempGoals] = useState(userGoals);
   const [tempProfile, setTempProfile] = useState(userProfile);
 
   const handleLogout = () => {
     setLocation("/");
-  };
-
-  const handleSaveGoals = () => {
-    setUserGoals(tempGoals);
-    setIsEditingGoals(false);
-  };
-
-  const handleCancelGoals = () => {
-    setTempGoals(userGoals);
-    setIsEditingGoals(false);
   };
 
   const handleSaveProfile = () => {
@@ -119,8 +101,8 @@ export default function SettingsPage() {
           <p className="text-soft-gray">Gerencie suas metas, perfil e informações da conta</p>
         </div>
 
-        {/* First Row: Profile + Goals */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        {/* Profile Section */}
+        <div className="grid gap-6">
           
           {/* Profile Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-profile">
@@ -230,106 +212,7 @@ export default function SettingsPage() {
             </div>
           </LiquidGlassCard>
 
-          {/* Goals Management Card */}
-          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-goals-management">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Target className="text-white" size={20} />
-                </div>
-                <h3 className="text-xl font-semibold text-dark-blue">Gerenciar Metas</h3>
-              </div>
-              {!isEditingGoals ? (
-                <Button
-                  onClick={() => setIsEditingGoals(true)}
-                  variant="outline"
-                  size="sm"
-                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-                  data-testid="button-edit-goals"
-                >
-                  <Edit3 size={16} className="mr-2" />
-                  Editar
-                </Button>
-              ) : (
-                <div className="flex space-x-2">
-                  <Button
-                    onClick={handleSaveGoals}
-                    size="sm"
-                    className="bg-bright-blue text-white hover:bg-bright-blue/90"
-                    data-testid="button-save-goals"
-                  >
-                    <Save size={16} className="mr-2" />
-                    Salvar
-                  </Button>
-                  <Button
-                    onClick={handleCancelGoals}
-                    variant="outline"
-                    size="sm"
-                    className="text-soft-gray border-soft-gray/30"
-                    data-testid="button-cancel-goals"
-                  >
-                    <X size={16} />
-                  </Button>
-                </div>
-              )}
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="weeklyEssays" className="text-sm font-medium text-dark-blue">Redações por Semana</Label>
-                {isEditingGoals ? (
-                  <Input
-                    id="weeklyEssays"
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={tempGoals.weeklyEssays}
-                    onChange={(e) => setTempGoals({...tempGoals, weeklyEssays: parseInt(e.target.value)})}
-                    className="mt-1"
-                    data-testid="input-weekly-essays"
-                  />
-                ) : (
-                  <p className="mt-1 text-dark-blue" data-testid="text-weekly-essays">{userGoals.weeklyEssays} redações</p>
-                )}
-              </div>
-              
-              <div>
-                <Label htmlFor="weeklyStudyHours" className="text-sm font-medium text-dark-blue">Horas de Estudo por Semana</Label>
-                {isEditingGoals ? (
-                  <Input
-                    id="weeklyStudyHours"
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={tempGoals.weeklyStudyHours}
-                    onChange={(e) => setTempGoals({...tempGoals, weeklyStudyHours: parseInt(e.target.value)})}
-                    className="mt-1"
-                    data-testid="input-weekly-study-hours"
-                  />
-                ) : (
-                  <p className="mt-1 text-dark-blue" data-testid="text-weekly-study-hours">{userGoals.weeklyStudyHours} horas</p>
-                )}
-              </div>
-              
-              <div>
-                <Label htmlFor="targetScore" className="text-sm font-medium text-dark-blue">Meta de Nota</Label>
-                {isEditingGoals ? (
-                  <Input
-                    id="targetScore"
-                    type="number"
-                    min="200"
-                    max="1000"
-                    value={tempGoals.targetScore}
-                    onChange={(e) => setTempGoals({...tempGoals, targetScore: parseInt(e.target.value)})}
-                    className="mt-1"
-                    data-testid="input-target-score"
-                  />
-                ) : (
-                  <p className="mt-1 text-dark-blue" data-testid="text-target-score">{userGoals.targetScore} pontos</p>
-                )}
-              </div>
-            </div>
-          </LiquidGlassCard>
+          
         </div>
 
         {/* Second Row: Exam Schedule - Full Width */}
