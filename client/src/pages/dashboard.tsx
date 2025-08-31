@@ -240,6 +240,38 @@ export default function Dashboard() {
                 </div>
                 <span className="text-sm font-bold text-soft-gray" data-testid="text-score-goal">900 pontos</span>
               </div>
+              
+              {/* Novas Configurações */}
+              <div className="pt-2 border-t border-bright-blue/10">
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/15">
+                  <div className="flex items-center">
+                    <Calendar className="text-bright-blue mr-3" size={18} />
+                    <span className="text-sm font-medium text-dark-blue">Próxima Prova Principal</span>
+                  </div>
+                  <span className="text-sm font-bold text-bright-blue" data-testid="text-next-main-exam">ENEM - 3 Nov</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded-lg border border-dark-blue/15 mt-2">
+                  <div className="flex items-center">
+                    <GraduationCap className="text-dark-blue mr-3" size={18} />
+                    <span className="text-sm font-medium text-dark-blue">Tipo de Preparação</span>
+                  </div>
+                  <span className="text-sm font-bold text-dark-blue" data-testid="text-prep-type">Vestibular/ENEM</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded-lg border border-soft-gray/15 mt-2">
+                  <div className="flex items-center">
+                    <Timer className="text-soft-gray mr-3" size={18} />
+                    <span className="text-sm font-medium text-dark-blue">Intensidade de Estudos</span>
+                  </div>
+                  <span className="text-sm font-bold text-soft-gray" data-testid="text-study-intensity">Moderada</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/15 mt-2">
+                  <div className="flex items-center">
+                    <Book className="text-bright-blue mr-3" size={18} />
+                    <span className="text-sm font-medium text-dark-blue">Foco Temático</span>
+                  </div>
+                  <span className="text-sm font-bold text-bright-blue" data-testid="text-theme-focus">Argumentação</span>
+                </div>
+              </div>
             </div>
           </LiquidGlassCard>
 
