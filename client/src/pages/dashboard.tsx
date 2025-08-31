@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -192,10 +192,10 @@ export default function Dashboard() {
               variant="outline" 
               size="sm" 
               className="w-full mt-4 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-              onClick={() => setLocation('/settings')}
+              onClick={() => setLocation('/goals')}
               data-testid="button-customize-goals"
             >
-              <Settings size={16} className="mr-2" />
+              <Edit3 size={16} className="mr-2" />
               Personalizar
             </Button>
           </LiquidGlassCard>

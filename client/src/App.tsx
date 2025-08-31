@@ -16,6 +16,7 @@ import Repertorio from "@/pages/repertorio";
 import Simulador from "@/pages/simulador";
 import Estilo from "@/pages/estilo";
 import Settings from "@/pages/settings";
+import Goals from "@/pages/goals";
 import Functionalities from "@/pages/functionalities";
 import Newsletter from "@/pages/newsletter";
 
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/simulador" component={Simulador} />
       <Route path="/estilo" component={Estilo} />
       <Route path="/settings" component={Settings} />
+      <Route path="/goals" component={Goals} />
       <Route path="/functionalities" component={Functionalities} />
       <Route path="/newsletter" component={Newsletter} />
       <Route component={NotFound} />
