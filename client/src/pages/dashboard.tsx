@@ -542,30 +542,16 @@ export default function Dashboard() {
                 </div>
                 <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
               </div>
-              <div className="flex items-center space-x-2">
-                <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
-                  <DialogTrigger asChild>
-                    <Button
-                      size="sm"
-                      className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
-                      data-testid="button-add-score"
-                    >
-                      <Plus size={14} className="mr-1" />
-                      Adicionar Nota
-                    </Button>
-                  </DialogTrigger>
-                </Dialog>
-                <Select defaultValue="30-days" data-testid="select-chart-period">
-                  <SelectTrigger className="w-32 border-bright-blue/30">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="7-days">Últimos 7 dias</SelectItem>
-                    <SelectItem value="30-days">Últimos 30 dias</SelectItem>
-                    <SelectItem value="6-months">Últimos 6 meses</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select defaultValue="30-days" data-testid="select-chart-period">
+                <SelectTrigger className="w-32 border-bright-blue/30">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7-days">Últimos 7 dias</SelectItem>
+                  <SelectItem value="30-days">Últimos 30 dias</SelectItem>
+                  <SelectItem value="6-months">Últimos 6 meses</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="h-48 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20 p-4" data-testid="chart-evolution">
               <ResponsiveContainer width="100%" height="100%">
@@ -609,6 +595,22 @@ export default function Dashboard() {
                   </defs>
                 </LineChart>
               </ResponsiveContainer>
+            </div>
+            
+            {/* Add Score Button */}
+            <div className="mt-4 flex justify-center">
+              <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                    data-testid="button-add-score"
+                  >
+                    <Plus size={14} className="mr-1" />
+                    Adicionar Nota
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
             </div>
           </LiquidGlassCard>
         </div>
