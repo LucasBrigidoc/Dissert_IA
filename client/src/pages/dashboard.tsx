@@ -198,15 +198,6 @@ export default function Dashboard() {
                   </div>
                   <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar (ENEM)</h4>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-xs px-2 py-1"
-                  data-testid="button-customize-improvements"
-                >
-                  <Settings size={12} className="mr-1" />
-                  Personalizar
-                </Button>
               </div>
               
               {/* Competências em linhas horizontais */}
