@@ -335,7 +335,80 @@ export default function Dashboard() {
         </div>
 
 
-        {/* Third Row: Newsletter - Full Width */}
+        {/* Third Row: Cronograma de Estudos - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-study-schedule">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="font-semibold text-dark-blue text-lg">Cronograma de Estudos Personalizado</h4>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Timer className="text-white" size={16} />
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+                data-testid="button-customize-schedule"
+              >
+                Personalizar
+              </Button>
+            </div>
+          </div>
+          <div className="grid lg:grid-cols-7 gap-4">
+            {/* Dias da Semana */}
+            {[
+              { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: '2h' },
+              { day: 'TER', activities: ['Redação Completa'], hours: '3h' },
+              { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: '1.5h' },
+              { day: 'QUI', activities: ['Simulado'], hours: '2.5h' },
+              { day: 'SEX', activities: ['Estilo', 'Correções'], hours: '2h' },
+              { day: 'SAB', activities: ['Redação Completa'], hours: '3h' },
+              { day: 'DOM', activities: ['Descanso'], hours: '-' }
+            ].map((schedule, index) => (
+              <div key={index} className={`p-4 rounded-lg border ${
+                schedule.day === 'DOM' 
+                  ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
+                  : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+              }`}>
+                <div className="text-center mb-3">
+                  <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
+                  <div className={`text-xs font-medium ${
+                    schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
+                  }`}>
+                    {schedule.hours}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {schedule.activities.map((activity, i) => (
+                    <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
+                      schedule.day === 'DOM' 
+                        ? 'bg-soft-gray/20 text-soft-gray' 
+                        : 'bg-white/50 text-dark-blue'
+                    }`}>
+                      {activity}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Target className="text-bright-blue mr-3" size={18} />
+                <div>
+                  <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
+                  <div className="text-xs text-soft-gray">Baseado na sua próxima prova</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold text-bright-blue">14h</div>
+                <div className="text-xs text-soft-gray">por semana</div>
+              </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
+        {/* Fourth Row: Newsletter - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
@@ -360,7 +433,7 @@ export default function Dashboard() {
           </div>
         </LiquidGlassCard>
 
-        {/* Fourth Row: System Features - Full Width */}
+        {/* Fifth Row: System Features - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-6">
             <h4 className="font-semibold text-dark-blue text-lg">Acesso rapido das principais Funcionalidades</h4>
