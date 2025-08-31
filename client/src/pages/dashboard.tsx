@@ -335,7 +335,92 @@ export default function Dashboard() {
         </div>
 
 
-        {/* Third Row: Cronograma de Estudos - Full Width */}
+        {/* Third Row: Próximas Provas - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-upcoming-exams">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center">
+                <Calendar className="text-white" size={20} />
+              </div>
+              <h4 className="font-semibold text-dark-blue text-lg">Próximas Provas Configuradas</h4>
+            </div>
+            <Button 
+              onClick={() => setLocation('/settings')}
+              variant="outline" 
+              size="sm" 
+              className="text-dark-blue border-dark-blue/30 hover:bg-dark-blue/10"
+              data-testid="button-manage-exams"
+            >
+              <Settings size={16} className="mr-2" />
+              Gerenciar
+            </Button>
+          </div>
+          <div className="grid lg:grid-cols-4 gap-4">
+            {/* ENEM 2024 - Dia 1 */}
+            <div className="p-4 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+              <div className="flex items-center mb-3">
+                <Calendar className="text-bright-blue mr-3" size={20} />
+                <div className="text-sm font-bold text-dark-blue">ENEM 2024 - 1º Dia</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs text-soft-gray">3 de novembro de 2024</div>
+                <div className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Linguagens e Humanas</div>
+                <div className="text-xs font-bold text-bright-blue bg-bright-blue/10 px-2 py-1 rounded" data-testid="countdown-exam1-detailed">
+                  ⏰ 12 dias restantes
+                </div>
+              </div>
+            </div>
+
+            {/* ENEM 2024 - Dia 2 */}
+            <div className="p-4 bg-gradient-to-br from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
+              <div className="flex items-center mb-3">
+                <Calendar className="text-dark-blue mr-3" size={20} />
+                <div className="text-sm font-bold text-dark-blue">ENEM 2024 - 2º Dia</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs text-soft-gray">10 de novembro de 2024</div>
+                <div className="text-xs bg-dark-blue/20 text-dark-blue px-2 py-1 rounded">Exatas e Redação</div>
+                <div className="text-xs font-bold text-dark-blue bg-dark-blue/10 px-2 py-1 rounded" data-testid="countdown-exam2-detailed">
+                  ⏰ 19 dias restantes
+                </div>
+              </div>
+            </div>
+
+            {/* Simulado Preparatório */}
+            <div className="p-4 bg-gradient-to-br from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
+              <div className="flex items-center mb-3">
+                <GraduationCap className="text-soft-gray mr-3" size={20} />
+                <div className="text-sm font-bold text-dark-blue">Simulado Preparatório</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs text-soft-gray">28 de outubro de 2024</div>
+                <div className="text-xs bg-soft-gray/20 text-soft-gray px-2 py-1 rounded">Teste Completo</div>
+                <div className="text-xs font-bold text-soft-gray bg-soft-gray/10 px-2 py-1 rounded" data-testid="countdown-simulado">
+                  ⏰ 7 dias restantes
+                </div>
+              </div>
+            </div>
+
+            {/* Adicionar Nova Prova */}
+            <div className="p-4 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/30 border-dashed">
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <Plus className="text-bright-blue mb-2" size={24} />
+                <div className="text-sm font-medium text-dark-blue mb-1">Adicionar Prova</div>
+                <Button 
+                  onClick={() => setLocation('/settings')}
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-bright-blue hover:bg-bright-blue/10 p-2"
+                  data-testid="button-add-new-exam"
+                >
+                  <span className="text-xs">+ Nova Prova</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
+        {/* Fourth Row: Cronograma de Estudos - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-study-schedule">
           <div className="flex items-center justify-between mb-6">
             <h4 className="font-semibold text-dark-blue text-lg">Cronograma de Estudos Personalizado</h4>
