@@ -190,131 +190,112 @@ export default function Dashboard() {
 
           {/* Improvement Points - Taking 2 columns */}
           <div className="lg:col-span-2">
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20 h-full" data-testid="card-improvement-points">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <Target className="text-white" size={16} />
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-improvement-points">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <Target className="text-white" size={12} />
                   </div>
-                  <h4 className="font-semibold text-dark-blue">Pontos a Melhorar (ENEM)</h4>
+                  <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar (ENEM)</h4>
                 </div>
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-xs px-2 py-1"
                   data-testid="button-customize-improvements"
                 >
-                  <Settings size={16} className="mr-2" />
+                  <Settings size={12} className="mr-1" />
                   Personalizar
                 </Button>
               </div>
-              <div className="space-y-3">
-                {/* Primeira linha: Competências 1, 2, 3 */}
-                <div className="grid grid-cols-3 gap-3">
-                  {/* Competência 1 */}
-                  <div className="p-3 bg-gradient-to-br from-red-50 to-red-100 rounded-lg border border-red-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center mr-2">
-                          <span className="text-white text-xs font-bold">1</span>
-                        </div>
-                        <span className="text-xs font-medium text-dark-blue">Norma Culta</span>
-                      </div>
-                      <AlertTriangle className="text-red-500" size={14} />
+              
+              {/* Competências em linhas horizontais */}
+              <div className="space-y-1">
+                {/* Competência 1 */}
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-red-50 to-red-100 rounded border border-red-200">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">1</span>
                     </div>
-                    <div className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded mb-1">
-                      160/200
-                    </div>
-                    <div className="text-xs text-soft-gray leading-tight">Concordância e regência</div>
+                    <span className="text-xs font-medium text-dark-blue">Norma Culta</span>
+                    <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">160/200</span>
                   </div>
-
-                  {/* Competência 2 */}
-                  <div className="p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center mr-2">
-                          <span className="text-white text-xs font-bold">2</span>
-                        </div>
-                        <span className="text-xs font-medium text-dark-blue">Compreensão</span>
-                      </div>
-                      <AlertTriangle className="text-yellow-500" size={14} />
-                    </div>
-                    <div className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded mb-1">
-                      140/200
-                    </div>
-                    <div className="text-xs text-soft-gray leading-tight">Interpretação textual</div>
-                  </div>
-
-                  {/* Competência 3 */}
-                  <div className="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                          <span className="text-white text-xs font-bold">3</span>
-                        </div>
-                        <span className="text-xs font-medium text-dark-blue">Argumentação</span>
-                      </div>
-                      <CheckCircle2 className="text-blue-500" size={14} />
-                    </div>
-                    <div className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded mb-1">
-                      180/200
-                    </div>
-                    <div className="text-xs text-soft-gray leading-tight">Diversificar argumentos</div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-soft-gray">Concordância e regência</span>
+                    <AlertTriangle className="text-red-500" size={12} />
                   </div>
                 </div>
 
-                {/* Segunda linha: Competências 4 e 5 */}
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Competência 4 */}
-                  <div className="p-3 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center mr-2">
-                          <span className="text-white text-xs font-bold">4</span>
-                        </div>
-                        <span className="text-xs font-medium text-dark-blue">Coesão</span>
-                      </div>
-                      <AlertTriangle className="text-orange-500" size={14} />
+                {/* Competência 2 */}
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded border border-yellow-200">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">2</span>
                     </div>
-                    <div className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded mb-1">
-                      120/200
-                    </div>
-                    <div className="text-xs text-soft-gray leading-tight">Conectivos e coesão textual</div>
+                    <span className="text-xs font-medium text-dark-blue">Compreensão</span>
+                    <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded">140/200</span>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-soft-gray">Interpretação textual</span>
+                    <AlertTriangle className="text-yellow-500" size={12} />
+                  </div>
+                </div>
 
-                  {/* Competência 5 */}
-                  <div className="p-3 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                          <span className="text-white text-xs font-bold">5</span>
-                        </div>
-                        <span className="text-xs font-medium text-dark-blue">Proposta</span>
-                      </div>
-                      <CheckCircle2 className="text-green-500" size={14} />
+                {/* Competência 3 */}
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-blue-100 rounded border border-blue-200">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">3</span>
                     </div>
-                    <div className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded mb-1">
-                      170/200
+                    <span className="text-xs font-medium text-dark-blue">Argumentação</span>
+                    <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">180/200</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-soft-gray">Diversificar argumentos</span>
+                    <CheckCircle2 className="text-blue-500" size={12} />
+                  </div>
+                </div>
+
+                {/* Competência 4 */}
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-orange-50 to-orange-100 rounded border border-orange-200">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">4</span>
                     </div>
-                    <div className="text-xs text-soft-gray leading-tight">Detalhar agentes responsáveis</div>
+                    <span className="text-xs font-medium text-dark-blue">Coesão</span>
+                    <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">120/200</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-soft-gray">Conectivos e coesão</span>
+                    <AlertTriangle className="text-orange-500" size={12} />
+                  </div>
+                </div>
+
+                {/* Competência 5 */}
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-green-50 to-green-100 rounded border border-green-200">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">5</span>
+                    </div>
+                    <span className="text-xs font-medium text-dark-blue">Proposta</span>
+                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">170/200</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-soft-gray">Detalhar agentes</span>
+                    <CheckCircle2 className="text-green-500" size={12} />
                   </div>
                 </div>
               </div>
               
-              {/* Summary compacto */}
-              <div className="mt-3 p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Lightbulb className="text-bright-blue mr-2" size={14} />
-                    <div>
-                      <div className="text-xs font-medium text-dark-blue">Foco: Coesão textual</div>
-                      <div className="text-xs text-soft-gray">Prioridade: Competência 4</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-bright-blue">154</div>
-                    <div className="text-xs text-soft-gray">Média geral</div>
-                  </div>
+              {/* Summary em linha */}
+              <div className="mt-2 flex items-center justify-between p-2 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
+                <div className="flex items-center space-x-2">
+                  <Lightbulb className="text-bright-blue" size={12} />
+                  <span className="text-xs font-medium text-dark-blue">Foco: Coesão (Comp. 4)</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs text-soft-gray">Média:</span>
+                  <span className="text-sm font-bold text-bright-blue">154</span>
                 </div>
               </div>
             </LiquidGlassCard>
