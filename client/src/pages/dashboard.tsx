@@ -173,7 +173,7 @@ export default function Dashboard() {
             
             <div className="flex items-center space-x-4">
               <button className="text-soft-gray hover:text-bright-blue transition-colors" data-testid="button-notifications">
-                <Bell size={20} />
+                
               </button>
               <Button
                 onClick={handleLogout}
@@ -492,47 +492,6 @@ export default function Dashboard() {
             </div>
           </LiquidGlassCard>
 
-          {/* Simulator Time Card */}
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
-              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                <Clock className="text-white" size={16} />
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="text-center p-4 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-total-time">
-                  2h 15min
-                </div>
-                <div className="text-xs text-soft-gray font-medium">Tempo Total</div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
-                  <div className="flex items-center">
-                    <Lightbulb className="text-bright-blue mr-2" size={14} />
-                    <span className="text-sm text-dark-blue">Brainstorm</span>
-                  </div>
-                  <span className="text-sm font-medium text-bright-blue" data-testid="text-brainstorm-time">25min</span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
-                  <div className="flex items-center">
-                    <MessageCircle className="text-dark-blue mr-2" size={14} />
-                    <span className="text-sm text-dark-blue">Rascunho</span>
-                  </div>
-                  <span className="text-sm font-medium text-dark-blue" data-testid="text-draft-time">1h 20min</span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-soft-gray/10">
-                  <div className="flex items-center">
-                    <CheckCircle2 className="text-soft-gray mr-2" size={14} />
-                    <span className="text-sm text-dark-blue">A limpo</span>
-                  </div>
-                  <span className="text-sm font-medium text-soft-gray" data-testid="text-final-time">30min</span>
-                </div>
-              </div>
-            </div>
-          </LiquidGlassCard>
-
           {/* Evolution Chart */}
           <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-evolution-chart">
             <div className="flex items-center justify-between mb-6">
@@ -611,6 +570,47 @@ export default function Dashboard() {
                   </Button>
                 </DialogTrigger>
               </Dialog>
+            </div>
+          </LiquidGlassCard>
+
+          {/* Simulator Time Card */}
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
+              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                <Clock className="text-white" size={16} />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="text-center p-4 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-total-time">
+                  2h 15min
+                </div>
+                <div className="text-xs text-soft-gray font-medium">Tempo Total</div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
+                  <div className="flex items-center">
+                    <Lightbulb className="text-bright-blue mr-2" size={14} />
+                    <span className="text-sm text-dark-blue">Brainstorm</span>
+                  </div>
+                  <span className="text-sm font-medium text-bright-blue" data-testid="text-brainstorm-time">25min</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
+                  <div className="flex items-center">
+                    <MessageCircle className="text-dark-blue mr-2" size={14} />
+                    <span className="text-sm text-dark-blue">Rascunho</span>
+                  </div>
+                  <span className="text-sm font-medium text-dark-blue" data-testid="text-draft-time">1h 20min</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-soft-gray/10">
+                  <div className="flex items-center">
+                    <CheckCircle2 className="text-soft-gray mr-2" size={14} />
+                    <span className="text-sm text-dark-blue">A limpo</span>
+                  </div>
+                  <span className="text-sm font-medium text-soft-gray" data-testid="text-final-time">30min</span>
+                </div>
+              </div>
             </div>
           </LiquidGlassCard>
         </div>
