@@ -332,7 +332,138 @@ export default function SettingsPage() {
           </LiquidGlassCard>
         </div>
 
-        {/* Second Row: Account Status + Plan */}
+        {/* Second Row: Exam Schedule - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-exam-schedule">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center">
+                <Calendar className="text-white" size={20} />
+              </div>
+              <h3 className="text-xl font-semibold text-dark-blue">Cronograma de Provas</h3>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-dark-blue border-dark-blue/30 hover:bg-dark-blue/10"
+              data-testid="button-manage-schedule"
+            >
+              <Plus size={16} className="mr-2" />
+              Adicionar Prova
+            </Button>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-4">
+            <div className="flex items-center p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+              <Calendar className="text-bright-blue mr-4" size={24} />
+              <div className="flex-1">
+                <div className="text-lg font-semibold text-dark-blue">ENEM 2024 - 1º Dia</div>
+                <div className="text-sm text-soft-gray mb-2">3 de novembro • Linguagens e Humanas</div>
+                <div className="text-xs font-bold text-bright-blue bg-bright-blue/10 px-2 py-1 rounded inline-block" data-testid="countdown-exam1">
+                  12 dias restantes
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center p-4 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
+              <Calendar className="text-dark-blue mr-4" size={24} />
+              <div className="flex-1">
+                <div className="text-lg font-semibold text-dark-blue">ENEM 2024 - 2º Dia</div>
+                <div className="text-sm text-soft-gray mb-2">10 de novembro • Exatas e Redação</div>
+                <div className="text-xs font-bold text-dark-blue bg-dark-blue/10 px-2 py-1 rounded inline-block" data-testid="countdown-exam2">
+                  19 dias restantes
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center p-4 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
+              <Plus className="text-soft-gray mr-4" size={24} />
+              <div className="flex-1">
+                <div className="text-lg font-semibold text-soft-gray">Adicionar Nova Prova</div>
+                <div className="text-sm text-soft-gray mb-2">Configure sua próxima prova</div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 p-0"
+                  data-testid="button-add-exam"
+                >
+                  <span className="text-sm font-medium">+ Adicionar</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
+        {/* Third Row: Study Schedule - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-study-schedule">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Timer className="text-white" size={20} />
+              </div>
+              <h3 className="text-xl font-semibold text-dark-blue">Cronograma de Estudos Personalizado</h3>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+              data-testid="button-customize-schedule"
+            >
+              <Edit3 size={16} className="mr-2" />
+              Personalizar
+            </Button>
+          </div>
+          <div className="grid lg:grid-cols-7 gap-4">
+            {[
+              { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: '2h' },
+              { day: 'TER', activities: ['Redação Completa'], hours: '3h' },
+              { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: '1.5h' },
+              { day: 'QUI', activities: ['Simulado'], hours: '2.5h' },
+              { day: 'SEX', activities: ['Estilo', 'Correções'], hours: '2h' },
+              { day: 'SAB', activities: ['Redação Completa'], hours: '3h' },
+              { day: 'DOM', activities: ['Descanso'], hours: '-' }
+            ].map((schedule, index) => (
+              <div key={index} className={`p-4 rounded-lg border ${
+                schedule.day === 'DOM' 
+                  ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
+                  : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+              }`}>
+                <div className="text-center mb-3">
+                  <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
+                  <div className={`text-xs font-medium ${
+                    schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
+                  }`}>
+                    {schedule.hours}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {schedule.activities.map((activity, i) => (
+                    <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
+                      schedule.day === 'DOM' 
+                        ? 'bg-soft-gray/20 text-soft-gray' 
+                        : 'bg-white/50 text-dark-blue'
+                    }`}>
+                      {activity}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Target className="text-bright-blue mr-3" size={18} />
+                <div>
+                  <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
+                  <div className="text-xs text-soft-gray">Baseado na sua próxima prova</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold text-bright-blue">14h</div>
+                <div className="text-xs text-soft-gray">por semana</div>
+              </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
+        {/* Fourth Row: Account Status + Plan */}
         <div className="grid lg:grid-cols-2 gap-6">
           
           {/* Account Status Card */}
