@@ -153,9 +153,9 @@ export default function Dashboard() {
             
             <Button 
               onClick={() => setLocation('/settings')}
-              variant="ghost" 
+              variant="outline" 
               size="sm" 
-              className="w-full mt-3 text-bright-blue hover:bg-bright-blue/10"
+              className="w-full mt-4 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
               data-testid="button-view-all-exams"
             >
               Ver Todas as Provas
