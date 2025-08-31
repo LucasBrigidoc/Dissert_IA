@@ -124,95 +124,43 @@ export default function Dashboard() {
         
         {/* First Row: All Exams + Activity Stats + Goals */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          {/* All Exams Card - Taking 2 columns */}
-          <div className="lg:col-span-2">
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-all-exams">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <Calendar className="text-white" size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-dark-blue">Todas as Provas Configuradas</h3>
-                    <p className="text-sm text-soft-gray">Gerencie seu cronograma de estudos</p>
-                  </div>
-                </div>
-                <Button 
-                  onClick={() => setLocation('/settings')}
-                  variant="outline" 
-                  size="sm" 
-                  className="text-dark-blue border-dark-blue/30 hover:bg-dark-blue/10"
-                  data-testid="button-manage-all-exams"
-                >
-                  <Settings size={16} className="mr-2" />
-                  Gerenciar
-                </Button>
+          {/* Welcome + Quick Exam Info Card */}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome-exams">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Calendar className="text-white" size={16} />
               </div>
-              <div className="grid lg:grid-cols-3 gap-4">
-                {/* Simulado Preparatório */}
-                <div className="p-4 bg-gradient-to-br from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
-                  <div className="flex items-center mb-3">
-                    <GraduationCap className="text-soft-gray mr-3" size={18} />
-                    <div className="text-sm font-bold text-dark-blue">Simulado Preparatório</div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-xs text-soft-gray font-medium">📅 28 de outubro de 2024</div>
-                    <div className="text-xs bg-soft-gray/20 text-soft-gray px-2 py-1 rounded">Teste Completo ENEM</div>
-                    <div className="text-xs font-bold text-soft-gray bg-soft-gray/10 px-2 py-1 rounded" data-testid="countdown-simulado-detailed">
-                      ⏰ 7 dias restantes
-                    </div>
-                  </div>
-                </div>
-
-                {/* ENEM 2024 - Dia 1 */}
-                <div className="p-4 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                  <div className="flex items-center mb-3">
-                    <Calendar className="text-bright-blue mr-3" size={18} />
-                    <div className="text-sm font-bold text-dark-blue">ENEM 2024 - 1º Dia</div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-xs text-soft-gray font-medium">📅 3 de novembro de 2024</div>
-                    <div className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Linguagens e Humanas</div>
-                    <div className="text-xs font-bold text-bright-blue bg-bright-blue/10 px-2 py-1 rounded" data-testid="countdown-enem1-detailed">
-                      ⏰ 12 dias restantes
-                    </div>
-                  </div>
-                </div>
-
-                {/* ENEM 2024 - Dia 2 */}
-                <div className="p-4 bg-gradient-to-br from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
-                  <div className="flex items-center mb-3">
-                    <Calendar className="text-dark-blue mr-3" size={18} />
-                    <div className="text-sm font-bold text-dark-blue">ENEM 2024 - 2º Dia</div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-xs text-soft-gray font-medium">📅 10 de novembro de 2024</div>
-                    <div className="text-xs bg-dark-blue/20 text-dark-blue px-2 py-1 rounded">Exatas e Redação</div>
-                    <div className="text-xs font-bold text-dark-blue bg-dark-blue/10 px-2 py-1 rounded" data-testid="countdown-enem2-detailed">
-                      ⏰ 19 dias restantes
-                    </div>
-                  </div>
-                </div>
+            </div>
+            <p className="text-sm text-soft-gray mb-4">Continue sua jornada rumo à nota 1000!</p>
+            
+            {/* Próximas Provas Resumo */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-dark-blue mb-2">Próximas Provas:</div>
+              <div className="flex items-center justify-between p-2 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded border border-soft-gray/20">
+                <span className="text-xs text-dark-blue font-medium">Simulado</span>
+                <span className="text-xs text-soft-gray">28/out</span>
               </div>
-              
-              {/* Resumo das Próximas Provas */}
-              <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Target className="text-bright-blue mr-3" size={18} />
-                    <div>
-                      <div className="text-sm font-medium text-dark-blue">Próxima Prova</div>
-                      <div className="text-xs text-soft-gray">Simulado Preparatório em 7 dias</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-bright-blue">{nextExam}</div>
-                    <div className="text-xs text-soft-gray">3 provas configuradas</div>
-                  </div>
-                </div>
+              <div className="flex items-center justify-between p-2 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
+                <span className="text-xs text-dark-blue font-medium">ENEM 1º</span>
+                <span className="text-xs text-bright-blue">3/nov</span>
               </div>
-            </LiquidGlassCard>
-          </div>
+              <div className="flex items-center justify-between p-2 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded border border-dark-blue/20">
+                <span className="text-xs text-dark-blue font-medium">ENEM 2º</span>
+                <span className="text-xs text-dark-blue">10/nov</span>
+              </div>
+            </div>
+            
+            <Button 
+              onClick={() => setLocation('/settings')}
+              variant="ghost" 
+              size="sm" 
+              className="w-full mt-3 text-bright-blue hover:bg-bright-blue/10"
+              data-testid="button-view-all-exams"
+            >
+              Ver Todas as Provas
+            </Button>
+          </LiquidGlassCard>
 
           {/* Goals Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
