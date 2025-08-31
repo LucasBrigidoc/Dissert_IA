@@ -171,16 +171,6 @@ export default function Dashboard() {
                   <Target className="text-white" size={16} />
                 </div>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-                onClick={() => setLocation('/settings')}
-                data-testid="button-customize-goals"
-              >
-                <Settings size={16} className="mr-2" />
-                Personalizar
-              </Button>
             </div>
             <div className="space-y-3">
               <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
@@ -198,6 +188,16 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full mt-4 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+              onClick={() => setLocation('/settings')}
+              data-testid="button-customize-goals"
+            >
+              <Settings size={16} className="mr-2" />
+              Personalizar
+            </Button>
           </LiquidGlassCard>
 
           {/* Improvement Points - Taking 2 columns */}
