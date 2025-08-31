@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -188,33 +188,132 @@ export default function Dashboard() {
             </div>
           </LiquidGlassCard>
 
-          {/* Activity Stats - Taking 2 columns */}
+          {/* Improvement Points - Taking 2 columns */}
           <div className="lg:col-span-2">
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20 h-full" data-testid="card-activity-stats">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20 h-full" data-testid="card-improvement-points">
               <div className="flex items-center justify-between mb-6">
-                <h4 className="font-semibold text-dark-blue">Estatísticas de Atividade</h4>
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Book className="text-white" size={16} />
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <Target className="text-white" size={16} />
+                  </div>
+                  <h4 className="font-semibold text-dark-blue">Pontos a Melhorar (ENEM)</h4>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                  data-testid="button-customize-improvements"
+                >
+                  <Settings size={16} className="mr-2" />
+                  Personalizar
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Competência 1 */}
+                <div className="p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-lg border border-red-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white text-xs font-bold">1</span>
+                      </div>
+                      <span className="text-sm font-medium text-dark-blue">Norma Culta</span>
+                    </div>
+                    <AlertTriangle className="text-red-500" size={16} />
+                  </div>
+                  <div className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded mb-2">
+                    Nota média: 160/200
+                  </div>
+                  <div className="text-xs text-soft-gray">Melhorar: concordância verbal e regência</div>
+                </div>
+
+                {/* Competência 2 */}
+                <div className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white text-xs font-bold">2</span>
+                      </div>
+                      <span className="text-sm font-medium text-dark-blue">Compreensão</span>
+                    </div>
+                    <AlertTriangle className="text-yellow-500" size={16} />
+                  </div>
+                  <div className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded mb-2">
+                    Nota média: 140/200
+                  </div>
+                  <div className="text-xs text-soft-gray">Melhorar: interpretação de textos argumentativos</div>
+                </div>
+
+                {/* Competência 3 */}
+                <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white text-xs font-bold">3</span>
+                      </div>
+                      <span className="text-sm font-medium text-dark-blue">Argumentação</span>
+                    </div>
+                    <CheckCircle2 className="text-blue-500" size={16} />
+                  </div>
+                  <div className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded mb-2">
+                    Nota média: 180/200
+                  </div>
+                  <div className="text-xs text-soft-gray">Melhorar: diversificar tipos de argumentos</div>
+                </div>
+
+                {/* Competência 4 */}
+                <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white text-xs font-bold">4</span>
+                      </div>
+                      <span className="text-sm font-medium text-dark-blue">Coesão</span>
+                    </div>
+                    <AlertTriangle className="text-orange-500" size={16} />
+                  </div>
+                  <div className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded mb-2">
+                    Nota média: 120/200
+                  </div>
+                  <div className="text-xs text-soft-gray">Melhorar: conectivos e coesão textual</div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="text-center p-6 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                  <div className="text-3xl font-bold text-bright-blue mb-2" data-testid="text-essays-count">
-                    {essaysCount}
+              
+              {/* Competência 5 - Full Width */}
+              <div className="mt-4 p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-white text-xs font-bold">5</span>
+                    </div>
+                    <span className="text-sm font-medium text-dark-blue">Proposta de Intervenção</span>
                   </div>
-                  <div className="text-sm text-soft-gray font-medium">Redações</div>
+                  <CheckCircle2 className="text-green-500" size={16} />
                 </div>
-                <div className="text-center p-6 bg-gradient-to-br from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
-                  <div className="text-3xl font-bold text-dark-blue mb-2" data-testid="text-study-hours">
-                    {studyHours}h
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded mb-1">
+                      Nota média: 170/200
+                    </div>
+                    <div className="text-xs text-soft-gray">Melhorar: detalhamento da proposta e agentes responsáveis</div>
                   </div>
-                  <div className="text-sm text-soft-gray font-medium">Estudo</div>
+                  <CheckCircle2 className="text-green-500" size={20} />
                 </div>
-                <div className="text-center p-6 bg-gradient-to-br from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
-                  <div className="text-3xl font-bold text-dark-blue mb-2" data-testid="text-streak">
-                    {streak}
+              </div>
+              
+              {/* Summary */}
+              <div className="mt-4 p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Lightbulb className="text-bright-blue mr-3" size={16} />
+                    <div>
+                      <div className="text-sm font-medium text-dark-blue">Foco Principal</div>
+                      <div className="text-xs text-soft-gray">Coesão textual e conectivos</div>
+                    </div>
                   </div>
-                  <div className="text-sm text-soft-gray font-medium">Dias Seguidos</div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-bright-blue">154</div>
+                    <div className="text-xs text-soft-gray">Nota média geral</div>
+                  </div>
                 </div>
               </div>
             </LiquidGlassCard>
