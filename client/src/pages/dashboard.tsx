@@ -221,11 +221,17 @@ export default function Dashboard() {
   };
 
   const toggleFeatureVisibility = (featureId: string) => {
-    setVisibleFeatures(prev => 
-      prev.includes(featureId)
-        ? prev.filter(id => id !== featureId)
-        : [...prev, featureId]
-    );
+    setVisibleFeatures(prev => {
+      if (prev.includes(featureId)) {
+        // Can't remove if already at minimum (2)
+        if (prev.length <= 2) return prev;
+        return prev.filter(id => id !== featureId);
+      } else {
+        // Can't add if already at maximum (4)
+        if (prev.length >= 4) return prev;
+        return [...prev, featureId];
+      }
+    });
   };
 
   const getVisibleFeaturesData = () => {
@@ -1029,13 +1035,28 @@ export default function Dashboard() {
                         isSelected 
                           ? 'bg-bright-blue/10 border-bright-blue/30' 
                           : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                      } ${
+                        (!isSelected && visibleFeatures.length >= 4) || (isSelected && visibleFeatures.length <= 2)
+                          ? 'opacity-50 cursor-not-allowed'
+                          : ''
                       }`}
-                      onClick={() => toggleFeatureVisibility(feature.id)}
+                      onClick={() => {
+                        if ((!isSelected && visibleFeatures.length >= 4) || (isSelected && visibleFeatures.length <= 2)) {
+                          return;
+                        }
+                        toggleFeatureVisibility(feature.id);
+                      }}
                       data-testid={`feature-toggle-${feature.id}`}
                     >
                       <Checkbox 
                         checked={isSelected}
-                        onChange={() => toggleFeatureVisibility(feature.id)}
+                        disabled={(!isSelected && visibleFeatures.length >= 4) || (isSelected && visibleFeatures.length <= 2)}
+                        onChange={() => {
+                          if ((!isSelected && visibleFeatures.length >= 4) || (isSelected && visibleFeatures.length <= 2)) {
+                            return;
+                          }
+                          toggleFeatureVisibility(feature.id);
+                        }}
                         data-testid={`checkbox-${feature.id}`}
                       />
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -1054,8 +1075,17 @@ export default function Dashboard() {
                 })}
               </div>
               
-              <div className="text-xs text-soft-gray mt-2">
-                Você pode selecionar até 4 funcionalidades para melhor organização visual.
+              <div className={`text-xs mt-2 ${
+                visibleFeatures.length < 2 || visibleFeatures.length > 4 
+                  ? 'text-red-500' 
+                  : 'text-soft-gray'
+              }`}>
+                {visibleFeatures.length < 2 
+                  ? 'Selecione pelo menos 2 funcionalidades'
+                  : visibleFeatures.length > 4
+                    ? 'Máximo de 4 funcionalidades'
+                    : `Funcionalidades selecionadas: ${visibleFeatures.length}/4`
+                }
               </div>
             </div>
             
@@ -1125,7 +1155,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className={`flex flex-wrap justify-center gap-4 mb-6 ${visibleFeatures.length <= 2 ? 'max-w-md mx-auto' : visibleFeatures.length === 3 ? 'max-w-2xl mx-auto' : ''}`}>
             {getVisibleFeaturesData().map((feature) => {
               const IconComponent = feature.icon;
               const borderColor = feature.color === 'bright-blue' ? 'border-bright-blue/30 hover:border-bright-blue/50'
@@ -1149,13 +1179,13 @@ export default function Dashboard() {
                   key={feature.id}
                   onClick={() => handleQuickAccess(feature.id)}
                   variant="outline" 
-                  className={`p-6 h-auto flex flex-col items-center ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group`}
+                  className={`p-6 h-auto flex flex-col items-center ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group w-40 flex-shrink-0`}
                   data-testid={`button-feature-${feature.id}`}
                 >
                   <div className={`w-12 h-12 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                     <IconComponent className="text-white" size={20} />
                   </div>
-                  <div className="text-sm text-dark-blue font-medium">{feature.name}</div>
+                  <div className="text-sm text-dark-blue font-medium text-center">{feature.name}</div>
                   <div className="text-xs text-soft-gray mt-1 text-center">{feature.description}</div>
                 </Button>
               );
