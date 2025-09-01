@@ -40,7 +40,7 @@ export default function ControladorEscrita() {
     arguments: false,
     conclusion: false
   });
-  const [argumentTechnique, setArgumentTechnique] = useState("classica");
+  const [argumentTechnique, setArgumentTechnique] = useState("topico-frasal");
 
   const handleBack = () => {
     setLocation("/functionalities");
@@ -376,8 +376,8 @@ export default function ControladorEscrita() {
                   <Target className="text-white" size={16} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-dark-blue">Estrutura Argumentativa</h3>
-                  <p className="text-xs text-soft-gray">Técnicas de oratória</p>
+                  <h3 className="font-semibold text-dark-blue">Organização Dissertativa</h3>
+                  <p className="text-xs text-soft-gray">Estrutura argumentativa</p>
                 </div>
               </div>
               {expandedCard === 'argumentacao' ? (
@@ -391,27 +391,31 @@ export default function ControladorEscrita() {
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Técnica de Argumentação
+                    Organização do Parágrafo
                   </Label>
                   <RadioGroup value={argumentTechnique} onValueChange={setArgumentTechnique}>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="classica" id="classica" />
-                      <Label htmlFor="classica" className="text-xs">Clássica</Label>
+                      <RadioGroupItem value="topico-frasal" id="topico-frasal" />
+                      <Label htmlFor="topico-frasal" className="text-xs">Tópico Frasal + Desenvolvimento</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="toulmin" id="toulmin" />
-                      <Label htmlFor="toulmin" className="text-xs">Toulmin</Label>
+                      <RadioGroupItem value="tese-antitese" id="tese-antitese" />
+                      <Label htmlFor="tese-antitese" className="text-xs">Tese → Antítese → Síntese</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="dialética" id="dialética" />
-                      <Label htmlFor="dialética" className="text-xs">Dialética</Label>
+                      <RadioGroupItem value="causa-consequencia" id="causa-consequencia" />
+                      <Label htmlFor="causa-consequencia" className="text-xs">Causa → Consequência</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="problema-solucao" id="problema-solucao" />
+                      <Label htmlFor="problema-solucao" className="text-xs">Problema → Solução</Label>
                     </div>
                   </RadioGroup>
                 </div>
                 
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Elementos de Estrutura
+                    Elementos do Parágrafo
                   </Label>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
@@ -422,7 +426,7 @@ export default function ControladorEscrita() {
                           setArgumentStructure(prev => ({...prev, repertoire: !!checked}))
                         }
                       />
-                      <Label htmlFor="repertoire" className="text-xs">Reposicionamento do Repertório</Label>
+                      <Label htmlFor="repertoire" className="text-xs">Inserir Repertório Legitimador</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox 
@@ -432,7 +436,7 @@ export default function ControladorEscrita() {
                           setArgumentStructure(prev => ({...prev, thesis: !!checked}))
                         }
                       />
-                      <Label htmlFor="thesis" className="text-xs">Reformulação da Tese</Label>
+                      <Label htmlFor="thesis" className="text-xs">Conectar com a Tese</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox 
@@ -442,7 +446,7 @@ export default function ControladorEscrita() {
                           setArgumentStructure(prev => ({...prev, arguments: !!checked}))
                         }
                       />
-                      <Label htmlFor="arguments" className="text-xs">Pontos Argumentativos</Label>
+                      <Label htmlFor="arguments" className="text-xs">Desenvolver Argumentação</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox 
@@ -452,7 +456,7 @@ export default function ControladorEscrita() {
                           setArgumentStructure(prev => ({...prev, conclusion: !!checked}))
                         }
                       />
-                      <Label htmlFor="conclusion" className="text-xs">Conclusão Persuasiva</Label>
+                      <Label htmlFor="conclusion" className="text-xs">Arremate Conclusivo</Label>
                     </div>
                   </div>
                 </div>
@@ -488,7 +492,7 @@ export default function ControladorEscrita() {
                   ) : (
                     <Target className="mr-2 h-3 w-3" />
                   )}
-                  Aplicar Estrutura
+                  Organizar Parágrafo
                 </Button>
               </div>
             )}
