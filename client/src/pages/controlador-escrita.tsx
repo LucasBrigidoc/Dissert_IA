@@ -197,289 +197,291 @@ export default function ControladorEscrita() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-[calc(100vh-200px)]">
-          {/* Área de Entrada de Texto - Ocupa toda a vertical */}
-          <div className="lg:col-span-2">
-            <LiquidGlassCard className="h-full flex flex-col">
-              <div className="flex-1 space-y-4">
-                <div className="flex-1 flex flex-col">
-                  <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3">
-                    Texto Original
-                  </Label>
-                  <Textarea
-                    id="original-text"
-                    placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
-                    value={originalText}
-                    onChange={(e) => setOriginalText(e.target.value)}
-                    className="flex-1 min-h-[300px] text-base leading-relaxed resize-none"
-                  />
-                </div>
+      <div className="container mx-auto px-6 py-8 h-[calc(100vh-200px)] flex flex-col">
+        {/* Área de Texto - Ocupa toda a horizontal */}
+        <div className="flex-1 mb-8">
+          <LiquidGlassCard className="h-full">
+            <div className="h-full flex flex-col space-y-4">
+              <div className="flex-1 flex flex-col">
+                <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3">
+                  Texto Original
+                </Label>
+                <Textarea
+                  id="original-text"
+                  placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
+                  value={originalText}
+                  onChange={(e) => setOriginalText(e.target.value)}
+                  className="flex-1 min-h-[200px] text-base leading-relaxed resize-none"
+                />
+              </div>
 
-                {/* Área do Texto Modificado */}
-                {modifiedText && (
-                  <div className="flex-1 flex flex-col pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between mb-3">
-                      <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
-                        Texto Modificado
-                        {modificationType && (
-                          <Badge variant="secondary" className="text-xs">
-                            {modificationType}
-                          </Badge>
-                        )}
-                      </Label>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleCopyText}
-                          className="flex items-center gap-2"
-                        >
-                          <Copy className="h-4 w-4" />
-                          Copiar
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleSaveToLibrary}
-                          className="flex items-center gap-2"
-                        >
-                          <Save className="h-4 w-4" />
-                          Salvar
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={resetTexts}
-                          className="flex items-center gap-2"
-                        >
-                          <RotateCcw className="h-4 w-4" />
-                          Limpar
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex-1 bg-gray-50 rounded-lg p-4 border-l-4 border-bright-blue overflow-y-auto">
-                      <p className="text-base leading-relaxed text-gray-800">
-                        {modifiedText}
-                      </p>
+              {/* Área do Texto Modificado */}
+              {modifiedText && (
+                <div className="flex-1 flex flex-col pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                      Texto Modificado
+                      {modificationType && (
+                        <Badge variant="secondary" className="text-xs">
+                          {modificationType}
+                        </Badge>
+                      )}
+                    </Label>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCopyText}
+                        className="flex items-center gap-2"
+                      >
+                        <Copy className="h-4 w-4" />
+                        Copiar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleSaveToLibrary}
+                        className="flex items-center gap-2"
+                      >
+                        <Save className="h-4 w-4" />
+                        Salvar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={resetTexts}
+                        className="flex items-center gap-2"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                        Limpar
+                      </Button>
                     </div>
                   </div>
-                )}
+                  <div className="flex-1 bg-gray-50 rounded-lg p-4 border-l-4 border-bright-blue overflow-y-auto">
+                    <p className="text-base leading-relaxed text-gray-800">
+                      {modifiedText}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Controles - Uma linha na parte de baixo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {/* Card de Formalidade */}
+          <div 
+            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
+            onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <FileText className="text-white" size={16} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-dark-blue">Formalidade</h3>
+                  <p className="text-xs text-soft-gray">Ajuste o nível formal</p>
+                </div>
               </div>
-            </LiquidGlassCard>
+              {expandedCard === 'formalidade' ? (
+                <ChevronUp className="h-4 w-4 text-soft-gray" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-soft-gray" />
+              )}
+            </div>
+            
+            {expandedCard === 'formalidade' && (
+              <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Nível: {formalityLevel[0]}%
+                  </Label>
+                  <Slider
+                    value={formalityLevel}
+                    onValueChange={setFormalityLevel}
+                    max={100}
+                    step={10}
+                    className="mb-2"
+                  />
+                  <div className="flex justify-between text-xs text-soft-gray">
+                    <span>Informal</span>
+                    <span>Formal</span>
+                  </div>
+                </div>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    simulateTextProcessing('formalidade');
+                  }}
+                  disabled={isProcessing}
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white"
+                >
+                  {isProcessing ? (
+                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
+                  ) : (
+                    <Edit3 className="mr-2 h-3 w-3" />
+                  )}
+                  Aplicar
+                </Button>
+              </div>
+            )}
           </div>
 
-          {/* Painel de Controles - Cards Expandíveis */}
-          <div className="lg:col-span-2 space-y-4 h-full overflow-y-auto">
-            {/* Card de Formalidade */}
-            <LiquidGlassCard 
-              className={`bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
-              onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <FileText className="text-white" size={16} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-dark-blue">Controle de Formalidade</h3>
-                    <p className="text-sm text-soft-gray">Ajuste o nível formal do texto</p>
-                  </div>
+          {/* Card de Argumentação */}
+          <div 
+            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
+            onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                  <ThumbsUp className="text-white" size={16} />
                 </div>
-                {expandedCard === 'formalidade' ? (
-                  <ChevronUp className="h-5 w-5 text-soft-gray" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-soft-gray" />
-                )}
+                <div>
+                  <h3 className="font-semibold text-dark-blue">Argumentação</h3>
+                  <p className="text-xs text-soft-gray">Intensidade persuasiva</p>
+                </div>
               </div>
-              
-              {expandedCard === 'formalidade' && (
-                <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                      Nível de Formalidade: {formalityLevel[0]}%
-                    </Label>
-                    <Slider
-                      value={formalityLevel}
-                      onValueChange={setFormalityLevel}
-                      max={100}
-                      step={10}
-                      className="mb-2"
-                    />
-                    <div className="flex justify-between text-xs text-soft-gray">
-                      <span>Informal</span>
-                      <span>Muito Formal</span>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      simulateTextProcessing('formalidade');
-                    }}
-                    disabled={isProcessing}
-                    className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white"
-                  >
-                    {isProcessing ? (
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Edit3 className="mr-2 h-4 w-4" />
-                    )}
-                    Aplicar Formalidade
-                  </Button>
-                </div>
+              {expandedCard === 'argumentacao' ? (
+                <ChevronUp className="h-4 w-4 text-soft-gray" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
-            </LiquidGlassCard>
+            </div>
+            
+            {expandedCard === 'argumentacao' && (
+              <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Nível: {argumentativeLevel[0]}%
+                  </Label>
+                  <Slider
+                    value={argumentativeLevel}
+                    onValueChange={setArgumentativeLevel}
+                    max={100}
+                    step={10}
+                    className="mb-2"
+                  />
+                  <div className="flex justify-between text-xs text-soft-gray">
+                    <span>Descritivo</span>
+                    <span>Argumentativo</span>
+                  </div>
+                </div>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    simulateTextProcessing('argumentativo');
+                  }}
+                  disabled={isProcessing}
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-dark-blue to-soft-gray text-white"
+                >
+                  {isProcessing ? (
+                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
+                  ) : (
+                    <ThumbsUp className="mr-2 h-3 w-3" />
+                  )}
+                  Aplicar
+                </Button>
+              </div>
+            )}
+          </div>
 
-            {/* Card de Argumentação */}
-            <LiquidGlassCard 
-              className={`bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
-              onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                    <ThumbsUp className="text-white" size={16} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-dark-blue">Controle de Argumentação</h3>
-                    <p className="text-sm text-soft-gray">Intensidade persuasiva do texto</p>
-                  </div>
+          {/* Card de Sinônimos */}
+          <div 
+            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
+            onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                  <RefreshCw className="text-white" size={16} />
                 </div>
-                {expandedCard === 'argumentacao' ? (
-                  <ChevronUp className="h-5 w-5 text-soft-gray" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-soft-gray" />
-                )}
+                <div>
+                  <h3 className="font-semibold text-dark-blue">Sinônimos</h3>
+                  <p className="text-xs text-soft-gray">Mantém o sentido</p>
+                </div>
               </div>
-              
-              {expandedCard === 'argumentacao' && (
-                <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                      Nível Argumentativo: {argumentativeLevel[0]}%
-                    </Label>
-                    <Slider
-                      value={argumentativeLevel}
-                      onValueChange={setArgumentativeLevel}
-                      max={100}
-                      step={10}
-                      className="mb-2"
-                    />
-                    <div className="flex justify-between text-xs text-soft-gray">
-                      <span>Descritivo</span>
-                      <span>Muito Argumentativo</span>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      simulateTextProcessing('argumentativo');
-                    }}
-                    disabled={isProcessing}
-                    className="w-full bg-gradient-to-r from-dark-blue to-soft-gray text-white"
-                  >
-                    {isProcessing ? (
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <ThumbsUp className="mr-2 h-4 w-4" />
-                    )}
-                    Tornar Argumentativo
-                  </Button>
-                </div>
+              {expandedCard === 'sinonimos' ? (
+                <ChevronUp className="h-4 w-4 text-soft-gray" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
-            </LiquidGlassCard>
+            </div>
+            
+            {expandedCard === 'sinonimos' && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-xs text-soft-gray mb-4">
+                  Substitui palavras por sinônimos para enriquecer o vocabulário.
+                </p>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    simulateTextProcessing('sinonimos');
+                  }}
+                  disabled={isProcessing}
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
+                >
+                  {isProcessing ? (
+                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
+                  ) : (
+                    <RefreshCw className="mr-2 h-3 w-3" />
+                  )}
+                  Aplicar
+                </Button>
+              </div>
+            )}
+          </div>
 
-            {/* Card de Sinônimos */}
-            <LiquidGlassCard 
-              className={`bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
-              onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                    <RefreshCw className="text-white" size={16} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-dark-blue">Reescrita com Sinônimos</h3>
-                    <p className="text-sm text-soft-gray">Mantém o sentido original</p>
-                  </div>
+          {/* Card de Antônimos */}
+          <div 
+            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
+            onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+                  <Shuffle className="text-white" size={16} />
                 </div>
-                {expandedCard === 'sinonimos' ? (
-                  <ChevronUp className="h-5 w-5 text-soft-gray" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-soft-gray" />
-                )}
+                <div>
+                  <h3 className="font-semibold text-dark-blue">Antônimos</h3>
+                  <p className="text-xs text-soft-gray">Inverte o sentido</p>
+                </div>
               </div>
-              
-              {expandedCard === 'sinonimos' && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <p className="text-sm text-soft-gray mb-4">
-                    Esta função substitui palavras por sinônimos para enriquecer o vocabulário sem alterar o significado do texto.
-                  </p>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      simulateTextProcessing('sinonimos');
-                    }}
-                    disabled={isProcessing}
-                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
-                  >
-                    {isProcessing ? (
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <RefreshCw className="mr-2 h-4 w-4" />
-                    )}
-                    Aplicar Sinônimos
-                  </Button>
-                </div>
+              {expandedCard === 'antonimos' ? (
+                <ChevronUp className="h-4 w-4 text-soft-gray" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
-            </LiquidGlassCard>
-
-            {/* Card de Antônimos */}
-            <LiquidGlassCard 
-              className={`bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
-              onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                    <Shuffle className="text-white" size={16} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-dark-blue">Reescrita com Antônimos</h3>
-                    <p className="text-sm text-soft-gray">Inverte o sentido do texto</p>
-                  </div>
-                </div>
-                {expandedCard === 'antonimos' ? (
-                  <ChevronUp className="h-5 w-5 text-soft-gray" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-soft-gray" />
-                )}
+            </div>
+            
+            {expandedCard === 'antonimos' && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-xs text-soft-gray mb-4">
+                  Substitui palavras por antônimos para explorar o argumento oposto.
+                </p>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    simulateTextProcessing('antonimos');
+                  }}
+                  disabled={isProcessing}
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                >
+                  {isProcessing ? (
+                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
+                  ) : (
+                    <Shuffle className="mr-2 h-3 w-3" />
+                  )}
+                  Aplicar
+                </Button>
               </div>
-              
-              {expandedCard === 'antonimos' && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <p className="text-sm text-soft-gray mb-4">
-                    Esta função substitui palavras por antônimos para explorar o argumento oposto e criar contraste.
-                  </p>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      simulateTextProcessing('antonimos');
-                    }}
-                    disabled={isProcessing}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
-                  >
-                    {isProcessing ? (
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Shuffle className="mr-2 h-4 w-4" />
-                    )}
-                    Aplicar Antônimos
-                  </Button>
-                </div>
-              )}
-            </LiquidGlassCard>
+            )}
           </div>
         </div>
       </div>
