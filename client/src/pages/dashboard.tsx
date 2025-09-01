@@ -174,7 +174,7 @@ export default function Dashboard() {
     { day: 'QUI', activities: ['Simulado'], hours: 2, minutes: 30, completed: false },
     { day: 'SEX', activities: ['Estilo', 'Correções'], hours: 2, minutes: 0, completed: false },
     { day: 'SAB', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
-    { day: 'DOM', activities: ['Descanso'], hours: 0, minutes: 0, completed: false }
+    { day: 'DOM', activities: ['Nada'], hours: 1, minutes: 0, completed: false }
   ]);
   
   const [editingSchedule, setEditingSchedule] = useState<ScheduleDay[]>([]);
@@ -1052,16 +1052,14 @@ export default function Dashboard() {
                 <div className={`p-4 rounded-lg border h-full ${
                   schedule.completed
                     ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-300'
-                    : schedule.day === 'DOM' 
-                      ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
-                      : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                    : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
                 }`}>
                   <div className="text-center mb-3">
                     <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
                     <div className={`text-xs font-medium ${
                       schedule.completed 
                         ? 'text-green-600'
-                        : schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
+                        : 'text-bright-blue'
                     }`}>
                       {formatTime(schedule.hours, schedule.minutes)}
                     </div>
@@ -1071,34 +1069,27 @@ export default function Dashboard() {
                       <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
                         schedule.completed
                           ? 'bg-green-100 text-green-700 line-through'
-                          : schedule.day === 'DOM' 
-                            ? 'bg-soft-gray/20 text-soft-gray' 
-                            : 'bg-white/50 text-dark-blue'
+                          : 'bg-white/50 text-dark-blue'
                       }`}>
                         {activity}
                       </div>
                     ))}
                   </div>
                 </div>
-                {schedule.day !== 'DOM' && (
-                  <div className="flex items-center justify-center mt-3">
-                    <button
-                      onClick={() => toggleScheduleCompletion(index)}
-                      className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                        schedule.completed
-                          ? 'bg-green-500 text-white hover:bg-green-600'
-                          : 'bg-white/70 text-dark-blue hover:bg-bright-blue/10 border border-bright-blue/30'
-                      }`}
-                      data-testid={`button-complete-${schedule.day.toLowerCase()}`}
-                    >
-                      <CheckCircle2 size={10} />
-                      <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
-                    </button>
-                  </div>
-                )}
-                {schedule.day === 'DOM' && (
-                  <div className="mt-3 h-8"></div>
-                )}
+                <div className="flex items-center justify-center mt-3">
+                  <button
+                    onClick={() => toggleScheduleCompletion(index)}
+                    className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                      schedule.completed
+                        ? 'bg-green-500 text-white hover:bg-green-600'
+                        : 'bg-white/70 text-dark-blue hover:bg-bright-blue/10 border border-bright-blue/30'
+                    }`}
+                    data-testid={`button-complete-${schedule.day.toLowerCase()}`}
+                  >
+                    <CheckCircle2 size={10} />
+                    <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -1133,11 +1124,7 @@ export default function Dashboard() {
             <div className="grid gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {editingSchedule.map((day, index) => (
-                  <div key={day.day} className={`p-4 rounded-lg border-2 ${
-                    day.day === 'DOM' 
-                      ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/30' 
-                      : 'bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/30'
-                  }`} data-testid={`schedule-edit-${day.day.toLowerCase()}`}>
+                  <div key={day.day} className="p-4 rounded-lg border-2 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/30" data-testid={`schedule-edit-${day.day.toLowerCase()}`}>
                     <div className="text-center mb-4">
                       <div className="text-lg font-bold text-dark-blue mb-2">{day.day}</div>
                     </div>
