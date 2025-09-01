@@ -200,24 +200,7 @@ export default function Estilo() {
           </div>
         )}
 
-        {structures.length === 0 && !isLoading && (
-          <div className="text-center py-12 max-w-2xl mx-auto">
-            <FileText className="mx-auto h-16 w-16 text-soft-gray/50 mb-4" />
-            <h3 className="text-xl font-semibold text-dark-blue mb-2">
-              Nenhuma estrutura criada ainda
-            </h3>
-            <p className="text-soft-gray mb-6">
-              Crie sua primeira estrutura para começar a gerar redações personalizadas
-            </p>
-            <Button 
-              onClick={() => setSelectedMode('create')}
-              className="bg-bright-blue hover:bg-blue-600"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Criar Primeira Estrutura
-            </Button>
-          </div>
-        )}
+        
 
         {isLoading && (
           <div className="flex justify-center items-center h-32">
