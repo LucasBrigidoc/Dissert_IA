@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -24,11 +25,31 @@ interface ScoreData {
   examName?: string;
 }
 
+interface ScheduleDay {
+  day: string;
+  activities: string[];
+  hours: string;
+}
+
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [editingTarget, setEditingTarget] = useState(false);
   const [newTargetScore, setNewTargetScore] = useState(mockUserData.targetScore);
   const [showAddScore, setShowAddScore] = useState(false);
+  const [showScheduleEdit, setShowScheduleEdit] = useState(false);
+  
+  // Schedule data state
+  const [scheduleData, setScheduleData] = useState<ScheduleDay[]>([
+    { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: '2h' },
+    { day: 'TER', activities: ['Redação Completa'], hours: '3h' },
+    { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: '1.5h' },
+    { day: 'QUI', activities: ['Simulado'], hours: '2.5h' },
+    { day: 'SEX', activities: ['Estilo', 'Correções'], hours: '2h' },
+    { day: 'SAB', activities: ['Redação Completa'], hours: '3h' },
+    { day: 'DOM', activities: ['Descanso'], hours: '-' }
+  ]);
+  
+  const [editingSchedule, setEditingSchedule] = useState<ScheduleDay[]>([]);
   
   const [scores, setScores] = useState<ScoreData[]>([
     { id: 1, date: '2024-01-10', totalScore: 720, competence1: 160, competence2: 140, competence3: 180, competence4: 120, competence5: 120, source: 'platform', examName: 'Simulado 1' },
@@ -132,6 +153,32 @@ export default function Dashboard() {
         setLocation('/repertorio');
         break;
     }
+  };
+
+  const handleScheduleEdit = () => {
+    setEditingSchedule([...scheduleData]);
+    setShowScheduleEdit(true);
+  };
+
+  const handleSaveSchedule = () => {
+    setScheduleData([...editingSchedule]);
+    setShowScheduleEdit(false);
+  };
+
+  const handleCancelScheduleEdit = () => {
+    setEditingSchedule([]);
+    setShowScheduleEdit(false);
+  };
+
+  const updateScheduleDay = (index: number, field: 'activities' | 'hours', value: string | string[]) => {
+    const updated = [...editingSchedule];
+    if (field === 'activities' && typeof value === 'string') {
+      // Parse activities from textarea (one per line)
+      updated[index].activities = value.split('\n').filter(activity => activity.trim() !== '');
+    } else if (field === 'hours' && typeof value === 'string') {
+      updated[index].hours = value;
+    }
+    setEditingSchedule(updated);
   };
 
   return (
@@ -727,6 +774,7 @@ export default function Dashboard() {
                 variant="outline" 
                 size="sm" 
                 className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+                onClick={handleScheduleEdit}
                 data-testid="button-customize-schedule"
               >
                 Personalizar
@@ -735,15 +783,7 @@ export default function Dashboard() {
           </div>
           <div className="grid lg:grid-cols-7 gap-4">
             {/* Dias da Semana */}
-            {[
-              { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: '2h' },
-              { day: 'TER', activities: ['Redação Completa'], hours: '3h' },
-              { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: '1.5h' },
-              { day: 'QUI', activities: ['Simulado'], hours: '2.5h' },
-              { day: 'SEX', activities: ['Estilo', 'Correções'], hours: '2h' },
-              { day: 'SAB', activities: ['Redação Completa'], hours: '3h' },
-              { day: 'DOM', activities: ['Descanso'], hours: '-' }
-            ].map((schedule, index) => (
+            {scheduleData.map((schedule, index) => (
               <div key={index} className={`p-4 rounded-lg border ${
                 schedule.day === 'DOM' 
                   ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
@@ -787,6 +827,78 @@ export default function Dashboard() {
             </div>
           </div>
         </LiquidGlassCard>
+
+        {/* Schedule Edit Modal */}
+        <Dialog open={showScheduleEdit} onOpenChange={setShowScheduleEdit}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" data-testid="dialog-schedule-edit">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+                <Timer className="mr-3 text-bright-blue" size={24} />
+                Editar Cronograma de Estudos
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {editingSchedule.map((day, index) => (
+                  <div key={day.day} className={`p-4 rounded-lg border-2 ${
+                    day.day === 'DOM' 
+                      ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/30' 
+                      : 'bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/30'
+                  }`} data-testid={`schedule-edit-${day.day.toLowerCase()}`}>
+                    <div className="text-center mb-4">
+                      <div className="text-lg font-bold text-dark-blue mb-2">{day.day}</div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <Label className="text-sm font-medium text-dark-blue">Horas de Estudo</Label>
+                        <Input
+                          value={day.hours}
+                          onChange={(e) => updateScheduleDay(index, 'hours', e.target.value)}
+                          placeholder="Ex: 2h, 1.5h, -"
+                          className="mt-1"
+                          data-testid={`input-hours-${day.day.toLowerCase()}`}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium text-dark-blue">Atividades</Label>
+                        <Textarea
+                          value={day.activities.join('\n')}
+                          onChange={(e) => updateScheduleDay(index, 'activities', e.target.value)}
+                          placeholder="Uma atividade por linha..."
+                          className="mt-1 min-h-[100px]"
+                          data-testid={`textarea-activities-${day.day.toLowerCase()}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-end space-x-3 pt-4 border-t">
+                <Button 
+                  variant="outline" 
+                  onClick={handleCancelScheduleEdit}
+                  className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
+                  data-testid="button-cancel-schedule"
+                >
+                  <X className="mr-2" size={16} />
+                  Cancelar
+                </Button>
+                <Button 
+                  onClick={handleSaveSchedule}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  data-testid="button-save-schedule"
+                >
+                  <Save className="mr-2" size={16} />
+                  Salvar Cronograma
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Fifth Row: Newsletter - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
