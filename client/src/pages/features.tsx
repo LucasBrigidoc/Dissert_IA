@@ -182,7 +182,7 @@ export default function Features() {
           {/* Complementary Tools */}
           <div>
             <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas Complementares:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               <LiquidGlassCard className="p-6 text-center feature-card" data-testid="card-exam-simulator">
                 <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mx-auto mb-4">
                   <GraduationCap className="text-white" size={24} />
@@ -207,13 +207,7 @@ export default function Features() {
                 <p className="text-soft-gray text-sm">Repositório inteligente de todo seu processo de aprendizado</p>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-6 text-center feature-card" data-testid="card-educational-newsletter">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Newspaper className="text-white" size={24} />
-                </div>
-                <h4 className="font-semibold text-dark-blue mb-2">Newsletter Educacional</h4>
-                <p className="text-soft-gray text-sm">Curadoria semanal dos temas mais relevantes</p>
-              </LiquidGlassCard>
+              
             </div>
           </div>
         </div>
