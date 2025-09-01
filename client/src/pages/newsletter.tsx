@@ -218,38 +218,38 @@ export default function NewsletterPage() {
       <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-8">
-              <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
-                <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                  <Plus className="text-white text-sm" />
-                </div>
-                <span className="text-2xl font-bold text-dark-blue">
-                  DISSERT<span className="text-bright-blue">AI</span>
-                </span>
-              </Link>
-              
-              {/* Navigation Menu */}
-              <div className="flex items-center space-x-6">
-                <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
-                  <Home size={18} />
-                  <span className="font-medium">Home</span>
-                </Link>
-                <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                  <Grid3x3 size={18} />
-                  <span className="font-medium">Funcionalidades</span>
-                </Link>
-                <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                  <Newspaper size={18} />
-                  <span className="font-medium">Newsletter</span>
-                </Link>
-                <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
-                  <Settings size={18} />
-                  <span className="font-medium">Configurações</span>
-                </Link>
+            {/* Logo */}
+            <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
+              <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
+                <Plus className="text-white text-sm" />
               </div>
+              <span className="text-2xl font-bold text-dark-blue">
+                DISSERT<span className="text-bright-blue">AI</span>
+              </span>
+            </Link>
+            
+            {/* Desktop Navigation Menu */}
+            <div className="hidden lg:flex items-center space-x-6">
+              <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
+                <Home size={18} />
+                <span className="font-medium">Home</span>
+              </Link>
+              <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
+                <Grid3x3 size={18} />
+                <span className="font-medium">Funcionalidades</span>
+              </Link>
+              <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
+                <Newspaper size={18} />
+                <span className="font-medium">Newsletter</span>
+              </Link>
+              <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
+                <Settings size={18} />
+                <span className="font-medium">Configurações</span>
+              </Link>
             </div>
             
-            <div className="flex items-center space-x-4">
+            {/* Desktop Right Side */}
+            <div className="hidden lg:flex items-center space-x-4">
               <Button
                 onClick={handleLogout}
                 variant="outline"
@@ -263,7 +263,81 @@ export default function NewsletterPage() {
                 LS
               </div>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden flex items-center space-x-4">
+              <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
+                LS
+              </div>
+              <Button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                variant="outline"
+                size="sm"
+                className="p-2"
+                data-testid="button-mobile-menu"
+              >
+                <Menu size={20} />
+              </Button>
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b shadow-lg z-40">
+              <div className="container mx-auto px-6 py-4 space-y-2">
+                <Link 
+                  href="/dashboard" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                  data-testid="button-mobile-nav-home"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Home size={20} />
+                  <span className="font-medium">Home</span>
+                </Link>
+                <Link 
+                  href="/functionalities" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                  data-testid="button-mobile-nav-functionalities"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Grid3x3 size={20} />
+                  <span className="font-medium">Funcionalidades</span>
+                </Link>
+                <Link 
+                  href="/newsletter" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20"
+                  data-testid="button-mobile-nav-newsletter"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Newspaper size={20} />
+                  <span className="font-medium">Newsletter</span>
+                </Link>
+                <Link 
+                  href="/settings" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                  data-testid="button-mobile-nav-settings"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Settings size={20} />
+                  <span className="font-medium">Configurações</span>
+                </Link>
+                <div className="border-t pt-4">
+                  <Button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="w-full flex items-center justify-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
+                    data-testid="button-mobile-logout"
+                  >
+                    <LogOut size={16} />
+                    <span>Sair</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
