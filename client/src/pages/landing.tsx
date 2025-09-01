@@ -115,7 +115,7 @@ export default function Landing() {
                     <p className="text-soft-gray text-sm">{feature.description}</p>
                   </LiquidGlassCard>
                 );
-              })}</div>
+              })}
           </div>
         </div>
       </section>
