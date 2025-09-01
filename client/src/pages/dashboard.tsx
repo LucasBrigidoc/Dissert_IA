@@ -376,7 +376,7 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome-exams">
             <div className="flex items-center mb-3">
               <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Calendar className="text-white" size={12} />
+                <Calendar className="text-white" size={16} />
               </div>
               <h3 className="text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
             </div>
@@ -414,14 +414,14 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Target className="text-white" size={12} />
+                <Target className="text-white" size={16} />
               </div>
               <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
               <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
                 <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <CheckCircle2 className="text-white" size={10} />
+                  <CheckCircle2 className="text-white" size={12} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-blue">Fazer 2 redações</div>
@@ -430,7 +430,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
                 <div className="w-6 h-6 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={10} />
+                  <Target className="text-white" size={12} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-blue">Estudar 10h</div>
@@ -455,7 +455,7 @@ export default function Dashboard() {
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-improvement-points">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={12} />
+                  <Target className="text-white" size={16} />
                 </div>
                 <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
               </div>
@@ -542,7 +542,7 @@ export default function Dashboard() {
               <div className="mt-3 flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
                 <div className="flex items-center">
                   <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                    <Lightbulb className="text-white" size={10} />
+                    <Lightbulb className="text-white" size={12} />
                   </div>
                   <span className="text-xs font-medium text-dark-blue">Foco: Coesão (Comp. 4)</span>
                 </div>
@@ -562,7 +562,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={12} />
+                  <TrendingUp className="text-white" size={16} />
                 </div>
                 <h4 className="font-semibold text-dark-blue">Progresso Geral</h4>
               </div>
@@ -674,7 +674,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={12} />
+                  <TrendingUp className="text-white" size={16} />
                 </div>
                 <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
               </div>
@@ -753,8 +753,8 @@ export default function Dashboard() {
           {/* Simulator Time Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Clock className="text-white" size={12} />
+              <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <Clock className="text-white" size={16} />
               </div>
               <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
             </div>
@@ -769,7 +769,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
                   <div className="flex items-center">
                     <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <Lightbulb className="text-white" size={10} />
+                      <Lightbulb className="text-white" size={12} />
                     </div>
                     <span className="text-sm text-dark-blue">Brainstorm</span>
                   </div>
@@ -778,7 +778,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
                   <div className="flex items-center">
                     <div className="w-6 h-6 bg-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <MessageCircle className="text-white" size={10} />
+                      <MessageCircle className="text-white" size={12} />
                     </div>
                     <span className="text-sm text-dark-blue">Rascunho</span>
                   </div>
@@ -786,7 +786,7 @@ export default function Dashboard() {
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-soft-gray/10">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                    <div className="w-6 h-6 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                       <CheckCircle2 className="text-white" size={12} />
                     </div>
                     <span className="text-sm text-dark-blue">A limpo</span>
@@ -1143,7 +1143,7 @@ export default function Dashboard() {
                           ? `bg-gradient-to-br from-${feature.color === 'bright-blue' ? 'bright-blue' : feature.color === 'dark-blue' ? 'dark-blue' : 'soft-gray'} to-${feature.color === 'bright-blue' ? 'dark-blue' : feature.color === 'dark-blue' ? 'soft-gray' : 'bright-blue'}`
                           : 'bg-gray-300'
                       }`}>
-                        <IconComponent className="text-white" size={12} />
+                        <IconComponent className="text-white" size={16} />
                       </div>
                       <div className="flex-1">
                         <div className="font-medium text-dark-blue">{feature.name}</div>
@@ -1192,8 +1192,8 @@ export default function Dashboard() {
         {/* Fifth Row: Newsletter - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
           <div className="flex items-center mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Book className="text-white" size={12} />
+            <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <Book className="text-white" size={16} />
             </div>
             <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
           </div>
@@ -1218,8 +1218,8 @@ export default function Dashboard() {
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Plus className="text-white" size={12} />
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <Plus className="text-white" size={16} />
               </div>
               <h4 className="font-semibold text-dark-blue text-lg">Acesso rápido das principais Funcionalidades</h4>
             </div>
@@ -1267,7 +1267,7 @@ export default function Dashboard() {
                   data-testid={`button-feature-${feature.id}`}
                 >
                   <div className={`w-10 h-10 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform flex-shrink-0`}>
-                    <IconComponent className="text-white" size={14} />
+                    <IconComponent className="text-white" size={16} />
                   </div>
                   <div className="text-center space-y-1">
                     <div className="text-sm text-dark-blue font-medium leading-tight">{feature.name}</div>
