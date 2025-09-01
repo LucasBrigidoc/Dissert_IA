@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,7 +29,9 @@ interface ScoreData {
 interface ScheduleDay {
   day: string;
   activities: string[];
-  hours: string;
+  hours: number;
+  minutes: number;
+  completed: boolean;
 }
 
 export default function Dashboard() {
@@ -40,13 +43,13 @@ export default function Dashboard() {
   
   // Schedule data state
   const [scheduleData, setScheduleData] = useState<ScheduleDay[]>([
-    { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: '2h' },
-    { day: 'TER', activities: ['Redação Completa'], hours: '3h' },
-    { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: '1.5h' },
-    { day: 'QUI', activities: ['Simulado'], hours: '2.5h' },
-    { day: 'SEX', activities: ['Estilo', 'Correções'], hours: '2h' },
-    { day: 'SAB', activities: ['Redação Completa'], hours: '3h' },
-    { day: 'DOM', activities: ['Descanso'], hours: '-' }
+    { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: 2, minutes: 0, completed: false },
+    { day: 'TER', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
+    { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: 1, minutes: 30, completed: false },
+    { day: 'QUI', activities: ['Simulado'], hours: 2, minutes: 30, completed: false },
+    { day: 'SEX', activities: ['Estilo', 'Correções'], hours: 2, minutes: 0, completed: false },
+    { day: 'SAB', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
+    { day: 'DOM', activities: ['Descanso'], hours: 0, minutes: 0, completed: false }
   ]);
   
   const [editingSchedule, setEditingSchedule] = useState<ScheduleDay[]>([]);
@@ -170,15 +173,29 @@ export default function Dashboard() {
     setShowScheduleEdit(false);
   };
 
-  const updateScheduleDay = (index: number, field: 'activities' | 'hours', value: string | string[]) => {
+  const updateScheduleDay = (index: number, field: 'activities' | 'hours' | 'minutes', value: string | string[] | number) => {
     const updated = [...editingSchedule];
     if (field === 'activities' && typeof value === 'string') {
       // Parse activities from textarea (one per line)
       updated[index].activities = value.split('\n').filter(activity => activity.trim() !== '');
     } else if (field === 'hours' && typeof value === 'string') {
-      updated[index].hours = value;
+      updated[index].hours = parseInt(value) || 0;
+    } else if (field === 'minutes' && typeof value === 'string') {
+      updated[index].minutes = parseInt(value) || 0;
     }
     setEditingSchedule(updated);
+  };
+
+  const toggleScheduleCompletion = (index: number) => {
+    const updated = [...scheduleData];
+    updated[index].completed = !updated[index].completed;
+    setScheduleData(updated);
+  };
+
+  const formatTime = (hours: number, minutes: number) => {
+    if (hours === 0 && minutes === 0) return '-';
+    if (minutes === 0) return `${hours}h`;
+    return `${hours}h ${minutes}min`;
   };
 
   return (
@@ -784,30 +801,52 @@ export default function Dashboard() {
           <div className="grid lg:grid-cols-7 gap-4">
             {/* Dias da Semana */}
             {scheduleData.map((schedule, index) => (
-              <div key={index} className={`p-4 rounded-lg border ${
-                schedule.day === 'DOM' 
-                  ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
-                  : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+              <div key={index} className={`p-4 rounded-lg border relative ${
+                schedule.completed
+                  ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-300'
+                  : schedule.day === 'DOM' 
+                    ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
+                    : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
               }`}>
                 <div className="text-center mb-3">
                   <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
                   <div className={`text-xs font-medium ${
-                    schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
+                    schedule.completed 
+                      ? 'text-green-600'
+                      : schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
                   }`}>
-                    {schedule.hours}
+                    {formatTime(schedule.hours, schedule.minutes)}
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 mb-3">
                   {schedule.activities.map((activity, i) => (
                     <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
-                      schedule.day === 'DOM' 
-                        ? 'bg-soft-gray/20 text-soft-gray' 
-                        : 'bg-white/50 text-dark-blue'
+                      schedule.completed
+                        ? 'bg-green-100 text-green-700 line-through'
+                        : schedule.day === 'DOM' 
+                          ? 'bg-soft-gray/20 text-soft-gray' 
+                          : 'bg-white/50 text-dark-blue'
                     }`}>
                       {activity}
                     </div>
                   ))}
                 </div>
+                {schedule.day !== 'DOM' && (
+                  <div className="flex items-center justify-center">
+                    <button
+                      onClick={() => toggleScheduleCompletion(index)}
+                      className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                        schedule.completed
+                          ? 'bg-green-500 text-white hover:bg-green-600'
+                          : 'bg-white/70 text-dark-blue hover:bg-bright-blue/10 border border-bright-blue/30'
+                      }`}
+                      data-testid={`button-complete-${schedule.day.toLowerCase()}`}
+                    >
+                      <CheckCircle2 size={12} />
+                      <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -836,6 +875,7 @@ export default function Dashboard() {
                 <Timer className="mr-3 text-bright-blue" size={24} />
                 Editar Cronograma de Estudos
               </DialogTitle>
+              <div className="text-sm text-soft-gray">Personalize seu cronograma semanal de estudos</div>
             </DialogHeader>
             
             <div className="grid gap-6">
@@ -852,14 +892,36 @@ export default function Dashboard() {
                     
                     <div className="space-y-3">
                       <div>
-                        <Label className="text-sm font-medium text-dark-blue">Horas de Estudo</Label>
-                        <Input
-                          value={day.hours}
-                          onChange={(e) => updateScheduleDay(index, 'hours', e.target.value)}
-                          placeholder="Ex: 2h, 1.5h, -"
-                          className="mt-1"
-                          data-testid={`input-hours-${day.day.toLowerCase()}`}
-                        />
+                        <Label className="text-sm font-medium text-dark-blue">Tempo de Estudo</Label>
+                        <div className="flex space-x-2 mt-1">
+                          <div className="flex-1">
+                            <Input
+                              type="number"
+                              value={day.hours}
+                              onChange={(e) => updateScheduleDay(index, 'hours', e.target.value)}
+                              placeholder="0"
+                              min="0"
+                              max="12"
+                              className="text-center"
+                              data-testid={`input-hours-${day.day.toLowerCase()}`}
+                            />
+                            <div className="text-xs text-center text-soft-gray mt-1">Horas</div>
+                          </div>
+                          <div className="flex-1">
+                            <Input
+                              type="number"
+                              value={day.minutes}
+                              onChange={(e) => updateScheduleDay(index, 'minutes', e.target.value)}
+                              placeholder="0"
+                              min="0"
+                              max="59"
+                              step="15"
+                              className="text-center"
+                              data-testid={`input-minutes-${day.day.toLowerCase()}`}
+                            />
+                            <div className="text-xs text-center text-soft-gray mt-1">Minutos</div>
+                          </div>
+                        </div>
                       </div>
                       
                       <div>
