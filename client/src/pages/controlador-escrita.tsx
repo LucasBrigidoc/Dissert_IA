@@ -170,25 +170,31 @@ export default function ControladorEscrita() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Button variant="ghost" onClick={handleBack} className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
-          </Button>
-          
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-dark-blue mb-4">
-              Controlador de Escrita
-            </h1>
-            <p className="text-lg text-soft-gray max-w-2xl mx-auto">
-              Transforme seu texto com controles avançados de estilo, formalidade e argumentação. 
-              Reescreva com sinônimos ou mude completamente o sentido com antônimos.
-            </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button onClick={handleBack} className="text-soft-gray hover:text-bright-blue">
+                <ArrowLeft size={16} />
+              </button>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                  <Edit3 className="text-white" size={16} />
+                </div>
+                <h1 className="text-2xl font-bold text-dark-blue">Controlador de Escrita</h1>
+              </div>
+            </div>
+            <div className="text-sm text-soft-gray">
+              Ajustes interativos de formalidade e tom
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Content */}
+      <div className="container mx-auto px-6 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Área de Entrada de Texto */}
