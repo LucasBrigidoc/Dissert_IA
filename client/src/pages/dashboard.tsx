@@ -43,6 +43,14 @@ interface Goal {
   completed: boolean;
 }
 
+interface Exam {
+  id: number;
+  name: string;
+  date: string;
+  time?: string;
+  location?: string;
+}
+
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [editingTarget, setEditingTarget] = useState(false);
@@ -52,6 +60,19 @@ export default function Dashboard() {
   const [showFeaturesConfig, setShowFeaturesConfig] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showGoalsManagement, setShowGoalsManagement] = useState(false);
+  const [showExamsManagement, setShowExamsManagement] = useState(false);
+  
+  // Exams data state
+  const [exams, setExams] = useState<Exam[]>([
+    { id: 1, name: 'Simulado', date: '2024-10-28', time: '14:00', location: 'Online' },
+    { id: 2, name: 'ENEM 1º', date: '2024-11-03', time: '13:30', location: 'Local de Prova' },
+    { id: 3, name: 'ENEM 2º', date: '2024-11-10', time: '13:30', location: 'Local de Prova' },
+    { id: 4, name: 'Vestibular USP', date: '2024-11-15', time: '14:00', location: 'FUVEST' },
+    { id: 5, name: 'Vestibular UNICAMP', date: '2024-11-20', time: '14:00', location: 'COMVEST' },
+    { id: 6, name: 'Simulado Final', date: '2024-11-25', time: '14:00', location: 'Online' }
+  ]);
+  
+  const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '' });
   
   // Goals data state
   const [goals, setGoals] = useState<Goal[]>([
@@ -102,6 +123,31 @@ export default function Dashboard() {
   };
   
   const displayedGoals = goals.slice(0, 2);
+  const displayedExams = exams.slice(0, 4);
+  
+  // Exam helper functions
+  const addNewExam = () => {
+    if (newExam.name && newExam.date) {
+      const exam: Exam = {
+        id: Date.now(),
+        name: newExam.name,
+        date: newExam.date,
+        time: newExam.time,
+        location: newExam.location
+      };
+      setExams([...exams, exam].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+      setNewExam({ name: '', date: '', time: '', location: '' });
+    }
+  };
+  
+  const removeExam = (examId: number) => {
+    setExams(exams.filter(exam => exam.id !== examId));
+  };
+  
+  const formatExamDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+  };
   
   // Available features
   const allFeatures = [
@@ -445,28 +491,38 @@ export default function Dashboard() {
             {/* Próximas Provas Resumo */}
             <div className="space-y-2">
               <div className="text-xs font-medium text-dark-blue mb-2">Próximas Provas:</div>
-              <div className="flex items-center justify-between p-2 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded border border-soft-gray/20">
-                <span className="text-xs text-dark-blue font-medium">Simulado</span>
-                <span className="text-xs text-soft-gray">28/out</span>
-              </div>
-              <div className="flex items-center justify-between p-2 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
-                <span className="text-xs text-dark-blue font-medium">ENEM 1º</span>
-                <span className="text-xs text-bright-blue">3/nov</span>
-              </div>
-              <div className="flex items-center justify-between p-2 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded border border-dark-blue/20">
-                <span className="text-xs text-dark-blue font-medium">ENEM 2º</span>
-                <span className="text-xs text-dark-blue">10/nov</span>
-              </div>
+              {displayedExams.map((exam, index) => (
+                <div key={exam.id} className={`flex items-center justify-between p-2 rounded border ${
+                  index % 3 === 0 
+                    ? 'bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 border-soft-gray/20'
+                    : index % 3 === 1
+                      ? 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                      : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
+                }`}>
+                  <span className="text-xs text-dark-blue font-medium">{exam.name}</span>
+                  <span className={`text-xs ${
+                    index % 3 === 1 ? 'text-bright-blue' : 'text-soft-gray'
+                  }`}>
+                    {formatExamDate(exam.date)}
+                  </span>
+                </div>
+              ))}
+              {exams.length > 4 && (
+                <div className="text-center py-1">
+                  <span className="text-xs text-soft-gray">+{exams.length - 4} provas adicionais</span>
+                </div>
+              )}
             </div>
             
             <Button 
-              onClick={() => setLocation('/exams')}
+              onClick={() => setShowExamsManagement(true)}
               variant="outline" 
               size="sm" 
               className="w-full mt-3 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-              data-testid="button-view-all-exams"
+              data-testid="button-manage-exams"
             >
-              Ver Todas as Provas
+              <Edit3 size={10} className="mr-2" />
+              Gerenciar Provas
             </Button>
           </LiquidGlassCard>
 
@@ -1393,6 +1449,125 @@ export default function Dashboard() {
                 onClick={() => setShowGoalsManagement(false)}
                 className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
                 data-testid="button-close-goals-management"
+              >
+                Fechar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Exams Management Modal */}
+        <Dialog open={showExamsManagement} onOpenChange={setShowExamsManagement}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" data-testid="dialog-exams-management">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+                <Calendar className="mr-3 text-bright-blue" size={20} />
+                Gerenciar Próximas Provas
+              </DialogTitle>
+              <div className="text-sm text-soft-gray">Adicione, edite ou remova suas provas e exames</div>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Current Exams */}
+              <div>
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">Próximas Provas</h3>
+                <div className="space-y-3">
+                  {exams.map((exam) => (
+                    <div key={exam.id} className="p-4 rounded-lg border-2 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 border-bright-blue/30" data-testid={`exam-item-${exam.id}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3 flex-1">
+                          <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center">
+                            <Calendar className="text-white" size={16} />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-dark-blue">{exam.name}</div>
+                            <div className="flex items-center space-x-4 mt-1 text-sm text-soft-gray">
+                              <span>📅 {new Date(exam.date).toLocaleDateString('pt-BR')}</span>
+                              {exam.time && <span>🕐 {exam.time}</span>}
+                              {exam.location && <span>📍 {exam.location}</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => removeExam(exam.id)}
+                            className="text-red-500 border-red-300 hover:bg-red-50"
+                            data-testid={`button-remove-exam-${exam.id}`}
+                          >
+                            <X size={12} />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Add New Exam */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">Adicionar Nova Prova</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <Label className="text-sm text-dark-blue">Nome da Prova</Label>
+                    <Input
+                      value={newExam.name}
+                      onChange={(e) => setNewExam({...newExam, name: e.target.value})}
+                      placeholder="Ex: ENEM 2024"
+                      className="mt-1"
+                      data-testid="input-new-exam-name"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm text-dark-blue">Data</Label>
+                    <Input
+                      type="date"
+                      value={newExam.date}
+                      onChange={(e) => setNewExam({...newExam, date: e.target.value})}
+                      className="mt-1"
+                      data-testid="input-new-exam-date"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm text-dark-blue">Horário (opcional)</Label>
+                    <Input
+                      type="time"
+                      value={newExam.time}
+                      onChange={(e) => setNewExam({...newExam, time: e.target.value})}
+                      className="mt-1"
+                      data-testid="input-new-exam-time"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm text-dark-blue">Local (opcional)</Label>
+                    <Input
+                      value={newExam.location}
+                      onChange={(e) => setNewExam({...newExam, location: e.target.value})}
+                      placeholder="Ex: FUVEST"
+                      className="mt-1"
+                      data-testid="input-new-exam-location"
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={addNewExam}
+                  className="mt-4 bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  disabled={!newExam.name || !newExam.date}
+                  data-testid="button-add-new-exam"
+                >
+                  <Plus className="mr-2" size={12} />
+                  Adicionar Prova
+                </Button>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 pt-4 border-t">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowExamsManagement(false)}
+                className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
+                data-testid="button-close-exams-management"
               >
                 Fechar
               </Button>
