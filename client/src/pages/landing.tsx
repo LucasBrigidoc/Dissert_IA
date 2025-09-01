@@ -24,13 +24,12 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
       {/* Hero Section */}
       <section className="gradient-bg pt-20 sm:pt-24 pb-12 sm:pb-16 relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex flex-col lg:flex-row items-center justify-between min-h-[70vh] sm:min-h-[80vh] gap-8 lg:gap-12">
             <div className="w-full lg:w-1/2 text-white text-center lg:text-left">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6" data-testid="text-hero-title">
+              <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#5087ff] text-[57px]" data-testid="text-hero-title">
                 Revolucione Sua Escrita com IA
               </h1>
               <p className="text-lg sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-hero-subtitle">
@@ -59,7 +58,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Challenge Section */}
       <section className="py-12 sm:py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 text-center">
@@ -94,7 +92,6 @@ export default function Landing() {
           </Link>
         </div>
       </section>
-
       {/* Features Grid */}
       <section className="py-12 sm:py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6">
@@ -119,7 +116,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* How it Works */}
       <section className="py-12 sm:py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6">
@@ -148,7 +144,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Testimonials */}
       <section className="py-12 sm:py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6">
@@ -173,7 +168,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* CTA Section */}
       <section className="gradient-bg py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6 text-center text-white">
@@ -193,7 +187,6 @@ export default function Landing() {
           <p className="text-xs sm:text-sm text-white/70 mt-4" data-testid="text-trial-info">7 dias grátis. Cancele quando quiser.</p>
         </div>
       </section>
-
       <Footer />
     </div>
   );
