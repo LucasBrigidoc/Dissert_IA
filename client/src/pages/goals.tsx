@@ -56,12 +56,12 @@ export default function Goals() {
               className="text-dark-blue hover:bg-bright-blue/10"
               data-testid="button-back-dashboard"
             >
-              <ArrowLeft size={20} className="mr-2" />
+              <ArrowLeft size={16} className="mr-2" />
               Voltar ao Dashboard
             </Button>
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <Edit3 className="text-white" size={16} />
+                <Edit3 className="text-white" size={14} />
               </div>
               <h1 className="text-xl font-bold text-dark-blue">Personalizar Metas</h1>
             </div>

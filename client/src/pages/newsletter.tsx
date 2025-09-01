@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, ArrowRight, Eye } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, ArrowRight, Eye, Menu } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { mockNewsletters } from "@/lib/mock-data";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { useState } from "react";
 export default function NewsletterPage() {
   const [, setLocation] = useLocation();
   const [selectedNewsletter, setSelectedNewsletter] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     setLocation("/");
@@ -34,57 +35,127 @@ export default function NewsletterPage() {
         <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-8">
-                <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
-                  <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                    <Plus className="text-white text-sm" />
-                  </div>
-                  <span className="text-2xl font-bold text-dark-blue">
-                    DISSERT<span className="text-bright-blue">AI</span>
-                  </span>
-                </Link>
-                
-                {/* Navigation Menu */}
-                <div className="flex items-center space-x-6">
-                  <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
-                    <Home size={18} />
-                    <span className="font-medium">Home</span>
-                  </Link>
-                  <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                    <Grid3x3 size={18} />
-                    <span className="font-medium">Funcionalidades</span>
-                  </Link>
-                  <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                    <Newspaper size={18} />
-                    <span className="font-medium">Newsletter</span>
-                  </Link>
-                  <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
-                    <Settings size={18} />
-                    <span className="font-medium">Configurações</span>
-                  </Link>
-                </div>
+            {/* Logo */}
+            <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
+              <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
+                <Plus className="text-white text-sm" />
               </div>
-              
-              <div className="flex items-center space-x-4">
-                <button className="text-soft-gray hover:text-bright-blue transition-colors" data-testid="button-notifications">
-                  <Bell size={20} />
-                </button>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
-                  data-testid="button-logout"
+              <span className="text-2xl font-bold text-dark-blue">
+                DISSERT<span className="text-bright-blue">AI</span>
+              </span>
+            </Link>
+            
+            {/* Desktop Navigation Menu */}
+            <div className="hidden lg:flex items-center space-x-6">
+              <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
+                <Home size={14} />
+                <span className="font-medium">Home</span>
+              </Link>
+              <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
+                <Grid3x3 size={14} />
+                <span className="font-medium">Funcionalidades</span>
+              </Link>
+              <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
+                <Newspaper size={14} />
+                <span className="font-medium">Newsletter</span>
+              </Link>
+              <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
+                <Settings size={14} />
+                <span className="font-medium">Configurações</span>
+              </Link>
+            </div>
+            
+            {/* Desktop Right Side */}
+            <div className="hidden lg:flex items-center space-x-4">
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
+                data-testid="button-logout"
+              >
+                <LogOut size={12} />
+                <span>Sair</span>
+              </Button>
+              <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
+                LS
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden flex items-center space-x-3">
+              <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user-mobile">
+                LS
+              </div>
+              <Button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                variant="outline"
+                className="p-2 border-soft-gray/30 hover:border-bright-blue text-soft-gray hover:text-bright-blue"
+                data-testid="button-mobile-menu"
+              >
+                <Menu size={16} />
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden mt-4 py-4 border-t border-gray-200">
+              <div className="space-y-2">
+                <Link 
+                  href="/dashboard" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                  data-testid="button-mobile-nav-home"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <LogOut size={16} />
-                  <span>Sair</span>
-                </Button>
-                <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                  LS
+                  <Home size={16} />
+                  <span className="font-medium">Home</span>
+                </Link>
+                <Link 
+                  href="/functionalities" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                  data-testid="button-mobile-nav-functionalities"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Grid3x3 size={16} />
+                  <span className="font-medium">Funcionalidades</span>
+                </Link>
+                <Link 
+                  href="/newsletter" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20"
+                  data-testid="button-mobile-nav-newsletter"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Newspaper size={16} />
+                  <span className="font-medium">Newsletter</span>
+                </Link>
+                <Link 
+                  href="/settings" 
+                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                  data-testid="button-mobile-nav-settings"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Settings size={16} />
+                  <span className="font-medium">Configurações</span>
+                </Link>
+                <div className="pt-3 border-t border-gray-200">
+                  <Button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="flex items-center space-x-3 w-full text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
+                    data-testid="button-mobile-logout"
+                  >
+                    <LogOut size={16} />
+                    <span>Sair</span>
+                  </Button>
                 </div>
               </div>
             </div>
-          </div>
-        </nav>
+          )}
+        </div>
+      </nav>
 
         {/* Newsletter Content */}
         <div className="container mx-auto px-6 py-8 pt-24">
@@ -179,9 +250,6 @@ export default function NewsletterPage() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <button className="text-soft-gray hover:text-bright-blue transition-colors" data-testid="button-notifications">
-                <Bell size={20} />
-              </button>
               <Button
                 onClick={handleLogout}
                 variant="outline"
@@ -296,7 +364,7 @@ export default function NewsletterPage() {
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 text-center" data-testid="card-newsletter-cta">
           <div className="py-8">
             <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-6">
-              <Bell className="text-white" size={24} />
+              <Newspaper className="text-white" size={24} />
             </div>
             <h3 className="text-2xl font-bold text-dark-blue mb-4">Não perca nenhuma newsletter!</h3>
             <p className="text-soft-gray mb-6 max-w-2xl mx-auto">
@@ -307,7 +375,7 @@ export default function NewsletterPage() {
               className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
               data-testid="button-enable-notifications"
             >
-              <Bell className="mr-2" size={16} />
+              <Newspaper className="mr-2" size={16} />
               Ativar Notificações
             </Button>
           </div>

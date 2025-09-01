@@ -15,11 +15,11 @@ export default function Argumentos() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
-                <ArrowLeft size={20} />
+                <ArrowLeft size={16} />
               </Link>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <MessageCircle className="text-white" size={20} />
+                  <MessageCircle className="text-white" size={16} />
                 </div>
                 <h1 className="text-2xl font-bold text-dark-blue">Arquiteto de Argumentos</h1>
               </div>
@@ -40,7 +40,7 @@ export default function Argumentos() {
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Target className="text-white" size={16} />
+                  <Target className="text-white" size={14} />
                 </div>
                 <h3 className="text-xl font-semibold text-dark-blue">Defina seu Tema</h3>
               </div>
@@ -89,7 +89,7 @@ export default function Argumentos() {
             <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center">
-                  <Lightbulb className="text-white" size={16} />
+                  <Lightbulb className="text-white" size={14} />
                 </div>
                 <h3 className="text-xl font-semibold text-dark-blue">Argumentos Gerados</h3>
               </div>
