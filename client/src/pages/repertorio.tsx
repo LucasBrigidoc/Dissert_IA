@@ -139,54 +139,7 @@ export default function Repertorio() {
           </LiquidGlassCard>
         </div>
 
-        {/* Categories - Full Width */}
-        <div className="mb-8">
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="font-semibold text-dark-blue">Temas Populares para Redação</h4>
-              <p className="text-sm text-soft-gray">Clique em um tema para encontrar repertórios específicos</p>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-inequality">
-                ⚖️ Desigualdade Social
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-democracy">
-                🗳️ Democracia
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-environment">
-                🌱 Meio Ambiente
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-tech">
-                🤖 Tecnologia e IA
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-education">
-                📚 Educação
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-mental-health">
-                🧠 Saúde Mental
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-women">
-                👩 Direitos da Mulher
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-racism">
-                ✊ Combate ao Racismo
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-fake-news">
-                📰 Fake News
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-urbanization">
-                🏙️ Urbanização
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-elderly">
-                👴 Envelhecimento
-              </button>
-              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-violence">
-                🚫 Violência Urbana
-              </button>
-            </div>
-          </LiquidGlassCard>
-        </div>
+        
 
         {/* Results */}
         <div className="space-y-6">
