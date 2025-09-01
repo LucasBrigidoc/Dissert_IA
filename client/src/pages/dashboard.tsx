@@ -302,7 +302,7 @@ export default function Dashboard() {
                 className="p-2 border-soft-gray/30 hover:border-bright-blue text-soft-gray hover:text-bright-blue"
                 data-testid="button-mobile-menu"
               >
-                <Menu size={16} />
+                <Menu size={12} />
               </Button>
             </div>
           </div>
@@ -317,7 +317,7 @@ export default function Dashboard() {
                   data-testid="button-mobile-nav-home"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Home size={16} />
+                  <Home size={12} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link 
@@ -326,7 +326,7 @@ export default function Dashboard() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Plus size={16} />
+                  <Plus size={10} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -335,7 +335,7 @@ export default function Dashboard() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Book size={16} />
+                  <Book size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -344,7 +344,7 @@ export default function Dashboard() {
                   data-testid="button-mobile-nav-settings"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Settings size={16} />
+                  <Settings size={12} />
                   <span className="font-medium">Configurações</span>
                 </Link>
                 <div className="pt-3 border-t border-gray-200">
@@ -357,7 +357,7 @@ export default function Dashboard() {
                     className="flex items-center space-x-3 w-full text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                     data-testid="button-mobile-logout"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={12} />
                     <span>Sair</span>
                   </Button>
                 </div>
@@ -375,8 +375,8 @@ export default function Dashboard() {
           {/* Welcome + Quick Exam Info Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome-exams">
             <div className="flex items-center mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Calendar className="text-white" size={16} />
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <Calendar className="text-white" size={12} />
               </div>
               <h3 className="text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
             </div>
@@ -413,15 +413,15 @@ export default function Dashboard() {
           {/* Goals Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Target className="text-white" size={16} />
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <Target className="text-white" size={12} />
               </div>
               <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
               <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <CheckCircle2 className="text-white" size={12} />
+                <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <CheckCircle2 className="text-white" size={10} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-blue">Fazer 2 redações</div>
@@ -429,8 +429,8 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
-                <div className="w-8 h-8 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={12} />
+                <div className="w-6 h-6 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <Target className="text-white" size={10} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-blue">Estudar 10h</div>
@@ -445,7 +445,7 @@ export default function Dashboard() {
               onClick={() => setLocation('/goals')}
               data-testid="button-customize-goals"
             >
-              <Edit3 size={12} className="mr-2" />
+              <Edit3 size={10} className="mr-2" />
               Personalizar
             </Button>
           </LiquidGlassCard>
@@ -454,8 +454,8 @@ export default function Dashboard() {
           <div className="lg:col-span-2">
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-improvement-points">
               <div className="flex items-center mb-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={16} />
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <Target className="text-white" size={12} />
                 </div>
                 <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
               </div>
@@ -541,8 +541,8 @@ export default function Dashboard() {
               {/* Summary em linha */}
               <div className="mt-3 flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                    <Lightbulb className="text-white" size={12} />
+                  <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                    <Lightbulb className="text-white" size={10} />
                   </div>
                   <span className="text-xs font-medium text-dark-blue">Foco: Coesão (Comp. 4)</span>
                 </div>
@@ -561,8 +561,8 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={16} />
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <TrendingUp className="text-white" size={12} />
                 </div>
                 <h4 className="font-semibold text-dark-blue">Progresso Geral</h4>
               </div>
@@ -673,8 +673,8 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-evolution-chart">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={16} />
+                <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <TrendingUp className="text-white" size={12} />
                 </div>
                 <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
               </div>
@@ -742,7 +742,7 @@ export default function Dashboard() {
                     className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                     data-testid="button-add-score"
                   >
-                    <Plus size={12} className="mr-1" />
+                    <Plus size={10} className="mr-1" />
                     Adicionar Nota
                   </Button>
                 </DialogTrigger>
@@ -754,7 +754,7 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Clock className="text-white" size={16} />
+                <Clock className="text-white" size={12} />
               </div>
               <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
             </div>
@@ -768,8 +768,8 @@ export default function Dashboard() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <Lightbulb className="text-white" size={12} />
+                    <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                      <Lightbulb className="text-white" size={10} />
                     </div>
                     <span className="text-sm text-dark-blue">Brainstorm</span>
                   </div>
@@ -777,8 +777,8 @@ export default function Dashboard() {
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <MessageCircle className="text-white" size={12} />
+                    <div className="w-6 h-6 bg-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                      <MessageCircle className="text-white" size={10} />
                     </div>
                     <span className="text-sm text-dark-blue">Rascunho</span>
                   </div>
@@ -803,7 +803,7 @@ export default function Dashboard() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-dark-blue flex items-center">
-                <Plus className="mr-2" size={16} />
+                <Plus className="mr-2" size={12} />
                 Adicionar Nova Nota
               </DialogTitle>
             </DialogHeader>
@@ -1182,7 +1182,7 @@ export default function Dashboard() {
                 className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                 data-testid="button-save-features-config"
               >
-                <Save className="mr-2" size={16} />
+                <Save className="mr-2" size={12} />
                 Salvar Configuração
               </Button>
             </div>
@@ -1193,7 +1193,7 @@ export default function Dashboard() {
         <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
           <div className="flex items-center mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Book className="text-white" size={16} />
+              <Book className="text-white" size={12} />
             </div>
             <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
           </div>
@@ -1219,7 +1219,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Plus className="text-white" size={16} />
+                <Plus className="text-white" size={12} />
               </div>
               <h4 className="font-semibold text-dark-blue text-lg">Acesso rápido das principais Funcionalidades</h4>
             </div>
