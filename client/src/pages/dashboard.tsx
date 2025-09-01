@@ -34,6 +34,15 @@ interface ScheduleDay {
   completed: boolean;
 }
 
+interface Goal {
+  id: number;
+  title: string;
+  target: number;
+  current: number;
+  unit: string;
+  completed: boolean;
+}
+
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [editingTarget, setEditingTarget] = useState(false);
@@ -42,6 +51,57 @@ export default function Dashboard() {
   const [showScheduleEdit, setShowScheduleEdit] = useState(false);
   const [showFeaturesConfig, setShowFeaturesConfig] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showGoalsManagement, setShowGoalsManagement] = useState(false);
+  
+  // Goals data state
+  const [goals, setGoals] = useState<Goal[]>([
+    { id: 1, title: 'Fazer redações', target: 2, current: 1, unit: 'redações', completed: false },
+    { id: 2, title: 'Estudar', target: 10, current: 8.9, unit: 'horas', completed: false },
+    { id: 3, title: 'Ler newsletters', target: 2, current: 1, unit: 'newsletters', completed: false },
+    { id: 4, title: 'Simulados', target: 1, current: 0, unit: 'simulados', completed: false },
+    { id: 5, title: 'Revisar argumentos', target: 5, current: 3, unit: 'argumentos', completed: false },
+    { id: 6, title: 'Praticar coesão', target: 3, current: 1, unit: 'exercícios', completed: false }
+  ]);
+  
+  const [newGoal, setNewGoal] = useState({ title: '', target: '', unit: '' });
+  
+  // Goals helper functions
+  const toggleGoalCompletion = (goalId: number) => {
+    setGoals(goals.map(goal => 
+      goal.id === goalId 
+        ? { ...goal, completed: !goal.completed, current: !goal.completed ? goal.target : Math.min(goal.current, goal.target - 0.1) }
+        : goal
+    ));
+  };
+  
+  const updateGoalProgress = (goalId: number, newCurrent: number) => {
+    setGoals(goals.map(goal => 
+      goal.id === goalId 
+        ? { ...goal, current: Math.max(0, newCurrent), completed: newCurrent >= goal.target }
+        : goal
+    ));
+  };
+  
+  const addNewGoal = () => {
+    if (newGoal.title && newGoal.target && newGoal.unit) {
+      const goal: Goal = {
+        id: Date.now(),
+        title: newGoal.title,
+        target: Number(newGoal.target),
+        current: 0,
+        unit: newGoal.unit,
+        completed: false
+      };
+      setGoals([...goals, goal]);
+      setNewGoal({ title: '', target: '', unit: '' });
+    }
+  };
+  
+  const removeGoal = (goalId: number) => {
+    setGoals(goals.filter(goal => goal.id !== goalId));
+  };
+  
+  const displayedGoals = goals.slice(0, 4);
   
   // Available features
   const allFeatures = [
@@ -419,34 +479,42 @@ export default function Dashboard() {
               <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <CheckCircle2 className="text-white" size={12} />
+              {displayedGoals.map((goal) => (
+                <div key={goal.id} className={`flex items-center p-3 rounded-lg border ${
+                  goal.completed 
+                    ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-200'
+                    : 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                }`}>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
+                    goal.completed ? 'bg-green-500' : 'bg-bright-blue'
+                  }`}>
+                    <CheckCircle2 className="text-white" size={12} />
+                  </div>
+                  <div className="flex-1">
+                    <div className={`text-sm font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
+                      {goal.title} {goal.target} {goal.unit}
+                    </div>
+                    <div className={`text-xs ${goal.completed ? 'text-green-600' : 'text-soft-gray'}`}>
+                      {goal.current}/{goal.target} concluídas
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-dark-blue">Fazer 2 redações</div>
-                  <div className="text-xs text-soft-gray">1/2 concluídas</div>
+              ))}
+              {goals.length > 4 && (
+                <div className="text-center py-2">
+                  <span className="text-xs text-soft-gray">+{goals.length - 4} metas adicionais</span>
                 </div>
-              </div>
-              <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
-                <div className="w-6 h-6 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={12} />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-dark-blue">Estudar 10h</div>
-                  <div className="text-xs text-soft-gray">8.9/10h concluídas</div>
-                </div>
-              </div>
+              )}
             </div>
             <Button 
               variant="outline" 
               size="sm" 
               className="w-full mt-3 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-              onClick={() => setLocation('/goals')}
-              data-testid="button-customize-goals"
+              onClick={() => setShowGoalsManagement(true)}
+              data-testid="button-manage-goals"
             >
               <Edit3 size={10} className="mr-2" />
-              Personalizar
+              Gerenciar Metas
             </Button>
           </LiquidGlassCard>
 
@@ -1184,6 +1252,149 @@ export default function Dashboard() {
               >
                 <Save className="mr-2" size={12} />
                 Salvar Configuração
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Goals Management Modal */}
+        <Dialog open={showGoalsManagement} onOpenChange={setShowGoalsManagement}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" data-testid="dialog-goals-management">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+                <Target className="mr-3 text-bright-blue" size={20} />
+                Gerenciar Metas da Semana
+              </DialogTitle>
+              <div className="text-sm text-soft-gray">Adicione, edite ou remova suas metas semanais</div>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Current Goals */}
+              <div>
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">Metas Atuais</h3>
+                <div className="space-y-3">
+                  {goals.map((goal) => (
+                    <div key={goal.id} className={`p-4 rounded-lg border-2 ${
+                      goal.completed 
+                        ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-300'
+                        : 'bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 border-bright-blue/30'
+                    }`} data-testid={`goal-item-${goal.id}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3 flex-1">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            goal.completed ? 'bg-green-500' : 'bg-bright-blue'
+                          }`}>
+                            <CheckCircle2 className="text-white" size={16} />
+                          </div>
+                          <div className="flex-1">
+                            <div className={`font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
+                              {goal.title}
+                            </div>
+                            <div className="flex items-center space-x-4 mt-2">
+                              <div className="flex items-center space-x-2">
+                                <label className="text-sm text-soft-gray">Progresso:</label>
+                                <input
+                                  type="number"
+                                  value={goal.current}
+                                  onChange={(e) => updateGoalProgress(goal.id, Number(e.target.value))}
+                                  className="w-16 px-2 py-1 text-sm border border-bright-blue/30 rounded focus:outline-none focus:border-bright-blue"
+                                  min="0"
+                                  max={goal.target}
+                                  step="0.1"
+                                  data-testid={`input-goal-progress-${goal.id}`}
+                                />
+                                <span className="text-sm text-soft-gray">/ {goal.target} {goal.unit}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => toggleGoalCompletion(goal.id)}
+                            className={`${
+                              goal.completed 
+                                ? 'bg-green-500 text-white hover:bg-green-600 border-green-500'
+                                : 'text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10'
+                            }`}
+                            data-testid={`button-toggle-goal-${goal.id}`}
+                          >
+                            {goal.completed ? 'Desmarcar' : 'Concluir'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => removeGoal(goal.id)}
+                            className="text-red-500 border-red-300 hover:bg-red-50"
+                            data-testid={`button-remove-goal-${goal.id}`}
+                          >
+                            <X size={12} />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Add New Goal */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">Adicionar Nova Meta</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm text-dark-blue">Título da Meta</Label>
+                    <Input
+                      value={newGoal.title}
+                      onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                      placeholder="Ex: Ler livros"
+                      className="mt-1"
+                      data-testid="input-new-goal-title"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm text-dark-blue">Meta (quantidade)</Label>
+                    <Input
+                      type="number"
+                      value={newGoal.target}
+                      onChange={(e) => setNewGoal({...newGoal, target: e.target.value})}
+                      placeholder="Ex: 3"
+                      className="mt-1"
+                      min="1"
+                      data-testid="input-new-goal-target"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm text-dark-blue">Unidade</Label>
+                    <Input
+                      value={newGoal.unit}
+                      onChange={(e) => setNewGoal({...newGoal, unit: e.target.value})}
+                      placeholder="Ex: livros"
+                      className="mt-1"
+                      data-testid="input-new-goal-unit"
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={addNewGoal}
+                  className="mt-4 bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  disabled={!newGoal.title || !newGoal.target || !newGoal.unit}
+                  data-testid="button-add-new-goal"
+                >
+                  <Plus className="mr-2" size={12} />
+                  Adicionar Meta
+                </Button>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 pt-4 border-t">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowGoalsManagement(false)}
+                className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
+                data-testid="button-close-goals-management"
+              >
+                Fechar
               </Button>
             </div>
           </DialogContent>
