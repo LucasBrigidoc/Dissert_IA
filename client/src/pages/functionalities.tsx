@@ -44,7 +44,7 @@ export default function FunctionalitiesPage() {
   };
 
   // Organizar funcionalidades por categorias
-  const coreFeatures = mockFeatures.slice(0, 4); // Principais: Argumentos, Repertório, Estrutura, Newsletter
+  const coreFeatures = mockFeatures.slice(0, 4).filter(feature => feature.name !== "Newsletter Educacional"); // Principais: Argumentos, Repertório, Estrutura (sem Newsletter)
   const practiceFeatures = mockFeatures.slice(4, 6); // Prática: Estilo, Simulador
   const creationFeatures = mockFeatures.slice(6, 8); // Criação: Propostas, Biblioteca
 
