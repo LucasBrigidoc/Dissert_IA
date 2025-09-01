@@ -283,10 +283,10 @@ export default function ControladorEscrita() {
         </div>
 
         {/* Controles - Uma linha na parte de baixo */}
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div className="flex gap-4 justify-center">
           {/* Card de Formalidade */}
           <div 
-            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`${expandedCard === 'formalidade' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
           >
             <div className="flex items-center justify-between">
@@ -367,7 +367,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
+            className={`${expandedCard === 'argumentacao' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
           >
             <div className="flex items-center justify-between">
@@ -500,7 +500,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
+            className={`${expandedCard === 'sinonimos' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
           >
             <div className="flex items-center justify-between">
@@ -547,7 +547,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
+            className={`${expandedCard === 'antonimos' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
           >
             <div className="flex items-center justify-between">
