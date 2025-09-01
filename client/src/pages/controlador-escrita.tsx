@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, Sliders, ThumbsUp, ChevronDown, ChevronUp, FileText, Shuffle } from "lucide-react";
+import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, Sliders, ThumbsUp, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ControladorEscrita() {
   const [, setLocation] = useLocation();
@@ -27,6 +29,18 @@ export default function ControladorEscrita() {
   
   // Estados para controlar cards expandidos
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  
+  // Estados para formalidade
+  const [wordDifficulty, setWordDifficulty] = useState("medio");
+  
+  // Estados para argumentação
+  const [argumentStructure, setArgumentStructure] = useState({
+    repertoire: false,
+    thesis: false,
+    arguments: false,
+    conclusion: false
+  });
+  const [argumentTechnique, setArgumentTechnique] = useState("classica");
 
   const handleBack = () => {
     setLocation("/functionalities");
@@ -269,10 +283,10 @@ export default function ControladorEscrita() {
         </div>
 
         {/* Controles - Uma linha na parte de baixo */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="flex flex-wrap gap-4 justify-center">
           {/* Card de Formalidade */}
           <div 
-            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
           >
             <div className="flex items-center justify-between">
@@ -310,6 +324,27 @@ export default function ControladorEscrita() {
                     <span>Formal</span>
                   </div>
                 </div>
+                
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Dificuldade das Palavras
+                  </Label>
+                  <RadioGroup value={wordDifficulty} onValueChange={setWordDifficulty}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="simples" id="simples" />
+                      <Label htmlFor="simples" className="text-xs">Simples</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="medio" id="medio" />
+                      <Label htmlFor="medio" className="text-xs">Médio</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="complexo" id="complexo" />
+                      <Label htmlFor="complexo" className="text-xs">Complexo</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -324,7 +359,7 @@ export default function ControladorEscrita() {
                   ) : (
                     <Edit3 className="mr-2 h-3 w-3" />
                   )}
-                  Aplicar
+                  Aplicar Formalidade
                 </Button>
               </div>
             )}
@@ -332,17 +367,17 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
+            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                  <ThumbsUp className="text-white" size={16} />
+                  <Target className="text-white" size={16} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-dark-blue">Argumentação</h3>
-                  <p className="text-xs text-soft-gray">Intensidade persuasiva</p>
+                  <h3 className="font-semibold text-dark-blue">Estrutura Argumentativa</h3>
+                  <p className="text-xs text-soft-gray">Técnicas de oratória</p>
                 </div>
               </div>
               {expandedCard === 'argumentacao' ? (
@@ -356,7 +391,75 @@ export default function ControladorEscrita() {
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Nível: {argumentativeLevel[0]}%
+                    Técnica de Argumentação
+                  </Label>
+                  <RadioGroup value={argumentTechnique} onValueChange={setArgumentTechnique}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="classica" id="classica" />
+                      <Label htmlFor="classica" className="text-xs">Clássica</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="toulmin" id="toulmin" />
+                      <Label htmlFor="toulmin" className="text-xs">Toulmin</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="dialética" id="dialética" />
+                      <Label htmlFor="dialética" className="text-xs">Dialética</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Elementos de Estrutura
+                  </Label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="repertoire" 
+                        checked={argumentStructure.repertoire}
+                        onCheckedChange={(checked) => 
+                          setArgumentStructure(prev => ({...prev, repertoire: !!checked}))
+                        }
+                      />
+                      <Label htmlFor="repertoire" className="text-xs">Reposicionamento do Repertório</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="thesis" 
+                        checked={argumentStructure.thesis}
+                        onCheckedChange={(checked) => 
+                          setArgumentStructure(prev => ({...prev, thesis: !!checked}))
+                        }
+                      />
+                      <Label htmlFor="thesis" className="text-xs">Reformulação da Tese</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="arguments" 
+                        checked={argumentStructure.arguments}
+                        onCheckedChange={(checked) => 
+                          setArgumentStructure(prev => ({...prev, arguments: !!checked}))
+                        }
+                      />
+                      <Label htmlFor="arguments" className="text-xs">Pontos Argumentativos</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="conclusion" 
+                        checked={argumentStructure.conclusion}
+                        onCheckedChange={(checked) => 
+                          setArgumentStructure(prev => ({...prev, conclusion: !!checked}))
+                        }
+                      />
+                      <Label htmlFor="conclusion" className="text-xs">Conclusão Persuasiva</Label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Intensidade: {argumentativeLevel[0]}%
                   </Label>
                   <Slider
                     value={argumentativeLevel}
@@ -367,9 +470,10 @@ export default function ControladorEscrita() {
                   />
                   <div className="flex justify-between text-xs text-soft-gray">
                     <span>Descritivo</span>
-                    <span>Argumentativo</span>
+                    <span>Persuasivo</span>
                   </div>
                 </div>
+                
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -382,9 +486,9 @@ export default function ControladorEscrita() {
                   {isProcessing ? (
                     <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
                   ) : (
-                    <ThumbsUp className="mr-2 h-3 w-3" />
+                    <Target className="mr-2 h-3 w-3" />
                   )}
-                  Aplicar
+                  Aplicar Estrutura
                 </Button>
               </div>
             )}
@@ -392,7 +496,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
+            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
           >
             <div className="flex items-center justify-between">
@@ -431,7 +535,7 @@ export default function ControladorEscrita() {
                   ) : (
                     <RefreshCw className="mr-2 h-3 w-3" />
                   )}
-                  Aplicar
+                  Aplicar Sinônimos
                 </Button>
               </div>
             )}
@@ -439,7 +543,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
+            className={`min-w-[280px] flex-1 rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
           >
             <div className="flex items-center justify-between">
@@ -478,7 +582,7 @@ export default function ControladorEscrita() {
                   ) : (
                     <Shuffle className="mr-2 h-3 w-3" />
                   )}
-                  Aplicar
+                  Aplicar Antônimos
                 </Button>
               </div>
             )}
