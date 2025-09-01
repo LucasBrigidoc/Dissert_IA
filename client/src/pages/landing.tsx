@@ -102,18 +102,20 @@ export default function Landing() {
             Funcionalidades em Destaque
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {mockFeatures.map((feature) => {
-              const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
-              return (
-                <LiquidGlassCard key={feature.id} className="feature-card" data-testid={`card-feature-${feature.id}`}>
-                  <div className="text-3xl text-bright-blue mb-4">
-                    <IconComponent className="mx-auto" size={32} />
-                  </div>
-                  <h3 className="text-lg font-semibold text-dark-blue mb-3">{feature.name}</h3>
-                  <p className="text-soft-gray text-sm">{feature.description}</p>
-                </LiquidGlassCard>
-              );
-            })}
+            {mockFeatures
+              .filter((feature) => feature.name !== "Newsletter Educacional")
+              .map((feature) => {
+                const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
+                return (
+                  <LiquidGlassCard key={feature.id} className="feature-card" data-testid={`card-feature-${feature.id}`}>
+                    <div className="text-3xl text-bright-blue mb-4">
+                      <IconComponent className="mx-auto" size={32} />
+                    </div>
+                    <h3 className="text-lg font-semibold text-dark-blue mb-3">{feature.name}</h3>
+                    <p className="text-soft-gray text-sm">{feature.description}</p>
+                  </LiquidGlassCard>
+                );
+              })}</div>
           </div>
         </div>
       </section>
