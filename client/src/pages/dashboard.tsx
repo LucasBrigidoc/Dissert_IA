@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save } from "lucide-react";
+import { Bell, MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -40,6 +40,20 @@ export default function Dashboard() {
   const [newTargetScore, setNewTargetScore] = useState(mockUserData.targetScore);
   const [showAddScore, setShowAddScore] = useState(false);
   const [showScheduleEdit, setShowScheduleEdit] = useState(false);
+  const [showFeaturesConfig, setShowFeaturesConfig] = useState(false);
+  
+  // Available features
+  const allFeatures = [
+    { id: 'argumentos', name: 'Arquiteto de Argumentos', description: 'Construa argumentos sólidos', icon: MessageCircle, color: 'bright-blue' },
+    { id: 'repertorio', name: 'Explorador de Repertório', description: 'Amplie seus conhecimentos', icon: Search, color: 'dark-blue' },
+    { id: 'simulador', name: 'Simulador de Provas', description: 'Pratique redações', icon: GraduationCap, color: 'bright-blue' },
+    { id: 'estilo', name: 'Criador de Estilo', description: 'Personalize sua escrita', icon: Sliders, color: 'soft-gray' },
+    { id: 'goals', name: 'Metas e Objetivos', description: 'Defina seus objetivos', icon: Target, color: 'bright-blue' },
+    { id: 'newsletter', name: 'Newsletter Semanal', description: 'Conteúdo atualizado', icon: Book, color: 'dark-blue' }
+  ];
+  
+  // Visible features state
+  const [visibleFeatures, setVisibleFeatures] = useState(['argumentos', 'repertorio', 'simulador', 'estilo']);
   
   // Schedule data state
   const [scheduleData, setScheduleData] = useState<ScheduleDay[]>([
@@ -198,6 +212,26 @@ export default function Dashboard() {
     return `${hours}h ${minutes}min`;
   };
 
+  const handleFeaturesConfig = () => {
+    setShowFeaturesConfig(true);
+  };
+
+  const handleSaveFeaturesConfig = () => {
+    setShowFeaturesConfig(false);
+  };
+
+  const toggleFeatureVisibility = (featureId: string) => {
+    setVisibleFeatures(prev => 
+      prev.includes(featureId)
+        ? prev.filter(id => id !== featureId)
+        : [...prev, featureId]
+    );
+  };
+
+  const getVisibleFeaturesData = () => {
+    return allFeatures.filter(feature => visibleFeatures.includes(feature.id));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Fixed Navigation Bar */}
@@ -345,7 +379,7 @@ export default function Dashboard() {
                   <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                     <Target className="text-white" size={12} />
                   </div>
-                  <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar (ENEM)</h4>
+                  <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
                 </div>
               </div>
               
@@ -880,7 +914,7 @@ export default function Dashboard() {
                 <Timer className="mr-3 text-bright-blue" size={24} />
                 Editar Cronograma de Estudos
               </DialogTitle>
-              <div className="text-sm text-soft-gray">Personalize seu cronograma semanal de estudos</div>
+              <div className="text-sm text-soft-gray">Cronograma semanal de estudos</div>
             </DialogHeader>
             
             <div className="grid gap-6">
@@ -967,6 +1001,85 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
 
+        {/* Features Configuration Modal */}
+        <Dialog open={showFeaturesConfig} onOpenChange={setShowFeaturesConfig}>
+          <DialogContent className="max-w-2xl" data-testid="dialog-features-config">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+                <Settings className="mr-3 text-bright-blue" size={24} />
+                Configurar Funcionalidades de Acesso Rápido
+              </DialogTitle>
+              <div className="text-sm text-soft-gray">Escolha quais funcionalidades aparecem no seu dashboard</div>
+            </DialogHeader>
+            
+            <div className="grid gap-4 py-4">
+              <div className="text-sm font-medium text-dark-blue mb-2">
+                Selecione as funcionalidades que deseja ver no acesso rápido:
+              </div>
+              
+              <div className="grid gap-3">
+                {allFeatures.map((feature) => {
+                  const IconComponent = feature.icon;
+                  const isSelected = visibleFeatures.includes(feature.id);
+                  
+                  return (
+                    <div 
+                      key={feature.id}
+                      className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                        isSelected 
+                          ? 'bg-bright-blue/10 border-bright-blue/30' 
+                          : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                      }`}
+                      onClick={() => toggleFeatureVisibility(feature.id)}
+                      data-testid={`feature-toggle-${feature.id}`}
+                    >
+                      <Checkbox 
+                        checked={isSelected}
+                        onChange={() => toggleFeatureVisibility(feature.id)}
+                        data-testid={`checkbox-${feature.id}`}
+                      />
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        isSelected 
+                          ? `bg-gradient-to-br from-${feature.color === 'bright-blue' ? 'bright-blue' : feature.color === 'dark-blue' ? 'dark-blue' : 'soft-gray'} to-${feature.color === 'bright-blue' ? 'dark-blue' : feature.color === 'dark-blue' ? 'soft-gray' : 'bright-blue'}`
+                          : 'bg-gray-300'
+                      }`}>
+                        <IconComponent className="text-white" size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-dark-blue">{feature.name}</div>
+                        <div className="text-xs text-soft-gray">{feature.description}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="text-xs text-soft-gray mt-2">
+                Você pode selecionar até 4 funcionalidades para melhor organização visual.
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 pt-4 border-t">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowFeaturesConfig(false)}
+                className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
+                data-testid="button-cancel-features-config"
+              >
+                Cancelar
+              </Button>
+              <Button 
+                onClick={handleSaveFeaturesConfig}
+                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                data-testid="button-save-features-config"
+              >
+                <Save className="mr-2" size={16} />
+                Salvar Configuração
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Fifth Row: Newsletter - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
           <div className="flex items-center justify-between mb-4">
@@ -995,62 +1108,69 @@ export default function Dashboard() {
         {/* Sixth Row: System Features - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-6">
-            <h4 className="font-semibold text-dark-blue text-lg">Acesso rapido das principais Funcionalidades</h4>
-            <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-              <Plus className="text-white" size={16} />
+            <h4 className="font-semibold text-dark-blue text-lg">Acesso rápido das principais Funcionalidades</h4>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleFeaturesConfig}
+                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+                data-testid="button-configure-features"
+              >
+                <Settings className="mr-2" size={14} />
+                Configurar
+              </Button>
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Plus className="text-white" size={16} />
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {getVisibleFeaturesData().map((feature) => {
+              const IconComponent = feature.icon;
+              const borderColor = feature.color === 'bright-blue' ? 'border-bright-blue/30 hover:border-bright-blue/50'
+                : feature.color === 'dark-blue' ? 'border-dark-blue/30 hover:border-dark-blue/50'
+                : 'border-soft-gray/30 hover:border-soft-gray/50';
+              
+              const gradientFrom = feature.color === 'bright-blue' ? 'from-bright-blue'
+                : feature.color === 'dark-blue' ? 'from-dark-blue'
+                : 'from-soft-gray';
+              
+              const gradientTo = feature.color === 'bright-blue' ? 'to-dark-blue'
+                : feature.color === 'dark-blue' ? 'to-soft-gray'
+                : 'to-bright-blue';
+              
+              const hoverGradient = feature.color === 'bright-blue' ? 'hover:from-bright-blue/10 hover:to-dark-blue/10'
+                : feature.color === 'dark-blue' ? 'hover:from-dark-blue/10 hover:to-soft-gray/10'
+                : 'hover:from-soft-gray/10 hover:to-bright-blue/10';
+              
+              return (
+                <Button 
+                  key={feature.id}
+                  onClick={() => handleQuickAccess(feature.id)}
+                  variant="outline" 
+                  className={`p-6 h-auto flex flex-col items-center ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group`}
+                  data-testid={`button-feature-${feature.id}`}
+                >
+                  <div className={`w-12 h-12 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                    <IconComponent className="text-white" size={20} />
+                  </div>
+                  <div className="text-sm text-dark-blue font-medium">{feature.name}</div>
+                  <div className="text-xs text-soft-gray mt-1 text-center">{feature.description}</div>
+                </Button>
+              );
+            })}
+          </div>
+          
+          <div className="flex justify-center">
             <Button 
-              onClick={() => handleQuickAccess('argumentos')}
+              onClick={() => setLocation('/functionalities')}
               variant="outline" 
-              className="p-6 h-auto flex flex-col items-center border-bright-blue/30 hover:bg-gradient-to-br hover:from-bright-blue/10 hover:to-dark-blue/10 hover:border-bright-blue/50 transition-all duration-200 group"
-              data-testid="button-feature-arguments"
+              className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 px-6 py-2"
+              data-testid="button-view-all-functionalities"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <MessageCircle className="text-white" size={20} />
-              </div>
-              <div className="text-sm text-dark-blue font-medium">Arquiteto de Argumentos</div>
-              <div className="text-xs text-soft-gray mt-1 text-center">Construa argumentos sólidos</div>
-            </Button>
-            
-            <Button 
-              onClick={() => handleQuickAccess('repertorio')}
-              variant="outline" 
-              className="p-6 h-auto flex flex-col items-center border-dark-blue/30 hover:bg-gradient-to-br hover:from-dark-blue/10 hover:to-soft-gray/10 hover:border-dark-blue/50 transition-all duration-200 group"
-              data-testid="button-feature-repertoire"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Search className="text-white" size={20} />
-              </div>
-              <div className="text-sm text-dark-blue font-medium">Explorador de Repertório</div>
-              <div className="text-xs text-soft-gray mt-1 text-center">Amplie seus conhecimentos</div>
-            </Button>
-            
-            <Button 
-              onClick={() => handleQuickAccess('simulador')}
-              variant="outline" 
-              className="p-6 h-auto flex flex-col items-center border-bright-blue/30 hover:bg-gradient-to-br hover:from-bright-blue/10 hover:to-dark-blue/10 hover:border-bright-blue/50 transition-all duration-200 group"
-              data-testid="button-feature-simulator"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <GraduationCap className="text-white" size={20} />
-              </div>
-              <div className="text-sm text-dark-blue font-medium">Simulador de Provas</div>
-              <div className="text-xs text-soft-gray mt-1 text-center">Pratique redações</div>
-            </Button>
-            
-            <Button 
-              onClick={() => handleQuickAccess('estilo')}
-              variant="outline" 
-              className="p-6 h-auto flex flex-col items-center border-soft-gray/30 hover:bg-gradient-to-br hover:from-soft-gray/10 hover:to-bright-blue/10 hover:border-soft-gray/50 transition-all duration-200 group"
-              data-testid="button-feature-style"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Sliders className="text-white" size={20} />
-              </div>
-              <div className="text-sm text-dark-blue font-medium">Criador de Estilo</div>
-              <div className="text-xs text-soft-gray mt-1 text-center">Personalize sua escrita</div>
+              <Grid3X3 className="mr-2" size={16} />
+              Ver Todas as Funcionalidades
             </Button>
           </div>
         </LiquidGlassCard>
