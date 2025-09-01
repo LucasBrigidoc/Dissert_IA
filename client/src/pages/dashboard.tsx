@@ -271,7 +271,7 @@ export default function Dashboard() {
         setLocation('/simulador');
         break;
       case 'estilo':
-        setLocation('/estilo');
+        setLocation('/estilo?from=dashboard');
         break;
     }
   };

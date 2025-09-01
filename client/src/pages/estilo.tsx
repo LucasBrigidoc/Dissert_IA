@@ -4,9 +4,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Sliders, Type, Zap, Eye, Download, RefreshCw } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function Estilo() {
+  const [location] = useLocation();
+  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const fromPage = urlParams.get('from') || 'dashboard';
+  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -14,7 +18,7 @@ export default function Estilo() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
+              <Link href={backUrl} className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
                 <ArrowLeft size={16} />
               </Link>
               <div className="flex items-center space-x-3">
