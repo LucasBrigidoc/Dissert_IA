@@ -153,6 +153,16 @@ export default function Dashboard() {
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
   };
   
+  // Calculate total weekly study hours
+  const calculateWeeklyHours = () => {
+    const totalMinutes = scheduleData.reduce((total, day) => {
+      return total + (day.hours * 60) + day.minutes;
+    }, 0);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
+  };
+  
   // Available features
   const allFeatures = [
     { id: 'argumentos', name: 'Arquiteto de Argumentos', description: 'Construa argumentos sólidos', icon: MessageCircle, color: 'bright-blue' },
@@ -1103,7 +1113,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-lg font-bold text-bright-blue">14h</div>
+                <div className="text-lg font-bold text-bright-blue" data-testid="text-weekly-hours">{calculateWeeklyHours()}</div>
                 <div className="text-xs text-soft-gray">por semana</div>
               </div>
             </div>
