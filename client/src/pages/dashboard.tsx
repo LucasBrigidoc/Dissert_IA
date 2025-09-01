@@ -101,7 +101,7 @@ export default function Dashboard() {
     setGoals(goals.filter(goal => goal.id !== goalId));
   };
   
-  const displayedGoals = goals.slice(0, 4);
+  const displayedGoals = goals.slice(0, 2);
   
   // Available features
   const allFeatures = [
@@ -500,9 +500,9 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
-              {goals.length > 4 && (
+              {goals.length > 2 && (
                 <div className="text-center py-2">
-                  <span className="text-xs text-soft-gray">+{goals.length - 4} metas adicionais</span>
+                  <span className="text-xs text-soft-gray">+{goals.length - 2} metas adicionais</span>
                 </div>
               )}
             </div>
