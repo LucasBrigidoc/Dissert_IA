@@ -27,8 +27,8 @@ export default function ControladorEscrita() {
   // Estado para o tipo de modificação atual
   const [modificationType, setModificationType] = useState<string>("");
   
-  // Estados para controlar cards expandidos
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  // Estados para controlar cards expandidos (permite múltiplos abertos)
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   
   // Estados para formalidade
   const [wordDifficulty, setWordDifficulty] = useState("medio");
@@ -41,6 +41,19 @@ export default function ControladorEscrita() {
     conclusion: false
   });
   const [argumentTechnique, setArgumentTechnique] = useState("topico-frasal");
+
+  // Função para alternar cards expandidos
+  const toggleCard = (cardId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardId)) {
+        newSet.delete(cardId);
+      } else {
+        newSet.add(cardId);
+      }
+      return newSet;
+    });
+  };
 
   const handleBack = () => {
     setLocation("/functionalities");
@@ -231,11 +244,11 @@ export default function ControladorEscrita() {
         </div>
 
         {/* Controles - Ocupam toda a vertical */}
-        <div className="flex-1 grid grid-cols-4 gap-4 mb-6">
+        <div className="flex-1 grid grid-cols-4 gap-4 mb-6 items-start">
           {/* Card de Formalidade */}
           <div 
-            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
-            onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.has('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
+            onClick={() => toggleCard('formalidade')}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -247,14 +260,14 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Ajuste o nível formal</p>
                 </div>
               </div>
-              {expandedCard === 'formalidade' ? (
+              {expandedCards.has('formalidade') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCard === 'formalidade' && (
+            {expandedCards.has('formalidade') && (
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
@@ -315,8 +328,8 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
-            onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.has('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
+            onClick={() => toggleCard('argumentacao')}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -328,14 +341,14 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Estrutura argumentativa</p>
                 </div>
               </div>
-              {expandedCard === 'argumentacao' ? (
+              {expandedCards.has('argumentacao') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCard === 'argumentacao' && (
+            {expandedCards.has('argumentacao') && (
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
@@ -448,8 +461,8 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
-            onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCards.has('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
+            onClick={() => toggleCard('sinonimos')}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -461,14 +474,14 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Mantém o sentido</p>
                 </div>
               </div>
-              {expandedCard === 'sinonimos' ? (
+              {expandedCards.has('sinonimos') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCard === 'sinonimos' && (
+            {expandedCards.has('sinonimos') && (
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <p className="text-xs text-soft-gray mb-4">
                   Substitui palavras por sinônimos para enriquecer o vocabulário.
@@ -495,8 +508,8 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
-            onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCards.has('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
+            onClick={() => toggleCard('antonimos')}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -508,14 +521,14 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Inverte o sentido</p>
                 </div>
               </div>
-              {expandedCard === 'antonimos' ? (
+              {expandedCards.has('antonimos') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCard === 'antonimos' && (
+            {expandedCards.has('antonimos') && (
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <p className="text-xs text-soft-gray mb-4">
                   Substitui palavras por antônimos para explorar o argumento oposto.
