@@ -1156,10 +1156,10 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="mb-6">
-            <div className={`flex flex-wrap justify-center gap-3 ${
-              visibleFeatures.length === 2 ? 'max-w-sm mx-auto' :
-              visibleFeatures.length === 3 ? 'max-w-lg mx-auto' :
-              'max-w-2xl mx-auto'
+            <div className={`flex flex-wrap justify-center gap-4 ${
+              visibleFeatures.length === 2 ? 'max-w-md mx-auto' :
+              visibleFeatures.length === 3 ? 'max-w-2xl mx-auto' :
+              'max-w-4xl mx-auto'
             }`}>
             {getVisibleFeaturesData().map((feature) => {
               const IconComponent = feature.icon;
@@ -1184,15 +1184,15 @@ export default function Dashboard() {
                   key={feature.id}
                   onClick={() => handleQuickAccess(feature.id)}
                   variant="outline" 
-                  className={`p-3 h-28 flex flex-col items-center justify-between ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group w-36 flex-shrink-0 overflow-hidden`}
+                  className={`p-4 h-auto min-h-[120px] flex flex-col items-center justify-center ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group w-44 flex-shrink-0`}
                   data-testid={`button-feature-${feature.id}`}
                 >
-                  <div className={`w-8 h-8 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0`}>
-                    <IconComponent className="text-white" size={16} />
+                  <div className={`w-10 h-10 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform flex-shrink-0`}>
+                    <IconComponent className="text-white" size={18} />
                   </div>
-                  <div className="text-center flex-1 flex flex-col justify-center min-h-0 w-full px-1">
-                    <div className="text-xs text-dark-blue font-medium leading-tight mb-1 line-clamp-1 w-full">{feature.name}</div>
-                    <div className="text-xs text-soft-gray leading-tight line-clamp-2 w-full">{feature.description}</div>
+                  <div className="text-center space-y-1">
+                    <div className="text-sm text-dark-blue font-medium leading-tight">{feature.name}</div>
+                    <div className="text-xs text-soft-gray leading-relaxed">{feature.description}</div>
                   </div>
                 </Button>
               );
