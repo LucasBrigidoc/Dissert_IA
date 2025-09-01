@@ -196,20 +196,20 @@ export default function FunctionalitiesPage() {
               <p className="text-soft-gray">Os pilares fundamentais para uma redação de qualidade</p>
             </div>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {coreFeatures.map((feature) => {
               const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
               return (
-                <LiquidGlassCard key={feature.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid={`card-feature-${feature.id}`}>
-                  <div className="text-center">
+                <LiquidGlassCard key={feature.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group h-full" data-testid={`card-feature-${feature.id}`}>
+                  <div className="text-center h-full flex flex-col">
                     <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                       <IconComponent className="text-white" size={24} />
                     </div>
                     <h3 className="text-lg font-semibold text-dark-blue mb-3">{feature.name}</h3>
-                    <p className="text-soft-gray text-sm mb-4 leading-relaxed">{feature.description}</p>
+                    <p className="text-soft-gray text-sm mb-6 leading-relaxed flex-grow">{feature.description}</p>
                     <Button 
                       onClick={() => handleFeatureAccess(feature.name)}
-                      className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                      className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 mt-auto"
                       data-testid={`button-access-${feature.id}`}
                     >
                       Acessar Ferramenta
