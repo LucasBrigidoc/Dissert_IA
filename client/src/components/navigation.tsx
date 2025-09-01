@@ -35,9 +35,6 @@ export function Navigation() {
           <Link href="/about" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-sobre">
             Sobre
           </Link>
-          <a href="#faq" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-faq">
-            FAQ
-          </a>
         </div>
         
         {/* Desktop Auth Buttons */}
@@ -109,14 +106,6 @@ export function Navigation() {
             >
               Sobre
             </Link>
-            <a 
-              href="#faq" 
-              className="block text-lg text-dark-blue hover:text-bright-blue smooth-transition py-2 border-b border-gray-100" 
-              data-testid="link-faq-mobile"
-              onClick={closeMenu}
-            >
-              FAQ
-            </a>
           </div>
 
           {/* Mobile Auth Buttons */}
