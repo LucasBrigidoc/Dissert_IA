@@ -8,9 +8,14 @@ import { Link, useLocation } from "wouter";
 
 export default function Estilo() {
   const [location] = useLocation();
-  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  
+  console.log('Current location:', location);
+  console.log('URL search params:', window.location.search);
+  console.log('From page:', fromPage);
+  console.log('Back URL:', backUrl);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
