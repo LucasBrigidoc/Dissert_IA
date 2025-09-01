@@ -3,9 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function Repertorio() {
+  const [location] = useLocation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPage = urlParams.get('from') || 'dashboard';
+  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  
+  console.log('Current location:', location);
+  console.log('URL search params:', window.location.search);
+  console.log('From page:', fromPage);
+  console.log('Back URL:', backUrl);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -13,7 +23,7 @@ export default function Repertorio() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
+              <Link href={backUrl} className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
                 <ArrowLeft size={16} />
               </Link>
               <div className="flex items-center space-x-3">
@@ -138,8 +148,6 @@ export default function Repertorio() {
             </div>
           </LiquidGlassCard>
         </div>
-
-        
 
         {/* Results */}
         <div className="space-y-6">
