@@ -212,81 +212,29 @@ export default function ControladorEscrita() {
 
       {/* Content */}
       <div className="container mx-auto px-6 py-8 h-[calc(100vh-200px)] flex flex-col">
-        {/* Área de Texto - Ocupa toda a horizontal */}
-        <div className="flex-1 mb-8">
-          <LiquidGlassCard className="h-full">
-            <div className="h-full flex flex-col space-y-4">
-              <div className="flex-1 flex flex-col">
-                <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3">
-                  Texto Original
-                </Label>
-                <Textarea
-                  id="original-text"
-                  placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
-                  value={originalText}
-                  onChange={(e) => setOriginalText(e.target.value)}
-                  className="flex-1 min-h-[200px] text-base leading-relaxed resize-none"
-                />
-              </div>
-
-              {/* Área do Texto Modificado */}
-              {modifiedText && (
-                <div className="flex-1 flex flex-col pt-4 border-t border-gray-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
-                      Texto Modificado
-                      {modificationType && (
-                        <Badge variant="secondary" className="text-xs">
-                          {modificationType}
-                        </Badge>
-                      )}
-                    </Label>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleCopyText}
-                        className="flex items-center gap-2"
-                      >
-                        <Copy className="h-4 w-4" />
-                        Copiar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleSaveToLibrary}
-                        className="flex items-center gap-2"
-                      >
-                        <Save className="h-4 w-4" />
-                        Salvar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={resetTexts}
-                        className="flex items-center gap-2"
-                      >
-                        <RotateCcw className="h-4 w-4" />
-                        Limpar
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="flex-1 bg-gray-50 rounded-lg p-4 border-l-4 border-bright-blue overflow-y-auto">
-                    <p className="text-base leading-relaxed text-gray-800">
-                      {modifiedText}
-                    </p>
-                  </div>
-                </div>
-              )}
+        {/* Área de Texto Original */}
+        <div className="mb-6">
+          <LiquidGlassCard>
+            <div>
+              <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3 block">
+                Texto Original
+              </Label>
+              <Textarea
+                id="original-text"
+                placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
+                value={originalText}
+                onChange={(e) => setOriginalText(e.target.value)}
+                className="min-h-[120px] text-base leading-relaxed resize-none"
+              />
             </div>
           </LiquidGlassCard>
         </div>
 
-        {/* Controles - Uma linha na parte de baixo */}
-        <div className="flex gap-4 justify-center">
+        {/* Controles - Ocupam toda a vertical */}
+        <div className="flex-1 grid grid-cols-4 gap-4 mb-6">
           {/* Card de Formalidade */}
           <div 
-            className={`${expandedCard === 'formalidade' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
           >
             <div className="flex items-center justify-between">
@@ -367,7 +315,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`${expandedCard === 'argumentacao' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
+            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
           >
             <div className="flex items-center justify-between">
@@ -500,7 +448,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`${expandedCard === 'sinonimos' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
+            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
           >
             <div className="flex items-center justify-between">
@@ -547,7 +495,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`${expandedCard === 'antonimos' ? 'flex-1' : 'w-[200px]'} rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
+            className={`h-full rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
             onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
           >
             <div className="flex items-center justify-between">
@@ -591,6 +539,63 @@ export default function ControladorEscrita() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Área de Resultado */}
+        <div>
+          <LiquidGlassCard>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                  Resultado
+                  {modificationType && (
+                    <Badge variant="secondary" className="text-xs">
+                      {modificationType}
+                    </Badge>
+                  )}
+                </Label>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopyText}
+                    className="flex items-center gap-2"
+                    data-testid="button-copy"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copiar
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSaveToLibrary}
+                    className="flex items-center gap-2"
+                    data-testid="button-save"
+                  >
+                    <Save className="h-4 w-4" />
+                    Salvar
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={resetTexts}
+                    className="flex items-center gap-2"
+                    data-testid="button-clear"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    Limpar
+                  </Button>
+                </div>
+              </div>
+              <Textarea
+                placeholder="O texto modificado aparecerá aqui. Você pode editar diretamente este resultado."
+                value={modifiedText}
+                onChange={(e) => setModifiedText(e.target.value)}
+                className="min-h-[120px] text-base leading-relaxed resize-none"
+                data-testid="textarea-result"
+              />
+            </div>
+          </LiquidGlassCard>
         </div>
       </div>
     </div>
