@@ -32,218 +32,235 @@ export default function Repertorio() {
 
       {/* Content */}
       <div className="container mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-4 gap-6">
-          {/* Search and Filters */}
-          <div className="lg:col-span-1 space-y-6">
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Search className="text-white" size={14} />
+        {/* Search Bar - Full Width */}
+        <div className="mb-8">
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Search className="text-white" size={16} />
                 </div>
-                <h3 className="font-semibold text-dark-blue">Buscar</h3>
+                <h3 className="font-semibold text-dark-blue">Buscar Repertório</h3>
               </div>
               
-              <div className="space-y-4">
-                <Input 
-                  placeholder="Digite um tema ou palavra-chave"
-                  className="border-bright-blue/20 focus:border-bright-blue"
-                  data-testid="input-search"
-                />
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-span-2">
+                  <Input 
+                    placeholder="Ex: tecnologia, meio ambiente, desigualdade social, democracia..."
+                    className="border-bright-blue/20 focus:border-bright-blue text-base"
+                    data-testid="input-search"
+                  />
+                </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Categoria</label>
                   <Select data-testid="select-category">
                     <SelectTrigger className="border-bright-blue/20">
-                      <SelectValue placeholder="Todas" />
+                      <SelectValue placeholder="Tema da Redação" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todas as categorias</SelectItem>
-                      <SelectItem value="history">História</SelectItem>
-                      <SelectItem value="literature">Literatura</SelectItem>
-                      <SelectItem value="science">Ciência</SelectItem>
-                      <SelectItem value="society">Sociedade</SelectItem>
-                      <SelectItem value="technology">Tecnologia</SelectItem>
+                      <SelectItem value="all">Todos os temas</SelectItem>
+                      <SelectItem value="social">Questões Sociais</SelectItem>
+                      <SelectItem value="environment">Meio Ambiente</SelectItem>
+                      <SelectItem value="technology">Tecnologia e Sociedade</SelectItem>
+                      <SelectItem value="education">Educação</SelectItem>
+                      <SelectItem value="politics">Política e Cidadania</SelectItem>
+                      <SelectItem value="economy">Economia e Trabalho</SelectItem>
+                      <SelectItem value="culture">Cultura e Identidade</SelectItem>
+                      <SelectItem value="health">Saúde Pública</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Período</label>
-                  <Select data-testid="select-period">
-                    <SelectTrigger className="border-bright-blue/20">
-                      <SelectValue placeholder="Qualquer época" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Qualquer época</SelectItem>
-                      <SelectItem value="ancient">Antiguidade</SelectItem>
-                      <SelectItem value="medieval">Idade Média</SelectItem>
-                      <SelectItem value="modern">Idade Moderna</SelectItem>
-                      <SelectItem value="contemporary">Contemporâneo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <Button className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" data-testid="button-search">
+                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" data-testid="button-search">
                   <Search className="mr-2" size={16} />
-                  Buscar Repertório
+                  Buscar
+                </Button>
+              </div>
+            </div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Categories - Full Width */}
+        <div className="mb-8">
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-dark-blue">Temas Populares para Redação</h4>
+              <p className="text-sm text-soft-gray">Clique em um tema para encontrar repertórios específicos</p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-inequality">
+                ⚖️ Desigualdade Social
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-democracy">
+                🗳️ Democracia
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-environment">
+                🌱 Meio Ambiente
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-tech">
+                🤖 Tecnologia e IA
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-education">
+                📚 Educação
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-mental-health">
+                🧠 Saúde Mental
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-women">
+                👩 Direitos da Mulher
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-racism">
+                ✊ Combate ao Racismo
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-fake-news">
+                📰 Fake News
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-urbanization">
+                🏙️ Urbanização
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-elderly">
+                👴 Envelhecimento
+              </button>
+              <button className="p-3 text-sm text-dark-blue hover:bg-bright-blue/10 rounded-lg border border-bright-blue/20 hover:border-bright-blue/40 transition-all" data-testid="button-category-violence">
+                🚫 Violência Urbana
+              </button>
+            </div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Results */}
+        <div className="space-y-6">
+          {/* Results Header */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-dark-blue">Resultados da Busca</h2>
+            <div className="text-sm text-soft-gray">247 referências encontradas</div>
+          </div>
+
+          {/* Result Cards */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Result 1 */}
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <BookOpen className="text-white" size={14} />
+                  </div>
+                  <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Literatura</span>
+                </div>
+                <div className="flex items-center space-x-1 text-yellow-500">
+                  <Star size={14} fill="currentColor" />
+                  <span className="text-xs">4.8</span>
+                </div>
+              </div>
+              
+              <h3 className="font-semibold text-dark-blue mb-2">1984 - George Orwell</h3>
+              <p className="text-soft-gray text-sm mb-3">Distopia que aborda temas como vigilância estatal, manipulação da informação e controle social. Ideal para redações sobre tecnologia, privacidade e liberdade.</p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-xs text-soft-gray">
+                  <Clock size={12} />
+                  <span>Século XX</span>
+                </div>
+                <Button variant="outline" size="sm" className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" data-testid="button-save-reference-1">
+                  Salvar
                 </Button>
               </div>
             </LiquidGlassCard>
 
-            {/* Quick Categories */}
-            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <h4 className="font-semibold text-dark-blue mb-4">Categorias Populares</h4>
+            {/* Result 2 */}
+            <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                    <Users className="text-white" size={14} />
+                  </div>
+                  <span className="text-xs bg-dark-blue/20 text-dark-blue px-2 py-1 rounded">História</span>
+                </div>
+                <div className="flex items-center space-x-1 text-yellow-500">
+                  <Star size={14} fill="currentColor" />
+                  <span className="text-xs">4.9</span>
+                </div>
+              </div>
               
-              <div className="space-y-2">
-                <button className="w-full text-left p-2 text-sm text-dark-blue hover:bg-bright-blue/10 rounded" data-testid="button-category-tech">
-                  🤖 Tecnologia e IA
-                </button>
-                <button className="w-full text-left p-2 text-sm text-dark-blue hover:bg-bright-blue/10 rounded" data-testid="button-category-environment">
-                  🌱 Meio Ambiente
-                </button>
-                <button className="w-full text-left p-2 text-sm text-dark-blue hover:bg-bright-blue/10 rounded" data-testid="button-category-education">
-                  📚 Educação
-                </button>
-                <button className="w-full text-left p-2 text-sm text-dark-blue hover:bg-bright-blue/10 rounded" data-testid="button-category-social">
-                  👥 Questões Sociais
-                </button>
+              <h3 className="font-semibold text-dark-blue mb-2">Declaração Universal dos Direitos Humanos</h3>
+              <p className="text-soft-gray text-sm mb-3">Marco histórico de 1948 que estabelece direitos fundamentais. Excelente referência para temas sobre dignidade humana, igualdade e justiça social.</p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-xs text-soft-gray">
+                  <Clock size={12} />
+                  <span>1948</span>
+                </div>
+                <Button variant="outline" size="sm" className="text-dark-blue border-dark-blue/30 hover:bg-dark-blue/10" data-testid="button-save-reference-2">
+                  Salvar
+                </Button>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Result 3 */}
+            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                    <TrendingUp className="text-white" size={14} />
+                  </div>
+                  <span className="text-xs bg-soft-gray/20 text-dark-blue px-2 py-1 rounded">Ciência</span>
+                </div>
+                <div className="flex items-center space-x-1 text-yellow-500">
+                  <Star size={14} fill="currentColor" />
+                  <span className="text-xs">4.7</span>
+                </div>
+              </div>
+              
+              <h3 className="font-semibold text-dark-blue mb-2">Revolução Industrial 4.0</h3>
+              <p className="text-soft-gray text-sm mb-3">Transformação digital atual com IoT, AI e automação. Perfeito para discussões sobre futuro do trabalho, inovação e impactos socioeconômicos.</p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-xs text-soft-gray">
+                  <Clock size={12} />
+                  <span>Século XXI</span>
+                </div>
+                <Button variant="outline" size="sm" className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10" data-testid="button-save-reference-3">
+                  Salvar
+                </Button>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Result 4 */}
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <Globe className="text-white" size={14} />
+                  </div>
+                  <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Sociedade</span>
+                </div>
+                <div className="flex items-center space-x-1 text-yellow-500">
+                  <Star size={14} fill="currentColor" />
+                  <span className="text-xs">4.6</span>
+                </div>
+              </div>
+              
+              <h3 className="font-semibold text-dark-blue mb-2">Lei Maria da Penha</h3>
+              <p className="text-soft-gray text-sm mb-3">Marco legal brasileiro de 2006 no combate à violência doméstica. Essencial para redações sobre direitos das mulheres e violência de gênero.</p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-xs text-soft-gray">
+                  <Clock size={12} />
+                  <span>2006</span>
+                </div>
+                <Button variant="outline" size="sm" className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" data-testid="button-save-reference-4">
+                  Salvar
+                </Button>
               </div>
             </LiquidGlassCard>
           </div>
 
-          {/* Results */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Results Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-dark-blue">Resultados da Busca</h2>
-              <div className="text-sm text-soft-gray">247 referências encontradas</div>
-            </div>
-
-            {/* Result Cards */}
-            <div className="grid md:grid-cols-2 gap-4">
-              {/* Result 1 */}
-              <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                      <BookOpen className="text-white" size={14} />
-                    </div>
-                    <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Literatura</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-yellow-500">
-                    <Star size={14} fill="currentColor" />
-                    <span className="text-xs">4.8</span>
-                  </div>
-                </div>
-                
-                <h3 className="font-semibold text-dark-blue mb-2">1984 - George Orwell</h3>
-                <p className="text-soft-gray text-sm mb-3">Distopia que aborda temas como vigilância estatal, manipulação da informação e controle social. Ideal para redações sobre tecnologia, privacidade e liberdade.</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                    <Clock size={12} />
-                    <span>Século XX</span>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" data-testid="button-save-reference-1">
-                    Salvar
-                  </Button>
-                </div>
-              </LiquidGlassCard>
-
-              {/* Result 2 */}
-              <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                      <Users className="text-white" size={14} />
-                    </div>
-                    <span className="text-xs bg-dark-blue/20 text-dark-blue px-2 py-1 rounded">História</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-yellow-500">
-                    <Star size={14} fill="currentColor" />
-                    <span className="text-xs">4.9</span>
-                  </div>
-                </div>
-                
-                <h3 className="font-semibold text-dark-blue mb-2">Declaração Universal dos Direitos Humanos</h3>
-                <p className="text-soft-gray text-sm mb-3">Marco histórico de 1948 que estabelece direitos fundamentais. Excelente referência para temas sobre dignidade humana, igualdade e justiça social.</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                    <Clock size={12} />
-                    <span>1948</span>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-dark-blue border-dark-blue/30 hover:bg-dark-blue/10" data-testid="button-save-reference-2">
-                    Salvar
-                  </Button>
-                </div>
-              </LiquidGlassCard>
-
-              {/* Result 3 */}
-              <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                      <TrendingUp className="text-white" size={14} />
-                    </div>
-                    <span className="text-xs bg-soft-gray/20 text-dark-blue px-2 py-1 rounded">Ciência</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-yellow-500">
-                    <Star size={14} fill="currentColor" />
-                    <span className="text-xs">4.7</span>
-                  </div>
-                </div>
-                
-                <h3 className="font-semibold text-dark-blue mb-2">Revolução Industrial 4.0</h3>
-                <p className="text-soft-gray text-sm mb-3">Transformação digital atual com IoT, AI e automação. Perfeito para discussões sobre futuro do trabalho, inovação e impactos socioeconômicos.</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                    <Clock size={12} />
-                    <span>Século XXI</span>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10" data-testid="button-save-reference-3">
-                    Salvar
-                  </Button>
-                </div>
-              </LiquidGlassCard>
-
-              {/* Result 4 */}
-              <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                      <Globe className="text-white" size={14} />
-                    </div>
-                    <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Sociedade</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-yellow-500">
-                    <Star size={14} fill="currentColor" />
-                    <span className="text-xs">4.6</span>
-                  </div>
-                </div>
-                
-                <h3 className="font-semibold text-dark-blue mb-2">Lei Maria da Penha</h3>
-                <p className="text-soft-gray text-sm mb-3">Marco legal brasileiro de 2006 no combate à violência doméstica. Essencial para redações sobre direitos das mulheres e violência de gênero.</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                    <Clock size={12} />
-                    <span>2006</span>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" data-testid="button-save-reference-4">
-                    Salvar
-                  </Button>
-                </div>
-              </LiquidGlassCard>
-            </div>
-
-            {/* Load More */}
-            <div className="flex justify-center">
-              <Button variant="outline" className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10" data-testid="button-load-more">
-                Carregar Mais Resultados
-              </Button>
-            </div>
+          {/* Load More */}
+          <div className="flex justify-center">
+            <Button variant="outline" className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10" data-testid="button-load-more">
+              Carregar Mais Resultados
+            </Button>
           </div>
         </div>
       </div>

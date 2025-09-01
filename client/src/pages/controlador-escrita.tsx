@@ -217,7 +217,7 @@ export default function ControladorEscrita() {
               </div>
             </div>
             <div className="text-sm text-soft-gray">
-              Ajustes interativos de formalidade e tom
+              Ajuste o estilo de escrita do seu texto.
             </div>
           </div>
         </div>
