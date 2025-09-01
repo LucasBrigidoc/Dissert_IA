@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, Save, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
-import { StructureEditor } from "@/components/structure-editor";
+import { EnhancedStructureEditor } from "@/components/enhanced-structure-editor";
 import { StructurePreview } from "@/components/structure-preview";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -151,33 +151,30 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           </div>
         </div>
 
-        {/* Content */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Editor */}
-          <LiquidGlassCard>
-            <StructureEditor
+        {/* Editor Centralizado */}
+        <LiquidGlassCard>
+          <EnhancedStructureEditor
+            name={name}
+            sections={sections}
+            onNameChange={setName}
+            onSectionsChange={setSections}
+            isEditing={!!editingStructure}
+          />
+        </LiquidGlassCard>
+
+        {/* Preview */}
+        {showPreview && (
+          <LiquidGlassCard className="mt-8">
+            <h2 className="text-xl font-semibold text-dark-blue mb-4">
+              Prévia da Estrutura
+            </h2>
+            <StructurePreview
               name={name}
               sections={sections}
-              onNameChange={setName}
-              onSectionsChange={setSections}
-              isEditing={!!editingStructure}
+              className="max-h-[60vh] overflow-y-auto"
             />
           </LiquidGlassCard>
-
-          {/* Preview */}
-          {showPreview && (
-            <div className="lg:sticky lg:top-8 lg:h-fit">
-              <h2 className="text-xl font-semibold text-dark-blue mb-4">
-                Prévia da Estrutura
-              </h2>
-              <StructurePreview
-                name={name}
-                sections={sections}
-                className="lg:max-h-[80vh] lg:overflow-y-auto"
-              />
-            </div>
-          )}
-        </div>
+        )}
 
         {/* Validation Messages */}
         {!isValid && (name || sections.length > 0) && (
