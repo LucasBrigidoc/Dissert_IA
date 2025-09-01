@@ -35,7 +35,7 @@ export default function Repertorio() {
         {/* Search Bar - Full Width */}
         <div className="mb-8">
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex items-center gap-4">
+            <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Search className="text-white" size={16} />
@@ -43,19 +43,32 @@ export default function Repertorio() {
                 <h3 className="font-semibold text-dark-blue">Buscar Repertório</h3>
               </div>
               
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Proposta de Redação */}
+              <div>
+                <label className="block text-sm font-medium text-dark-blue mb-2">Proposta de Redação (opcional)</label>
+                <Input 
+                  placeholder="Ex: Os desafios da democratização do acesso às tecnologias digitais no Brasil"
+                  className="border-bright-blue/20 focus:border-bright-blue text-base"
+                  data-testid="input-proposal"
+                />
+              </div>
+
+              {/* Busca e Filtros */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-dark-blue mb-2">Buscar repertórios</label>
                   <Input 
-                    placeholder="Ex: tecnologia, meio ambiente, desigualdade social, democracia..."
+                    placeholder="Ex: tecnologia, meio ambiente, desigualdade social..."
                     className="border-bright-blue/20 focus:border-bright-blue text-base"
                     data-testid="input-search"
                   />
                 </div>
                 
                 <div>
+                  <label className="block text-sm font-medium text-dark-blue mb-2">Tema da Redação</label>
                   <Select data-testid="select-category">
                     <SelectTrigger className="border-bright-blue/20">
-                      <SelectValue placeholder="Tema da Redação" />
+                      <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos os temas</SelectItem>
@@ -70,8 +83,29 @@ export default function Repertorio() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-dark-blue mb-2">Tipo de Repertório</label>
+                  <Select data-testid="select-type">
+                    <SelectTrigger className="border-bright-blue/20">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os tipos</SelectItem>
+                      <SelectItem value="movies">📽️ Filmes</SelectItem>
+                      <SelectItem value="laws">⚖️ Leis</SelectItem>
+                      <SelectItem value="books">📚 Livros</SelectItem>
+                      <SelectItem value="news">📰 Notícias</SelectItem>
+                      <SelectItem value="events">📅 Acontecimentos</SelectItem>
+                      <SelectItem value="music">🎵 Música</SelectItem>
+                      <SelectItem value="series">📺 Séries</SelectItem>
+                      <SelectItem value="documentaries">🎬 Documentários</SelectItem>
+                      <SelectItem value="research">🔬 Pesquisas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 
-                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" data-testid="button-search">
+                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue self-end" data-testid="button-search">
                   <Search className="mr-2" size={16} />
                   Buscar
                 </Button>
