@@ -112,6 +112,7 @@ export function EnhancedStructureEditor({
   const [modelEssay, setModelEssay] = useState("");
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [showModelAnalysis, setShowModelAnalysis] = useState(false);
+  const [isModelSectionExpanded, setIsModelSectionExpanded] = useState(false);
 
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style);
@@ -207,6 +208,47 @@ export function EnhancedStructureEditor({
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      {/* Análise de Redação Modelo - Colapsável */}
+      <Card className="border-green-500/20">
+        <CardHeader 
+          className="cursor-pointer" 
+          onClick={() => setIsModelSectionExpanded(!isModelSectionExpanded)}
+        >
+          <CardTitle className="text-dark-blue flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              Redação Modelo (Opcional)
+            </div>
+            <div className="text-sm text-soft-gray">
+              {isModelSectionExpanded ? "Clique para recolher" : "Clique para expandir"}
+            </div>
+          </CardTitle>
+          <p className="text-sm text-soft-gray mt-2">
+            Cole uma redação modelo para analisar sua estrutura e criar seções baseadas nela
+          </p>
+        </CardHeader>
+        {isModelSectionExpanded && (
+          <CardContent className="space-y-4">
+            <Textarea
+              placeholder="Cole aqui uma redação que serve como modelo para a estrutura..."
+              value={modelEssay}
+              onChange={(e) => setModelEssay(e.target.value)}
+              rows={6}
+              className="border-green-500/20"
+            />
+            <Button 
+              onClick={analyzeModelEssay}
+              disabled={!modelEssay.trim()}
+              variant="outline"
+              className="border-green-500/30 text-green-600 hover:bg-green-500/10"
+            >
+              <Wand2 className="mr-2 h-4 w-4" />
+              Analisar e Criar Estrutura
+            </Button>
+          </CardContent>
+        )}
+      </Card>
+
       {/* Seleção de Estilo */}
       <Card className="border-bright-blue/20">
         <CardHeader>
@@ -239,37 +281,6 @@ export function EnhancedStructureEditor({
               </p>
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Análise de Redação Modelo */}
-      <Card className="border-green-500/20">
-        <CardHeader>
-          <CardTitle className="text-dark-blue flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            Redação Modelo (Opcional)
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-soft-gray">
-            Cole uma redação modelo para analisar sua estrutura e criar seções baseadas nela
-          </p>
-          <Textarea
-            placeholder="Cole aqui uma redação que serve como modelo para a estrutura..."
-            value={modelEssay}
-            onChange={(e) => setModelEssay(e.target.value)}
-            rows={6}
-            className="border-green-500/20"
-          />
-          <Button 
-            onClick={analyzeModelEssay}
-            disabled={!modelEssay.trim()}
-            variant="outline"
-            className="border-green-500/30 text-green-600 hover:bg-green-500/10"
-          >
-            <Wand2 className="mr-2 h-4 w-4" />
-            Analisar e Criar Estrutura
-          </Button>
         </CardContent>
       </Card>
 
