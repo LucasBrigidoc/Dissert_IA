@@ -40,55 +40,29 @@ export default function Repertorio() {
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Search className="text-white" size={16} />
                 </div>
-                <h3 className="font-semibold text-dark-blue">Buscar Repertório</h3>
+                <div>
+                  <h3 className="font-semibold text-dark-blue">Buscar Repertório</h3>
+                  <p className="text-xs text-soft-gray">Busque por proposta de redação, tema específico ou qualquer palavra-chave</p>
+                </div>
               </div>
               
-              {/* Proposta de Redação */}
-              <div>
-                <label className="block text-sm font-medium text-dark-blue mb-2">Proposta de Redação (opcional)</label>
-                <Input 
-                  placeholder="Ex: Os desafios da democratização do acesso às tecnologias digitais no Brasil"
-                  className="border-bright-blue/20 focus:border-bright-blue text-base"
-                  data-testid="input-proposal"
-                />
-              </div>
-
-              {/* Busca e Filtros */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Campo de Busca Principal */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Buscar repertórios</label>
                   <Input 
-                    placeholder="Ex: tecnologia, meio ambiente, desigualdade social..."
-                    className="border-bright-blue/20 focus:border-bright-blue text-base"
-                    data-testid="input-search"
+                    placeholder="Ex: 'Os desafios da democratização do acesso às tecnologias digitais' ou 'meio ambiente', 'fake news', 'George Orwell'..."
+                    className="border-bright-blue/20 focus:border-bright-blue text-base h-12"
+                    data-testid="input-main-search"
                   />
+                  <p className="text-xs text-soft-gray mt-1">
+                    💡 Dica: Cole sua proposta de redação completa ou digite palavras-chave
+                  </p>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Tema da Redação</label>
-                  <Select data-testid="select-category">
-                    <SelectTrigger className="border-bright-blue/20">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os temas</SelectItem>
-                      <SelectItem value="social">Questões Sociais</SelectItem>
-                      <SelectItem value="environment">Meio Ambiente</SelectItem>
-                      <SelectItem value="technology">Tecnologia e Sociedade</SelectItem>
-                      <SelectItem value="education">Educação</SelectItem>
-                      <SelectItem value="politics">Política e Cidadania</SelectItem>
-                      <SelectItem value="economy">Economia e Trabalho</SelectItem>
-                      <SelectItem value="culture">Cultura e Identidade</SelectItem>
-                      <SelectItem value="health">Saúde Pública</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Tipo de Repertório</label>
                   <Select data-testid="select-type">
-                    <SelectTrigger className="border-bright-blue/20">
-                      <SelectValue placeholder="Selecione" />
+                    <SelectTrigger className="border-bright-blue/20 h-12">
+                      <SelectValue placeholder="🎯 Tipo de Repertório" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos os tipos</SelectItem>
@@ -101,15 +75,63 @@ export default function Repertorio() {
                       <SelectItem value="series">📺 Séries</SelectItem>
                       <SelectItem value="documentaries">🎬 Documentários</SelectItem>
                       <SelectItem value="research">🔬 Pesquisas</SelectItem>
+                      <SelectItem value="data">📊 Dados/Estatísticas</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
-                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue self-end" data-testid="button-search">
+                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue h-12" data-testid="button-search">
                   <Search className="mr-2" size={16} />
-                  Buscar
+                  Buscar Repertórios
                 </Button>
               </div>
+
+              {/* Filtros Avançados (Expandíveis) */}
+              <details className="group">
+                <summary className="cursor-pointer text-sm text-dark-blue hover:text-bright-blue flex items-center gap-2">
+                  <span>Filtros Avançados</span>
+                  <span className="transform group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white/30 rounded-lg">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-blue mb-2">Tema Específico</label>
+                    <Select data-testid="select-category">
+                      <SelectTrigger className="border-bright-blue/20">
+                        <SelectValue placeholder="Todos os temas" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos os temas</SelectItem>
+                        <SelectItem value="social">Questões Sociais</SelectItem>
+                        <SelectItem value="environment">Meio Ambiente</SelectItem>
+                        <SelectItem value="technology">Tecnologia e Sociedade</SelectItem>
+                        <SelectItem value="education">Educação</SelectItem>
+                        <SelectItem value="politics">Política e Cidadania</SelectItem>
+                        <SelectItem value="economy">Economia e Trabalho</SelectItem>
+                        <SelectItem value="culture">Cultura e Identidade</SelectItem>
+                        <SelectItem value="health">Saúde Pública</SelectItem>
+                        <SelectItem value="ethics">Ética e Moral</SelectItem>
+                        <SelectItem value="globalization">Globalização</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-blue mb-2">Período/Época</label>
+                    <Select data-testid="select-period">
+                      <SelectTrigger className="border-bright-blue/20">
+                        <SelectValue placeholder="Qualquer época" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Qualquer época</SelectItem>
+                        <SelectItem value="contemporary">Contemporâneo (2000+)</SelectItem>
+                        <SelectItem value="recent">Século XX-XXI</SelectItem>
+                        <SelectItem value="modern">Idade Moderna</SelectItem>
+                        <SelectItem value="medieval">Idade Média</SelectItem>
+                        <SelectItem value="ancient">Antiguidade</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </details>
             </div>
           </LiquidGlassCard>
         </div>
