@@ -170,4 +170,47 @@
   .border-bright-blue {
     border-color: var(--bright-blue);
   }
+
+  /* Mobile optimizations */
+  .mobile-menu-slide {
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .mobile-menu-slide.open {
+    transform: translateX(0);
+  }
+
+  /* Better touch targets and mobile optimizations */
+  @media (max-width: 768px) {
+    .mobile-touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Improve text readability on mobile */
+    .mobile-text-adjust {
+      line-height: 1.6;
+    }
+    
+    /* Optimize spacing for mobile */
+    .mobile-spacing {
+      padding: 0.5rem;
+    }
+    
+    /* Prevent horizontal scroll */
+    body {
+      overflow-x: hidden;
+    }
+    
+    /* Disable hover effects on mobile */
+    .feature-card:hover {
+      transform: none;
+      box-shadow: 0 20px 40px var(--liquid-glass-shadow);
+    }
+    
+    .hover-scale:hover {
+      transform: none;
+    }
+  }
 }

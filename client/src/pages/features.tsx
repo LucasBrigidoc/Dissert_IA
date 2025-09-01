@@ -35,42 +35,42 @@ export default function Features() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <div className="container mx-auto px-6 pt-24 pb-12">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-dark-blue mb-4" data-testid="text-features-title">
+      <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8 sm:pb-12">
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue mb-3 sm:mb-4" data-testid="text-features-title">
             Conheça as Principais Funcionalidades
           </h1>
-          <p className="text-xl text-soft-gray">Ferramentas inteligentes para revolucionar sua escrita</p>
+          <p className="text-lg sm:text-xl text-soft-gray">Ferramentas inteligentes para revolucionar sua escrita</p>
         </div>
 
         {/* Hero Feature */}
-        <LiquidGlassCard className="rounded-3xl p-12 mb-16" data-testid="card-hero-feature">
-          <div className="flex items-center justify-between">
-            <div className="w-1/2">
-              <h2 className="text-3xl font-bold text-dark-blue mb-4">
+        <LiquidGlassCard className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 mb-12 sm:mb-16" data-testid="card-hero-feature">
+          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+            <div className="w-full md:w-1/2 text-center md:text-left">
+              <h2 className="text-2xl sm:text-3xl font-bold text-dark-blue mb-3 sm:mb-4">
                 Refine seu processo de escrita com IA
               </h2>
-              <p className="text-soft-gray mb-6">
+              <p className="text-soft-gray mb-4 sm:mb-6 text-sm sm:text-base">
                 Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Então desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
               </p>
-              <Button asChild className="bg-bright-blue text-white px-6 py-3 rounded-lg hover:bg-blue-600 smooth-transition hover-scale" data-testid="button-try-now">
+              <Button asChild className="bg-bright-blue text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-600 smooth-transition hover-scale text-sm sm:text-base" data-testid="button-try-now">
                 <Link href="/signup">Experimente Agora</Link>
               </Button>
             </div>
-            <div className="w-1/2 text-center">
-              <div className="w-64 h-64 mx-auto gradient-bg rounded-full flex items-center justify-center">
-                <Brain className="text-white" size={80} />
+            <div className="w-full md:w-1/2 text-center">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto gradient-bg rounded-full flex items-center justify-center">
+                <Brain className="text-white" size={60} />
               </div>
             </div>
           </div>
         </LiquidGlassCard>
 
         {/* Challenge Section */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-dark-blue mb-8" data-testid="text-challenge-title">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-dark-blue mb-6 sm:mb-8" data-testid="text-challenge-title">
             Funcionalidades para os principais Desafio da Escrita
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             <LiquidGlassCard className="p-8" data-testid="card-statistics">
               <div className="text-4xl text-red-500 mb-4">73%</div>
               <h3 className="text-xl font-semibold text-dark-blue mb-2">Estatísticas Alarmantes</h3>
@@ -94,15 +94,15 @@ export default function Features() {
         </div>
 
         {/* Core Features */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-dark-blue mb-12" data-testid="text-core-features-title">
+        <div className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-core-features-title">
             Funcionalidades que Transformam sua Escrita
           </h2>
           
           {/* Pre-writing Tools */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-dark-blue mb-6">Ferramentas de Pré-escrita:</h3>
-            <div className="grid md:grid-cols-2 gap-8">
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Pré-escrita:</h3>
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
               <LiquidGlassCard className="p-8 feature-card" data-testid="card-argument-architect">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
@@ -140,9 +140,9 @@ export default function Features() {
           </div>
 
           {/* Writing Tools */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-dark-blue mb-6">Ferramentas de Escrita:</h3>
-            <div className="grid md:grid-cols-2 gap-8">
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Escrita:</h3>
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
               <LiquidGlassCard className="p-8 feature-card" data-testid="card-structure-creator">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
@@ -181,8 +181,8 @@ export default function Features() {
 
           {/* Complementary Tools */}
           <div>
-            <h3 className="text-2xl font-semibold text-dark-blue mb-6">Ferramentas Complementares:</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas Complementares:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <LiquidGlassCard className="p-6 text-center feature-card" data-testid="card-exam-simulator">
                 <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mx-auto mb-4">
                   <GraduationCap className="text-white" size={24} />
@@ -219,12 +219,12 @@ export default function Features() {
         </div>
 
         {/* CTA Section */}
-        <LiquidGlassCard className="gradient-bg rounded-3xl p-12 text-center text-white" data-testid="card-cta">
-          <h2 className="text-3xl font-bold mb-4">Pronto para Transformar sua Escrita?</h2>
-          <p className="text-xl mb-8 text-white/90">
+        <LiquidGlassCard className="gradient-bg rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 text-center text-white" data-testid="card-cta">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Pronto para Transformar sua Escrita?</h2>
+          <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-white/90">
             Junte-se aos milhares de vestibulandos e concurseiros que já estão transformando sua escrita com o DissertAI
           </p>
-          <Button asChild className="bg-white text-dark-blue px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale" data-testid="button-try-free">
+          <Button asChild className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale" data-testid="button-try-free">
             <Link href="/signup">Experimente Grátis</Link>
           </Button>
         </LiquidGlassCard>

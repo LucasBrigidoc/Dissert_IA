@@ -22,26 +22,28 @@ export default function Pricing() {
     <div className="min-h-screen gradient-bg">
       <Navigation />
       
-      <div className="container mx-auto px-6 pt-24 pb-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4" data-testid="text-pricing-title">
+      <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8 sm:pb-12">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4" data-testid="text-pricing-title">
             Escolha o Plano Ideal para Você:
           </h1>
-          <div className="flex items-center justify-center space-x-4">
-            <span className="text-white">Mensal</span>
-            <Switch 
-              checked={isAnnual} 
-              onCheckedChange={setIsAnnual}
-              data-testid="switch-billing-period"
-            />
-            <span className="text-white">Anual</span>
-            <Badge className="bg-yellow-400 text-dark-blue" data-testid="badge-save-annual">
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <div className="flex items-center space-x-4">
+              <span className="text-white text-sm sm:text-base">Mensal</span>
+              <Switch 
+                checked={isAnnual} 
+                onCheckedChange={setIsAnnual}
+                data-testid="switch-billing-period"
+              />
+              <span className="text-white text-sm sm:text-base">Anual</span>
+            </div>
+            <Badge className="bg-yellow-400 text-dark-blue text-xs sm:text-sm" data-testid="badge-save-annual">
               ECONOMIZE 40%
             </Badge>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16">
           {mockPricingPlans.map((plan, index) => (
             <LiquidGlassCard 
               key={plan.id} 
@@ -106,53 +108,55 @@ export default function Pricing() {
         </div>
 
         {/* Comparison Table */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <h3 className="text-2xl font-bold text-white text-center mb-8" data-testid="text-comparison-title">
+        <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
+          <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-6 sm:mb-8" data-testid="text-comparison-title">
             Comparação entre os Planos:
           </h3>
           <LiquidGlassCard className="p-0 overflow-hidden" data-testid="table-comparison">
-            <table className="w-full">
-              <thead className="bg-bright-blue text-white">
-                <tr>
-                  <th className="p-4 text-left">Funcionalidade</th>
-                  <th className="p-4 text-center">Gratuito</th>
-                  <th className="p-4 text-center">Base</th>
-                  <th className="p-4 text-center">Pro</th>
-                </tr>
-              </thead>
-              <tbody className="text-dark-blue">
-                <tr className="border-b border-gray-200">
-                  <td className="p-4">Arquiteto de Argumentos</td>
-                  <td className="p-4 text-center">Limitado</td>
-                  <td className="p-4 text-center">Completo</td>
-                  <td className="p-4 text-center">Completo</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="p-4">Explorador de Repertório</td>
-                  <td className="p-4 text-center">Limitado</td>
-                  <td className="p-4 text-center">Completo</td>
-                  <td className="p-4 text-center">Completo</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="p-4">Dashboard com IA</td>
-                  <td className="p-4 text-center text-red-500">❌</td>
-                  <td className="p-4 text-center text-red-500">❌</td>
-                  <td className="p-4 text-center text-green-500">✅</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="p-4">Material Complementar</td>
-                  <td className="p-4 text-center text-red-500">❌</td>
-                  <td className="p-4 text-center text-red-500">❌</td>
-                  <td className="p-4 text-center text-green-500">✅</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[600px]">
+                <thead className="bg-bright-blue text-white">
+                  <tr>
+                    <th className="p-3 sm:p-4 text-left text-sm sm:text-base">Funcionalidade</th>
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base">Gratuito</th>
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base">Base</th>
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base">Pro</th>
+                  </tr>
+                </thead>
+                <tbody className="text-dark-blue">
+                  <tr className="border-b border-gray-200">
+                    <td className="p-3 sm:p-4 text-sm sm:text-base">Arquiteto de Argumentos</td>
+                    <td className="p-3 sm:p-4 text-center text-sm sm:text-base">Limitado</td>
+                    <td className="p-3 sm:p-4 text-center text-sm sm:text-base">Completo</td>
+                    <td className="p-3 sm:p-4 text-center text-sm sm:text-base">Completo</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="p-3 sm:p-4 text-sm sm:text-base">Explorador de Repertório</td>
+                    <td className="p-3 sm:p-4 text-center text-sm sm:text-base">Limitado</td>
+                    <td className="p-3 sm:p-4 text-center text-sm sm:text-base">Completo</td>
+                    <td className="p-3 sm:p-4 text-center text-sm sm:text-base">Completo</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="p-3 sm:p-4 text-sm sm:text-base">Dashboard com IA</td>
+                    <td className="p-3 sm:p-4 text-center text-red-500">❌</td>
+                    <td className="p-3 sm:p-4 text-center text-red-500">❌</td>
+                    <td className="p-3 sm:p-4 text-center text-green-500">✅</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="p-3 sm:p-4 text-sm sm:text-base">Material Complementar</td>
+                    <td className="p-3 sm:p-4 text-center text-red-500">❌</td>
+                    <td className="p-3 sm:p-4 text-center text-red-500">❌</td>
+                    <td className="p-3 sm:p-4 text-center text-green-500">✅</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </LiquidGlassCard>
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-2xl mx-auto mb-12" id="faq">
-          <h3 className="text-2xl font-bold text-white text-center mb-8" data-testid="text-faq-title">
+        <div className="max-w-2xl mx-auto mb-8 sm:mb-12" id="faq">
+          <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-6 sm:mb-8" data-testid="text-faq-title">
             Seção de Perguntas Frequentes (FAQ):
           </h3>
           <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
@@ -174,7 +178,7 @@ export default function Pricing() {
         <div className="text-center">
           <Button
             asChild
-            className="bg-white text-dark-blue px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale"
+            className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale"
             data-testid="button-ready-start"
           >
             <Link href="/signup">Pronto para Começar?</Link>
