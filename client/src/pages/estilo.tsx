@@ -30,11 +30,11 @@ export default function Estilo() {
                 <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
                   <Sliders className="text-white" size={16} />
                 </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Controlador de Estilo</h1>
+                <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
               </div>
             </div>
             <div className="text-sm text-soft-gray">
-              Refine e ajuste seu estilo de escrita
+              Crie redações que se adaptam ao tema seguindo uma mesma estrutura.
             </div>
           </div>
         </div>

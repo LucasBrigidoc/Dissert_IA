@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -134,6 +134,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Create essay error:", error);
       res.status(500).json({ message: "Failed to create essay" });
+    }
+  });
+
+  // Get user structures endpoint
+  app.get("/api/users/:userId/structures", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const structures = await storage.getStructuresByUser(userId);
+      res.json(structures);
+    } catch (error) {
+      console.error("Get structures error:", error);
+      res.status(500).json({ message: "Failed to get user structures" });
+    }
+  });
+
+  // Create structure endpoint
+  app.post("/api/structures", async (req, res) => {
+    try {
+      const validatedData = insertEssayStructureSchema.parse(req.body);
+      
+      const structure = await storage.createStructure(validatedData);
+      res.status(201).json(structure);
+    } catch (error) {
+      console.error("Create structure error:", error);
+      res.status(400).json({ message: "Invalid structure data" });
+    }
+  });
+
+  // Update structure endpoint
+  app.put("/api/structures/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = insertEssayStructureSchema.partial().parse(req.body);
+      
+      const structure = await storage.updateStructure(id, validatedData);
+      res.json(structure);
+    } catch (error) {
+      console.error("Update structure error:", error);
+      res.status(400).json({ message: "Failed to update structure" });
+    }
+  });
+
+  // Delete structure endpoint
+  app.delete("/api/structures/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      await storage.deleteStructure(id);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Delete structure error:", error);
+      res.status(400).json({ message: "Failed to delete structure" });
+    }
+  });
+
+  // Get structure by ID endpoint
+  app.get("/api/structures/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const structure = await storage.getStructure(id);
+      if (!structure) {
+        return res.status(404).json({ message: "Structure not found" });
+      }
+      
+      res.json(structure);
+    } catch (error) {
+      console.error("Get structure error:", error);
+      res.status(500).json({ message: "Failed to get structure" });
     }
   });
 

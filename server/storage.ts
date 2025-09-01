@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -16,17 +16,26 @@ export interface IStorage {
   getEssaysByUser(userId: string): Promise<Essay[]>;
   createEssay(essay: InsertEssay): Promise<Essay>;
   updateEssay(id: string, essay: Partial<Essay>): Promise<Essay>;
+  
+  // Essay structure operations
+  getStructuresByUser(userId: string): Promise<EssayStructure[]>;
+  createStructure(structure: InsertEssayStructure): Promise<EssayStructure>;
+  updateStructure(id: string, structure: Partial<EssayStructure>): Promise<EssayStructure>;
+  deleteStructure(id: string): Promise<void>;
+  getStructure(id: string): Promise<EssayStructure | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private userProgress: Map<string, UserProgress>;
   private essays: Map<string, Essay>;
+  private essayStructures: Map<string, EssayStructure>;
 
   constructor() {
     this.users = new Map();
     this.userProgress = new Map();
     this.essays = new Map();
+    this.essayStructures = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -42,7 +51,8 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
     const user: User = { 
-      ...insertUser, 
+      ...insertUser,
+      userType: insertUser.userType || "vestibulano", 
       id,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -71,7 +81,12 @@ export class MemStorage implements IStorage {
   async createUserProgress(insertProgress: InsertUserProgress): Promise<UserProgress> {
     const id = randomUUID();
     const progress: UserProgress = { 
-      ...insertProgress, 
+      ...insertProgress,
+      averageScore: insertProgress.averageScore ?? 0,
+      targetScore: insertProgress.targetScore ?? 900,
+      essaysCount: insertProgress.essaysCount ?? 0,
+      studyHours: insertProgress.studyHours ?? 0,
+      streak: insertProgress.streak ?? 0, 
       id,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -105,7 +120,10 @@ export class MemStorage implements IStorage {
   async createEssay(insertEssay: InsertEssay): Promise<Essay> {
     const id = randomUUID();
     const essay: Essay = { 
-      ...insertEssay, 
+      ...insertEssay,
+      score: insertEssay.score ?? null,
+      feedback: insertEssay.feedback ?? null,
+      isCompleted: insertEssay.isCompleted ?? false, 
       id,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -128,6 +146,52 @@ export class MemStorage implements IStorage {
     
     this.essays.set(id, updated);
     return updated;
+  }
+
+  async getStructuresByUser(userId: string): Promise<EssayStructure[]> {
+    return Array.from(this.essayStructures.values()).filter(
+      (structure) => structure.userId === userId,
+    );
+  }
+
+  async createStructure(insertStructure: InsertEssayStructure): Promise<EssayStructure> {
+    const id = randomUUID();
+    const structure: EssayStructure = { 
+      ...insertStructure, 
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.essayStructures.set(id, structure);
+    return structure;
+  }
+
+  async updateStructure(id: string, updateData: Partial<EssayStructure>): Promise<EssayStructure> {
+    const existing = this.essayStructures.get(id);
+    if (!existing) {
+      throw new Error("Structure not found");
+    }
+    
+    const updated: EssayStructure = {
+      ...existing,
+      ...updateData,
+      updatedAt: new Date()
+    };
+    
+    this.essayStructures.set(id, updated);
+    return updated;
+  }
+
+  async deleteStructure(id: string): Promise<void> {
+    const exists = this.essayStructures.has(id);
+    if (!exists) {
+      throw new Error("Structure not found");
+    }
+    this.essayStructures.delete(id);
+  }
+
+  async getStructure(id: string): Promise<EssayStructure | undefined> {
+    return this.essayStructures.get(id);
   }
 }
 

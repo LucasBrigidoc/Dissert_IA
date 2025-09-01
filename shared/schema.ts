@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -37,6 +37,15 @@ export const essays = pgTable("essays", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const essayStructures = pgTable("essay_structures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  sections: json("sections").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -55,6 +64,20 @@ export const insertEssaySchema = createInsertSchema(essays).omit({
   updatedAt: true,
 });
 
+export const sectionSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1, "Título é obrigatório"),
+  description: z.string().min(1, "Descrição é obrigatória"),
+});
+
+export const insertEssayStructureSchema = createInsertSchema(essayStructures).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  sections: z.array(sectionSchema),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
@@ -63,3 +86,7 @@ export type UserProgress = typeof userProgress.$inferSelect;
 
 export type InsertEssay = z.infer<typeof insertEssaySchema>;
 export type Essay = typeof essays.$inferSelect;
+
+export type Section = z.infer<typeof sectionSchema>;
+export type InsertEssayStructure = z.infer<typeof insertEssayStructureSchema>;
+export type EssayStructure = typeof essayStructures.$inferSelect;

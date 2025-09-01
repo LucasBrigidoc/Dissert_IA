@@ -20,6 +20,7 @@ import Goals from "@/pages/goals";
 import Exams from "@/pages/exams";
 import Functionalities from "@/pages/functionalities";
 import Newsletter from "@/pages/newsletter";
+import { EstruturaCuringa } from "@/pages/estrutura-curinga";
 
 function Router() {
   return (
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/exams" component={Exams} />
       <Route path="/functionalities" component={Functionalities} />
       <Route path="/newsletter" component={Newsletter} />
+      <Route path="/estrutura-curinga" component={EstruturaCuringa} />
       <Route component={NotFound} />
     </Switch>
   );

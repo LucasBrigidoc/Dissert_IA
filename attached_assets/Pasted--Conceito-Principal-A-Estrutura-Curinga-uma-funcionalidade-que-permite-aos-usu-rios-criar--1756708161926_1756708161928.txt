@@ -1,0 +1,61 @@
+
+## Conceito Principal
+A "Estrutura Curinga" é uma funcionalidade que permite aos usuários criar, editar e reutilizar modelos de estrutura de redação que podem ser aplicados a qualquer tema. A IA gera redações personalizadas seguindo rigorosamente a estrutura definida pelo usuário.
+
+## Fluxo de Funcionamento
+
+### 1. Acesso à Funcionalidade
+ - É apresentada uma tela com duas opções principais:
+  * "Criar Nova Estrutura"
+  * "Usar Estrutura Existente"
+
+### 2. Criação/Edição de Estrutura
+Quando o usuário seleciona "Criar Nova Estrutura" ou edita uma existente:
+
+**Componentes da Tela:**
+- Campo para nomear a estrutura (ex: "Dissertação Argumentativa modelo 1")
+- Editor de seções com:
+  * Botão "+ Adicionar Seção"
+  * Lista de seções existentes (cada uma com):
+    - Campo para título da seção (ex: "Introdução")
+    - Campo para descrição/instruções (ex: "Apresente o tema e sua tese principal")
+    - Botão de remover seção
+- Botão "Salvar Estrutura"
+- Botão "Prévia da Estrutura"
+
+**Funcionamento:**
+- O usuário pode adicionar quantas seções desejar
+- Cada seção deve ter título e descrição clara
+- O sistema salva a estrutura como um template reutilizável
+
+### 3. Utilização da Estrutura
+Quando o usuário seleciona "Usar Estrutura Existente":
+
+**Componentes da Tela:**
+- Lista de estruturas salvas (cards com nome e data de criação)
+- Ao selecionar uma estrutura:
+  * Exibição da prévia da estrutura (seções e descrições)
+  * Campo "Tema da Redação" para o usuário inserir o assunto desejado
+  * Botão "Gerar Redação com IA"
+  * Opções adicionais:
+    - Campo "Instruções Adicionais" (para requisitos específicos que pode ser colocado ou não)
+
+### 4. Geração da Redação ( etapa que será feita em outro momento) 
+- Ao clicar em "Gerar Redação com IA":
+  * O sistema envia para a IA:
+    - A estrutura completa (seções e descrições)
+    - O tema escolhido
+    - Parâmetros de criatividade
+    - Instruções adicionais
+  * A IA gera uma redação completa seguindo RIGOROSAMENTE a estrutura fornecida
+
+### 5. Resultado
+- A redação gerada é exibida em um editor de texto com:
+  * Numeração das seções conforme a estrutura
+  * Destaque visual para cada seção
+  * Opções de:
+    - Editar o texto gerado
+    - Copiar para área de transferência
+    - Exportar como PDF/DOCX
+    - Salvar como rascunho
+    - "Regenerar" (com mesmo tema e estrutura)
