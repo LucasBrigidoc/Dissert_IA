@@ -123,7 +123,7 @@ export default function Dashboard() {
   };
   
   const displayedGoals = goals.slice(0, 2);
-  const displayedExams = exams.slice(0, 4);
+  const displayedExams = exams.slice(0, 3);
   
   // Exam helper functions
   const addNewExam = () => {
@@ -507,9 +507,9 @@ export default function Dashboard() {
                   </span>
                 </div>
               ))}
-              {exams.length > 4 && (
+              {exams.length > 3 && (
                 <div className="text-center py-1">
-                  <span className="text-xs text-soft-gray">+{exams.length - 4} provas adicionais</span>
+                  <span className="text-xs text-soft-gray">+{exams.length - 3} provas adicionais</span>
                 </div>
               )}
             </div>
