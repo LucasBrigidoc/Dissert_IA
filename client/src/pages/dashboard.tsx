@@ -49,6 +49,8 @@ interface Exam {
   date: string;
   time?: string;
   location?: string;
+  type: string;
+  description?: string;
 }
 
 export default function Dashboard() {
@@ -64,15 +66,15 @@ export default function Dashboard() {
   
   // Exams data state
   const [exams, setExams] = useState<Exam[]>([
-    { id: 1, name: 'Simulado', date: '2024-10-28', time: '14:00', location: 'Online' },
-    { id: 2, name: 'ENEM 1º', date: '2024-11-03', time: '13:30', location: 'Local de Prova' },
-    { id: 3, name: 'ENEM 2º', date: '2024-11-10', time: '13:30', location: 'Local de Prova' },
-    { id: 4, name: 'Vestibular USP', date: '2024-11-15', time: '14:00', location: 'FUVEST' },
-    { id: 5, name: 'Vestibular UNICAMP', date: '2024-11-20', time: '14:00', location: 'COMVEST' },
-    { id: 6, name: 'Simulado Final', date: '2024-11-25', time: '14:00', location: 'Online' }
+    { id: 1, name: 'Simulado', date: '2024-10-28', time: '14:00', location: 'Online', type: 'Simulado', description: 'Prova preparatória com formato ENEM' },
+    { id: 2, name: 'ENEM 1º', date: '2024-11-03', time: '13:30', location: 'Local de Prova', type: 'Exame Nacional', description: 'Primeiro dia do ENEM - Redação, Linguagens e Ciências Humanas' },
+    { id: 3, name: 'ENEM 2º', date: '2024-11-10', time: '13:30', location: 'Local de Prova', type: 'Exame Nacional', description: 'Segundo dia do ENEM - Ciências da Natureza e Matemática' },
+    { id: 4, name: 'Vestibular USP', date: '2024-11-15', time: '14:00', location: 'FUVEST', type: 'Vestibular', description: 'Prova da primeira fase da FUVEST' },
+    { id: 5, name: 'Vestibular UNICAMP', date: '2024-11-20', time: '14:00', location: 'COMVEST', type: 'Vestibular', description: 'Prova da primeira fase da UNICAMP' },
+    { id: 6, name: 'Simulado Final', date: '2024-11-25', time: '14:00', location: 'Online', type: 'Simulado', description: 'Simulado final antes das provas oficiais' }
   ]);
   
-  const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '' });
+  const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '', type: '', description: '' });
   
   // Goals data state
   const [goals, setGoals] = useState<Goal[]>([
@@ -127,16 +129,18 @@ export default function Dashboard() {
   
   // Exam helper functions
   const addNewExam = () => {
-    if (newExam.name && newExam.date) {
+    if (newExam.name && newExam.date && newExam.type) {
       const exam: Exam = {
         id: Date.now(),
         name: newExam.name,
         date: newExam.date,
         time: newExam.time,
-        location: newExam.location
+        location: newExam.location,
+        type: newExam.type,
+        description: newExam.description
       };
       setExams([...exams, exam].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
-      setNewExam({ name: '', date: '', time: '', location: '' });
+      setNewExam({ name: '', date: '', time: '', location: '', type: '', description: '' });
     }
   };
   
@@ -1480,8 +1484,16 @@ export default function Dashboard() {
                             <Calendar className="text-white" size={16} />
                           </div>
                           <div className="flex-1">
-                            <div className="font-medium text-dark-blue">{exam.name}</div>
-                            <div className="flex items-center space-x-4 mt-1 text-sm text-soft-gray">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <div className="font-medium text-dark-blue">{exam.name}</div>
+                              <span className="px-2 py-1 text-xs bg-bright-blue/10 text-bright-blue rounded-full border border-bright-blue/20">
+                                {exam.type}
+                              </span>
+                            </div>
+                            {exam.description && (
+                              <div className="text-sm text-soft-gray mb-2">{exam.description}</div>
+                            )}
+                            <div className="flex items-center space-x-4 text-sm text-soft-gray">
                               <span>📅 {new Date(exam.date).toLocaleDateString('pt-BR')}</span>
                               {exam.time && <span>🕐 {exam.time}</span>}
                               {exam.location && <span>📍 {exam.location}</span>}
@@ -1508,7 +1520,7 @@ export default function Dashboard() {
               {/* Add New Exam */}
               <div className="border-t pt-6">
                 <h3 className="text-lg font-semibold text-dark-blue mb-4">Adicionar Nova Prova</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <Label className="text-sm text-dark-blue">Nome da Prova</Label>
                     <Input
@@ -1520,6 +1532,22 @@ export default function Dashboard() {
                     />
                   </div>
                   <div>
+                    <Label className="text-sm text-dark-blue">Tipo da Prova</Label>
+                    <Select value={newExam.type} onValueChange={(value) => setNewExam({...newExam, type: value})} data-testid="select-new-exam-type">
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Simulado">Simulado</SelectItem>
+                        <SelectItem value="Exame Nacional">Exame Nacional</SelectItem>
+                        <SelectItem value="Vestibular">Vestibular</SelectItem>
+                        <SelectItem value="Concurso">Concurso</SelectItem>
+                        <SelectItem value="Prova Escolar">Prova Escolar</SelectItem>
+                        <SelectItem value="Outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
                     <Label className="text-sm text-dark-blue">Data</Label>
                     <Input
                       type="date"
@@ -1529,6 +1557,8 @@ export default function Dashboard() {
                       data-testid="input-new-exam-date"
                     />
                   </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <Label className="text-sm text-dark-blue">Horário (opcional)</Label>
                     <Input
@@ -1550,10 +1580,20 @@ export default function Dashboard() {
                     />
                   </div>
                 </div>
+                <div className="mb-4">
+                  <Label className="text-sm text-dark-blue">Descrição (opcional)</Label>
+                  <Input
+                    value={newExam.description}
+                    onChange={(e) => setNewExam({...newExam, description: e.target.value})}
+                    placeholder="Ex: Primeiro dia do ENEM - Redação, Linguagens e Ciências Humanas"
+                    className="mt-1"
+                    data-testid="input-new-exam-description"
+                  />
+                </div>
                 <Button
                   onClick={addNewExam}
-                  className="mt-4 bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
-                  disabled={!newExam.name || !newExam.date}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  disabled={!newExam.name || !newExam.date || !newExam.type}
                   data-testid="button-add-new-exam"
                 >
                   <Plus className="mr-2" size={12} />
