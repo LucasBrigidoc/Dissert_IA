@@ -115,20 +115,23 @@ export default function Repertorio() {
                     </Select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-dark-blue mb-2">Período/Época</label>
-                    <Select data-testid="select-period">
+                    <label className="block text-sm font-medium text-dark-blue mb-2">Popularidade</label>
+                    <Select data-testid="select-popularity">
                       <SelectTrigger className="border-bright-blue/20">
-                        <SelectValue placeholder="Qualquer época" />
+                        <SelectValue placeholder="Todos os níveis" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Qualquer época</SelectItem>
-                        <SelectItem value="contemporary">Contemporâneo (2000+)</SelectItem>
-                        <SelectItem value="recent">Século XX-XXI</SelectItem>
-                        <SelectItem value="modern">Idade Moderna</SelectItem>
-                        <SelectItem value="medieval">Idade Média</SelectItem>
-                        <SelectItem value="ancient">Antiguidade</SelectItem>
+                        <SelectItem value="all">Todos os níveis</SelectItem>
+                        <SelectItem value="very-popular">🔥 Muito populares (mais usados)</SelectItem>
+                        <SelectItem value="popular">⭐ Populares (conhecidos)</SelectItem>
+                        <SelectItem value="moderate">🎯 Moderadamente conhecidos</SelectItem>
+                        <SelectItem value="uncommon">💎 Pouco conhecidos (diferenciados)</SelectItem>
+                        <SelectItem value="rare">🏆 Raros (únicos)</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-soft-gray mt-1">
+                      💡 Repertórios raros podem destacar sua redação
+                    </p>
                   </div>
                 </div>
               </details>
