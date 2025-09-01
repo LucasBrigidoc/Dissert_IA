@@ -16,7 +16,7 @@ export default function SettingsPage() {
     name: "Lucas Silva",
     email: "lucas.silva@email.com",
     phone: "(11) 99999-9999",
-    school: "Colégio Exemplo"
+    studentType: "Vestibulando"
   });
 
   const [tempProfile, setTempProfile] = useState(userProfile);
@@ -267,17 +267,21 @@ export default function SettingsPage() {
               </div>
               
               <div>
-                <Label htmlFor="school" className="text-sm font-medium text-dark-blue">Escola</Label>
+                <Label htmlFor="studentType" className="text-sm font-medium text-dark-blue">Tipo de Estudante</Label>
                 {isEditingProfile ? (
-                  <Input
-                    id="school"
-                    value={tempProfile.school}
-                    onChange={(e) => setTempProfile({...tempProfile, school: e.target.value})}
-                    className="mt-1"
-                    data-testid="input-school"
-                  />
+                  <select
+                    id="studentType"
+                    value={tempProfile.studentType}
+                    onChange={(e) => setTempProfile({...tempProfile, studentType: e.target.value})}
+                    className="mt-1 w-full px-3 py-2 border border-bright-blue/30 rounded-md focus:outline-none focus:ring-2 focus:ring-bright-blue/50 focus:border-bright-blue bg-white text-dark-blue"
+                    data-testid="select-student-type"
+                  >
+                    <option value="Vestibulando">Vestibulando</option>
+                    <option value="Concurseiro">Concurseiro</option>
+                    <option value="Ambos">Ambos (Vestibulando e Concurseiro)</option>
+                  </select>
                 ) : (
-                  <p className="mt-1 text-dark-blue" data-testid="text-school">{userProfile.school}</p>
+                  <p className="mt-1 text-dark-blue" data-testid="text-student-type">{userProfile.studentType}</p>
                 )}
               </div>
             </div>
