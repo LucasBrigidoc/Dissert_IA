@@ -801,38 +801,40 @@ export default function Dashboard() {
           <div className="grid lg:grid-cols-7 gap-4">
             {/* Dias da Semana */}
             {scheduleData.map((schedule, index) => (
-              <div key={index} className={`p-4 rounded-lg border relative ${
-                schedule.completed
-                  ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-300'
-                  : schedule.day === 'DOM' 
-                    ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
-                    : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
-              }`}>
-                <div className="text-center mb-3">
-                  <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
-                  <div className={`text-xs font-medium ${
-                    schedule.completed 
-                      ? 'text-green-600'
-                      : schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
-                  }`}>
-                    {formatTime(schedule.hours, schedule.minutes)}
+              <div key={index} className="flex flex-col">
+                <div className={`p-4 rounded-lg border h-full ${
+                  schedule.completed
+                    ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-300'
+                    : schedule.day === 'DOM' 
+                      ? 'bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20' 
+                      : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                }`}>
+                  <div className="text-center mb-3">
+                    <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
+                    <div className={`text-xs font-medium ${
+                      schedule.completed 
+                        ? 'text-green-600'
+                        : schedule.day === 'DOM' ? 'text-soft-gray' : 'text-bright-blue'
+                    }`}>
+                      {formatTime(schedule.hours, schedule.minutes)}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {schedule.activities.map((activity, i) => (
+                      <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
+                        schedule.completed
+                          ? 'bg-green-100 text-green-700 line-through'
+                          : schedule.day === 'DOM' 
+                            ? 'bg-soft-gray/20 text-soft-gray' 
+                            : 'bg-white/50 text-dark-blue'
+                      }`}>
+                        {activity}
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="space-y-2 mb-3">
-                  {schedule.activities.map((activity, i) => (
-                    <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
-                      schedule.completed
-                        ? 'bg-green-100 text-green-700 line-through'
-                        : schedule.day === 'DOM' 
-                          ? 'bg-soft-gray/20 text-soft-gray' 
-                          : 'bg-white/50 text-dark-blue'
-                    }`}>
-                      {activity}
-                    </div>
-                  ))}
-                </div>
                 {schedule.day !== 'DOM' && (
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center mt-3">
                     <button
                       onClick={() => toggleScheduleCompletion(index)}
                       className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium transition-all ${
@@ -846,6 +848,9 @@ export default function Dashboard() {
                       <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
                     </button>
                   </div>
+                )}
+                {schedule.day === 'DOM' && (
+                  <div className="mt-3 h-8"></div>
                 )}
               </div>
             ))}
