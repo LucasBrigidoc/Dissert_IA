@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, Sliders, ThumbsUp } from "lucide-react";
+import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, Sliders, ThumbsUp, ChevronDown, ChevronUp, FileText, Shuffle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,9 @@ export default function ControladorEscrita() {
   
   // Estado para o tipo de modificação atual
   const [modificationType, setModificationType] = useState<string>("");
+  
+  // Estados para controlar cards expandidos
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   const handleBack = () => {
     setLocation("/functionalities");
@@ -195,14 +198,13 @@ export default function ControladorEscrita() {
 
       {/* Content */}
       <div className="container mx-auto px-6 py-8">
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Área de Entrada de Texto */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-[calc(100vh-200px)]">
+          {/* Área de Entrada de Texto - Ocupa toda a vertical */}
           <div className="lg:col-span-2">
-            <LiquidGlassCard className="h-full">
-              <div className="space-y-6">
-                <div>
-                  <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3 block">
+            <LiquidGlassCard className="h-full flex flex-col">
+              <div className="flex-1 space-y-4">
+                <div className="flex-1 flex flex-col">
+                  <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3">
                     Texto Original
                   </Label>
                   <Textarea
@@ -210,13 +212,13 @@ export default function ControladorEscrita() {
                     placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
                     value={originalText}
                     onChange={(e) => setOriginalText(e.target.value)}
-                    className="min-h-[200px] text-base leading-relaxed"
+                    className="flex-1 min-h-[300px] text-base leading-relaxed resize-none"
                   />
                 </div>
 
                 {/* Área do Texto Modificado */}
                 {modifiedText && (
-                  <div className="mt-8 pt-6 border-t border-gray-200">
+                  <div className="flex-1 flex flex-col pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between mb-3">
                       <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
                         Texto Modificado
@@ -256,7 +258,7 @@ export default function ControladorEscrita() {
                         </Button>
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-bright-blue">
+                    <div className="flex-1 bg-gray-50 rounded-lg p-4 border-l-4 border-bright-blue overflow-y-auto">
                       <p className="text-base leading-relaxed text-gray-800">
                         {modifiedText}
                       </p>
@@ -267,36 +269,55 @@ export default function ControladorEscrita() {
             </LiquidGlassCard>
           </div>
 
-          {/* Painel de Controles */}
-          <div className="space-y-6">
-            {/* Controles de Estilo */}
-            <LiquidGlassCard>
-              <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Sliders className="h-5 w-5 text-bright-blue" />
-                  <h3 className="text-lg font-semibold text-dark-blue">Controles de Estilo</h3>
+          {/* Painel de Controles - Cards Expandíveis */}
+          <div className="lg:col-span-2 space-y-4 h-full overflow-y-auto">
+            {/* Card de Formalidade */}
+            <LiquidGlassCard 
+              className={`bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all cursor-pointer ${expandedCard === 'formalidade' ? 'ring-2 ring-bright-blue/20' : ''}`}
+              onClick={() => setExpandedCard(expandedCard === 'formalidade' ? null : 'formalidade')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <FileText className="text-white" size={16} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-dark-blue">Controle de Formalidade</h3>
+                    <p className="text-sm text-soft-gray">Ajuste o nível formal do texto</p>
+                  </div>
                 </div>
-
-                {/* Controle de Formalidade */}
-                <div>
-                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Nível de Formalidade: {formalityLevel[0]}%
-                  </Label>
-                  <Slider
-                    value={formalityLevel}
-                    onValueChange={setFormalityLevel}
-                    max={100}
-                    step={10}
-                    className="mb-2"
-                  />
-                  <div className="flex justify-between text-xs text-soft-gray">
-                    <span>Informal</span>
-                    <span>Muito Formal</span>
+                {expandedCard === 'formalidade' ? (
+                  <ChevronUp className="h-5 w-5 text-soft-gray" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-soft-gray" />
+                )}
+              </div>
+              
+              {expandedCard === 'formalidade' && (
+                <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                      Nível de Formalidade: {formalityLevel[0]}%
+                    </Label>
+                    <Slider
+                      value={formalityLevel}
+                      onValueChange={setFormalityLevel}
+                      max={100}
+                      step={10}
+                      className="mb-2"
+                    />
+                    <div className="flex justify-between text-xs text-soft-gray">
+                      <span>Informal</span>
+                      <span>Muito Formal</span>
+                    </div>
                   </div>
                   <Button
-                    onClick={() => simulateTextProcessing('formalidade')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      simulateTextProcessing('formalidade');
+                    }}
                     disabled={isProcessing}
-                    className="w-full mt-3 bg-gradient-to-r from-bright-blue to-dark-blue text-white"
+                    className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white"
                   >
                     {isProcessing ? (
                       <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -306,27 +327,56 @@ export default function ControladorEscrita() {
                     Aplicar Formalidade
                   </Button>
                 </div>
+              )}
+            </LiquidGlassCard>
 
-                {/* Controle de Argumentação */}
-                <div>
-                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Nível Argumentativo: {argumentativeLevel[0]}%
-                  </Label>
-                  <Slider
-                    value={argumentativeLevel}
-                    onValueChange={setArgumentativeLevel}
-                    max={100}
-                    step={10}
-                    className="mb-2"
-                  />
-                  <div className="flex justify-between text-xs text-soft-gray">
-                    <span>Descritivo</span>
-                    <span>Muito Argumentativo</span>
+            {/* Card de Argumentação */}
+            <LiquidGlassCard 
+              className={`bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all cursor-pointer ${expandedCard === 'argumentacao' ? 'ring-2 ring-dark-blue/20' : ''}`}
+              onClick={() => setExpandedCard(expandedCard === 'argumentacao' ? null : 'argumentacao')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                    <ThumbsUp className="text-white" size={16} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-dark-blue">Controle de Argumentação</h3>
+                    <p className="text-sm text-soft-gray">Intensidade persuasiva do texto</p>
+                  </div>
+                </div>
+                {expandedCard === 'argumentacao' ? (
+                  <ChevronUp className="h-5 w-5 text-soft-gray" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-soft-gray" />
+                )}
+              </div>
+              
+              {expandedCard === 'argumentacao' && (
+                <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                      Nível Argumentativo: {argumentativeLevel[0]}%
+                    </Label>
+                    <Slider
+                      value={argumentativeLevel}
+                      onValueChange={setArgumentativeLevel}
+                      max={100}
+                      step={10}
+                      className="mb-2"
+                    />
+                    <div className="flex justify-between text-xs text-soft-gray">
+                      <span>Descritivo</span>
+                      <span>Muito Argumentativo</span>
+                    </div>
                   </div>
                   <Button
-                    onClick={() => simulateTextProcessing('argumentativo')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      simulateTextProcessing('argumentativo');
+                    }}
                     disabled={isProcessing}
-                    className="w-full mt-3 bg-gradient-to-r from-dark-blue to-soft-gray text-white"
+                    className="w-full bg-gradient-to-r from-dark-blue to-soft-gray text-white"
                   >
                     {isProcessing ? (
                       <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -336,60 +386,99 @@ export default function ControladorEscrita() {
                     Tornar Argumentativo
                   </Button>
                 </div>
-              </div>
+              )}
             </LiquidGlassCard>
 
-            {/* Controles de Reescrita */}
-            <LiquidGlassCard>
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-dark-blue mb-4">Reescrita Avançada</h3>
-                
-                <Button
-                  onClick={() => simulateTextProcessing('sinonimos')}
-                  disabled={isProcessing}
-                  variant="outline"
-                  className="w-full border-green-200 hover:bg-green-50 hover:border-green-300"
-                >
-                  {isProcessing ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                  )}
-                  Reescrever com Sinônimos
-                  <span className="block text-xs text-soft-gray mt-1">
-                    Mantém o sentido original
-                  </span>
-                </Button>
-
-                <Button
-                  onClick={() => simulateTextProcessing('antonimos')}
-                  disabled={isProcessing}
-                  variant="outline"
-                  className="w-full border-orange-200 hover:bg-orange-50 hover:border-orange-300"
-                >
-                  {isProcessing ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                  )}
-                  Reescrever com Antônimos
-                  <span className="block text-xs text-soft-gray mt-1">
-                    Muda o sentido do texto
-                  </span>
-                </Button>
+            {/* Card de Sinônimos */}
+            <LiquidGlassCard 
+              className={`bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all cursor-pointer ${expandedCard === 'sinonimos' ? 'ring-2 ring-green-200' : ''}`}
+              onClick={() => setExpandedCard(expandedCard === 'sinonimos' ? null : 'sinonimos')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                    <RefreshCw className="text-white" size={16} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-dark-blue">Reescrita com Sinônimos</h3>
+                    <p className="text-sm text-soft-gray">Mantém o sentido original</p>
+                  </div>
+                </div>
+                {expandedCard === 'sinonimos' ? (
+                  <ChevronUp className="h-5 w-5 text-soft-gray" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-soft-gray" />
+                )}
               </div>
+              
+              {expandedCard === 'sinonimos' && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <p className="text-sm text-soft-gray mb-4">
+                    Esta função substitui palavras por sinônimos para enriquecer o vocabulário sem alterar o significado do texto.
+                  </p>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      simulateTextProcessing('sinonimos');
+                    }}
+                    disabled={isProcessing}
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
+                  >
+                    {isProcessing ? (
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                    )}
+                    Aplicar Sinônimos
+                  </Button>
+                </div>
+              )}
             </LiquidGlassCard>
 
-            {/* Dicas de Uso */}
-            <LiquidGlassCard className="bg-blue-50/50">
-              <h4 className="text-sm font-semibold text-dark-blue mb-2">💡 Dicas de Uso</h4>
-              <ul className="text-xs text-soft-gray space-y-1">
-                <li>• Use formalidade alta para textos acadêmicos</li>
-                <li>• Aumente a argumentação para persuadir</li>
-                <li>• Sinônimos enriquecem o vocabulário</li>
-                <li>• Antônimos ajudam a explorar oposições</li>
-                <li>• Salve as versões que mais gostar</li>
-              </ul>
+            {/* Card de Antônimos */}
+            <LiquidGlassCard 
+              className={`bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all cursor-pointer ${expandedCard === 'antonimos' ? 'ring-2 ring-orange-200' : ''}`}
+              onClick={() => setExpandedCard(expandedCard === 'antonimos' ? null : 'antonimos')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+                    <Shuffle className="text-white" size={16} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-dark-blue">Reescrita com Antônimos</h3>
+                    <p className="text-sm text-soft-gray">Inverte o sentido do texto</p>
+                  </div>
+                </div>
+                {expandedCard === 'antonimos' ? (
+                  <ChevronUp className="h-5 w-5 text-soft-gray" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-soft-gray" />
+                )}
+              </div>
+              
+              {expandedCard === 'antonimos' && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <p className="text-sm text-soft-gray mb-4">
+                    Esta função substitui palavras por antônimos para explorar o argumento oposto e criar contraste.
+                  </p>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      simulateTextProcessing('antonimos');
+                    }}
+                    disabled={isProcessing}
+                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                  >
+                    {isProcessing ? (
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Shuffle className="mr-2 h-4 w-4" />
+                    )}
+                    Aplicar Antônimos
+                  </Button>
+                </div>
+              )}
             </LiquidGlassCard>
           </div>
         </div>
