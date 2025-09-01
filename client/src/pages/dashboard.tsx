@@ -901,21 +901,21 @@ export default function Dashboard() {
         {/* Fourth Row: Cronograma de Estudos - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-study-schedule">
           <div className="flex items-center justify-between mb-6">
-            <h4 className="font-semibold text-dark-blue text-lg">Cronograma de Estudos Personalizado</h4>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
                 <Timer className="text-white" size={12} />
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
-                onClick={handleScheduleEdit}
-                data-testid="button-customize-schedule"
-              >
-                Personalizar
-              </Button>
+              <h4 className="font-semibold text-dark-blue text-lg">Cronograma de Estudos Personalizado</h4>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+              onClick={handleScheduleEdit}
+              data-testid="button-customize-schedule"
+            >
+              Personalizar
+            </Button>
           </div>
           <div className="grid lg:grid-cols-7 gap-4">
             {/* Dias da Semana */}
