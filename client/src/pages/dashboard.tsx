@@ -257,19 +257,19 @@ export default function Dashboard() {
               {/* Navigation Menu */}
               <div className="flex items-center space-x-6">
                 <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-home">
-                  <Home size={18} />
+                  <Home size={14} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                  <Plus size={18} />
+                  <Plus size={14} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
-                  <Book size={18} />
+                  <Book size={14} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
-                  <Settings size={18} />
+                  <Settings size={14} />
                   <span className="font-medium">Configurações</span>
                 </Link>
               </div>
@@ -285,7 +285,7 @@ export default function Dashboard() {
                 className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                 data-testid="button-logout"
               >
-                <LogOut size={16} />
+                <LogOut size={12} />
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
@@ -305,7 +305,7 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome-exams">
             <div className="flex items-center mb-3">
               <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Calendar className="text-white" size={20} />
+                <Calendar className="text-white" size={16} />
               </div>
               <h3 className="text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
             </div>
@@ -343,14 +343,14 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Target className="text-white" size={20} />
+                <Target className="text-white" size={16} />
               </div>
               <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
               <div className="flex items-center p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
                 <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <CheckCircle2 className="text-white" size={16} />
+                  <CheckCircle2 className="text-white" size={12} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-blue">Fazer 2 redações</div>
@@ -359,7 +359,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
                 <div className="w-8 h-8 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={16} />
+                  <Target className="text-white" size={12} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-blue">Estudar 10h</div>
@@ -374,7 +374,7 @@ export default function Dashboard() {
               onClick={() => setLocation('/goals')}
               data-testid="button-customize-goals"
             >
-              <Edit3 size={16} className="mr-2" />
+              <Edit3 size={12} className="mr-2" />
               Personalizar
             </Button>
           </LiquidGlassCard>
@@ -384,7 +384,7 @@ export default function Dashboard() {
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-improvement-points">
               <div className="flex items-center mb-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={20} />
+                  <Target className="text-white" size={16} />
                 </div>
                 <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
               </div>
@@ -402,7 +402,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-soft-gray">Concordância e regência</span>
-                    <AlertTriangle className="text-red-500" size={12} />
+                    <AlertTriangle className="text-red-500" size={10} />
                   </div>
                 </div>
 
@@ -417,7 +417,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-soft-gray">Interpretação textual</span>
-                    <AlertTriangle className="text-yellow-500" size={12} />
+                    <AlertTriangle className="text-yellow-500" size={10} />
                   </div>
                 </div>
 
@@ -432,7 +432,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-soft-gray">Diversificar argumentos</span>
-                    <CheckCircle2 className="text-blue-500" size={12} />
+                    <CheckCircle2 className="text-blue-500" size={10} />
                   </div>
                 </div>
 
@@ -447,7 +447,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-soft-gray">Conectivos e coesão</span>
-                    <AlertTriangle className="text-orange-500" size={12} />
+                    <AlertTriangle className="text-orange-500" size={10} />
                   </div>
                 </div>
 
@@ -462,7 +462,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-soft-gray">Detalhar agentes</span>
-                    <CheckCircle2 className="text-green-500" size={12} />
+                    <CheckCircle2 className="text-green-500" size={10} />
                   </div>
                 </div>
               </div>
@@ -471,7 +471,7 @@ export default function Dashboard() {
               <div className="mt-3 flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                    <Lightbulb className="text-white" size={16} />
+                    <Lightbulb className="text-white" size={12} />
                   </div>
                   <span className="text-xs font-medium text-dark-blue">Foco: Coesão (Comp. 4)</span>
                 </div>
@@ -491,7 +491,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={20} />
+                  <TrendingUp className="text-white" size={16} />
                 </div>
                 <h4 className="font-semibold text-dark-blue">Progresso Geral</h4>
               </div>
@@ -502,7 +502,7 @@ export default function Dashboard() {
                 className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 p-1 h-8"
                 data-testid="button-edit-target"
               >
-                <Edit3 size={12} />
+                <Edit3 size={10} />
               </Button>
             </div>
             <div className="flex items-center justify-center mb-4">
@@ -603,7 +603,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={20} />
+                  <TrendingUp className="text-white" size={16} />
                 </div>
                 <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
               </div>
@@ -671,7 +671,7 @@ export default function Dashboard() {
                     className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                     data-testid="button-add-score"
                   >
-                    <Plus size={14} className="mr-1" />
+                    <Plus size={12} className="mr-1" />
                     Adicionar Nota
                   </Button>
                 </DialogTrigger>
@@ -683,7 +683,7 @@ export default function Dashboard() {
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Clock className="text-white" size={20} />
+                <Clock className="text-white" size={16} />
               </div>
               <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
             </div>
@@ -698,7 +698,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <Lightbulb className="text-white" size={16} />
+                      <Lightbulb className="text-white" size={12} />
                     </div>
                     <span className="text-sm text-dark-blue">Brainstorm</span>
                   </div>
@@ -707,7 +707,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <MessageCircle className="text-white" size={16} />
+                      <MessageCircle className="text-white" size={12} />
                     </div>
                     <span className="text-sm text-dark-blue">Rascunho</span>
                   </div>
@@ -716,7 +716,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-soft-gray/10">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <CheckCircle2 className="text-white" size={16} />
+                      <CheckCircle2 className="text-white" size={12} />
                     </div>
                     <span className="text-sm text-dark-blue">A limpo</span>
                   </div>
@@ -732,7 +732,7 @@ export default function Dashboard() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-dark-blue flex items-center">
-                <Plus className="mr-2" size={20} />
+                <Plus className="mr-2" size={16} />
                 Adicionar Nova Nota
               </DialogTitle>
             </DialogHeader>
@@ -833,7 +833,7 @@ export default function Dashboard() {
             <h4 className="font-semibold text-dark-blue text-lg">Cronograma de Estudos Personalizado</h4>
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <Timer className="text-white" size={16} />
+                <Timer className="text-white" size={12} />
               </div>
               <Button 
                 variant="outline" 
@@ -892,7 +892,7 @@ export default function Dashboard() {
                       }`}
                       data-testid={`button-complete-${schedule.day.toLowerCase()}`}
                     >
-                      <CheckCircle2 size={12} />
+                      <CheckCircle2 size={10} />
                       <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
                     </button>
                   </div>
@@ -906,7 +906,7 @@ export default function Dashboard() {
           <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Target className="text-bright-blue mr-3" size={18} />
+                <Target className="text-bright-blue mr-3" size={14} />
                 <div>
                   <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
                   <div className="text-xs text-soft-gray">Baseado na sua próxima prova</div>
@@ -925,7 +925,7 @@ export default function Dashboard() {
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" data-testid="dialog-schedule-edit">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
-                <Timer className="mr-3 text-bright-blue" size={24} />
+                <Timer className="mr-3 text-bright-blue" size={20} />
                 Editar Cronograma de Estudos
               </DialogTitle>
               <div className="text-sm text-soft-gray">Cronograma semanal de estudos</div>
@@ -999,7 +999,7 @@ export default function Dashboard() {
                   className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
                   data-testid="button-cancel-schedule"
                 >
-                  <X className="mr-2" size={16} />
+                  <X className="mr-2" size={12} />
                   Cancelar
                 </Button>
                 <Button 
@@ -1007,7 +1007,7 @@ export default function Dashboard() {
                   className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                   data-testid="button-save-schedule"
                 >
-                  <Save className="mr-2" size={16} />
+                  <Save className="mr-2" size={12} />
                   Salvar Cronograma
                 </Button>
               </div>
@@ -1020,7 +1020,7 @@ export default function Dashboard() {
           <DialogContent className="max-w-2xl" data-testid="dialog-features-config">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
-                <Settings className="mr-3 text-bright-blue" size={24} />
+                <Settings className="mr-3 text-bright-blue" size={20} />
                 Configurar Funcionalidades de Acesso Rápido
               </DialogTitle>
               <div className="text-sm text-soft-gray">Escolha quais funcionalidades aparecem no seu dashboard</div>
@@ -1072,7 +1072,7 @@ export default function Dashboard() {
                           ? `bg-gradient-to-br from-${feature.color === 'bright-blue' ? 'bright-blue' : feature.color === 'dark-blue' ? 'dark-blue' : 'soft-gray'} to-${feature.color === 'bright-blue' ? 'dark-blue' : feature.color === 'dark-blue' ? 'soft-gray' : 'bright-blue'}`
                           : 'bg-gray-300'
                       }`}>
-                        <IconComponent className="text-white" size={16} />
+                        <IconComponent className="text-white" size={12} />
                       </div>
                       <div className="flex-1">
                         <div className="font-medium text-dark-blue">{feature.name}</div>
@@ -1122,7 +1122,7 @@ export default function Dashboard() {
         <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
           <div className="flex items-center mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Book className="text-white" size={20} />
+              <Book className="text-white" size={16} />
             </div>
             <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
           </div>
@@ -1148,7 +1148,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Plus className="text-white" size={20} />
+                <Plus className="text-white" size={16} />
               </div>
               <h4 className="font-semibold text-dark-blue text-lg">Acesso rápido das principais Funcionalidades</h4>
             </div>
@@ -1159,7 +1159,7 @@ export default function Dashboard() {
               className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
               data-testid="button-configure-features"
             >
-              <Settings className="mr-2" size={14} />
+              <Settings className="mr-2" size={12} />
               Configurar
             </Button>
           </div>
@@ -1196,7 +1196,7 @@ export default function Dashboard() {
                   data-testid={`button-feature-${feature.id}`}
                 >
                   <div className={`w-10 h-10 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform flex-shrink-0`}>
-                    <IconComponent className="text-white" size={18} />
+                    <IconComponent className="text-white" size={14} />
                   </div>
                   <div className="text-center space-y-1">
                     <div className="text-sm text-dark-blue font-medium leading-tight">{feature.name}</div>
@@ -1215,7 +1215,7 @@ export default function Dashboard() {
               className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 px-6 py-2"
               data-testid="button-view-all-functionalities"
             >
-              <Grid3X3 className="mr-2" size={16} />
+              <Grid3X3 className="mr-2" size={12} />
               Ver Todas as Funcionalidades
             </Button>
           </div>
