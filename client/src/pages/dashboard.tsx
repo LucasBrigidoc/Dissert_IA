@@ -917,8 +917,8 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </div>
             
-            {/* Add Score Button and Export Button */}
-            <div className="mt-4 flex justify-center gap-3">
+            {/* Add Score Button */}
+            <div className="mt-4 flex justify-center">
               <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
                 <DialogTrigger asChild>
                   <Button
@@ -931,16 +931,6 @@ export default function Dashboard() {
                   </Button>
                 </DialogTrigger>
               </Dialog>
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 hover:border-bright-blue"
-                data-testid="button-export-scores"
-                onClick={() => console.log('Exportar notas')}
-              >
-                <TrendingUp size={10} className="mr-1" />
-                Exportar Dados
-              </Button>
             </div>
           </LiquidGlassCard>
 
