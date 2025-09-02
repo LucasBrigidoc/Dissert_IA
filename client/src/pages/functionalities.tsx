@@ -17,11 +17,11 @@ export default function FunctionalitiesPage() {
     const routeMap: { [key: string]: string } = {
       "Arquiteto de Argumentos": "/argumentos",
       "Explorador de Repertório": "/repertorio?from=functionalities", 
-      "Simulador de Prova": "/simulador",
+      "Simulador de Prova": "/simulador?from=functionalities",
       "Controlador de Estilo": "/controlador-escrita?from=functionalities",
       "Estrutura Coringa": "/estilo?from=functionalities",
       "Newsletter Educacional": "/dashboard",
-      "Criador de Propostas": "/simulador",
+      "Criador de Propostas": "/simulador?from=functionalities",
       "Biblioteca Pessoal": "/dashboard"
     };
     
