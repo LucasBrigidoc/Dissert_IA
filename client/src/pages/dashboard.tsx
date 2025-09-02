@@ -384,10 +384,6 @@ export default function Dashboard() {
                 <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
-              <Link href="/biblioteca?from=dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-biblioteca">
-                <Archive size={14} />
-                <span className="font-medium">Biblioteca</span>
-              </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
                 <Book size={14} />
                 <span className="font-medium">Newsletter</span>
@@ -451,15 +447,6 @@ export default function Dashboard() {
                 >
                   <Plus size={10} />
                   <span className="font-medium">Funcionalidades</span>
-                </Link>
-                <Link 
-                  href="/biblioteca?from=dashboard" 
-                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-biblioteca"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Archive size={10} />
-                  <span className="font-medium">Biblioteca</span>
                 </Link>
                 <Link 
                   href="/newsletter" 
