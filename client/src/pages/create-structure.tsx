@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ArrowLeft, Save, Eye, PenTool, Loader2, Play } from "lucide-react";
+import { ArrowLeft, Save, PenTool, Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { EnhancedStructureEditor } from "@/components/enhanced-structure-editor";
-import { StructurePreview } from "@/components/structure-preview";
+
 import { EssayResult } from "@/pages/essay-result";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +25,7 @@ interface CreateStructureProps {
 export function CreateStructure({ onBack, editingStructure }: CreateStructureProps) {
   const [name, setName] = useState(editingStructure?.name || "");
   const [sections, setSections] = useState<Section[]>(editingStructure?.sections || []);
-  const [showPreview, setShowPreview] = useState(false);
+  
   const [essayTopic, setEssayTopic] = useState("");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -219,15 +219,6 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
             
             <div className="flex gap-3">
               <Button
-                variant="outline"
-                onClick={() => setShowPreview(!showPreview)}
-                data-testid="button-previa"
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                {showPreview ? 'Ocultar' : 'Ver'} Prévia
-              </Button>
-              
-              <Button
                 onClick={handleSave}
                 disabled={!isValid || isLoading}
                 className="bg-bright-blue hover:bg-blue-600"
@@ -251,19 +242,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           />
         </LiquidGlassCard>
 
-        {/* Preview */}
-        {showPreview && (
-          <LiquidGlassCard className="mt-8">
-            <h2 className="text-xl font-semibold text-dark-blue mb-4">
-              Prévia da Estrutura
-            </h2>
-            <StructurePreview
-              name={name}
-              sections={sections}
-              className="max-h-[60vh] overflow-y-auto"
-            />
-          </LiquidGlassCard>
-        )}
+        
 
         {/* Proposta de Redação */}
         <LiquidGlassCard>

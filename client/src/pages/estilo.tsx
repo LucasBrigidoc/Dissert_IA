@@ -140,7 +140,7 @@ export default function Estilo() {
               </div>
             </div>
             <div className="text-sm text-soft-gray">
-              Crie modelos reutilizáveis e gere redações personalizadas seguindo sua metodologia preferida
+              Gere redações personalizadas seguindo sua metodologia preferida
             </div>
           </div>
         </div>
@@ -152,8 +152,7 @@ export default function Estilo() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-dark-blue mb-4">Como funciona a Estrutura Coringa?</h2>
             <p className="text-lg text-soft-gray max-w-2xl mx-auto leading-relaxed">
-              A Estrutura Coringa permite que você crie modelos de redação personalizados com suas próprias seções e metodologias. 
-              Você pode criar uma nova estrutura do zero ou usar uma estrutura já criada para gerar redações rapidamente.
+              A Estrutura Coringa permite que você crie modelos de redação personalizados com suas próprias seções e metodologias.
             </p>
           </div>
           
