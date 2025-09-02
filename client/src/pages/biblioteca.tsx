@@ -11,10 +11,43 @@ export default function BibliotecaPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todos");
 
-  // Lógica para voltar inteligente
-  const urlParams = new URLSearchParams(window.location.search);
-  const fromPage = urlParams.get('from') || 'dashboard';
-  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  // Lógica para voltar inteligente - detecta automaticamente a página anterior
+  const getSmartBackUrl = () => {
+    // Primeiro, verifica se há um parâmetro 'from' na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromParam = urlParams.get('from');
+    
+    if (fromParam === 'functionalities') {
+      // Salva que veio de functionalities para futuras navegações
+      localStorage.setItem('biblioteca-last-source', 'functionalities');
+      return '/functionalities';
+    }
+    
+    // Se não há parâmetro 'from', verifica o localStorage para a última fonte conhecida
+    const lastSource = localStorage.getItem('biblioteca-last-source');
+    if (lastSource === 'functionalities') {
+      return '/functionalities';
+    }
+    
+    // Tenta detectar pela história do navegador
+    if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
+      const referrer = document.referrer;
+      if (referrer.includes('/functionalities')) {
+        localStorage.setItem('biblioteca-last-source', 'functionalities');
+        return '/functionalities';
+      }
+      if (referrer.includes('/dashboard')) {
+        localStorage.setItem('biblioteca-last-source', 'dashboard');
+        return '/dashboard';
+      }
+    }
+    
+    // Por padrão, volta para dashboard
+    localStorage.setItem('biblioteca-last-source', 'dashboard');
+    return '/dashboard';
+  };
+  
+  const backUrl = getSmartBackUrl();
 
   // Mock data para diferentes categorias de arquivos salvos
   const bibliotecaData = {

@@ -318,7 +318,7 @@ export default function FunctionalitiesPage() {
                 <h3 className="text-xl font-semibold text-dark-blue mb-3">Biblioteca Pessoal</h3>
                 <p className="text-soft-gray mb-4 leading-relaxed">Repositório inteligente de todo seu aprendizado organizado por categorias</p>
                 <Button 
-                  onClick={() => setLocation('/biblioteca')}
+                  onClick={() => setLocation('/biblioteca?from=functionalities')}
                   className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800"
                   data-testid="button-access-biblioteca"
                 >
