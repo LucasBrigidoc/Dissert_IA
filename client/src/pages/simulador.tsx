@@ -216,36 +216,6 @@ export default function Simulador() {
               </div>
             </LiquidGlassCard>
 
-            {/* Quick Actions */}
-            <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20">
-              <h4 className="font-semibold text-dark-blue mb-4">Ações Rápidas</h4>
-              
-              <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full text-left justify-start border-bright-blue/30 hover:bg-bright-blue/10"
-                  data-testid="button-view-history"
-                >
-                  Ver Histórico Completo
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full text-left justify-start border-dark-blue/30 hover:bg-dark-blue/10"
-                  data-testid="button-performance-report"
-                >
-                  Relatório de Performance
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full text-left justify-start border-soft-gray/30 hover:bg-soft-gray/10"
-                  data-testid="button-download-certificate"
-                >
-                  Baixar Certificados
-                </Button>
-              </div>
-            </LiquidGlassCard>
           </div>
         </div>
       </div>
