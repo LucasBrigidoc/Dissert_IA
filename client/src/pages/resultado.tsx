@@ -113,7 +113,7 @@ export function Resultado() {
             data-testid="button-back-to-features"
           >
             <Grid className="mr-2" size={16} />
-            Ver Funcionalidades
+            Ver Todas as Funcionalidades
           </Button>
         </div>
       </div>
@@ -269,7 +269,7 @@ export function Resultado() {
             data-testid="button-back-to-features"
           >
             <Grid className="mr-2" size={16} />
-            Ver Funcionalidades
+            Ver Todas as Funcionalidades
           </Button>
         </div>
       </div>
