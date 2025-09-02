@@ -191,8 +191,8 @@ export default function FunctionalitiesPage() {
               <Brain className="text-white" size={20} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-dark-blue">Ferramentas Principais</h2>
-              <p className="text-soft-gray">Os pilares fundamentais para refinar sua escrita</p>
+              <h2 className="text-2xl font-bold text-dark-blue">Ferramentas de Refinamento</h2>
+              <p className="text-soft-gray">Os pilares fundamentais para refinar a base da escrita</p>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -268,7 +268,7 @@ export default function FunctionalitiesPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-dark-blue">Ferramentas de Criação</h2>
-              <p className="text-soft-gray">Crie conteúdo personalizado e organize seu aprendizado</p>
+              <p className="text-soft-gray">Crie conteúdo personalizado e aprenda vendo exemplos</p>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
