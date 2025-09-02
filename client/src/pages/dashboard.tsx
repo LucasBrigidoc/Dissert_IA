@@ -80,7 +80,7 @@ export default function Dashboard() {
   const [goals, setGoals] = useState<Goal[]>([
     { id: 1, title: 'Fazer redações', target: 2, current: 1, unit: 'redações', completed: false },
     { id: 2, title: 'Estudar', target: 10, current: 8.9, unit: 'horas', completed: false },
-    { id: 3, title: 'Ler newsletters', target: 2, current: 1, unit: 'newsletters', completed: false },
+    { id: 3, title: 'Criar estruturas', target: 2, current: 1, unit: 'estruturas', completed: false },
     { id: 4, title: 'Simulados', target: 1, current: 0, unit: 'simulados', completed: false },
     { id: 5, title: 'Revisar argumentos', target: 5, current: 3, unit: 'argumentos', completed: false },
     { id: 6, title: 'Praticar coesão', target: 3, current: 1, unit: 'exercícios', completed: false }
@@ -170,17 +170,17 @@ export default function Dashboard() {
     { id: 'simulador', name: 'Simulador de Provas', description: 'Pratique redações', icon: GraduationCap, color: 'bright-blue' },
     { id: 'estilo', name: 'Criador de Estilo', description: 'Personalize sua escrita', icon: Sliders, color: 'soft-gray' },
     { id: 'goals', name: 'Metas e Objetivos', description: 'Defina seus objetivos', icon: Target, color: 'bright-blue' },
-    { id: 'newsletter', name: 'Newsletter Semanal', description: 'Conteúdo atualizado', icon: Book, color: 'dark-blue' }
+    { id: 'estrutura-curinga', name: 'Estrutura Curinga', description: 'Crie estruturas reutilizáveis', icon: Edit3, color: 'dark-blue' }
   ];
   
   // Visible features state
-  const [visibleFeatures, setVisibleFeatures] = useState(['argumentos', 'repertorio', 'simulador', 'estilo']);
+  const [visibleFeatures, setVisibleFeatures] = useState(['argumentos', 'repertorio', 'simulador', 'estrutura-curinga']);
   
   // Schedule data state
   const [scheduleData, setScheduleData] = useState<ScheduleDay[]>([
     { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: 2, minutes: 0, completed: false },
     { day: 'TER', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
-    { day: 'QUA', activities: ['Revisão', 'Newsletter'], hours: 1, minutes: 30, completed: false },
+    { day: 'QUA', activities: ['Revisão', 'Estrutura Curinga'], hours: 1, minutes: 30, completed: false },
     { day: 'QUI', activities: ['Simulado'], hours: 2, minutes: 30, completed: false },
     { day: 'SEX', activities: ['Estilo', 'Correções'], hours: 2, minutes: 0, completed: false },
     { day: 'SAB', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
@@ -273,12 +273,12 @@ export default function Dashboard() {
       case 'estilo':
         setLocation('/estilo?from=dashboard');
         break;
+      case 'estrutura-curinga':
+        setLocation('/estrutura-curinga?from=dashboard');
+        break;
     }
   };
 
-  const handleReadNewsletter = () => {
-    setLocation("/newsletter");
-  };
 
   const handleSuggestedAction = (action: string) => {
     console.log(`Executando ação: ${action}`);
@@ -385,9 +385,9 @@ export default function Dashboard() {
                 <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
-              <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Book size={14} />
-                <span className="font-medium">Newsletter</span>
+              <Link href="/estrutura-curinga?from=dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-estrutura-curinga">
+                <Edit3 size={14} />
+                <span className="font-medium">Estrutura Curinga</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
                 <Settings size={14} />
@@ -450,13 +450,13 @@ export default function Dashboard() {
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
-                  href="/newsletter" 
+                  href="/estrutura-curinga?from=dashboard" 
                   className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-newsletter"
+                  data-testid="button-mobile-nav-estrutura-curinga"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Book size={12} />
-                  <span className="font-medium">Newsletter</span>
+                  <Edit3 size={12} />
+                  <span className="font-medium">Estrutura Curinga</span>
                 </Link>
                 <Link 
                   href="/settings" 
@@ -1612,26 +1612,26 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* Fifth Row: Newsletter - Full Width */}
-        <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
+        {/* Fifth Row: Estrutura Curinga - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-estrutura-curinga">
           <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Book className="text-white" size={16} />
+            <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <Edit3 className="text-white" size={16} />
             </div>
-            <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
+            <h4 className="font-semibold text-dark-blue">Estrutura Curinga</h4>
           </div>
           <div className="grid lg:grid-cols-3 gap-6 items-center">
             <div className="lg:col-span-2">
-              <div className="font-medium text-dark-blue mb-2 text-lg">Tecnologia e Sociedade 🤖</div>
-              <p className="text-soft-gray leading-relaxed">Explore como a inteligência artificial está transformando o mundo moderno e descubra como incorporar esse tema em suas redações com repertório atualizado e exemplos práticos.</p>
+              <div className="font-medium text-dark-blue mb-2 text-lg">Crie estruturas reutilizáveis ✨</div>
+              <p className="text-soft-gray leading-relaxed">Desenvolva modelos personalizados de redação que se adaptam ao seu estilo único de escrita. Crie uma vez e reutilize em várias redações com consistência e qualidade.</p>
             </div>
             <div className="flex justify-end">
               <Button 
-                onClick={handleReadNewsletter}
-                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 px-8 py-3"
-                data-testid="button-read-newsletter"
+                onClick={() => setLocation('/estrutura-curinga?from=dashboard')}
+                className="bg-gradient-to-r from-dark-blue to-bright-blue text-white hover:from-dark-blue/90 hover:to-bright-blue/90 px-8 py-3"
+                data-testid="button-access-estrutura-curinga"
               >
-                Ler Newsletter Completa
+                Acessar Estrutura Curinga
               </Button>
             </div>
           </div>
