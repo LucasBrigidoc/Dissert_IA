@@ -18,10 +18,10 @@ export default function FunctionalitiesPage() {
       "Arquiteto de Argumentos": "/argumentos",
       "Explorador de Repertório": "/repertorio?from=functionalities", 
       "Simulador de Prova": "/simulador?from=functionalities",
-      "Controlador de Estilo": "/controlador-escrita?from=functionalities",
+      "Controlador de Escrita": "/controlador-escrita?from=functionalities",
       "Estrutura Coringa": "/estilo?from=functionalities",
       "Newsletter Educacional": "/dashboard",
-      "Criador de Propostas": "/simulador?from=functionalities",
+      "Criador de Propostas": "/propostas?from=functionalities",
       "Biblioteca Pessoal": "/biblioteca?from=functionalities"
     };
     

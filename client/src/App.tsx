@@ -25,6 +25,7 @@ import ControladorEscrita from "@/pages/controlador-escrita";
 import Simulacao from "@/pages/simulacao";
 import { Resultado } from "@/pages/resultado";
 import Biblioteca from "@/pages/biblioteca";
+import Propostas from "@/pages/propostas";
 
 function Router() {
   return (
@@ -50,6 +51,7 @@ function Router() {
       <Route path="/simulacao" component={Simulacao} />
       <Route path="/resultado" component={Resultado} />
       <Route path="/biblioteca" component={Biblioteca} />
+      <Route path="/propostas" component={Propostas} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -53,7 +53,7 @@ export const mockFeatures = [
   },
   {
     id: 5,
-    name: "Controlador de Estilo",
+    name: "Controlador de Escrita",
     description: "Ajustes interativos de formalidade e tom",
     icon: "sliders"
   },
