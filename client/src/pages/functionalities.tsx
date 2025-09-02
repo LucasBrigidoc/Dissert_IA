@@ -200,20 +200,22 @@ export default function FunctionalitiesPage() {
             {coreFeatures.map((feature) => {
               const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
               return (
-                <LiquidGlassCard key={feature.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group h-full" data-testid={`card-feature-${feature.id}`}>
-                  <div className="text-center h-full flex flex-col">
-                    <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <LiquidGlassCard key={feature.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid={`card-feature-${feature.id}`}>
+                  <div className="flex items-start space-x-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                       <IconComponent className="text-white" size={24} />
                     </div>
-                    <h3 className="text-lg font-semibold text-dark-blue mb-3">{feature.name}</h3>
-                    <p className="text-soft-gray text-sm mb-6 leading-relaxed flex-grow">{feature.description}</p>
-                    <Button 
-                      onClick={() => handleFeatureAccess(feature.name)}
-                      className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 mt-auto"
-                      data-testid={`button-access-${feature.id}`}
-                    >
-                      Acessar Ferramenta
-                    </Button>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-dark-blue mb-3">{feature.name}</h3>
+                      <p className="text-soft-gray mb-4 leading-relaxed">{feature.description}</p>
+                      <Button 
+                        onClick={() => handleFeatureAccess(feature.name)}
+                        className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                        data-testid={`button-access-${feature.id}`}
+                      >
+                        Acessar Ferramenta
+                      </Button>
+                    </div>
                   </div>
                 </LiquidGlassCard>
               );
