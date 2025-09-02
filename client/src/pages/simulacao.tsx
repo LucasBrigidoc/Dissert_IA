@@ -267,128 +267,149 @@ export default function SimulacaoPage() {
         </div>
       </div>
       
-      {/* Central Timer */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex flex-col items-center space-y-6">
-          {/* Large Timer Display - Conditional */}
-          {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
-            <div className={`text-center p-8 rounded-2xl bg-white/80 backdrop-blur-sm border-2 shadow-lg ${getTimerColor().replace('text-', 'border-')}`}>
-              <div className={`text-6xl font-mono font-bold mb-2 ${getTimerColor()}`}>
-                {formatTime(timeLeft)}
+      {/* Top Bar with Timer, Steps and Stats */}
+      <div className="max-w-7xl mx-auto mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Writing Process Checkpoints */}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <CheckCircle className="text-white" size={12} />
               </div>
-              <div className="text-lg text-soft-gray">Tempo Restante</div>
-              {config.timerDisplay !== 'always' && (
-                <div className="text-sm text-soft-gray mt-2">
-                  Atualização: {config.timerDisplay === '1min' ? 'a cada minuto' : config.timerDisplay === '5min' ? 'a cada 5 min' : 'a cada 10 min'}
+              <h4 className="font-medium text-dark-blue">Etapas da Redação</h4>
+            </div>
+            
+            <div className="space-y-2">
+              {checkpoints.map((checkpoint, index) => {
+                const isAvailable = index === 0 || checkpoints[index - 1]?.completed;
+                return (
+                  <div 
+                    key={checkpoint.id}
+                    className={`p-2 rounded-lg border cursor-pointer transition-all text-sm ${
+                      checkpoint.completed 
+                        ? 'bg-green-50 border-green-200'
+                        : isAvailable
+                          ? 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                          : 'bg-gray-100 border-gray-300 opacity-50 cursor-not-allowed'
+                    }`}
+                    onClick={() => isAvailable && handleCheckpointComplete(checkpoint.id)}
+                    data-testid={`checkpoint-${checkpoint.id}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle 
+                          className={checkpoint.completed ? 'text-green-600' : 'text-gray-400'} 
+                          size={16} 
+                        />
+                        <span className="font-medium text-dark-blue">{checkpoint.name}</span>
+                      </div>
+                      {checkpoint.completed && (
+                        <div className="text-green-600 text-xs">
+                          ✓
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </LiquidGlassCard>
+          
+          {/* Timer Display - Center */}
+          <div className="flex flex-col items-center space-y-4">
+            {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
+              <div className="text-center p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
+                <div className="text-3xl font-mono font-bold mb-1 text-gray-800">
+                  {formatTime(timeLeft)}
                 </div>
+                <div className="text-sm text-gray-600">Tempo Restante</div>
+                {config.timerDisplay !== 'always' && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    {config.timerDisplay === '1min' ? 'Atualiza a cada minuto' : config.timerDisplay === '5min' ? 'Atualiza a cada 5 min' : 'Atualiza a cada 10 min'}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Control Buttons */}
+            <div className="flex items-center space-x-2">
+              {!isActive ? (
+                <Button 
+                  onClick={handleStart}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                  data-testid="button-start-timer"
+                >
+                  <Play className="mr-2" size={16} />
+                  Iniciar
+                </Button>
+              ) : (
+                <>
+                  <Button 
+                    onClick={handlePause}
+                    variant="outline"
+                    className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-4 py-2"
+                    data-testid="button-pause-timer"
+                  >
+                    <Pause className="mr-1" size={14} />
+                    {isPaused ? 'Retomar' : 'Pausar'}
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleSave}
+                    variant="outline"
+                    className="border-blue-500 text-blue-600 hover:bg-blue-50 px-4 py-2"
+                    data-testid="button-save-draft"
+                  >
+                    <Save className="mr-1" size={14} />
+                    Salvar
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleFinish}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
+                    data-testid="button-finish-simulation"
+                  >
+                    <Square className="mr-1" size={14} />
+                    Finalizar
+                  </Button>
+                </>
               )}
             </div>
-          )}
-          
-          {/* Control Buttons */}
-          <div className="flex items-center space-x-4">
-            {!isActive ? (
-              <Button 
-                onClick={handleStart}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
-                data-testid="button-start-timer"
-              >
-                <Play className="mr-3" size={20} />
-                Iniciar Simulação
-              </Button>
-            ) : (
-              <>
-                <Button 
-                  onClick={handlePause}
-                  variant="outline"
-                  className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-6 py-3"
-                  data-testid="button-pause-timer"
-                >
-                  <Pause className="mr-2" size={16} />
-                  {isPaused ? 'Retomar' : 'Pausar'}
-                </Button>
-                
-                <Button 
-                  onClick={handleSave}
-                  variant="outline"
-                  className="border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3"
-                  data-testid="button-save-draft"
-                >
-                  <Save className="mr-2" size={16} />
-                  Salvar
-                </Button>
-                
-                <Button 
-                  onClick={handleFinish}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3"
-                  data-testid="button-finish-simulation"
-                >
-                  <Square className="mr-2" size={16} />
-                  Finalizar
-                </Button>
-              </>
-            )}
           </div>
+          
+          {/* Writing Stats */}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <FileText className="text-white" size={12} />
+              </div>
+              <h4 className="font-medium text-dark-blue">Estatísticas</h4>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center p-2 bg-bright-blue/10 rounded-lg">
+                <div className="text-lg font-bold text-bright-blue mb-1">{wordCount}</div>
+                <div className="text-xs text-gray-600">Palavras</div>
+              </div>
+              
+              <div className="text-center p-2 bg-dark-blue/10 rounded-lg">
+                <div className="text-lg font-bold text-dark-blue mb-1">{lineCount}</div>
+                <div className="text-xs text-gray-600">Linhas</div>
+              </div>
+              
+              <div className="text-center p-2 bg-gray-100 rounded-lg">
+                <div className="text-lg font-bold text-dark-blue mb-1">{charCount}</div>
+                <div className="text-xs text-gray-600">Caracteres</div>
+              </div>
+            </div>
+          </LiquidGlassCard>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left Sidebar - Checkpoints */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Progress Summary - Left Sidebar */}
           <div className="space-y-6">
-            {/* Writing Process Checkpoints */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <CheckCircle className="text-white" size={16} />
-                </div>
-                <h4 className="font-semibold text-dark-blue">Etapas da Redação</h4>
-              </div>
-              
-              <div className="space-y-3">
-                {checkpoints.map((checkpoint, index) => {
-                  const isAvailable = index === 0 || checkpoints[index - 1]?.completed;
-                  return (
-                    <div 
-                      key={checkpoint.id}
-                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                        checkpoint.completed 
-                          ? 'bg-green-50 border-green-200'
-                          : isAvailable
-                            ? 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                            : 'bg-gray-100 border-gray-300 opacity-50 cursor-not-allowed'
-                      }`}
-                      onClick={() => isAvailable && handleCheckpointComplete(checkpoint.id)}
-                      data-testid={`checkpoint-${checkpoint.id}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <CheckCircle 
-                            className={checkpoint.completed ? 'text-green-600' : 'text-gray-400'} 
-                            size={20} 
-                          />
-                          <div>
-                            <div className="font-medium text-dark-blue">{checkpoint.name}</div>
-                            {checkpoint.completed && checkpoint.timeSpent > 0 && (
-                              <div className="text-xs text-green-600">
-                                Concluído em {formatTime(checkpoint.timeSpent)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {checkpoint.completed && (
-                          <div className="text-green-600">
-                            ✓
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </LiquidGlassCard>
-            
-            {/* Progress Summary */}
             <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
@@ -413,7 +434,7 @@ export default function SimulacaoPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-dark-blue">Tempo Total</span>
                     <span className="text-sm font-bold text-dark-blue">
-                      {formatTime(90 * 60 - timeLeft)}
+                      {formatTime(config.timeLimit * 60 - timeLeft)}
                     </span>
                   </div>
                 </div>
@@ -498,90 +519,64 @@ export default function SimulacaoPage() {
             </LiquidGlassCard>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="space-y-6">
-            {/* Writing Stats */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <FileText className="text-white" size={16} />
-                </div>
-                <h4 className="font-semibold text-dark-blue">Estatísticas</h4>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="text-center p-3 bg-bright-blue/10 rounded-lg">
-                  <div className="text-xl font-bold text-bright-blue mb-1">{wordCount}</div>
-                  <div className="text-xs text-soft-gray">Palavras</div>
-                </div>
-                
-                <div className="text-center p-3 bg-dark-blue/10 rounded-lg">
-                  <div className="text-xl font-bold text-dark-blue mb-1">{lineCount}</div>
-                  <div className="text-xs text-soft-gray">Linhas</div>
-                </div>
-                
-                <div className="text-center p-3 bg-soft-gray/10 rounded-lg">
-                  <div className="text-xl font-bold text-dark-blue mb-1">{charCount}</div>
-                  <div className="text-xs text-soft-gray">Caracteres</div>
-                </div>
-              </div>
-            </LiquidGlassCard>
+        </div>
 
-            {/* Quality Checklist */}
-            <LiquidGlassCard className="bg-gradient-to-br from-green-50/50 to-blue-50/50 border-green-200/50">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                  <CheckCircle className="text-white" size={16} />
-                </div>
-                <h4 className="font-semibold text-dark-blue">Qualidade</h4>
+        {/* Bottom Section - Quality and Tips */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          {/* Quality Checklist */}
+          <LiquidGlassCard className="bg-gradient-to-br from-green-50/50 to-blue-50/50 border-green-200/50">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                <CheckCircle className="text-white" size={16} />
+              </div>
+              <h4 className="font-semibold text-dark-blue">Qualidade</h4>
+            </div>
+            
+            <div className="space-y-3">
+              <div className={`flex items-center space-x-2 ${wordCount >= 800 ? 'text-green-600' : 'text-soft-gray'}`}>
+                <CheckCircle className={wordCount >= 800 ? 'text-green-600' : 'text-gray-300'} size={16} />
+                <span className="text-sm">800+ palavras</span>
               </div>
               
-              <div className="space-y-3">
-                <div className={`flex items-center space-x-2 ${wordCount >= 800 ? 'text-green-600' : 'text-soft-gray'}`}>
-                  <CheckCircle className={wordCount >= 800 ? 'text-green-600' : 'text-gray-300'} size={16} />
-                  <span className="text-sm">800+ palavras</span>
-                </div>
-                
-                <div className={`flex items-center space-x-2 ${lineCount >= 25 ? 'text-green-600' : 'text-soft-gray'}`}>
-                  <CheckCircle className={lineCount >= 25 ? 'text-green-600' : 'text-gray-300'} size={16} />
-                  <span className="text-sm">25+ linhas</span>
-                </div>
-                
-                <div className={`flex items-center space-x-2 ${essayText.includes('introdução') || essayText.length > 100 ? 'text-green-600' : 'text-soft-gray'}`}>
-                  <CheckCircle className={essayText.includes('introdução') || essayText.length > 100 ? 'text-green-600' : 'text-gray-300'} size={16} />
-                  <span className="text-sm">Introdução</span>
-                </div>
-                
-                <div className={`flex items-center space-x-2 ${essayText.includes('portanto') || essayText.includes('logo') || essayText.includes('assim') ? 'text-green-600' : 'text-soft-gray'}`}>
-                  <CheckCircle className={essayText.includes('portanto') || essayText.includes('logo') || essayText.includes('assim') ? 'text-green-600' : 'text-gray-300'} size={16} />
-                  <span className="text-sm">Conectivos</span>
-                </div>
-                
-                <div className={`flex items-center space-x-2 ${essayText.includes('proposta') || essayText.includes('solução') ? 'text-green-600' : 'text-soft-gray'}`}>
-                  <CheckCircle className={essayText.includes('proposta') || essayText.includes('solução') ? 'text-green-600' : 'text-gray-300'} size={16} />
-                  <span className="text-sm">Proposta</span>
-                </div>
+              <div className={`flex items-center space-x-2 ${lineCount >= 25 ? 'text-green-600' : 'text-soft-gray'}`}>
+                <CheckCircle className={lineCount >= 25 ? 'text-green-600' : 'text-gray-300'} size={16} />
+                <span className="text-sm">25+ linhas</span>
               </div>
-            </LiquidGlassCard>
+              
+              <div className={`flex items-center space-x-2 ${essayText.includes('introdução') || essayText.length > 100 ? 'text-green-600' : 'text-soft-gray'}`}>
+                <CheckCircle className={essayText.includes('introdução') || essayText.length > 100 ? 'text-green-600' : 'text-gray-300'} size={16} />
+                <span className="text-sm">Introdução</span>
+              </div>
+              
+              <div className={`flex items-center space-x-2 ${essayText.includes('portanto') || essayText.includes('logo') || essayText.includes('assim') ? 'text-green-600' : 'text-soft-gray'}`}>
+                <CheckCircle className={essayText.includes('portanto') || essayText.includes('logo') || essayText.includes('assim') ? 'text-green-600' : 'text-gray-300'} size={16} />
+                <span className="text-sm">Conectivos</span>
+              </div>
+              
+              <div className={`flex items-center space-x-2 ${essayText.includes('proposta') || essayText.includes('solução') ? 'text-green-600' : 'text-soft-gray'}`}>
+                <CheckCircle className={essayText.includes('proposta') || essayText.includes('solução') ? 'text-green-600' : 'text-gray-300'} size={16} />
+                <span className="text-sm">Proposta</span>
+              </div>
+            </div>
+          </LiquidGlassCard>
 
-            {/* Quick Tips */}
-            <LiquidGlassCard className="bg-gradient-to-br from-yellow-50/50 to-orange-50/50 border-yellow-200/50">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="text-white" size={16} />
-                </div>
-                <h4 className="font-semibold text-dark-blue">Dicas</h4>
+          {/* Quick Tips */}
+          <LiquidGlassCard className="bg-gradient-to-br from-yellow-50/50 to-orange-50/50 border-yellow-200/50">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
+                <AlertTriangle className="text-white" size={16} />
               </div>
-              
-              <div className="space-y-2 text-sm text-soft-gray">
-                <div>• Use exemplos concretos</div>
-                <div>• Mantenha impessoalidade</div>
-                <div>• Conecte com transitivos</div>
-                <div>• Proposta detalhada</div>
-                <div>• Revise ortografia</div>
-              </div>
-            </LiquidGlassCard>
-          </div>
+              <h4 className="font-semibold text-dark-blue">Dicas</h4>
+            </div>
+            
+            <div className="space-y-2 text-sm text-soft-gray">
+              <div>• Use exemplos concretos</div>
+              <div>• Mantenha impessoalidade</div>
+              <div>• Conecte com transitivos</div>
+              <div>• Proposta detalhada</div>
+              <div>• Revise ortografia</div>
+            </div>
+          </LiquidGlassCard>
         </div>
       </div>
 
@@ -606,7 +601,7 @@ export default function SimulacaoPage() {
                 <div className="text-soft-gray">Palavras</div>
               </div>
               <div className="p-3 bg-dark-blue/10 rounded-lg text-center">
-                <div className="font-bold text-dark-blue">{formatTime(90 * 60 - timeLeft)}</div>
+                <div className="font-bold text-dark-blue">{formatTime(config.timeLimit * 60 - timeLeft)}</div>
                 <div className="text-soft-gray">Tempo Usado</div>
               </div>
             </div>
