@@ -19,6 +19,7 @@ export default function FunctionalitiesPage() {
       "Explorador de Repertório": "/repertorio?from=functionalities", 
       "Simulador de Prova": "/simulador?from=functionalities",
       "Controlador de Estilo": "/controlador-escrita?from=functionalities",
+      "Estrutura Coringa": "/estilo?from=functionalities",
       "Newsletter Educacional": "/dashboard",
       "Criador de Propostas": "/simulador?from=functionalities",
       "Biblioteca Pessoal": "/biblioteca?from=functionalities"
@@ -43,12 +44,9 @@ export default function FunctionalitiesPage() {
   };
 
   // Organizar funcionalidades por categorias
-  const coreFeatures = mockFeatures.slice(0, 3).filter(feature => 
-    feature.name !== "Newsletter Educacional" && 
-    feature.name !== "Estrutura Coringa"
-  ); // Principais: Argumentos, Repertório (sem Newsletter e sem Estrutura Coringa)
+  const coreFeatures = mockFeatures.slice(0, 3).filter(feature => feature.name !== "Newsletter Educacional"); // Principais: Argumentos, Repertório (sem Newsletter)
   const practiceFeatures = mockFeatures.slice(4, 6); // Prática: Estilo, Simulador
-  const creationFeatures = [mockFeatures[6]]; // Criação: Criador de Propostas
+  const creationFeatures = [mockFeatures[2], mockFeatures[6]]; // Criação: Estrutura Curinga, Criador de Propostas
 
   return (
     <div className="min-h-screen bg-gray-50">
