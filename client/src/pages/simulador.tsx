@@ -2,6 +2,9 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
@@ -105,20 +108,124 @@ export default function Simulador() {
               </div>
             </div>
             
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-dark-blue mb-2">Tema do Simulado</label>
+                <Select data-testid="select-theme">
+                  <SelectTrigger className="border-bright-blue/20">
+                    <SelectValue placeholder="Escolha um tema" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="random">Tema Aleatório</SelectItem>
+                    <SelectItem value="technology">Tecnologia e Sociedade</SelectItem>
+                    <SelectItem value="environment">Meio Ambiente e Sustentabilidade</SelectItem>
+                    <SelectItem value="education">Educação e Conhecimento</SelectItem>
+                    <SelectItem value="social">Questões Sociais</SelectItem>
+                    <SelectItem value="politics">Política e Cidadania</SelectItem>
+                    <SelectItem value="economy">Economia e Trabalho</SelectItem>
+                    <SelectItem value="health">Saúde e Bem-estar</SelectItem>
+                    <SelectItem value="culture">Cultura e Arte</SelectItem>
+                    <SelectItem value="human-rights">Direitos Humanos</SelectItem>
+                    <SelectItem value="media">Mídia e Comunicação</SelectItem>
+                    <SelectItem value="ethics">Ética e Moral</SelectItem>
+                    <SelectItem value="science">Ciência e Inovação</SelectItem>
+                    <SelectItem value="custom">Tema Personalizado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-dark-blue mb-2">Exibição do Timer</label>
+                <Select data-testid="select-timer-display">
+                  <SelectTrigger className="border-bright-blue/20">
+                    <SelectValue placeholder="Como mostrar o tempo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="always">Sempre visível</SelectItem>
+                    <SelectItem value="1min">Atualizar a cada 1 minuto</SelectItem>
+                    <SelectItem value="5min">Atualizar a cada 5 minutos</SelectItem>
+                    <SelectItem value="10min">Atualizar a cada 10 minutos</SelectItem>
+                    <SelectItem value="hidden">Oculto (apenas no final)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
             <div className="mb-6">
-              <label className="block text-sm font-medium text-dark-blue mb-2">Tema do Simulado</label>
-              <Select data-testid="select-theme">
-                <SelectTrigger className="border-bright-blue/20">
-                  <SelectValue placeholder="Escolha um tema" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="random">Tema Aleatório</SelectItem>
-                  <SelectItem value="technology">Tecnologia e Sociedade</SelectItem>
-                  <SelectItem value="environment">Meio Ambiente</SelectItem>
-                  <SelectItem value="education">Educação</SelectItem>
-                  <SelectItem value="social">Questões Sociais</SelectItem>
-                </SelectContent>
-              </Select>
+              <label className="block text-sm font-medium text-dark-blue mb-2">Tema Personalizado (opcional)</label>
+              <Input 
+                placeholder="Digite seu tema específico aqui..."
+                className="border-bright-blue/20"
+                data-testid="input-custom-theme"
+              />
+            </div>
+            
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-dark-blue mb-2">Proposta de Texto (opcional)</label>
+              <Textarea 
+                placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
+                className="border-bright-blue/20 min-h-[100px]"
+                data-testid="textarea-text-proposal"
+              />
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-4">
+                <h4 className="font-medium text-dark-blue">Configurações de Exibição</h4>
+                
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-soft-gray">Mostrar contador de palavras</label>
+                  <Switch data-testid="switch-word-count" />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-soft-gray">Salvar automaticamente</label>
+                  <Switch data-testid="switch-auto-save" />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-soft-gray">Verificação ortográfica</label>
+                  <Switch data-testid="switch-spell-check" />
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <h4 className="font-medium text-dark-blue">Configurações Avançadas</h4>
+                
+                <div>
+                  <label className="block text-xs text-soft-gray mb-1">Tamanho da fonte</label>
+                  <Select data-testid="select-font-size">
+                    <SelectTrigger className="border-bright-blue/20 h-8">
+                      <SelectValue placeholder="Médio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Pequeno</SelectItem>
+                      <SelectItem value="medium">Médio</SelectItem>
+                      <SelectItem value="large">Grande</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-xs text-soft-gray mb-1">Salvamento automático</label>
+                  <Select data-testid="select-auto-save-interval">
+                    <SelectTrigger className="border-bright-blue/20 h-8">
+                      <SelectValue placeholder="30 segundos" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15s">15 segundos</SelectItem>
+                      <SelectItem value="30s">30 segundos</SelectItem>
+                      <SelectItem value="1min">1 minuto</SelectItem>
+                      <SelectItem value="2min">2 minutos</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-soft-gray">Modo foco (ocultar distrações)</label>
+                  <Switch data-testid="switch-focus-mode" />
+                </div>
+              </div>
             </div>
             
             <Button 
