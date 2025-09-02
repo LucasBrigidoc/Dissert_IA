@@ -175,7 +175,6 @@ export default function FunctionalitiesPage() {
           )}
         </div>
       </nav>
-
       {/* Functionalities Content */}
       <div className="container mx-auto px-6 py-8 pt-24 space-y-8">
         
@@ -193,7 +192,7 @@ export default function FunctionalitiesPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-dark-blue">Ferramentas Principais</h2>
-              <p className="text-soft-gray">Os pilares fundamentais para uma redação de qualidade</p>
+              <p className="text-soft-gray">Os pilares fundamentais para refinar sua escrita</p>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
