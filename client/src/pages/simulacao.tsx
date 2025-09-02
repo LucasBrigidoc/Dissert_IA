@@ -384,11 +384,11 @@ export default function SimulacaoPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="flex justify-center mb-2">
+                    <div className="mb-2">
                       <Button 
                         onClick={handlePause}
                         variant="outline"
-                        className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-2 py-1 text-xs"
+                        className="w-full border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-2 py-1 text-xs"
                         data-testid="button-pause-timer"
                       >
                         <Pause className="mr-1" size={10} />
@@ -400,7 +400,7 @@ export default function SimulacaoPage() {
                       <Button 
                         onClick={handleSave}
                         variant="outline"
-                        className="border-blue-500 text-blue-600 hover:bg-blue-50 px-2 py-1 text-xs"
+                        className="w-full border-blue-500 text-blue-600 hover:bg-blue-50 px-2 py-1 text-xs"
                         data-testid="button-save-draft"
                       >
                         <CheckCircle className="mr-1" size={10} />
@@ -409,7 +409,7 @@ export default function SimulacaoPage() {
                       
                       <Button 
                         onClick={handleFinish}
-                        className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-xs"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-xs"
                         data-testid="button-finish-simulation"
                       >
                         <Square className="mr-1" size={10} />
