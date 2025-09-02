@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Save, PenTool, Loader2, Play, Edit } from "lucide-react";
+import { ArrowLeft, Save, PenTool, Loader2, Play, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { EnhancedStructureEditor } from "@/components/enhanced-structure-editor";
@@ -212,7 +212,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           <div className="flex items-center justify-between">
             <div className="flex items-start space-x-6">
               <div className="w-16 h-16 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                <Edit className="text-white" size={24} />
+                <FileText className="text-white" size={24} />
               </div>
               <div className="flex-1">
                 <h1 className="text-3xl font-bold text-dark-blue mb-2">
