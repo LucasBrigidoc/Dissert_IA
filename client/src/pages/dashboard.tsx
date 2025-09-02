@@ -170,7 +170,8 @@ export default function Dashboard() {
     { id: 'simulador', name: 'Simulador de Provas', description: 'Pratique redações', icon: GraduationCap, color: 'bright-blue' },
     { id: 'estilo', name: 'Criador de Estilo', description: 'Personalize sua escrita', icon: Sliders, color: 'soft-gray' },
     { id: 'goals', name: 'Metas e Objetivos', description: 'Defina seus objetivos', icon: Target, color: 'bright-blue' },
-    { id: 'estrutura-curinga', name: 'Estrutura Curinga', description: 'Crie estruturas reutilizáveis', icon: Edit3, color: 'dark-blue' }
+    { id: 'newsletter', name: 'Newsletter Semanal', description: 'Conteúdo atualizado', icon: Book, color: 'dark-blue' },
+    { id: 'estrutura-curinga', name: 'Estrutura Curinga', description: 'Crie estruturas reutilizáveis', icon: Edit3, color: 'soft-gray' }
   ];
   
   // Visible features state
@@ -385,9 +386,9 @@ export default function Dashboard() {
                 <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
-              <Link href="/estrutura-curinga?from=dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-estrutura-curinga">
-                <Edit3 size={14} />
-                <span className="font-medium">Estrutura Curinga</span>
+              <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
+                <Book size={14} />
+                <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
                 <Settings size={14} />
@@ -450,13 +451,13 @@ export default function Dashboard() {
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
-                  href="/estrutura-curinga?from=dashboard" 
+                  href="/newsletter" 
                   className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-estrutura-curinga"
+                  data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Edit3 size={12} />
-                  <span className="font-medium">Estrutura Curinga</span>
+                  <Book size={12} />
+                  <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
                   href="/settings" 
@@ -1612,26 +1613,26 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* Fifth Row: Estrutura Curinga - Full Width */}
-        <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-estrutura-curinga">
+        {/* Fifth Row: Newsletter - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-newsletter">
           <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Edit3 className="text-white" size={16} />
+            <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <Book className="text-white" size={16} />
             </div>
-            <h4 className="font-semibold text-dark-blue">Estrutura Curinga</h4>
+            <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
           </div>
           <div className="grid lg:grid-cols-3 gap-6 items-center">
             <div className="lg:col-span-2">
-              <div className="font-medium text-dark-blue mb-2 text-lg">Crie estruturas reutilizáveis ✨</div>
-              <p className="text-soft-gray leading-relaxed">Desenvolva modelos personalizados de redação que se adaptam ao seu estilo único de escrita. Crie uma vez e reutilize em várias redações com consistência e qualidade.</p>
+              <div className="font-medium text-dark-blue mb-2 text-lg">Tecnologia e Sociedade 🤖</div>
+              <p className="text-soft-gray leading-relaxed">Explore como a inteligência artificial está transformando o mundo moderno e descubra como incorporar esse tema em suas redações com repertório atualizado e exemplos práticos.</p>
             </div>
             <div className="flex justify-end">
               <Button 
-                onClick={() => setLocation('/estrutura-curinga?from=dashboard')}
-                className="bg-gradient-to-r from-dark-blue to-bright-blue text-white hover:from-dark-blue/90 hover:to-bright-blue/90 px-8 py-3"
-                data-testid="button-access-estrutura-curinga"
+                onClick={() => setLocation('/newsletter')}
+                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 px-8 py-3"
+                data-testid="button-read-newsletter"
               >
-                Acessar Estrutura Curinga
+                Ler Newsletter Completa
               </Button>
             </div>
           </div>
