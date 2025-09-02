@@ -148,7 +148,7 @@ export default function PropostasPage() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <Button
                 onClick={() => setLocation("/functionalities")}
                 variant="outline"
@@ -159,9 +159,14 @@ export default function PropostasPage() {
                 <ArrowLeft size={16} />
                 <span>Voltar</span>
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-dark-blue">Propostas de Redação</h1>
-                <p className="text-soft-gray">Crie e explore temas para praticar</p>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <FileText className="text-white" size={24} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-dark-blue">Propostas de Redação</h1>
+                  <p className="text-soft-gray">Crie e explore temas para praticar</p>
+                </div>
               </div>
             </div>
           </div>
