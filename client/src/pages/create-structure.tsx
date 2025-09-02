@@ -217,17 +217,6 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
               </p>
             </div>
             
-            <div className="flex gap-3">
-              <Button
-                onClick={handleSave}
-                disabled={!isValid || isLoading}
-                className="bg-bright-blue hover:bg-blue-600"
-                data-testid="button-salvar-estrutura"
-              >
-                <Save className="mr-2 h-4 w-4" />
-                {isLoading ? 'Salvando...' : (editingStructure ? 'Atualizar' : 'Salvar')} Estrutura
-              </Button>
-            </div>
           </div>
         </div>
 
@@ -300,19 +289,31 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                   : 'Complete a estrutura para testar'
                 }
               </p>
-              <Button
-                onClick={handleGenerateEssay}
-                disabled={!essayTopic.trim() || !isValid || isGenerating}
-                className="bg-bright-blue hover:bg-blue-600 px-8"
-                data-testid="button-gerar-redacao"
-              >
-                {isGenerating ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Play className="mr-2 h-4 w-4" />
-                )}
-                {isGenerating ? "Gerando Redação..." : "Criar Redação"}
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleGenerateEssay}
+                  disabled={!essayTopic.trim() || !isValid || isGenerating}
+                  className="bg-bright-blue hover:bg-blue-600 px-8"
+                  data-testid="button-gerar-redacao"
+                >
+                  {isGenerating ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Play className="mr-2 h-4 w-4" />
+                  )}
+                  {isGenerating ? "Gerando Redação..." : "Criar Redação"}
+                </Button>
+                
+                <Button
+                  onClick={handleSave}
+                  disabled={!isValid || isLoading}
+                  className="bg-green-600 hover:bg-green-700 px-8"
+                  data-testid="button-salvar-estrutura"
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {isLoading ? 'Salvando...' : (editingStructure ? 'Atualizar' : 'Salvar')} Estrutura
+                </Button>
+              </div>
             </div>
           </div>
         </LiquidGlassCard>
