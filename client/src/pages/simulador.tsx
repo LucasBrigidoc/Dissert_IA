@@ -169,64 +169,7 @@ export default function Simulador() {
               />
             </div>
             
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="space-y-4">
-                <h4 className="font-medium text-dark-blue">Configurações de Exibição</h4>
-                
-                <div className="flex items-center justify-between">
-                  <label className="text-sm text-soft-gray">Mostrar contador de palavras</label>
-                  <Switch data-testid="switch-word-count" />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <label className="text-sm text-soft-gray">Salvar automaticamente</label>
-                  <Switch data-testid="switch-auto-save" />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <label className="text-sm text-soft-gray">Verificação ortográfica</label>
-                  <Switch data-testid="switch-spell-check" />
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <h4 className="font-medium text-dark-blue">Configurações Avançadas</h4>
-                
-                <div>
-                  <label className="block text-xs text-soft-gray mb-1">Tamanho da fonte</label>
-                  <Select data-testid="select-font-size">
-                    <SelectTrigger className="border-bright-blue/20 h-8">
-                      <SelectValue placeholder="Médio" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="small">Pequeno</SelectItem>
-                      <SelectItem value="medium">Médio</SelectItem>
-                      <SelectItem value="large">Grande</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="block text-xs text-soft-gray mb-1">Salvamento automático</label>
-                  <Select data-testid="select-auto-save-interval">
-                    <SelectTrigger className="border-bright-blue/20 h-8">
-                      <SelectValue placeholder="30 segundos" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="15s">15 segundos</SelectItem>
-                      <SelectItem value="30s">30 segundos</SelectItem>
-                      <SelectItem value="1min">1 minuto</SelectItem>
-                      <SelectItem value="2min">2 minutos</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <label className="text-sm text-soft-gray">Modo foco (ocultar distrações)</label>
-                  <Switch data-testid="switch-focus-mode" />
-                </div>
-              </div>
-            </div>
+            
             
             <Button 
               onClick={() => setLocation('/simulacao')}
