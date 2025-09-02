@@ -6,6 +6,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import type { EssayStructure } from "@shared/schema";
+import jsPDF from 'jspdf';
 
 interface EssayResultProps {
   essay: string;
@@ -48,18 +49,89 @@ export function EssayResult({
   };
 
   const handleDownload = () => {
-    const element = document.createElement('a');
-    const file = new Blob([essay], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `redacao-${topic.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    
-    toast({
-      title: "Download iniciado",
-      description: "A redação está sendo baixada como arquivo de texto.",
-    });
+    try {
+      const pdf = new jsPDF();
+      
+      // Configurações do PDF
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(topic, 20, 20);
+      
+      // Linha separadora
+      pdf.setDrawColor(80, 135, 255); // bright-blue
+      pdf.line(20, 30, 190, 30);
+      
+      // Conteúdo da redação
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      
+      const lines = essay.split('\n');
+      let yPosition = 45;
+      const pageHeight = pdf.internal.pageSize.height;
+      const margin = 20;
+      const lineHeight = 7;
+      
+      lines.forEach((line, index) => {
+        // Verificar se precisa de nova página
+        if (yPosition > pageHeight - 30) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        
+        // Verificar se é título (entre **)
+        if (line.startsWith('**') && line.endsWith('**')) {
+          const title = line.slice(2, -2);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(14);
+          pdf.text(title, margin, yPosition);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(12);
+          yPosition += lineHeight + 2;
+        } 
+        // Verificar se é linha vazia
+        else if (line.trim() === '') {
+          yPosition += lineHeight / 2;
+        }
+        // Verificar se é separador
+        else if (line.startsWith('---')) {
+          pdf.setDrawColor(80, 135, 255);
+          pdf.line(margin, yPosition, 190, yPosition);
+          yPosition += lineHeight;
+        }
+        // Texto normal
+        else if (line.trim()) {
+          const splitText = pdf.splitTextToSize(line, 170);
+          pdf.text(splitText, margin, yPosition);
+          yPosition += (splitText.length * lineHeight);
+        }
+      });
+      
+      // Rodapé
+      const totalPages = pdf.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setTextColor(128, 128, 128);
+        pdf.text(`Gerado por DissertAI - Página ${i} de ${totalPages}`, margin, pageHeight - 10);
+        pdf.text(`Estrutura: ${structure.name}`, 190, pageHeight - 10, { align: 'right' });
+      }
+      
+      // Download
+      const fileName = `redacao-${topic.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+      pdf.save(fileName);
+      
+      toast({
+        title: "PDF baixado com sucesso!",
+        description: "Sua redação foi salva em formato PDF.",
+      });
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      toast({
+        title: "Erro ao gerar PDF",
+        description: "Ocorreu um erro ao criar o arquivo PDF. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleShare = async () => {
