@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Plus, ArrowLeft, Edit3, Trash2, FileText, BookOpen, Lightbulb } from "lucide-react";
+import { Plus, ArrowLeft, Edit3, Trash2, Edit, BookOpen, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
@@ -133,8 +133,8 @@ export default function Estilo() {
                 <ArrowLeft size={16} />
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <FileText className="text-white" size={16} />
+                <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <Edit className="text-white" size={16} />
                 </div>
                 <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
               </div>
