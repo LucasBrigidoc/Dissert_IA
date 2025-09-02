@@ -295,10 +295,24 @@ export default function FunctionalitiesPage() {
               );
             })}
             
-            {/* Biblioteca Pessoal */}
-            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid="card-biblioteca">
+          </div>
+        </div>
+
+        {/* Biblioteca Section */}
+        <div className="mb-12">
+          <div className="flex items-center mb-8">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mr-4">
+              <Archive className="text-white" size={20} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-dark-blue">Biblioteca</h2>
+              <p className="text-soft-gray">Organize e acesse todo seu conteúdo criado</p>
+            </div>
+          </div>
+          <div className="max-w-2xl">
+            <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50 hover:border-purple-300/70 transition-all duration-200 cursor-pointer group" data-testid="card-biblioteca">
               <div className="flex items-start space-x-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Archive className="text-white" size={24} />
                 </div>
                 <div className="flex-1">
@@ -306,7 +320,7 @@ export default function FunctionalitiesPage() {
                   <p className="text-soft-gray mb-4 leading-relaxed">Repositório inteligente de todo seu aprendizado organizado por categorias</p>
                   <Button 
                     onClick={() => setLocation('/biblioteca')}
-                    className="bg-gradient-to-r from-soft-gray to-bright-blue text-white hover:from-soft-gray/90 hover:to-bright-blue/90"
+                    className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800"
                     data-testid="button-access-biblioteca"
                   >
                     Acessar Biblioteca
