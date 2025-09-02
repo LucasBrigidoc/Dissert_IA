@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X } from "lucide-react";
+import { EssayResult } from "@/pages/essay-result";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -60,6 +61,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
   const [generatedEssay, setGeneratedEssay] = useState("");
   const [editingStructure, setEditingStructure] = useState<EssayStructure | null>(null);
   const [editedStructure, setEditedStructure] = useState<EssayStructure | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [usedStructure, setUsedStructure] = useState<EssayStructure | null>(null);
   const { toast } = useToast();
 
   const filteredStructures = allStructures.filter(structure =>
@@ -133,6 +136,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
       
       const essay = generateEssayContent(structureToUse, essayTopic, additionalInstructions);
       setGeneratedEssay(essay);
+      setUsedStructure(structureToUse);
+      setShowResult(true);
       
       toast({
         title: "Redação gerada com sucesso!",
@@ -148,6 +153,35 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
       setIsGenerating(false);
     }
   };
+
+  // Se estiver mostrando resultado, renderizar tela de resultado
+  if (showResult && generatedEssay && usedStructure) {
+    return (
+      <EssayResult
+        essay={generatedEssay}
+        topic={essayTopic}
+        structure={usedStructure}
+        instructions={additionalInstructions}
+        onBack={() => {
+          setShowResult(false);
+          setGeneratedEssay("");
+          setUsedStructure(null);
+        }}
+        onEdit={() => {
+          setShowResult(false);
+          // Manter os dados para continuar editando
+        }}
+        onNewEssay={() => {
+          setShowResult(false);
+          setGeneratedEssay("");
+          setUsedStructure(null);
+          setEssayTopic("");
+          setAdditionalInstructions("");
+          setSelectedStructure(null);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
@@ -391,60 +425,6 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             </div>
           </LiquidGlassCard>
 
-          {/* Redação Gerada */}
-          {generatedEssay && (
-            <LiquidGlassCard>
-              <div className="flex items-center gap-2 mb-4">
-                <FileText className="h-5 w-5 text-bright-blue" />
-                <h3 className="text-lg font-semibold text-dark-blue">
-                  Redação Gerada
-                </h3>
-              </div>
-              
-              <div className="bg-white rounded-lg border border-bright-blue/20 p-6">
-                <div className="prose max-w-none">
-                  {generatedEssay.split('\n').map((paragraph, index) => {
-                    if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
-                      const title = paragraph.slice(2, -2);
-                      return (
-                        <h4 key={index} className="text-dark-blue font-semibold text-lg mt-4 mb-2 first:mt-0">
-                          {title}
-                        </h4>
-                      );
-                    }
-                    if (paragraph.trim() === '') {
-                      return <br key={index} />;
-                    }
-                    if (paragraph.startsWith('---')) {
-                      return <hr key={index} className="my-4 border-bright-blue/20" />;
-                    }
-                    return (
-                      <p key={index} className="text-soft-gray leading-relaxed mb-3">
-                        {paragraph}
-                      </p>
-                    );
-                  })}
-                </div>
-              </div>
-              
-              <div className="flex gap-3 mt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigator.clipboard.writeText(generatedEssay)}
-                  data-testid="button-copiar-redacao"
-                >
-                  Copiar Texto
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setGeneratedEssay("")} 
-                  data-testid="button-nova-redacao"
-                >
-                  Nova Redação
-                </Button>
-              </div>
-            </LiquidGlassCard>
-          )}
 
           {/* Modal de Edição */}
           {editingStructure && editedStructure && (
