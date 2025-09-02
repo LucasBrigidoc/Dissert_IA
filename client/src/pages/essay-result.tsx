@@ -107,7 +107,7 @@ export function EssayResult({
       });
       
       // Rodapé
-      const totalPages = pdf.internal.getNumberOfPages();
+      const totalPages = (pdf as any).internal.pages.length - 1;
       for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
         pdf.setFontSize(8);

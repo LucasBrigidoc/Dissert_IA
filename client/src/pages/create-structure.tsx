@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { ArrowLeft, Save, Eye } from "lucide-react";
+import { ArrowLeft, Save, Eye, PenTool, Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { EnhancedStructureEditor } from "@/components/enhanced-structure-editor";
 import { StructurePreview } from "@/components/structure-preview";
+import { EssayResult } from "@/pages/essay-result";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Section, InsertEssayStructure } from "@shared/schema";
+import type { Section, InsertEssayStructure, EssayStructure } from "@shared/schema";
 import { insertEssayStructureSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -23,6 +26,12 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
   const [name, setName] = useState(editingStructure?.name || "");
   const [sections, setSections] = useState<Section[]>(editingStructure?.sections || []);
   const [showPreview, setShowPreview] = useState(false);
+  const [essayTopic, setEssayTopic] = useState("");
+  const [additionalInstructions, setAdditionalInstructions] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [generatedEssay, setGeneratedEssay] = useState("");
+  const [usedStructure, setUsedStructure] = useState<EssayStructure | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -105,6 +114,86 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
   const isValid = name.trim() && sections.length > 0 && sections.every(s => s.title.trim() && s.description.trim());
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
+  const handleGenerateEssay = async () => {
+    if (!essayTopic.trim() || !isValid) return;
+
+    const currentStructure: EssayStructure = {
+      id: Date.now().toString(),
+      name,
+      sections,
+      userId: userId,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    setIsGenerating(true);
+    
+    try {
+      // Simular geração de redação com base na estrutura
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      let essay = `**${essayTopic}**\n\n`;
+      
+      sections.forEach((section, index) => {
+        essay += `**${section.title}**\n\n`;
+        essay += `${section.description}\n\n`;
+        
+        // Adicionar conteúdo fictício baseado na descrição
+        const sampleContent = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.`;
+        essay += `${sampleContent}\n\n`;
+        
+        if (index < sections.length - 1) {
+          essay += '---\n\n';
+        }
+      });
+      
+      setGeneratedEssay(essay);
+      setUsedStructure(currentStructure);
+      setShowResult(true);
+      
+      toast({
+        title: "Redação gerada com sucesso!",
+        description: "Sua redação foi criada seguindo a estrutura personalizada.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro na geração",
+        description: "Ocorreu um erro ao gerar a redação. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Se estiver mostrando resultado, renderizar tela de resultado
+  if (showResult && generatedEssay && usedStructure) {
+    return (
+      <EssayResult
+        essay={generatedEssay}
+        topic={essayTopic}
+        structure={usedStructure}
+        instructions={additionalInstructions}
+        onBack={() => {
+          setShowResult(false);
+          setGeneratedEssay("");
+          setUsedStructure(null);
+        }}
+        onEdit={() => {
+          setShowResult(false);
+          // Manter os dados para continuar editando
+        }}
+        onNewEssay={() => {
+          setShowResult(false);
+          setGeneratedEssay("");
+          setUsedStructure(null);
+          setEssayTopic("");
+          setAdditionalInstructions("");
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
       <div className="container mx-auto px-4 py-8">
@@ -175,6 +264,79 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
             />
           </LiquidGlassCard>
         )}
+
+        {/* Proposta de Redação */}
+        <LiquidGlassCard>
+          <div className="flex items-center gap-2 mb-4">
+            <PenTool className="h-5 w-5 text-bright-blue" />
+            <h3 className="text-lg font-semibold text-dark-blue">
+              Testar Estrutura
+            </h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
+                Tema da Redação *
+              </Label>
+              <Textarea
+                id="essay-topic"
+                placeholder="Ex: A importância da educação digital no século XXI"
+                value={essayTopic}
+                onChange={(e) => setEssayTopic(e.target.value)}
+                rows={3}
+                className="mt-1"
+                data-testid="textarea-tema-redacao"
+              />
+              <p className="text-xs text-soft-gray mt-1">
+                Defina claramente o tema central da sua redação
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
+                Instruções Especiais (opcional)
+              </Label>
+              <Textarea
+                id="additional-instructions"
+                placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
+                value={additionalInstructions}
+                onChange={(e) => setAdditionalInstructions(e.target.value)}
+                rows={3}
+                className="mt-1"
+                data-testid="textarea-instrucoes-adicionais"
+              />
+              <p className="text-xs text-soft-gray mt-1">
+                Requisitos específicos, tom, estilo ou público-alvo
+              </p>
+            </div>
+          </div>
+          
+          {/* Botão de gerar sempre visível */}
+          <div className="mt-6 pt-6 border-t border-bright-blue/20">
+            <div className="text-center">
+              <p className="text-sm text-soft-gray mb-4">
+                {isValid 
+                  ? `Criar redação com: ${name || 'Nova estrutura'}` 
+                  : 'Complete a estrutura para testar'
+                }
+              </p>
+              <Button
+                onClick={handleGenerateEssay}
+                disabled={!essayTopic.trim() || !isValid || isGenerating}
+                className="bg-bright-blue hover:bg-blue-600 px-8"
+                data-testid="button-gerar-redacao"
+              >
+                {isGenerating ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Play className="mr-2 h-4 w-4" />
+                )}
+                {isGenerating ? "Gerando Redação..." : "Criar Redação"}
+              </Button>
+            </div>
+          </div>
+        </LiquidGlassCard>
 
         {/* Validation Messages */}
         {!isValid && (name || sections.length > 0) && (
