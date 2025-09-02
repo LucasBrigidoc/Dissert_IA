@@ -265,7 +265,7 @@ export default function Dashboard() {
         setLocation('/argumentos');
         break;
       case 'repertorio':
-        setLocation('/repertorio');
+        setLocation('/repertorio?from=dashboard');
         break;
       case 'simulador':
         setLocation('/simulador');
@@ -288,7 +288,7 @@ export default function Dashboard() {
         setLocation('/argumentos');
         break;
       case 'repertorio':
-        setLocation('/repertorio');
+        setLocation('/repertorio?from=dashboard');
         break;
     }
   };

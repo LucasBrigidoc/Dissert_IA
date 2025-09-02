@@ -16,7 +16,7 @@ export default function FunctionalitiesPage() {
   const handleFeatureAccess = (featureName: string) => {
     const routeMap: { [key: string]: string } = {
       "Arquiteto de Argumentos": "/argumentos",
-      "Explorador de Repertório": "/repertorio", 
+      "Explorador de Repertório": "/repertorio?from=functionalities", 
       "Simulador de Prova": "/simulador",
       "Controlador de Estilo": "/controlador-escrita",
       "Estrutura Coringa": "/estilo?from=functionalities",
