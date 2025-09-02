@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function Simulador() {
+  const [, setLocation] = useLocation();
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -92,7 +94,11 @@ export default function Simulador() {
                 </Select>
               </div>
               
-              <Button className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" data-testid="button-start-simulation">
+              <Button 
+                onClick={() => setLocation('/simulacao')}
+                className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
+                data-testid="button-start-simulation"
+              >
                 <Play className="mr-2" size={16} />
                 Iniciar Simulação
               </Button>
