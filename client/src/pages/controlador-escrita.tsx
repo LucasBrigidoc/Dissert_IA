@@ -209,19 +209,25 @@ export default function ControladorEscrita() {
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button onClick={handleBack} className="text-soft-gray hover:text-bright-blue">
+            <div className="flex items-center space-x-6">
+              <Button
+                onClick={handleBack}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+              >
                 <ArrowLeft size={16} />
-              </button>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                  <Edit3 className="text-white" size={16} />
+                <span>Voltar</span>
+              </Button>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                  <Edit3 className="text-white" size={20} />
                 </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Controlador de Escrita</h1>
+                <div>
+                  <h1 className="text-2xl font-bold text-dark-blue">Controlador de Escrita</h1>
+                  <p className="text-soft-gray">Ajuste o estilo de escrita do seu texto</p>
+                </div>
               </div>
-            </div>
-            <div className="text-sm text-soft-gray">
-              Ajuste o estilo de escrita do seu texto.
             </div>
           </div>
         </div>
