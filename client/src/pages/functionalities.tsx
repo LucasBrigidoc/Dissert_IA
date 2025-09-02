@@ -44,9 +44,9 @@ export default function FunctionalitiesPage() {
   };
 
   // Organizar funcionalidades por categorias
-  const coreFeatures = mockFeatures.slice(0, 3).filter(feature => feature.name !== "Newsletter Educacional"); // Principais: Argumentos, Repertório (sem Newsletter)
+  const coreFeatures = mockFeatures.slice(0, 2).filter(feature => feature.name !== "Newsletter Educacional"); // Principais: Argumentos, Repertório (sem Newsletter e sem Estrutura)
   const practiceFeatures = mockFeatures.slice(4, 6); // Prática: Estilo, Simulador
-  const creationFeatures = [mockFeatures[6]]; // Criação: Criador de Propostas
+  const creationFeatures = [mockFeatures[2], mockFeatures[6]]; // Criação: Estrutura Curinga, Criador de Propostas
 
   return (
     <div className="min-h-screen bg-gray-50">
