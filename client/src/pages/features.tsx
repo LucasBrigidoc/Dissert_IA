@@ -199,13 +199,6 @@ export default function Features() {
                 <p className="text-soft-gray text-sm">Elabore temas personalizados com textos motivadores</p>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-6 text-center feature-card" data-testid="card-personal-library">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Archive className="text-white" size={24} />
-                </div>
-                <h4 className="font-semibold text-dark-blue mb-2">Biblioteca Pessoal</h4>
-                <p className="text-soft-gray text-sm">Repositório inteligente de todo seu processo de aprendizado</p>
-              </LiquidGlassCard>
 
               
             </div>

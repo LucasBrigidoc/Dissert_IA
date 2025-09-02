@@ -69,12 +69,6 @@ export const mockFeatures = [
     description: "Ferramenta para elaborar temas de redação",
     icon: "lightbulb"
   },
-  {
-    id: 8,
-    name: "Biblioteca Pessoal",
-    description: "Repositório inteligente de todo seu aprendizado",
-    icon: "archive"
-  }
 ];
 
 export const mockPricingPlans = [
