@@ -1,13 +1,30 @@
 import { Button } from '@/components/ui/button';
 import { LiquidGlassCard } from '@/components/liquid-glass-card';
-import { ArrowLeft, CheckCircle, AlertCircle, Target, TrendingUp, Clock } from 'lucide-react';
+import { ArrowLeft, CheckCircle, AlertCircle, Target, TrendingUp, Clock, Save } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export function Resultado() {
   const [, setLocation] = useLocation();
 
-  const handleBack = () => {
-    setLocation('/simulacao');
+  const handleSaveAndBackToSimulator = () => {
+    // Save the essay results to localStorage or database
+    const essayResult = {
+      date: new Date().toISOString(),
+      grade: essayAnalysis.grade,
+      maxGrade: essayAnalysis.maxGrade,
+      competencies: essayAnalysis.competencies,
+      timeAnalysis: timeAnalysis,
+      strengths: essayAnalysis.strengths,
+      improvements: essayAnalysis.improvements
+    };
+
+    // Save to localStorage (in a real app, this would be saved to a database)
+    const savedResults = JSON.parse(localStorage.getItem('dissertai-results') || '[]');
+    savedResults.push(essayResult);
+    localStorage.setItem('dissertai-results', JSON.stringify(savedResults));
+
+    // Navigate to simulator page to start new simulation
+    setLocation('/simulador');
   };
 
   const handleBackToSimulator = () => {
@@ -82,12 +99,12 @@ export function Resultado() {
         <div className="flex justify-between items-center">
           <Button 
             variant="outline" 
-            onClick={handleBack}
-            className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
-            data-testid="button-back-to-simulation"
+            onClick={handleSaveAndBackToSimulator}
+            className="border-green-500/30 text-green-600 hover:bg-green-50"
+            data-testid="button-save-and-new-simulation"
           >
-            <ArrowLeft className="mr-2" size={16} />
-            Voltar à Simulação
+            <Save className="mr-2" size={16} />
+            Salvar e Novo Simulado
           </Button>
           
           <Button 
@@ -237,11 +254,12 @@ export function Resultado() {
         <div className="flex justify-center space-x-4">
           <Button 
             variant="outline"
-            onClick={handleBack}
-            className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
-            data-testid="button-back-to-edit"
+            onClick={handleSaveAndBackToSimulator}
+            className="border-green-500/30 text-green-600 hover:bg-green-50"
+            data-testid="button-save-and-new-simulation"
           >
-            Editar Redação
+            <Save className="mr-2" size={16} />
+            Salvar e Novo Simulado
           </Button>
           
           <Button 
