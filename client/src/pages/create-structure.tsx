@@ -289,7 +289,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                   : 'Complete a estrutura para testar'
                 }
               </p>
-              <div className="flex gap-3">
+              <div className="flex gap-3 justify-center">
                 <Button
                   onClick={handleGenerateEssay}
                   disabled={!essayTopic.trim() || !isValid || isGenerating}
