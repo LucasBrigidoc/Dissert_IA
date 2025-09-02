@@ -30,6 +30,9 @@ export default function PropostasPage() {
   const [selectedCategory, setSelectedCategory] = useState("todas");
   const [selectedSource, setSelectedSource] = useState("todas");
 
+  // Estado para expandir/compactar o formulário de criação
+  const [isFormExpanded, setIsFormExpanded] = useState(false);
+
   // Mock data para propostas existentes
   const mockProposals = [
     {
@@ -168,16 +171,26 @@ export default function PropostasPage() {
       <div className="container mx-auto px-6 py-8">
         {/* Formulário de Criação */}
         <LiquidGlassCard className="mb-8 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-create-proposal">
-            <div className="flex items-center mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
-                <Plus className="text-white" size={20} />
+            <div 
+              className="flex items-center justify-between mb-6 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setIsFormExpanded(!isFormExpanded)}
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
+                  <Plus className="text-white" size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-dark-blue">Criar Nova Proposta</h2>
+                  <p className="text-soft-gray">Elabore um tema de redação personalizado</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold text-dark-blue">Criar Nova Proposta</h2>
-                <p className="text-soft-gray">Elabore um tema de redação personalizado</p>
+              <div className="text-bright-blue">
+                {isFormExpanded ? "−" : "+"}
               </div>
             </div>
 
+            {isFormExpanded && (
+            <>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
@@ -285,6 +298,8 @@ export default function PropostasPage() {
                 Criar Proposta
               </Button>
             </div>
+            </>
+            )}
           </LiquidGlassCard>
 
         {/* Filtros e Busca */}
