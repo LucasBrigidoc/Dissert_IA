@@ -32,6 +32,35 @@ export default function Simulador() {
         </div>
       </div>
 
+      {/* Statistics - Top Section */}
+      <div className="container mx-auto px-6 py-6">
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+              <Award className="text-white" size={16} />
+            </div>
+            <h4 className="font-semibold text-dark-blue">Suas Estatísticas</h4>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-bright-blue/10 rounded-lg">
+              <div className="text-2xl font-bold text-bright-blue mb-1">12</div>
+              <div className="text-xs text-soft-gray">Simulações Realizadas</div>
+            </div>
+            
+            <div className="text-center p-4 bg-dark-blue/10 rounded-lg">
+              <div className="text-2xl font-bold text-dark-blue mb-1">876</div>
+              <div className="text-xs text-soft-gray">Nota Média</div>
+            </div>
+            
+            <div className="text-center p-4 bg-soft-gray/10 rounded-lg">
+              <div className="text-2xl font-bold text-dark-blue mb-1">68min</div>
+              <div className="text-xs text-soft-gray">Tempo Médio</div>
+            </div>
+          </div>
+        </LiquidGlassCard>
+      </div>
+
       {/* Content */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-3 gap-6">
@@ -155,33 +184,6 @@ export default function Simulador() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Statistics */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Award className="text-white" size={16} />
-                </div>
-                <h4 className="font-semibold text-dark-blue">Suas Estatísticas</h4>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="text-center p-4 bg-bright-blue/10 rounded-lg">
-                  <div className="text-2xl font-bold text-bright-blue mb-1">12</div>
-                  <div className="text-xs text-soft-gray">Simulações Realizadas</div>
-                </div>
-                
-                <div className="text-center p-4 bg-dark-blue/10 rounded-lg">
-                  <div className="text-2xl font-bold text-dark-blue mb-1">876</div>
-                  <div className="text-xs text-soft-gray">Nota Média</div>
-                </div>
-                
-                <div className="text-center p-4 bg-soft-gray/10 rounded-lg">
-                  <div className="text-2xl font-bold text-dark-blue mb-1">68min</div>
-                  <div className="text-xs text-soft-gray">Tempo Médio</div>
-                </div>
-              </div>
-            </LiquidGlassCard>
-
             {/* Tips */}
             <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
               <div className="flex items-center space-x-3 mb-4">
