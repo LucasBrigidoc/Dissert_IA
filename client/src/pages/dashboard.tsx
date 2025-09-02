@@ -855,23 +855,11 @@ export default function Dashboard() {
 
           {/* Evolution Chart */}
           <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-evolution-chart">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={16} />
-                </div>
-                <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
+            <div className="flex items-center mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <TrendingUp className="text-white" size={16} />
               </div>
-              <Select defaultValue="30-days" data-testid="select-chart-period">
-                <SelectTrigger className="w-32 border-bright-blue/30">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7-days">Últimos 7 dias</SelectItem>
-                  <SelectItem value="30-days">Últimos 30 dias</SelectItem>
-                  <SelectItem value="6-months">Últimos 6 meses</SelectItem>
-                </SelectContent>
-              </Select>
+              <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
             <div className="h-48 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20 p-4" data-testid="chart-evolution">
               <ResponsiveContainer width="100%" height="100%">
@@ -917,8 +905,19 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </div>
             
-            {/* Add Score Button */}
-            <div className="mt-4 flex justify-center">
+            {/* Bottom Actions Row */}
+            <div className="mt-4 flex items-center justify-between gap-4">
+              <Select defaultValue="30-days" data-testid="select-chart-period">
+                <SelectTrigger className="w-40 border-bright-blue/30">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7-days">Últimos 7 dias</SelectItem>
+                  <SelectItem value="30-days">Últimos 30 dias</SelectItem>
+                  <SelectItem value="6-months">Últimos 6 meses</SelectItem>
+                </SelectContent>
+              </Select>
+              
               <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
                 <DialogTrigger asChild>
                   <Button
