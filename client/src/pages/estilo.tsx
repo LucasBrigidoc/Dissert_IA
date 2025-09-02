@@ -128,19 +128,26 @@ export default function Estilo() {
       <div className="bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href={backUrl} className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
-                <ArrowLeft size={16} />
+            <div className="flex items-center space-x-6">
+              <Link href={backUrl} data-testid="button-back">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Voltar</span>
+                </Button>
               </Link>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                  <Edit className="text-white" size={16} />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <Edit className="text-white" size={20} />
                 </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
+                <div>
+                  <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
+                  <p className="text-soft-gray">Gere redações personalizadas seguindo sua metodologia preferida</p>
+                </div>
               </div>
-            </div>
-            <div className="text-sm text-soft-gray">
-              Gere redações personalizadas seguindo sua metodologia preferida
             </div>
           </div>
         </div>
