@@ -171,7 +171,7 @@ export default function Dashboard() {
     { id: 'estilo', name: 'Controlador de Escrita', description: 'Ajuste o estilo de escrita', icon: Edit3, color: 'soft-gray' },
     { id: 'goals', name: 'Metas e Objetivos', description: 'Defina seus objetivos', icon: Target, color: 'bright-blue' },
     { id: 'newsletter', name: 'Newsletter Semanal', description: 'Conteúdo atualizado', icon: Book, color: 'dark-blue' },
-    { id: 'estrutura-curinga', name: 'Estrutura Curinga', description: 'Modelos de estrutura reutilizáveis', icon: Plus, color: 'bright-blue' }
+    { id: 'estrutura-curinga', name: 'Estrutura Coringa', description: 'Modelos de estrutura reutilizáveis', icon: Plus, color: 'bright-blue' }
   ];
   
   // Visible features state
