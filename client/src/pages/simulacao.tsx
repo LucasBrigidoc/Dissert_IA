@@ -521,63 +521,7 @@ export default function SimulacaoPage() {
 
         </div>
 
-        {/* Bottom Section - Quality and Tips */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          {/* Quality Checklist */}
-          <LiquidGlassCard className="bg-gradient-to-br from-green-50/50 to-blue-50/50 border-green-200/50">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                <CheckCircle className="text-white" size={16} />
-              </div>
-              <h4 className="font-semibold text-dark-blue">Qualidade</h4>
-            </div>
-            
-            <div className="space-y-3">
-              <div className={`flex items-center space-x-2 ${wordCount >= 800 ? 'text-green-600' : 'text-soft-gray'}`}>
-                <CheckCircle className={wordCount >= 800 ? 'text-green-600' : 'text-gray-300'} size={16} />
-                <span className="text-sm">800+ palavras</span>
-              </div>
-              
-              <div className={`flex items-center space-x-2 ${lineCount >= 25 ? 'text-green-600' : 'text-soft-gray'}`}>
-                <CheckCircle className={lineCount >= 25 ? 'text-green-600' : 'text-gray-300'} size={16} />
-                <span className="text-sm">25+ linhas</span>
-              </div>
-              
-              <div className={`flex items-center space-x-2 ${essayText.includes('introdução') || essayText.length > 100 ? 'text-green-600' : 'text-soft-gray'}`}>
-                <CheckCircle className={essayText.includes('introdução') || essayText.length > 100 ? 'text-green-600' : 'text-gray-300'} size={16} />
-                <span className="text-sm">Introdução</span>
-              </div>
-              
-              <div className={`flex items-center space-x-2 ${essayText.includes('portanto') || essayText.includes('logo') || essayText.includes('assim') ? 'text-green-600' : 'text-soft-gray'}`}>
-                <CheckCircle className={essayText.includes('portanto') || essayText.includes('logo') || essayText.includes('assim') ? 'text-green-600' : 'text-gray-300'} size={16} />
-                <span className="text-sm">Conectivos</span>
-              </div>
-              
-              <div className={`flex items-center space-x-2 ${essayText.includes('proposta') || essayText.includes('solução') ? 'text-green-600' : 'text-soft-gray'}`}>
-                <CheckCircle className={essayText.includes('proposta') || essayText.includes('solução') ? 'text-green-600' : 'text-gray-300'} size={16} />
-                <span className="text-sm">Proposta</span>
-              </div>
-            </div>
-          </LiquidGlassCard>
-
-          {/* Quick Tips */}
-          <LiquidGlassCard className="bg-gradient-to-br from-yellow-50/50 to-orange-50/50 border-yellow-200/50">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
-                <AlertTriangle className="text-white" size={16} />
-              </div>
-              <h4 className="font-semibold text-dark-blue">Dicas</h4>
-            </div>
-            
-            <div className="space-y-2 text-sm text-soft-gray">
-              <div>• Use exemplos concretos</div>
-              <div>• Mantenha impessoalidade</div>
-              <div>• Conecte com transitivos</div>
-              <div>• Proposta detalhada</div>
-              <div>• Revise ortografia</div>
-            </div>
-          </LiquidGlassCard>
-        </div>
+        
       </div>
 
       {/* Finish Simulation Dialog */}
