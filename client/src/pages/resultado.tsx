@@ -28,7 +28,7 @@ export function Resultado() {
   };
 
   const handleBackToFeatures = () => {
-    setLocation('/features');
+    setLocation('/functionalities');
   };
 
   // Mock essay analysis data - in a real app this would come from an AI analysis service
