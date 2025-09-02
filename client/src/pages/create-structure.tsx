@@ -199,7 +199,12 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Button variant="ghost" onClick={onBack} className="mb-4" data-testid="button-voltar">
+          <Button 
+            variant="outline" 
+            onClick={onBack} 
+            className="mb-4 bg-white/80 backdrop-blur-sm border-blue-200 hover:bg-blue-50 hover:border-bright-blue text-dark-blue transition-all duration-200" 
+            data-testid="button-voltar"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </Button>
