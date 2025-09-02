@@ -63,6 +63,7 @@ export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showGoalsManagement, setShowGoalsManagement] = useState(false);
   const [showExamsManagement, setShowExamsManagement] = useState(false);
+  const [animatingGoals, setAnimatingGoals] = useState<Set<number>>(new Set());
   
   // Exams data state
   const [exams, setExams] = useState<Exam[]>([
@@ -90,11 +91,24 @@ export default function Dashboard() {
   
   // Goals helper functions
   const toggleGoalCompletion = (goalId: number) => {
+    // Trigger animation
+    setAnimatingGoals(prev => new Set([...prev, goalId]));
+    
+    // Update goal state
     setGoals(goals.map(goal => 
       goal.id === goalId 
         ? { ...goal, completed: !goal.completed, current: !goal.completed ? goal.target : Math.min(goal.current, goal.target - 0.1) }
         : goal
     ));
+    
+    // Clear animation after animation completes
+    setTimeout(() => {
+      setAnimatingGoals(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(goalId);
+        return newSet;
+      });
+    }, 600);
   };
   
   const updateGoalProgress = (goalId: number, newCurrent: number) => {
@@ -562,21 +576,34 @@ export default function Dashboard() {
               ) : (
                 <>
                   {displayedGoals.map((goal) => (
-                    <div key={goal.id} className={`flex items-center p-3 rounded-lg border ${
+                    <div key={goal.id} className={`flex items-center p-3 rounded-lg border transition-all duration-500 ${
                       goal.completed 
                         ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-200'
                         : 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                    } ${
+                      animatingGoals.has(goal.id) 
+                        ? 'transform scale-[1.02] shadow-lg shadow-green-200/50 ring-2 ring-green-300/30' 
+                        : ''
                     }`}>
                       <button
                         onClick={() => toggleGoalCompletion(goal.id)}
-                        className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 border-2 transition-all hover:scale-110 ${
+                        className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 border-2 transition-all duration-300 hover:scale-110 ${
                           goal.completed 
-                            ? 'bg-green-500 border-green-500' 
+                            ? 'bg-green-500 border-green-500 shadow-lg shadow-green-300/50' 
                             : 'bg-white border-bright-blue hover:bg-bright-blue/10'
+                        } ${
+                          animatingGoals.has(goal.id) 
+                            ? 'animate-bounce scale-125 bg-gradient-to-r from-green-400 to-green-600 shadow-xl shadow-green-400/70 ring-4 ring-green-300/40' 
+                            : ''
                         }`}
                         data-testid={`button-toggle-goal-${goal.id}`}
                       >
-                        {goal.completed && <CheckCircle2 className="text-white" size={12} />}
+                        {goal.completed && (
+                          <CheckCircle2 
+                            className={`text-white ${animatingGoals.has(goal.id) ? 'animate-pulse' : ''}`} 
+                            size={12} 
+                          />
+                        )}
                       </button>
                       <div className="flex-1">
                         <div className={`text-sm font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
