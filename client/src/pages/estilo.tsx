@@ -150,9 +150,6 @@ export default function Estilo() {
         {/* Introduction Section */}
         <div className="max-w-4xl mx-auto mb-12">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-bright-blue/10 to-purple-500/10 rounded-full mb-6">
-              <Lightbulb className="w-10 h-10 text-bright-blue" />
-            </div>
             <h2 className="text-3xl font-bold text-dark-blue mb-4">Como funciona a Estrutura Coringa?</h2>
             <p className="text-lg text-soft-gray max-w-2xl mx-auto leading-relaxed">
               A Estrutura Coringa permite que você crie modelos de redação personalizados com suas próprias seções e metodologias. 
