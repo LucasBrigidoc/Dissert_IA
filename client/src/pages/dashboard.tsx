@@ -271,7 +271,7 @@ export default function Dashboard() {
         setLocation('/simulador');
         break;
       case 'estilo':
-        setLocation('/estilo?from=dashboard');
+        setLocation('/controlador-escrita?from=dashboard');
         break;
       case 'estrutura-curinga':
         setLocation('/estrutura-curinga?from=dashboard');

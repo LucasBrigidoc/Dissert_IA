@@ -12,8 +12,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ControladorEscrita() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPage = urlParams.get('from') || 'dashboard';
+  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
   
   // Estados para o texto
   const [originalText, setOriginalText] = useState("");
@@ -56,7 +60,7 @@ export default function ControladorEscrita() {
   };
 
   const handleBack = () => {
-    setLocation("/functionalities");
+    setLocation(backUrl);
   };
 
   const simulateTextProcessing = async (type: string) => {

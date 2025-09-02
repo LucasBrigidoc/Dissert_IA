@@ -18,7 +18,7 @@ export default function FunctionalitiesPage() {
       "Arquiteto de Argumentos": "/argumentos",
       "Explorador de Repertório": "/repertorio?from=functionalities", 
       "Simulador de Prova": "/simulador",
-      "Controlador de Estilo": "/controlador-escrita",
+      "Controlador de Estilo": "/controlador-escrita?from=functionalities",
       "Estrutura Coringa": "/estilo?from=functionalities",
       "Newsletter Educacional": "/dashboard",
       "Criador de Propostas": "/simulador",
