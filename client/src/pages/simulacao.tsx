@@ -193,14 +193,26 @@ export default function SimulacaoPage() {
   };
 
   const handleSave = () => {
-    setShowSaveDialog(true);
+    // Navigate to results page with essay data
+    setIsActive(false);
+    setLocation('/resultado');
   };
 
   const confirmFinish = () => {
+    // Reset everything
     setIsActive(false);
+    setIsPaused(false);
+    setTimeLeft(config.timeLimit * 60);
+    setEssayText('');
+    setCheckpoints(prev => prev.map(checkpoint => ({
+      ...checkpoint,
+      completed: false,
+      timeSpent: 0,
+      completedAt: null
+    })));
+    setLastCheckpointTime(0);
     setShowFinishDialog(false);
-    // Here would normally save the simulation results
-    setLocation('/simulador');
+    // Stay on the same page after reset
   };
 
   const confirmSave = () => {
@@ -358,46 +370,52 @@ export default function SimulacaoPage() {
               )}
               
               {/* Control Buttons */}
-              <div className="flex items-center justify-center space-x-2">
+              <div className="space-y-2">
                 {!isActive ? (
-                  <Button 
-                    onClick={handleStart}
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
-                    data-testid="button-start-timer"
-                  >
-                    <Play className="mr-2" size={16} />
-                    Iniciar
-                  </Button>
+                  <div className="flex justify-center">
+                    <Button 
+                      onClick={handleStart}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm"
+                      data-testid="button-start-timer"
+                    >
+                      <Play className="mr-1" size={14} />
+                      Iniciar
+                    </Button>
+                  </div>
                 ) : (
                   <>
-                    <Button 
-                      onClick={handlePause}
-                      variant="outline"
-                      className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 py-2"
-                      data-testid="button-pause-timer"
-                    >
-                      <Pause className="mr-1" size={14} />
-                      {isPaused ? 'Retomar' : 'Pausar'}
-                    </Button>
+                    <div className="flex justify-center mb-2">
+                      <Button 
+                        onClick={handlePause}
+                        variant="outline"
+                        className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 py-2 text-sm"
+                        data-testid="button-pause-timer"
+                      >
+                        <Pause className="mr-1" size={12} />
+                        {isPaused ? 'Retomar' : 'Pausar'}
+                      </Button>
+                    </div>
                     
-                    <Button 
-                      onClick={handleSave}
-                      variant="outline"
-                      className="border-blue-500 text-blue-600 hover:bg-blue-50 px-3 py-2"
-                      data-testid="button-save-draft"
-                    >
-                      <Save className="mr-1" size={14} />
-                      Corrigir Redação
-                    </Button>
-                    
-                    <Button 
-                      onClick={handleFinish}
-                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-2"
-                      data-testid="button-finish-simulation"
-                    >
-                      <Square className="mr-1" size={14} />
-                      Parar sem Salvar
-                    </Button>
+                    <div className="flex flex-col space-y-2">
+                      <Button 
+                        onClick={handleSave}
+                        variant="outline"
+                        className="border-blue-500 text-blue-600 hover:bg-blue-50 px-2 py-1 text-xs"
+                        data-testid="button-save-draft"
+                      >
+                        <Save className="mr-1" size={10} />
+                        Corrigir Redação
+                      </Button>
+                      
+                      <Button 
+                        onClick={handleFinish}
+                        className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-xs"
+                        data-testid="button-finish-simulation"
+                      >
+                        <Square className="mr-1" size={10} />
+                        Parar sem Salvar
+                      </Button>
+                    </div>
                   </>
                 )}
               </div>
