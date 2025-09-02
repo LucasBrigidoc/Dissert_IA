@@ -267,7 +267,25 @@ export default function SimulacaoPage() {
         </div>
       </div>
       
-      {/* First Row - Steps, Timer and Time Summary */}
+      {/* First Row - Topic/Proposal Section */}
+      <div className="max-w-7xl mx-auto mb-6">
+        <LiquidGlassCard className="bg-gradient-to-br from-white/80 to-bright-blue/5 border-bright-blue/20">
+          <div className="p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+            <div className="flex items-center space-x-2 mb-3">
+              <div className="px-2 py-1 bg-bright-blue text-white text-xs rounded-full font-medium">
+                {topic.examType}
+              </div>
+              <div className="px-2 py-1 bg-dark-blue/20 text-dark-blue text-xs rounded-full">
+                {topic.category}
+              </div>
+            </div>
+            <h2 className="text-lg font-bold text-dark-blue mb-3">{topic.title}</h2>
+            <p className="text-sm text-soft-gray leading-relaxed">{topic.instruction}</p>
+          </div>
+        </LiquidGlassCard>
+      </div>
+
+      {/* Second Row - Steps, Timer and Time Summary */}
       <div className="max-w-7xl mx-auto mb-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Writing Process Checkpoints - Left */}
@@ -420,83 +438,66 @@ export default function SimulacaoPage() {
         </div>
       </div>
 
+      {/* Writing Area */}
       <div className="max-w-7xl mx-auto mb-6">
-        {/* Main Writing Area */}
-        <div>
-            <LiquidGlassCard className="bg-gradient-to-br from-white/80 to-bright-blue/5 border-bright-blue/20">
-              {/* Topic Section */}
-              <div className="mb-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="flex items-center space-x-2 mb-3">
-                  <div className="px-2 py-1 bg-bright-blue text-white text-xs rounded-full font-medium">
-                    {topic.examType}
+        <LiquidGlassCard className="bg-gradient-to-br from-white/80 to-bright-blue/5 border-bright-blue/20">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-dark-blue">Sua Redação</h3>
+              
+              {/* Word Counter - Conditional */}
+              {config.showWordCount && (
+                <div className="flex items-center space-x-4 text-sm">
+                  <div className={`flex items-center space-x-1 ${wordCount >= 800 && wordCount <= 1000 ? 'text-green-600' : wordCount > 1000 ? 'text-red-600' : 'text-soft-gray'}`}>
+                    <FileText size={16} />
+                    <span className="font-medium">{wordCount} palavras</span>
                   </div>
-                  <div className="px-2 py-1 bg-dark-blue/20 text-dark-blue text-xs rounded-full">
-                    {topic.category}
+                  <div className="text-soft-gray">
+                    {lineCount} linhas
                   </div>
-                </div>
-                <h2 className="text-lg font-bold text-dark-blue mb-3">{topic.title}</h2>
-                <p className="text-sm text-soft-gray leading-relaxed">{topic.instruction}</p>
-              </div>
-
-              {/* Writing Area */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-dark-blue">Sua Redação</h3>
-                  
-                  {/* Word Counter - Conditional */}
-                  {config.showWordCount && (
-                    <div className="flex items-center space-x-4 text-sm">
-                      <div className={`flex items-center space-x-1 ${wordCount >= 800 && wordCount <= 1000 ? 'text-green-600' : wordCount > 1000 ? 'text-red-600' : 'text-soft-gray'}`}>
-                        <FileText size={16} />
-                        <span className="font-medium">{wordCount} palavras</span>
-                      </div>
-                      <div className="text-soft-gray">
-                        {lineCount} linhas
-                      </div>
-                      <div className="text-soft-gray">
-                        {charCount} caracteres
-                      </div>
-                      {config.autoSave && (
-                        <div className="text-xs text-green-600">
-                          ✓ Salvamento automático
-                        </div>
-                      )}
+                  <div className="text-soft-gray">
+                    {charCount} caracteres
+                  </div>
+                  {config.autoSave && (
+                    <div className="text-xs text-green-600">
+                      ✓ Salvamento automático
                     </div>
                   )}
                 </div>
+              )}
+            </div>
 
-                <textarea
-                  ref={textareaRef}
-                  value={essayText}
-                  onChange={(e) => setEssayText(e.target.value)}
-                  placeholder={config.textProposal ? "Desenvolva sua redação baseada na proposta acima..." : "Digite sua redação aqui... Lembre-se de seguir a estrutura dissertativo-argumentativa: introdução, desenvolvimento e conclusão com proposta de intervenção."}
-                  className={`w-full h-96 p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60 ${config.focusMode ? 'focus:bg-white focus:shadow-2xl' : ''}`}
-                  disabled={!isActive || isPaused}
-                  data-testid="textarea-essay"
-                  spellCheck={config.spellCheck}
-                  style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6' }}
-                />
+            <textarea
+              ref={textareaRef}
+              value={essayText}
+              onChange={(e) => setEssayText(e.target.value)}
+              placeholder="Digite sua redação aqui... Lembre-se de seguir a estrutura dissertativo-argumentativa: introdução, desenvolvimento e conclusão com proposta de intervenção."
+              className={`w-full h-96 p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60 ${config.focusMode ? 'focus:bg-white focus:shadow-2xl' : ''}`}
+              disabled={!isActive || isPaused}
+              data-testid="textarea-essay"
+              spellCheck={config.spellCheck}
+              style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6' }}
+            />
 
-                {/* Writing Guidelines */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <div className={`p-3 rounded-lg border ${wordCount >= 800 ? 'bg-green-50 border-green-200 text-green-700' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
-                    <div className="font-medium mb-1">Palavras</div>
-                    <div>Mínimo: 800 | Máximo: 1000</div>
-                  </div>
-                  
-                  <div className={`p-3 rounded-lg border ${lineCount >= 25 ? 'bg-green-50 border-green-200 text-green-700' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
-                    <div className="font-medium mb-1">Linhas</div>
-                    <div>Mínimo: 25 | Máximo: 30</div>
-                  </div>
-                  
-                  <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 text-blue-700">
-                    <div className="font-medium mb-1">Estrutura</div>
-                    <div>Introdução + 2 Desenvolvimentos + Conclusão</div>
-                  </div>
-                </div>
+            {/* Writing Guidelines */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div className={`p-3 rounded-lg border ${wordCount >= 800 ? 'bg-green-50 border-green-200 text-green-700' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
+                <div className="font-medium mb-1">Palavras</div>
+                <div>Mínimo: 800 | Máximo: 1000</div>
               </div>
-            </LiquidGlassCard>
-        </div>
+              
+              <div className={`p-3 rounded-lg border ${lineCount >= 25 ? 'bg-green-50 border-green-200 text-green-700' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
+                <div className="font-medium mb-1">Linhas</div>
+                <div>Mínimo: 25 | Máximo: 30</div>
+              </div>
+              
+              <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 text-blue-700">
+                <div className="font-medium mb-1">Estrutura</div>
+                <div>Introdução + 2 Desenvolvimentos + Conclusão</div>
+              </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
       </div>
 
       {/* Statistics Row - Bottom */}
