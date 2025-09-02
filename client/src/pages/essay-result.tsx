@@ -86,9 +86,14 @@ export function EssayResult({
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Button variant="ghost" onClick={onBack} className="mb-4" data-testid="button-voltar">
+          <Button 
+            variant="outline" 
+            onClick={onBack} 
+            className="mb-4 border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hover:border-bright-blue backdrop-blur-sm bg-white/60 transition-all duration-200 shadow-sm" 
+            data-testid="button-voltar"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            Voltar para Estrutura Coringa
           </Button>
           
           <div className="flex items-center justify-between">

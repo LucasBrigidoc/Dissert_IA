@@ -163,9 +163,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         structure={usedStructure}
         instructions={additionalInstructions}
         onBack={() => {
-          setShowResult(false);
-          setGeneratedEssay("");
-          setUsedStructure(null);
+          // Voltar direto para tela principal (estilo.tsx)
+          onBack();
         }}
         onEdit={() => {
           setShowResult(false);
