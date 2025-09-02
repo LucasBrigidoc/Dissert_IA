@@ -78,10 +78,6 @@ export default function FunctionalitiesPage() {
                 <Book size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
-              <Link href="/biblioteca" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-biblioteca">
-                <Archive size={14} />
-                <span className="font-medium">Biblioteca</span>
-              </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
                 <Settings size={14} />
                 <span className="font-medium">Configurações</span>
@@ -150,15 +146,6 @@ export default function FunctionalitiesPage() {
                 >
                   <Book size={16} />
                   <span className="font-medium">Newsletter</span>
-                </Link>
-                <Link 
-                  href="/biblioteca" 
-                  className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-biblioteca"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Archive size={16} />
-                  <span className="font-medium">Biblioteca</span>
                 </Link>
                 <Link 
                   href="/settings" 
@@ -307,6 +294,26 @@ export default function FunctionalitiesPage() {
                 </LiquidGlassCard>
               );
             })}
+            
+            {/* Biblioteca Pessoal */}
+            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid="card-biblioteca">
+              <div className="flex items-start space-x-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Archive className="text-white" size={24} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-dark-blue mb-3">Biblioteca Pessoal</h3>
+                  <p className="text-soft-gray mb-4 leading-relaxed">Repositório inteligente de todo seu aprendizado organizado por categorias</p>
+                  <Button 
+                    onClick={() => setLocation('/biblioteca')}
+                    className="bg-gradient-to-r from-soft-gray to-bright-blue text-white hover:from-soft-gray/90 hover:to-bright-blue/90"
+                    data-testid="button-access-biblioteca"
+                  >
+                    Acessar Biblioteca
+                  </Button>
+                </div>
+              </div>
+            </LiquidGlassCard>
           </div>
         </div>
 
