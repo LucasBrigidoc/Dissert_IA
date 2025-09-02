@@ -124,7 +124,11 @@ export default function Dashboard() {
     setGoals(goals.filter(goal => goal.id !== goalId));
   };
   
-  const displayedGoals = goals.slice(0, 2);
+  // Show incomplete tasks first, then completed ones
+  const incompleteGoals = goals.filter(goal => !goal.completed);
+  const completedGoals = goals.filter(goal => goal.completed);
+  const displayedGoals = [...incompleteGoals.slice(0, 2), ...completedGoals].slice(0, 2);
+  const allTasksCompleted = incompleteGoals.length === 0;
   const displayedExams = exams.slice(0, 3);
   
   // Exam helper functions
@@ -547,31 +551,49 @@ export default function Dashboard() {
               <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
-              {displayedGoals.map((goal) => (
-                <div key={goal.id} className={`flex items-center p-3 rounded-lg border ${
-                  goal.completed 
-                    ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-200'
-                    : 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
-                }`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
-                    goal.completed ? 'bg-green-500' : 'bg-bright-blue'
-                  }`}>
-                    <CheckCircle2 className="text-white" size={12} />
+              {allTasksCompleted ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="text-white" size={32} />
                   </div>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
-                      {goal.title} {goal.target} {goal.unit}
-                    </div>
-                    <div className={`text-xs ${goal.completed ? 'text-green-600' : 'text-soft-gray'}`}>
-                      {goal.current}/{goal.target} concluídas
-                    </div>
-                  </div>
+                  <h3 className="text-lg font-semibold text-green-700 mb-2">🎉 Parabéns!</h3>
+                  <p className="text-sm text-green-600">Todas as suas metas da semana foram concluídas!</p>
                 </div>
-              ))}
-              {goals.length > 2 && (
-                <div className="text-center py-2">
-                  <span className="text-xs text-soft-gray">+{goals.length - 2} metas adicionais</span>
-                </div>
+              ) : (
+                <>
+                  {displayedGoals.map((goal) => (
+                    <div key={goal.id} className={`flex items-center p-3 rounded-lg border ${
+                      goal.completed 
+                        ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-200'
+                        : 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                    }`}>
+                      <button
+                        onClick={() => toggleGoalCompletion(goal.id)}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 border-2 transition-all hover:scale-110 ${
+                          goal.completed 
+                            ? 'bg-green-500 border-green-500' 
+                            : 'bg-white border-bright-blue hover:bg-bright-blue/10'
+                        }`}
+                        data-testid={`button-toggle-goal-${goal.id}`}
+                      >
+                        {goal.completed && <CheckCircle2 className="text-white" size={12} />}
+                      </button>
+                      <div className="flex-1">
+                        <div className={`text-sm font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
+                          {goal.title} {goal.target} {goal.unit}
+                        </div>
+                        <div className={`text-xs ${goal.completed ? 'text-green-600' : 'text-soft-gray'}`}>
+                          {goal.current}/{goal.target} concluídas
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {incompleteGoals.length > 2 && (
+                    <div className="text-center py-2">
+                      <span className="text-xs text-soft-gray">+{incompleteGoals.length - 2} metas pendentes</span>
+                    </div>
+                  )}
+                </>
               )}
             </div>
             <Button 
