@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Plus, ArrowLeft, Edit3, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,11 @@ export function EstruturaCuringa() {
   const [editingStructure, setEditingStructure] = useState<EssayStructure | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  const [location] = useLocation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPage = urlParams.get('from') || 'dashboard';
+  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
   
   // Mock userId - in a real app this would come from auth context
   const userId = "mock-user-id";
@@ -82,10 +87,10 @@ export function EstruturaCuringa() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard">
+          <Link href={backUrl}>
             <Button variant="ghost" className="mb-4" data-testid="button-voltar">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar ao Dashboard
+              {fromPage === 'functionalities' ? 'Voltar às Funcionalidades' : 'Voltar ao Dashboard'}
             </Button>
           </Link>
           
