@@ -387,7 +387,7 @@ export default function SimulacaoPage() {
                       data-testid="button-save-draft"
                     >
                       <Save className="mr-1" size={14} />
-                      Salvar
+                      Corrigir Redação
                     </Button>
                     
                     <Button 
@@ -396,7 +396,7 @@ export default function SimulacaoPage() {
                       data-testid="button-finish-simulation"
                     >
                       <Square className="mr-1" size={14} />
-                      Finalizar
+                      Parar sem Salvar
                     </Button>
                   </>
                 )}
