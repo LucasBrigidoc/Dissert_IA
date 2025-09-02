@@ -17,6 +17,40 @@ interface UseStructureProps {
 }
 
 export function UseStructure({ structures, onBack }: UseStructureProps) {
+  // Estrutura de exemplo para demonstração
+  const exampleStructure: EssayStructure = {
+    id: "example-1",
+    name: "Estrutura Dissertativa Clássica",
+    userId: "example-user",
+    sections: [
+      {
+        title: "Introdução",
+        description: "Apresentação do tema, contextualização e tese",
+        guidelines: "Inicie com um gancho, contextualize o tema e apresente sua tese claramente"
+      },
+      {
+        title: "Desenvolvimento 1",
+        description: "Primeiro argumento principal com fundamentação",
+        guidelines: "Desenvolva seu primeiro argumento com dados, exemplos e citações"
+      },
+      {
+        title: "Desenvolvimento 2",
+        description: "Segundo argumento principal com aprofundamento",
+        guidelines: "Apresente um segundo argumento, pode incluir contraposição"
+      },
+      {
+        title: "Conclusão",
+        description: "Síntese dos argumentos e proposta de intervenção",
+        guidelines: "Retome a tese, sintetize os argumentos e proponha soluções"
+      }
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  // Combinar estruturas do usuário com estrutura de exemplo
+  const allStructures = [exampleStructure, ...structures];
+  
   const [selectedStructure, setSelectedStructure] = useState<EssayStructure | null>(null);
   const [essayTopic, setEssayTopic] = useState("");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
@@ -25,7 +59,7 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
   const [generatedEssay, setGeneratedEssay] = useState("");
   const { toast } = useToast();
 
-  const filteredStructures = structures.filter(structure =>
+  const filteredStructures = allStructures.filter(structure =>
     structure.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -68,10 +102,21 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
   };
 
   const handleGenerateEssay = async () => {
-    if (!selectedStructure || !essayTopic.trim()) {
+    if (!essayTopic.trim()) {
       toast({
-        title: "Campos obrigatórios",
-        description: "Selecione uma estrutura e insira o tema da redação.",
+        title: "Campo obrigatório",
+        description: "Insira o tema da redação.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Usar estrutura selecionada ou estrutura de exemplo por padrão
+    const structureToUse = selectedStructure || exampleStructure;
+    if (!structureToUse) {
+      toast({
+        title: "Erro",
+        description: "Nenhuma estrutura disponível.",
         variant: "destructive",
       });
       return;
@@ -83,7 +128,7 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
       // Simular processamento
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const essay = generateEssayContent(selectedStructure, essayTopic, additionalInstructions);
+      const essay = generateEssayContent(structureToUse, essayTopic, additionalInstructions);
       setGeneratedEssay(essay);
       
       toast({
@@ -148,10 +193,10 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                 <div className="text-center py-8 text-soft-gray">
                   <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
                   <p>
-                    {searchTerm ? 'Nenhuma estrutura encontrada' : 'Nenhuma estrutura salva ainda'}
+                    {searchTerm ? 'Nenhuma estrutura encontrada' : 'Nenhuma estrutura encontrada'}
                   </p>
                   <p className="text-sm">
-                    {searchTerm ? 'Tente outro termo de busca' : 'Crie sua primeira estrutura para começar'}
+                    {searchTerm ? 'Tente outro termo de busca' : 'Tente outro termo de busca'}
                   </p>
                 </div>
               ) : (
@@ -163,6 +208,8 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                         selectedStructure?.id === structure.id 
                           ? 'ring-2 ring-bright-blue bg-bright-blue/5' 
                           : 'hover:bg-gray-50'
+                      } ${
+                        structure.id === 'example-1' ? 'border-2 border-bright-blue/30' : ''
                       }`}
                       onClick={() => setSelectedStructure(structure)}
                       data-testid={`card-estrutura-${structure.id}`}
@@ -171,13 +218,18 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-lg text-dark-blue">
                             {structure.name}
+                            {structure.id === 'example-1' && (
+                              <Badge variant="outline" className="ml-2 text-xs text-bright-blue border-bright-blue">
+                                Exemplo
+                              </Badge>
+                            )}
                           </CardTitle>
                           <Badge variant="secondary" className="text-xs">
                             {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
                           </Badge>
                         </div>
                         <CardDescription>
-                          Criada em {new Date(structure.createdAt!).toLocaleDateString('pt-BR')}
+                          {structure.id === 'example-1' ? 'Estrutura padrão para teste' : `Criada em ${new Date(structure.createdAt!).toLocaleDateString('pt-BR')}`}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -218,6 +270,11 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                     <Badge variant="secondary">
                       {Array.isArray(selectedStructure.sections) ? selectedStructure.sections.length : 0} seções
                     </Badge>
+                    {selectedStructure.id === 'example-1' && (
+                      <Badge variant="outline" className="text-bright-blue border-bright-blue">
+                        Estrutura de Exemplo
+                      </Badge>
+                    )}
                   </div>
                   
                   {/* Preview das seções */}
@@ -245,14 +302,15 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                     variant="outline"
                     className="border-bright-blue text-bright-blue hover:bg-bright-blue/10"
                     data-testid="button-editar-estrutura"
+                    disabled={selectedStructure.id === 'example-1'}
                   >
                     <Edit3 className="mr-2 h-4 w-4" />
-                    Editar Estrutura
+                    {selectedStructure.id === 'example-1' ? 'Estrutura Exemplo' : 'Editar Estrutura'}
                   </Button>
                   
                   <Button
                     onClick={handleGenerateEssay}
-                    disabled={!selectedStructure || !essayTopic.trim() || isGenerating}
+                    disabled={!essayTopic.trim() || isGenerating}
                     className="bg-bright-blue hover:bg-blue-600"
                     data-testid="button-gerar-redacao"
                   >
@@ -265,56 +323,80 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                   </Button>
                 </div>
               </div>
-
-              {/* Proposta de Redação */}
-              <div className="mt-6 pt-6 border-t border-bright-blue/20">
-                <div className="flex items-center gap-2 mb-4">
-                  <PenTool className="h-5 w-5 text-bright-blue" />
-                  <h3 className="text-lg font-semibold text-dark-blue">
-                    Proposta de Redação
-                  </h3>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
-                      Tema da Redação *
-                    </Label>
-                    <Textarea
-                      id="essay-topic"
-                      placeholder="Ex: A importância da educação digital no século XXI"
-                      value={essayTopic}
-                      onChange={(e) => setEssayTopic(e.target.value)}
-                      rows={3}
-                      className="mt-1"
-                      data-testid="textarea-tema-redacao"
-                    />
-                    <p className="text-xs text-soft-gray mt-1">
-                      Defina claramente o tema central da sua redação
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
-                      Instruções Especiais (opcional)
-                    </Label>
-                    <Textarea
-                      id="additional-instructions"
-                      placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
-                      value={additionalInstructions}
-                      onChange={(e) => setAdditionalInstructions(e.target.value)}
-                      rows={3}
-                      className="mt-1"
-                      data-testid="textarea-instrucoes-adicionais"
-                    />
-                    <p className="text-xs text-soft-gray mt-1">
-                      Requisitos específicos, tom, estilo ou público-alvo
-                    </p>
-                  </div>
-                </div>
-              </div>
             </LiquidGlassCard>
           )}
+
+          {/* Proposta de Redação - Sempre visível */}
+          <LiquidGlassCard>
+            <div className="flex items-center gap-2 mb-4">
+              <PenTool className="h-5 w-5 text-bright-blue" />
+              <h3 className="text-lg font-semibold text-dark-blue">
+                Proposta de Redação
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
+                  Tema da Redação *
+                </Label>
+                <Textarea
+                  id="essay-topic"
+                  placeholder="Ex: A importância da educação digital no século XXI"
+                  value={essayTopic}
+                  onChange={(e) => setEssayTopic(e.target.value)}
+                  rows={3}
+                  className="mt-1"
+                  data-testid="textarea-tema-redacao"
+                />
+                <p className="text-xs text-soft-gray mt-1">
+                  Defina claramente o tema central da sua redação
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
+                  Instruções Especiais (opcional)
+                </Label>
+                <Textarea
+                  id="additional-instructions"
+                  placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
+                  value={additionalInstructions}
+                  onChange={(e) => setAdditionalInstructions(e.target.value)}
+                  rows={3}
+                  className="mt-1"
+                  data-testid="textarea-instrucoes-adicionais"
+                />
+                <p className="text-xs text-soft-gray mt-1">
+                  Requisitos específicos, tom, estilo ou público-alvo
+                </p>
+              </div>
+            </div>
+            
+            {/* Botão de gerar quando nenhuma estrutura está selecionada */}
+            {!selectedStructure && (
+              <div className="mt-6 pt-6 border-t border-bright-blue/20">
+                <div className="text-center">
+                  <p className="text-sm text-soft-gray mb-4">
+                    {allStructures.length > 0 ? 'Selecione uma estrutura acima ou gere com a estrutura padrão' : 'Usando estrutura padrão'}
+                  </p>
+                  <Button
+                    onClick={handleGenerateEssay}
+                    disabled={!essayTopic.trim() || isGenerating}
+                    className="bg-bright-blue hover:bg-blue-600"
+                    data-testid="button-gerar-redacao-default"
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Play className="mr-2 h-4 w-4" />
+                    )}
+                    {isGenerating ? "Gerando..." : "Gerar Redação com Estrutura Padrão"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </LiquidGlassCard>
 
           {/* Redação Gerada */}
           {generatedEssay && (
