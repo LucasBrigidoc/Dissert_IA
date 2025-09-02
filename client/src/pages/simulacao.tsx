@@ -316,66 +316,75 @@ export default function SimulacaoPage() {
           </LiquidGlassCard>
           
           {/* Timer Display - Center */}
-          <div className="flex flex-col items-center space-y-4">
-            {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
-              <div className="text-center p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
-                <div className="text-3xl font-mono font-bold mb-1 text-gray-800">
-                  {formatTime(timeLeft)}
-                </div>
-                <div className="text-sm text-gray-600">Tempo Restante</div>
-                {config.timerDisplay !== 'always' && (
-                  <div className="text-xs text-gray-500 mt-1">
-                    {config.timerDisplay === '1min' ? 'Atualiza a cada minuto' : config.timerDisplay === '5min' ? 'Atualiza a cada 5 min' : 'Atualiza a cada 10 min'}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Clock className="text-white" size={12} />
+              </div>
+              <h4 className="font-medium text-dark-blue">Timer</h4>
+            </div>
+            
+            <div className="text-center space-y-4">
+              {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
+                <div className="text-center">
+                  <div className="text-3xl font-mono font-bold mb-1 text-gray-800">
+                    {formatTime(timeLeft)}
                   </div>
+                  <div className="text-sm text-gray-600">Tempo Restante</div>
+                  {config.timerDisplay !== 'always' && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      {config.timerDisplay === '1min' ? 'Atualiza a cada minuto' : config.timerDisplay === '5min' ? 'Atualiza a cada 5 min' : 'Atualiza a cada 10 min'}
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Control Buttons */}
+              <div className="flex items-center justify-center space-x-2">
+                {!isActive ? (
+                  <Button 
+                    onClick={handleStart}
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                    data-testid="button-start-timer"
+                  >
+                    <Play className="mr-2" size={16} />
+                    Iniciar
+                  </Button>
+                ) : (
+                  <>
+                    <Button 
+                      onClick={handlePause}
+                      variant="outline"
+                      className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 py-2"
+                      data-testid="button-pause-timer"
+                    >
+                      <Pause className="mr-1" size={14} />
+                      {isPaused ? 'Retomar' : 'Pausar'}
+                    </Button>
+                    
+                    <Button 
+                      onClick={handleSave}
+                      variant="outline"
+                      className="border-blue-500 text-blue-600 hover:bg-blue-50 px-3 py-2"
+                      data-testid="button-save-draft"
+                    >
+                      <Save className="mr-1" size={14} />
+                      Salvar
+                    </Button>
+                    
+                    <Button 
+                      onClick={handleFinish}
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-2"
+                      data-testid="button-finish-simulation"
+                    >
+                      <Square className="mr-1" size={14} />
+                      Finalizar
+                    </Button>
+                  </>
                 )}
               </div>
-            )}
-            
-            {/* Control Buttons */}
-            <div className="flex items-center space-x-2">
-              {!isActive ? (
-                <Button 
-                  onClick={handleStart}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
-                  data-testid="button-start-timer"
-                >
-                  <Play className="mr-2" size={16} />
-                  Iniciar
-                </Button>
-              ) : (
-                <>
-                  <Button 
-                    onClick={handlePause}
-                    variant="outline"
-                    className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-4 py-2"
-                    data-testid="button-pause-timer"
-                  >
-                    <Pause className="mr-1" size={14} />
-                    {isPaused ? 'Retomar' : 'Pausar'}
-                  </Button>
-                  
-                  <Button 
-                    onClick={handleSave}
-                    variant="outline"
-                    className="border-blue-500 text-blue-600 hover:bg-blue-50 px-4 py-2"
-                    data-testid="button-save-draft"
-                  >
-                    <Save className="mr-1" size={14} />
-                    Salvar
-                  </Button>
-                  
-                  <Button 
-                    onClick={handleFinish}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
-                    data-testid="button-finish-simulation"
-                  >
-                    <Square className="mr-1" size={14} />
-                    Finalizar
-                  </Button>
-                </>
-              )}
             </div>
-          </div>
+          </LiquidGlassCard>
 
           {/* Time Summary - Right */}
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
@@ -411,38 +420,7 @@ export default function SimulacaoPage() {
         </div>
       </div>
 
-      {/* Second Row - Statistics spanning full width */}
       <div className="max-w-7xl mx-auto mb-6">
-        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <FileText className="text-white" size={12} />
-              </div>
-              <h4 className="font-medium text-dark-blue">Estatísticas</h4>
-            </div>
-            
-            <div className="flex items-center space-x-6">
-              <div className="text-center px-4 py-2 bg-bright-blue/10 rounded-lg">
-                <div className="text-lg font-bold text-bright-blue">{wordCount}</div>
-                <div className="text-xs text-gray-600">Palavras</div>
-              </div>
-              
-              <div className="text-center px-4 py-2 bg-dark-blue/10 rounded-lg">
-                <div className="text-lg font-bold text-dark-blue">{lineCount}</div>
-                <div className="text-xs text-gray-600">Linhas</div>
-              </div>
-              
-              <div className="text-center px-4 py-2 bg-gray-100 rounded-lg">
-                <div className="text-lg font-bold text-dark-blue">{charCount}</div>
-                <div className="text-xs text-gray-600">Caracteres</div>
-              </div>
-            </div>
-          </div>
-        </LiquidGlassCard>
-      </div>
-
-      <div className="max-w-7xl mx-auto">
         {/* Main Writing Area */}
         <div>
             <LiquidGlassCard className="bg-gradient-to-br from-white/80 to-bright-blue/5 border-bright-blue/20">
@@ -519,6 +497,37 @@ export default function SimulacaoPage() {
               </div>
             </LiquidGlassCard>
         </div>
+      </div>
+
+      {/* Statistics Row - Bottom */}
+      <div className="max-w-7xl mx-auto mb-6">
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <FileText className="text-white" size={12} />
+              </div>
+              <h4 className="font-medium text-dark-blue">Estatísticas</h4>
+            </div>
+            
+            <div className="flex items-center space-x-6">
+              <div className="text-center px-4 py-2 bg-bright-blue/10 rounded-lg">
+                <div className="text-lg font-bold text-bright-blue">{wordCount}</div>
+                <div className="text-xs text-gray-600">Palavras</div>
+              </div>
+              
+              <div className="text-center px-4 py-2 bg-dark-blue/10 rounded-lg">
+                <div className="text-lg font-bold text-dark-blue">{lineCount}</div>
+                <div className="text-xs text-gray-600">Linhas</div>
+              </div>
+              
+              <div className="text-center px-4 py-2 bg-gray-100 rounded-lg">
+                <div className="text-lg font-bold text-dark-blue">{charCount}</div>
+                <div className="text-xs text-gray-600">Caracteres</div>
+              </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
       </div>
 
       {/* Finish Simulation Dialog */}
