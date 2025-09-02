@@ -210,21 +210,16 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           </Button>
           
           <div className="flex items-center justify-between">
-            <div className="flex items-start space-x-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                <Edit className="text-white" size={24} />
-              </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-dark-blue mb-2">
-                  {editingStructure ? 'Editar Estrutura' : 'Criar Nova Estrutura'}
-                </h1>
-                <p className="text-soft-gray">
-                  {editingStructure 
-                    ? 'Modifique sua estrutura existente'
-                    : 'Defina seções personalizadas para criar um modelo reutilizável'
-                  }
-                </p>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold text-dark-blue mb-2">
+                {editingStructure ? 'Editar Estrutura' : 'Criar Nova Estrutura'}
+              </h1>
+              <p className="text-soft-gray">
+                {editingStructure 
+                  ? 'Modifique sua estrutura existente'
+                  : 'Defina seções personalizadas para criar um modelo reutilizável'
+                }
+              </p>
             </div>
             
           </div>
