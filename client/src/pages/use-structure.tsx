@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2 } from "lucide-react";
+import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,9 +14,10 @@ import type { EssayStructure, Section } from "@shared/schema";
 interface UseStructureProps {
   structures: EssayStructure[];
   onBack: () => void;
+  onSaveStructure?: (structure: EssayStructure) => void;
 }
 
-export function UseStructure({ structures, onBack }: UseStructureProps) {
+export function UseStructure({ structures, onBack, onSaveStructure }: UseStructureProps) {
   // Estrutura de exemplo para demonstração
   const exampleStructure: EssayStructure = {
     id: "example-1",
@@ -44,8 +45,8 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
         guidelines: "Retome a tese, sintetize os argumentos e proponha soluções"
       }
     ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
   // Combinar estruturas do usuário com estrutura de exemplo
@@ -57,6 +58,8 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedEssay, setGeneratedEssay] = useState("");
+  const [editingStructure, setEditingStructure] = useState<EssayStructure | null>(null);
+  const [editedStructure, setEditedStructure] = useState<EssayStructure | null>(null);
   const { toast } = useToast();
 
   const filteredStructures = allStructures.filter(structure =>
@@ -301,25 +304,14 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                   <Button
                     variant="outline"
                     className="border-bright-blue text-bright-blue hover:bg-bright-blue/10"
+                    onClick={() => {
+                      setEditingStructure(selectedStructure);
+                      setEditedStructure({ ...selectedStructure });
+                    }}
                     data-testid="button-editar-estrutura"
-                    disabled={selectedStructure.id === 'example-1'}
                   >
                     <Edit3 className="mr-2 h-4 w-4" />
-                    {selectedStructure.id === 'example-1' ? 'Estrutura Exemplo' : 'Editar Estrutura'}
-                  </Button>
-                  
-                  <Button
-                    onClick={handleGenerateEssay}
-                    disabled={!essayTopic.trim() || isGenerating}
-                    className="bg-bright-blue hover:bg-blue-600"
-                    data-testid="button-gerar-redacao"
-                  >
-                    {isGenerating ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Play className="mr-2 h-4 w-4" />
-                    )}
-                    {isGenerating ? "Gerando..." : "Gerar Redação"}
+                    Editar Estrutura
                   </Button>
                 </div>
               </div>
@@ -373,29 +365,30 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
               </div>
             </div>
             
-            {/* Botão de gerar quando nenhuma estrutura está selecionada */}
-            {!selectedStructure && (
-              <div className="mt-6 pt-6 border-t border-bright-blue/20">
-                <div className="text-center">
-                  <p className="text-sm text-soft-gray mb-4">
-                    {allStructures.length > 0 ? 'Selecione uma estrutura acima ou gere com a estrutura padrão' : 'Usando estrutura padrão'}
-                  </p>
-                  <Button
-                    onClick={handleGenerateEssay}
-                    disabled={!essayTopic.trim() || isGenerating}
-                    className="bg-bright-blue hover:bg-blue-600"
-                    data-testid="button-gerar-redacao-default"
-                  >
-                    {isGenerating ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Play className="mr-2 h-4 w-4" />
-                    )}
-                    {isGenerating ? "Gerando..." : "Gerar Redação com Estrutura Padrão"}
-                  </Button>
-                </div>
+            {/* Botão de gerar sempre visível */}
+            <div className="mt-6 pt-6 border-t border-bright-blue/20">
+              <div className="text-center">
+                <p className="text-sm text-soft-gray mb-4">
+                  {selectedStructure 
+                    ? `Gerar redação com: ${selectedStructure.name}` 
+                    : 'Gerar redação com estrutura padrão'
+                  }
+                </p>
+                <Button
+                  onClick={handleGenerateEssay}
+                  disabled={!essayTopic.trim() || isGenerating}
+                  className="bg-bright-blue hover:bg-blue-600 px-8"
+                  data-testid="button-gerar-redacao"
+                >
+                  {isGenerating ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Play className="mr-2 h-4 w-4" />
+                  )}
+                  {isGenerating ? "Gerando Redação..." : "Gerar Redação"}
+                </Button>
               </div>
-            )}
+            </div>
           </LiquidGlassCard>
 
           {/* Redação Gerada */}
@@ -453,6 +446,109 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
             </LiquidGlassCard>
           )}
 
+          {/* Modal de Edição */}
+          {editingStructure && editedStructure && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-dark-blue">
+                    Editar Estrutura
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditingStructure(null);
+                      setEditedStructure(null);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-dark-blue font-medium">Nome da Estrutura</Label>
+                    <Input
+                      value={editedStructure.name}
+                      onChange={(e) => setEditedStructure({
+                        ...editedStructure,
+                        name: e.target.value
+                      })}
+                      placeholder="Nome da estrutura"
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-dark-blue font-medium">Seções</Label>
+                    <div className="space-y-3 mt-2">
+                      {Array.isArray(editedStructure.sections) && (editedStructure.sections as Section[]).map((section, index) => (
+                        <div key={index} className="p-3 border border-bright-blue/20 rounded-lg">
+                          <Input
+                            value={section.title || ''}
+                            onChange={(e) => {
+                              const newSections = [...(editedStructure.sections as Section[])];
+                              newSections[index] = { ...section, title: e.target.value };
+                              setEditedStructure({ ...editedStructure, sections: newSections });
+                            }}
+                            placeholder="Título da seção"
+                            className="mb-2"
+                          />
+                          <Textarea
+                            value={section.description || ''}
+                            onChange={(e) => {
+                              const newSections = [...(editedStructure.sections as Section[])];
+                              newSections[index] = { ...section, description: e.target.value };
+                              setEditedStructure({ ...editedStructure, sections: newSections });
+                            }}
+                            placeholder="Descrição da seção"
+                            rows={2}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 mt-6">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setEditingStructure(null);
+                      setEditedStructure(null);
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (editedStructure && onSaveStructure) {
+                        const structureToSave = {
+                          ...editedStructure,
+                          id: editingStructure.id === 'example-1' ? `user-${Date.now()}` : editedStructure.id,
+                          updatedAt: new Date()
+                        };
+                        onSaveStructure(structureToSave);
+                        setSelectedStructure(structureToSave);
+                        toast({
+                          title: "Estrutura salva!",
+                          description: "Sua estrutura foi salva em 'Suas Estruturas'."
+                        });
+                      }
+                      setEditingStructure(null);
+                      setEditedStructure(null);
+                    }}
+                    className="bg-bright-blue hover:bg-blue-600"
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    Salvar Estrutura
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Mensagem quando nenhuma estrutura está selecionada */}
           {!selectedStructure && filteredStructures.length > 0 && (
             <Card className="border-dashed">
@@ -460,7 +556,7 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                 <FileText className="h-16 w-16 mb-4 opacity-50" />
                 <p className="text-center text-lg mb-2">Selecione uma estrutura</p>
                 <p className="text-center text-sm">
-                  Escolha uma estrutura acima para ver os detalhes e configurar a redação
+                  Escolha uma estrutura acima para ver os detalhes ou use a estrutura padrão
                 </p>
               </CardContent>
             </Card>

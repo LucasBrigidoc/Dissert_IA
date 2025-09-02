@@ -51,6 +51,35 @@ export default function Estilo() {
     },
   });
 
+  const saveMutation = useMutation({
+    mutationFn: async (structure: EssayStructure) => {
+      const method = structure.id.startsWith('user-') ? "POST" : "PUT";
+      const url = method === "POST" ? `/api/users/${userId}/structures` : `/api/structures/${structure.id}`;
+      
+      return await apiRequest(url, {
+        method,
+        body: JSON.stringify({
+          name: structure.name,
+          sections: structure.sections,
+        }),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Estrutura salva!",
+        description: "Sua estrutura foi salva com sucesso.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/users', userId, 'structures'] });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a estrutura.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleEdit = (structure: EssayStructure) => {
     setEditingStructure(structure);
     setSelectedMode('create');
@@ -84,7 +113,13 @@ export default function Estilo() {
   }
 
   if (selectedMode === 'use') {
-    return <UseStructure structures={structures} onBack={() => setSelectedMode(null)} />;
+    return (
+      <UseStructure 
+        structures={structures} 
+        onBack={() => setSelectedMode(null)}
+        onSaveStructure={(structure) => saveMutation.mutate(structure)}
+      />
+    );
   }
 
   return (
