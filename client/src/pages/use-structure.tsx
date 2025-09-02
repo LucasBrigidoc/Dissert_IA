@@ -549,18 +549,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             </div>
           )}
           
-          {/* Mensagem quando nenhuma estrutura está selecionada */}
-          {!selectedStructure && filteredStructures.length > 0 && (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center justify-center py-12 text-soft-gray">
-                <FileText className="h-16 w-16 mb-4 opacity-50" />
-                <p className="text-center text-lg mb-2">Selecione uma estrutura</p>
-                <p className="text-center text-sm">
-                  Escolha uma estrutura acima para ver os detalhes ou use a estrutura padrão
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          
         </div>
       </div>
     </div>
