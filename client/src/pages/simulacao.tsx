@@ -388,10 +388,10 @@ export default function SimulacaoPage() {
                       <Button 
                         onClick={handlePause}
                         variant="outline"
-                        className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 py-2 text-sm"
+                        className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-2 py-1 text-xs"
                         data-testid="button-pause-timer"
                       >
-                        <Pause className="mr-1" size={12} />
+                        <Pause className="mr-1" size={10} />
                         {isPaused ? 'Retomar' : 'Pausar'}
                       </Button>
                     </div>
@@ -403,7 +403,7 @@ export default function SimulacaoPage() {
                         className="border-blue-500 text-blue-600 hover:bg-blue-50 px-2 py-1 text-xs"
                         data-testid="button-save-draft"
                       >
-                        <Save className="mr-1" size={10} />
+                        <CheckCircle className="mr-1" size={10} />
                         Corrigir Redação
                       </Button>
                       
