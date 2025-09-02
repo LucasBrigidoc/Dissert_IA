@@ -485,7 +485,6 @@ export default function Dashboard() {
           )}
         </div>
       </nav>
-
       {/* Dashboard Content */}
       <div className="container mx-auto px-6 py-6 pt-20 space-y-5">
         
@@ -499,7 +498,7 @@ export default function Dashboard() {
               </div>
               <h3 className="text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
             </div>
-            <p className="text-sm text-soft-gray mb-4">Continue sua jornada rumo à nota 1000!</p>
+            <p className="text-sm text-soft-gray mb-4">Continue refinando sua escrita.</p>
             
             {/* Próximas Provas Resumo */}
             <div className="space-y-2">
