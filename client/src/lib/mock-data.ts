@@ -42,7 +42,7 @@ export const mockFeatures = [
   {
     id: 3,
     name: "Estrutura Coringa",
-    description: "Crie modelos reutilizáveis e gere redações personalizadas",
+    description: "Crie e use modelos e gere redações personalizadas",
     icon: "edit"
   },
   {
