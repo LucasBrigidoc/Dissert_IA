@@ -338,9 +338,7 @@ export default function FunctionalitiesPage() {
             </div>
             <h3 className="text-2xl font-bold text-dark-blue mb-4">Não sabe por onde começar?</h3>
             <p className="text-soft-gray mb-6 max-w-2xl mx-auto">
-              Recomendamos começar com o <strong>Arquiteto de Argumentos</strong> para estruturar suas ideias, 
-              depois explorar o <strong>Repertório</strong> para enriquecer seu conhecimento, 
-              e finalmente praticar no <strong>Simulador de Provas</strong>.
+              Crie e use modelos e gere redações personalizadas
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
