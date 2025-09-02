@@ -231,19 +231,19 @@ export default function NewsletterPage() {
             {/* Desktop Navigation Menu */}
             <div className="hidden lg:flex items-center space-x-6">
               <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
-                <Home size={18} />
+                <Home size={14} />
                 <span className="font-medium">Home</span>
               </Link>
               <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                <Grid3x3 size={18} />
+                <Grid3x3 size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Newspaper size={18} />
+                <Book size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
-                <Settings size={18} />
+                <Settings size={14} />
                 <span className="font-medium">Configurações</span>
               </Link>
             </div>
@@ -291,7 +291,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-home"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Home size={20} />
+                  <Home size={16} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link 
@@ -300,7 +300,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Grid3x3 size={20} />
+                  <Grid3x3 size={16} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -309,7 +309,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Newspaper size={20} />
+                  <Book size={16} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -318,7 +318,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-settings"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Settings size={20} />
+                  <Settings size={16} />
                   <span className="font-medium">Configurações</span>
                 </Link>
                 <div className="border-t pt-4">
