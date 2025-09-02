@@ -168,10 +168,10 @@ export default function Dashboard() {
     { id: 'argumentos', name: 'Arquiteto de Argumentos', description: 'Construa argumentos sólidos', icon: MessageCircle, color: 'bright-blue' },
     { id: 'repertorio', name: 'Explorador de Repertório', description: 'Amplie seus conhecimentos', icon: Search, color: 'dark-blue' },
     { id: 'simulador', name: 'Simulador de Provas', description: 'Pratique redações', icon: GraduationCap, color: 'bright-blue' },
-    { id: 'estilo', name: 'Criador de Estilo', description: 'Personalize sua escrita', icon: Sliders, color: 'soft-gray' },
+    { id: 'estilo', name: 'Controlador de Escrita', description: 'Ajuste o estilo de escrita', icon: Edit3, color: 'soft-gray' },
     { id: 'goals', name: 'Metas e Objetivos', description: 'Defina seus objetivos', icon: Target, color: 'bright-blue' },
     { id: 'newsletter', name: 'Newsletter Semanal', description: 'Conteúdo atualizado', icon: Book, color: 'dark-blue' },
-    { id: 'estrutura-curinga', name: 'Estrutura Curinga', description: 'Crie estruturas reutilizáveis', icon: Edit3, color: 'soft-gray' }
+    { id: 'estrutura-curinga', name: 'Estrutura Curinga', description: 'Modelos de estrutura reutilizáveis', icon: Plus, color: 'bright-blue' }
   ];
   
   // Visible features state
