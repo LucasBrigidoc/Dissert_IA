@@ -157,8 +157,59 @@ export default function Estilo() {
             </p>
           </div>
           
-          {/* Comparison Cards */}
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          
+        </div>
+
+        {/* Action Cards */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+          <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <div 
+              className="text-center p-8"
+              onClick={() => setSelectedMode('create')}
+              data-testid="card-criar-estrutura"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-bright-blue/10 to-bright-blue/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <Plus className="h-10 w-10 text-bright-blue" />
+              </div>
+              <h3 className="text-2xl font-bold text-dark-blue mb-4">
+                Criar Nova Estrutura
+              </h3>
+              <p className="text-soft-gray mb-6 leading-relaxed">
+                Monte sua própria estrutura definindo seções personalizadas, instruções específicas e metodologia única para suas redações.
+              </p>
+              <div className="inline-flex items-center text-bright-blue font-medium">
+                Começar criação
+                <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
+              </div>
+            </div>
+          </LiquidGlassCard>
+
+          <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <div 
+              className="text-center p-8"
+              onClick={() => setSelectedMode('use')}
+              data-testid="card-usar-estrutura"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <BookOpen className="h-10 w-10 text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-dark-blue mb-4">
+                Usar Estrutura Existente
+              </h3>
+              <p className="text-soft-gray mb-6 leading-relaxed">
+                Escolha uma das suas estruturas já criadas e gere redações seguindo a metodologia que você definiu anteriormente.
+              </p>
+              <div className="inline-flex items-center text-green-600 font-medium">
+                Escolher estrutura
+                <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
+              </div>
+            </div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Comparison Cards */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-blue-100">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-bright-blue/10 rounded-full flex items-center justify-center mr-4">
@@ -211,53 +262,6 @@ export default function Estilo() {
               </ul>
             </div>
           </div>
-        </div>
-
-        {/* Action Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-          <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
-            <div 
-              className="text-center p-8"
-              onClick={() => setSelectedMode('create')}
-              data-testid="card-criar-estrutura"
-            >
-              <div className="w-20 h-20 bg-gradient-to-br from-bright-blue/10 to-bright-blue/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <Plus className="h-10 w-10 text-bright-blue" />
-              </div>
-              <h3 className="text-2xl font-bold text-dark-blue mb-4">
-                Criar Nova Estrutura
-              </h3>
-              <p className="text-soft-gray mb-6 leading-relaxed">
-                Monte sua própria estrutura definindo seções personalizadas, instruções específicas e metodologia única para suas redações.
-              </p>
-              <div className="inline-flex items-center text-bright-blue font-medium">
-                Começar criação
-                <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
-              </div>
-            </div>
-          </LiquidGlassCard>
-
-          <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
-            <div 
-              className="text-center p-8"
-              onClick={() => setSelectedMode('use')}
-              data-testid="card-usar-estrutura"
-            >
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <BookOpen className="h-10 w-10 text-green-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-dark-blue mb-4">
-                Usar Estrutura Existente
-              </h3>
-              <p className="text-soft-gray mb-6 leading-relaxed">
-                Escolha uma das suas estruturas já criadas e gere redações seguindo a metodologia que você definiu anteriormente.
-              </p>
-              <div className="inline-flex items-center text-green-600 font-medium">
-                Escolher estrutura
-                <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
-              </div>
-            </div>
-          </LiquidGlassCard>
         </div>
 
         {/* Existing Structures */}
