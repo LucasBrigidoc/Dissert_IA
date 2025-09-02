@@ -16,7 +16,6 @@ export default function PropostasPage() {
   const { toast } = useToast();
   
   // Estados para criação de propostas
-  const [isCreating, setIsCreating] = useState(false);
   const [newProposal, setNewProposal] = useState({
     title: "",
     description: "",
@@ -122,7 +121,6 @@ export default function PropostasPage() {
       category: "",
       difficulty: ""
     });
-    setIsCreating(false);
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -163,22 +161,13 @@ export default function PropostasPage() {
                 <p className="text-soft-gray">Crie e explore temas para praticar</p>
               </div>
             </div>
-            <Button
-              onClick={() => setIsCreating(!isCreating)}
-              className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
-              data-testid="button-create-proposal"
-            >
-              <Plus size={16} className="mr-2" />
-              Nova Proposta
-            </Button>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-6 py-8">
         {/* Formulário de Criação */}
-        {isCreating && (
-          <LiquidGlassCard className="mb-8 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-create-proposal">
+        <LiquidGlassCard className="mb-8 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-create-proposal">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
                 <Plus className="text-white" size={20} />
@@ -286,15 +275,7 @@ export default function PropostasPage() {
               />
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200">
-              <Button
-                onClick={() => setIsCreating(false)}
-                variant="outline"
-                className="text-soft-gray border-soft-gray/30"
-                data-testid="button-cancel-proposal"
-              >
-                Cancelar
-              </Button>
+            <div className="flex justify-end mt-6 pt-6 border-t border-gray-200">
               <Button
                 onClick={handleCreateProposal}
                 className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
@@ -305,7 +286,6 @@ export default function PropostasPage() {
               </Button>
             </div>
           </LiquidGlassCard>
-        )}
 
         {/* Filtros e Busca */}
         <LiquidGlassCard className="mb-8 bg-white/80 border-gray-200/50" data-testid="card-search-filters">
@@ -480,12 +460,12 @@ export default function PropostasPage() {
             <h3 className="text-lg font-semibold text-dark-blue mb-2">Nenhuma proposta encontrada</h3>
             <p className="text-soft-gray mb-4">Tente ajustar os filtros ou criar uma nova proposta</p>
             <Button
-              onClick={() => setIsCreating(true)}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
-              data-testid="button-create-first-proposal"
+              data-testid="button-scroll-to-create"
             >
               <Plus size={16} className="mr-2" />
-              Criar Primeira Proposta
+              Ir para Formulário
             </Button>
           </LiquidGlassCard>
         )}
