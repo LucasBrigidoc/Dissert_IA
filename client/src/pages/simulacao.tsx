@@ -267,42 +267,10 @@ export default function SimulacaoPage() {
         </div>
       </div>
       
-      {/* First Row - Time Summary, Steps and Timer */}
+      {/* First Row - Steps, Timer and Time Summary */}
       <div className="max-w-7xl mx-auto mb-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Time Summary - Left */}
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-6 h-6 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                <Clock className="text-white" size={12} />
-              </div>
-              <h4 className="font-medium text-dark-blue">Resumo de Tempos</h4>
-            </div>
-            
-            <div className="space-y-2">
-              {checkpoints.map((checkpoint) => (
-                <div key={checkpoint.id} className="flex justify-between items-center">
-                  <span className="text-sm text-soft-gray">{checkpoint.name}</span>
-                  <span className={`text-sm font-medium ${checkpoint.completed ? 'text-green-600' : 'text-gray-400'}`}>
-                    {checkpoint.completed && checkpoint.timeSpent > 0 
-                      ? formatTime(checkpoint.timeSpent)
-                      : '--:--'
-                    }
-                  </span>
-                </div>
-              ))}
-              <div className="pt-2 border-t border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-dark-blue">Tempo Total</span>
-                  <span className="text-sm font-bold text-dark-blue">
-                    {formatTime(config.timeLimit * 60 - timeLeft)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </LiquidGlassCard>
-
-          {/* Writing Process Checkpoints - Center */}
+          {/* Writing Process Checkpoints - Left */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
@@ -347,7 +315,7 @@ export default function SimulacaoPage() {
             </div>
           </LiquidGlassCard>
           
-          {/* Timer Display - Right */}
+          {/* Timer Display - Center */}
           <div className="flex flex-col items-center space-y-4">
             {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
               <div className="text-center p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
@@ -408,6 +376,38 @@ export default function SimulacaoPage() {
               )}
             </div>
           </div>
+
+          {/* Time Summary - Right */}
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                <Clock className="text-white" size={12} />
+              </div>
+              <h4 className="font-medium text-dark-blue">Resumo de Tempos</h4>
+            </div>
+            
+            <div className="space-y-2">
+              {checkpoints.map((checkpoint) => (
+                <div key={checkpoint.id} className="flex justify-between items-center">
+                  <span className="text-sm text-soft-gray">{checkpoint.name}</span>
+                  <span className={`text-sm font-medium ${checkpoint.completed ? 'text-green-600' : 'text-gray-400'}`}>
+                    {checkpoint.completed && checkpoint.timeSpent > 0 
+                      ? formatTime(checkpoint.timeSpent)
+                      : '--:--'
+                    }
+                  </span>
+                </div>
+              ))}
+              <div className="pt-2 border-t border-gray-200">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-dark-blue">Tempo Total</span>
+                  <span className="text-sm font-bold text-dark-blue">
+                    {formatTime(config.timeLimit * 60 - timeLeft)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </LiquidGlassCard>
         </div>
       </div>
 
