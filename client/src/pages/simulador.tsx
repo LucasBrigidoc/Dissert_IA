@@ -9,7 +9,11 @@ import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCi
 import { Link, useLocation } from "wouter";
 
 export default function Simulador() {
+  const [location] = useLocation();
   const [, setLocation] = useLocation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPage = urlParams.get('from') || 'dashboard';
+  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -18,7 +22,7 @@ export default function Simulador() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
+              <Link href={backUrl} className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
                 <ArrowLeft size={16} />
               </Link>
               <div className="flex items-center space-x-3">
