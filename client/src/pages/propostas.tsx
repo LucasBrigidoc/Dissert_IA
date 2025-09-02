@@ -159,14 +159,9 @@ export default function PropostasPage() {
                 <ArrowLeft size={16} />
                 <span>Voltar</span>
               </Button>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                  <Lightbulb className="text-white" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-dark-blue">Criador de Propostas</h1>
-                  <p className="text-soft-gray">Elabore temas personalizados com textos motivadores</p>
-                </div>
+              <div>
+                <h1 className="text-2xl font-bold text-dark-blue">Propostas de Redação</h1>
+                <p className="text-soft-gray">Crie e explore temas para praticar</p>
               </div>
             </div>
           </div>
