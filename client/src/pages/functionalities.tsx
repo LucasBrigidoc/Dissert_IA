@@ -22,7 +22,7 @@ export default function FunctionalitiesPage() {
       "Estrutura Coringa": "/estilo?from=functionalities",
       "Newsletter Educacional": "/dashboard",
       "Criador de Propostas": "/simulador?from=functionalities",
-      "Biblioteca Pessoal": "/dashboard"
+      "Biblioteca Pessoal": "/biblioteca?from=functionalities"
     };
     
     const route = routeMap[featureName] || "/dashboard";

@@ -1,21 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Home, Settings, LogOut, Menu, Eye, Trash2 } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export default function BibliotecaPage() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todos");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    setLocation("/");
-  };
+  // Lógica para voltar inteligente
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPage = urlParams.get('from') || 'dashboard';
+  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
 
   // Mock data para diferentes categorias de arquivos salvos
   const bibliotecaData = {
@@ -123,229 +122,176 @@ export default function BibliotecaPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Fixed Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-8">
-              <Link href="/functionalities" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center">
+            <div className="flex items-center space-x-4">
+              <Link href={backUrl} className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
+                <ArrowLeft size={16} />
+              </Link>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
                   <Archive className="text-white" size={16} />
                 </div>
-                <span className="font-bold text-dark-blue text-xl">Biblioteca</span>
-              </Link>
-              
-              <div className="hidden md:flex items-center space-x-6">
-                <Link href="/functionalities" className="text-soft-gray hover:text-dark-blue smooth-transition">
-                  Funcionalidades
-                </Link>
-                <Link href="/dashboard" className="text-soft-gray hover:text-dark-blue smooth-transition">
-                  Dashboard
-                </Link>
-                <span className="text-bright-blue font-medium">Biblioteca</span>
+                <h1 className="text-2xl font-bold text-dark-blue">Biblioteca Pessoal</h1>
               </div>
             </div>
-
-            <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/settings">
-                  <Settings size={16} className="mr-2" />
-                  Configurações
-                </Link>
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut size={16} className="mr-2" />
-                Sair
-              </Button>
+            <div className="text-sm text-soft-gray">
+              Repositório inteligente de todo seu aprendizado
             </div>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              <Menu size={20} />
-            </Button>
           </div>
-
-          {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t pt-4">
-              <div className="flex flex-col space-y-2">
-                <Link href="/functionalities" className="text-soft-gray hover:text-dark-blue py-2">
-                  Funcionalidades
-                </Link>
-                <Link href="/dashboard" className="text-soft-gray hover:text-dark-blue py-2">
-                  Dashboard
-                </Link>
-                <Link href="/settings" className="text-soft-gray hover:text-dark-blue py-2">
-                  Configurações
-                </Link>
-                <button onClick={handleLogout} className="text-soft-gray hover:text-dark-blue py-2 text-left">
-                  Sair
-                </button>
-              </div>
-            </div>
-          )}
         </div>
-      </nav>
+      </div>
 
-      {/* Main Content */}
-      <div className="pt-20 pb-12 px-6">
-        <div className="container mx-auto max-w-7xl">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-dark-blue mb-2">Biblioteca Pessoal</h1>
-            <p className="text-soft-gray">Repositório inteligente de todo seu aprendizado organizado por categoria</p>
-          </div>
-
-          {/* Search and Filter Bar */}
-          <LiquidGlassCard className="mb-8 p-6">
-            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-                <Input
-                  placeholder="Buscar por título, categoria ou descrição..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                  data-testid="input-search"
-                />
-              </div>
-              
-              <div className="flex gap-2">
-                <Button
-                  variant={selectedCategory === "todos" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory("todos")}
-                  data-testid="filter-todos"
-                >
-                  Todos
-                </Button>
-                <Button
-                  variant={selectedCategory === "repertório" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory("repertório")}
-                  data-testid="filter-repertorio"
-                >
-                  Repertórios
-                </Button>
-                <Button
-                  variant={selectedCategory === "redação" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory("redação")}
-                  data-testid="filter-redacao"
-                >
-                  Redações
-                </Button>
-                <Button
-                  variant={selectedCategory === "tema" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory("tema")}
-                  data-testid="filter-tema"
-                >
-                  Temas
-                </Button>
-                <Button
-                  variant={selectedCategory === "estilo" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory("estilo")}
-                  data-testid="filter-estilo"
-                >
-                  Estilos
-                </Button>
-              </div>
+      {/* Content */}
+      <div className="container mx-auto px-6 py-8">
+        {/* Search and Filter Bar */}
+        <LiquidGlassCard className="mb-8 p-6">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+              <Input
+                placeholder="Buscar por título, categoria ou descrição..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+                data-testid="input-search"
+              />
             </div>
-          </LiquidGlassCard>
-
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <LiquidGlassCard className="p-4 text-center">
-              <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
-              <div className="text-sm text-soft-gray">Repertórios</div>
-            </LiquidGlassCard>
             
-            <LiquidGlassCard className="p-4 text-center">
-              <PenTool className="mx-auto mb-2 text-green-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.redacoes.length}</div>
-              <div className="text-sm text-soft-gray">Redações</div>
-            </LiquidGlassCard>
-            
-            <LiquidGlassCard className="p-4 text-center">
-              <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.temas.length}</div>
-              <div className="text-sm text-soft-gray">Temas</div>
-            </LiquidGlassCard>
-            
-            <LiquidGlassCard className="p-4 text-center">
-              <Target className="mx-auto mb-2 text-purple-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.estilos.length}</div>
-              <div className="text-sm text-soft-gray">Estilos</div>
-            </LiquidGlassCard>
+            <div className="flex gap-2">
+              <Button
+                variant={selectedCategory === "todos" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("todos")}
+                data-testid="filter-todos"
+              >
+                Todos
+              </Button>
+              <Button
+                variant={selectedCategory === "repertório" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("repertório")}
+                data-testid="filter-repertorio"
+              >
+                Repertórios
+              </Button>
+              <Button
+                variant={selectedCategory === "redação" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("redação")}
+                data-testid="filter-redacao"
+              >
+                Redações
+              </Button>
+              <Button
+                variant={selectedCategory === "tema" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("tema")}
+                data-testid="filter-tema"
+              >
+                Temas
+              </Button>
+              <Button
+                variant={selectedCategory === "estilo" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("estilo")}
+                data-testid="filter-estilo"
+              >
+                Estilos
+              </Button>
+            </div>
           </div>
+        </LiquidGlassCard>
 
-          {/* Files Grid */}
-          <div className="grid gap-4">
-            {filteredFiles.length === 0 ? (
-              <LiquidGlassCard className="p-8 text-center">
-                <Archive className="mx-auto mb-4 text-gray-400" size={48} />
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">Nenhum arquivo encontrado</h3>
-                <p className="text-gray-500">
-                  {searchTerm ? "Tente buscar com outros termos" : "Comece usando as funcionalidades para criar seu primeiro arquivo"}
-                </p>
-              </LiquidGlassCard>
-            ) : (
-              filteredFiles.map((file) => (
-                <LiquidGlassCard key={file.id} className="p-6 hover:shadow-lg smooth-transition">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-4 flex-1">
-                      <div className="flex-shrink-0">
-                        {getIcon(file.type)}
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-dark-blue truncate">{file.title}</h3>
-                          <Badge className={`text-xs ${getTypeColor(file.type)}`}>
-                            {file.type}
-                          </Badge>
-                          {(file as any).grade && (
-                            <Badge className="bg-green-100 text-green-800 text-xs">
-                              Nota: {(file as any).grade}
-                            </Badge>
-                          )}
-                        </div>
-                        
-                        <p className="text-sm text-soft-gray mb-2">{file.description}</p>
-                        
-                        <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span className="flex items-center">
-                            <Clock size={12} className="mr-1" />
-                            {new Date(file.date).toLocaleDateString('pt-BR')}
-                          </span>
-                          <span>{file.size}</span>
-                          <span>{file.category}</span>
-                        </div>
-                      </div>
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <LiquidGlassCard className="p-4 text-center">
+            <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
+            <div className="text-sm text-soft-gray">Repertórios</div>
+          </LiquidGlassCard>
+          
+          <LiquidGlassCard className="p-4 text-center">
+            <PenTool className="mx-auto mb-2 text-green-600" size={24} />
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.redacoes.length}</div>
+            <div className="text-sm text-soft-gray">Redações</div>
+          </LiquidGlassCard>
+          
+          <LiquidGlassCard className="p-4 text-center">
+            <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.temas.length}</div>
+            <div className="text-sm text-soft-gray">Temas</div>
+          </LiquidGlassCard>
+          
+          <LiquidGlassCard className="p-4 text-center">
+            <Target className="mx-auto mb-2 text-purple-600" size={24} />
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.estilos.length}</div>
+            <div className="text-sm text-soft-gray">Estilos</div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Files Grid */}
+        <div className="grid gap-4">
+          {filteredFiles.length === 0 ? (
+            <LiquidGlassCard className="p-8 text-center">
+              <Archive className="mx-auto mb-4 text-gray-400" size={48} />
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">Nenhum arquivo encontrado</h3>
+              <p className="text-gray-500">
+                {searchTerm ? "Tente buscar com outros termos" : "Comece usando as funcionalidades para criar seu primeiro arquivo"}
+              </p>
+            </LiquidGlassCard>
+          ) : (
+            filteredFiles.map((file) => (
+              <LiquidGlassCard key={file.id} className="p-6 hover:shadow-lg smooth-transition">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-4 flex-1">
+                    <div className="flex-shrink-0">
+                      {getIcon(file.type)}
                     </div>
                     
-                    <div className="flex items-center space-x-2 flex-shrink-0">
-                      <Button size="sm" variant="ghost" data-testid={`button-view-${file.id}`}>
-                        <Eye size={16} />
-                      </Button>
-                      <Button size="sm" variant="ghost" data-testid={`button-download-${file.id}`}>
-                        <Download size={16} />
-                      </Button>
-                      <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700" data-testid={`button-delete-${file.id}`}>
-                        <Trash2 size={16} />
-                      </Button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-dark-blue truncate">{file.title}</h3>
+                        <Badge className={`text-xs ${getTypeColor(file.type)}`}>
+                          {file.type}
+                        </Badge>
+                        {(file as any).grade && (
+                          <Badge className="bg-green-100 text-green-800 text-xs">
+                            Nota: {(file as any).grade}
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <p className="text-sm text-soft-gray mb-2">{file.description}</p>
+                      
+                      <div className="flex items-center space-x-4 text-xs text-gray-500">
+                        <span className="flex items-center">
+                          <Clock size={12} className="mr-1" />
+                          {new Date(file.date).toLocaleDateString('pt-BR')}
+                        </span>
+                        <span>{file.size}</span>
+                        <span>{file.category}</span>
+                      </div>
                     </div>
                   </div>
-                </LiquidGlassCard>
-              ))
-            )}
-          </div>
+                  
+                  <div className="flex items-center space-x-2 flex-shrink-0">
+                    <Button size="sm" variant="ghost" data-testid={`button-view-${file.id}`}>
+                      <Eye size={16} />
+                    </Button>
+                    <Button size="sm" variant="ghost" data-testid={`button-download-${file.id}`}>
+                      <Download size={16} />
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700" data-testid={`button-delete-${file.id}`}>
+                      <Trash2 size={16} />
+                    </Button>
+                  </div>
+                </div>
+              </LiquidGlassCard>
+            ))
+          )}
         </div>
       </div>
     </div>
