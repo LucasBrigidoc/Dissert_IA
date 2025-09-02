@@ -23,39 +23,94 @@ import {
 export default function SimulacaoPage() {
   const [, setLocation] = useLocation();
   
+  // Configuration settings (could come from URL params or state)
+  const [config] = useState({
+    examType: 'ENEM',
+    timeLimit: 90, // minutes
+    theme: 'Tecnologia e Sociedade',
+    customTheme: '',
+    textProposal: '',
+    timerDisplay: 'always', // always, 1min, 5min, 10min, hidden
+    showWordCount: true,
+    autoSave: true,
+    spellCheck: true,
+    fontSize: 'medium', // small, medium, large
+    autoSaveInterval: 30, // seconds
+    focusMode: false
+  });
+  
   // Simulation state
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(90 * 60); // 90 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(config.timeLimit * 60);
   const [essayText, setEssayText] = useState('');
   const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [lastSave, setLastSave] = useState(Date.now());
+  const [timerUpdateCounter, setTimerUpdateCounter] = useState(0);
   
   // Checkpoint system
   const [checkpoints, setCheckpoints] = useState([
-    { id: 'brainstorm', name: 'Brainstorm', completed: false, timeSpent: 0, completedAt: null },
-    { id: 'rascunho', name: 'Rascunho', completed: false, timeSpent: 0, completedAt: null },
-    { id: 'limpo', name: 'Passa a Limpo', completed: false, timeSpent: 0, completedAt: null }
+    { id: 'brainstorm', name: 'Brainstorm', completed: false, timeSpent: 0, completedAt: null as Date | null },
+    { id: 'rascunho', name: 'Rascunho', completed: false, timeSpent: 0, completedAt: null as Date | null },
+    { id: 'limpo', name: 'Passa a Limpo', completed: false, timeSpent: 0, completedAt: null as Date | null }
   ]);
   const [lastCheckpointTime, setLastCheckpointTime] = useState(0);
   
-  // Simulation topic (could come from previous page)
-  const [topic] = useState({
-    title: "A importância da inteligência artificial na educação brasileira",
-    instruction: "Com base na leitura dos textos motivadores seguintes e nos conhecimentos construídos ao longo de sua formação, redija texto dissertativo-argumentativo em modalidade escrita formal da língua portuguesa sobre o tema 'A importância da inteligência artificial na educação brasileira', apresentando proposta de intervenção que respeite os direitos humanos. Selecione, organize e relacione, de forma coerente e coesa, argumentos e fatos para defesa de seu ponto de vista.",
-    examType: "ENEM",
-    category: "Tecnologia"
-  });
+  // Generate topic based on configuration
+  const getTopicByTheme = (theme: string, customTheme: string, customProposal: string) => {
+    if (customProposal) {
+      return {
+        title: customTheme || theme,
+        instruction: customProposal,
+        examType: config.examType,
+        category: "Personalizado"
+      };
+    }
+    
+    const topics: Record<string, any> = {
+      'technology': {
+        title: "A importância da inteligência artificial na educação brasileira",
+        instruction: "Com base na leitura dos textos motivadores seguintes e nos conhecimentos construídos ao longo de sua formação, redija texto dissertativo-argumentativo em modalidade escrita formal da língua portuguesa sobre o tema 'A importância da inteligência artificial na educação brasileira', apresentando proposta de intervenção que respeite os direitos humanos.",
+        category: "Tecnologia"
+      },
+      'environment': {
+        title: "Sustentabilidade e preservação ambiental no Brasil contemporâneo",
+        instruction: "Redija um texto dissertativo-argumentativo sobre os desafios da sustentabilidade e preservação ambiental no Brasil, propondo soluções viáveis que conciliem desenvolvimento econômico e conservação.",
+        category: "Meio Ambiente"
+      },
+      'education': {
+        title: "Democratização do ensino superior no Brasil: avanços e desafios",
+        instruction: "Desenvolva uma dissertação sobre a democratização do acesso ao ensino superior brasileiro, analisando políticas públicas e propondo melhorias para ampliar oportunidades educacionais.",
+        category: "Educação"
+      },
+      'social': {
+        title: "Desigualdade social e seus reflexos na sociedade brasileira",
+        instruction: "Elabore um texto dissertativo-argumentativo sobre os impactos da desigualdade social no Brasil, apresentando causas, consequências e propostas de intervenção.",
+        category: "Questões Sociais"
+      }
+    };
+    
+    const selectedTopic = topics[theme] || topics['technology'];
+    return {
+      ...selectedTopic,
+      title: customTheme || selectedTopic.title,
+      examType: config.examType
+    };
+  };
+  
+  const [topic] = useState(getTopicByTheme(config.theme, config.customTheme, config.textProposal));
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Timer effect
+  // Timer effect with configurable display updates
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     
     if (isActive && !isPaused && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft(timeLeft => timeLeft - 1);
+        setTimerUpdateCounter(counter => counter + 1);
       }, 1000);
     } else if (timeLeft === 0) {
       setIsActive(false);
@@ -68,6 +123,17 @@ export default function SimulacaoPage() {
       if (interval) clearInterval(interval);
     };
   }, [isActive, isPaused, timeLeft]);
+  
+  // Auto-save effect
+  useEffect(() => {
+    if (config.autoSave && isActive && essayText.trim().length > 0) {
+      const now = Date.now();
+      if (now - lastSave >= config.autoSaveInterval * 1000) {
+        console.log('Auto-saving...'); // In real app, this would save to backend
+        setLastSave(now);
+      }
+    }
+  }, [essayText, isActive, config.autoSave, config.autoSaveInterval, lastSave]);
 
   // Format time display
   const formatTime = (seconds: number) => {
@@ -154,10 +220,34 @@ export default function SimulacaoPage() {
 
   // Get timer color based on remaining time
   const getTimerColor = () => {
-    const percentage = (timeLeft / (90 * 60)) * 100;
+    const percentage = (timeLeft / (config.timeLimit * 60)) * 100;
     if (percentage > 50) return 'text-green-600';
     if (percentage > 25) return 'text-yellow-600';
     return 'text-red-600';
+  };
+  
+  // Check if timer should be visible based on config
+  const shouldShowTimer = () => {
+    if (config.timerDisplay === 'always') return true;
+    if (config.timerDisplay === 'hidden') return false;
+    
+    const updateInterval = {
+      '1min': 60,
+      '5min': 300,
+      '10min': 600
+    }[config.timerDisplay] || 60;
+    
+    return Math.floor(timerUpdateCounter / updateInterval) !== Math.floor((timerUpdateCounter - 1) / updateInterval);
+  };
+  
+  // Get font size based on config
+  const getFontSize = () => {
+    const sizes: Record<string, string> = {
+      small: '14px',
+      medium: '16px',
+      large: '18px'
+    };
+    return sizes[config.fontSize] || sizes.medium;
   };
 
   return (
@@ -180,13 +270,20 @@ export default function SimulacaoPage() {
       {/* Central Timer */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex flex-col items-center space-y-6">
-          {/* Large Timer Display */}
-          <div className={`text-center p-8 rounded-2xl bg-white/80 backdrop-blur-sm border-2 shadow-lg ${getTimerColor().replace('text-', 'border-')}`}>
-            <div className={`text-6xl font-mono font-bold mb-2 ${getTimerColor()}`}>
-              {formatTime(timeLeft)}
+          {/* Large Timer Display - Conditional */}
+          {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
+            <div className={`text-center p-8 rounded-2xl bg-white/80 backdrop-blur-sm border-2 shadow-lg ${getTimerColor().replace('text-', 'border-')}`}>
+              <div className={`text-6xl font-mono font-bold mb-2 ${getTimerColor()}`}>
+                {formatTime(timeLeft)}
+              </div>
+              <div className="text-lg text-soft-gray">Tempo Restante</div>
+              {config.timerDisplay !== 'always' && (
+                <div className="text-sm text-soft-gray mt-2">
+                  Atualização: {config.timerDisplay === '1min' ? 'a cada minuto' : config.timerDisplay === '5min' ? 'a cada 5 min' : 'a cada 10 min'}
+                </div>
+              )}
             </div>
-            <div className="text-lg text-soft-gray">Tempo Restante</div>
-          </div>
+          )}
           
           {/* Control Buttons */}
           <div className="flex items-center space-x-4">
@@ -346,30 +443,38 @@ export default function SimulacaoPage() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold text-dark-blue">Sua Redação</h3>
                   
-                  {/* Word Counter */}
-                  <div className="flex items-center space-x-4 text-sm">
-                    <div className={`flex items-center space-x-1 ${wordCount >= 800 && wordCount <= 1000 ? 'text-green-600' : wordCount > 1000 ? 'text-red-600' : 'text-soft-gray'}`}>
-                      <FileText size={16} />
-                      <span className="font-medium">{wordCount} palavras</span>
+                  {/* Word Counter - Conditional */}
+                  {config.showWordCount && (
+                    <div className="flex items-center space-x-4 text-sm">
+                      <div className={`flex items-center space-x-1 ${wordCount >= 800 && wordCount <= 1000 ? 'text-green-600' : wordCount > 1000 ? 'text-red-600' : 'text-soft-gray'}`}>
+                        <FileText size={16} />
+                        <span className="font-medium">{wordCount} palavras</span>
+                      </div>
+                      <div className="text-soft-gray">
+                        {lineCount} linhas
+                      </div>
+                      <div className="text-soft-gray">
+                        {charCount} caracteres
+                      </div>
+                      {config.autoSave && (
+                        <div className="text-xs text-green-600">
+                          ✓ Salvamento automático
+                        </div>
+                      )}
                     </div>
-                    <div className="text-soft-gray">
-                      {lineCount} linhas
-                    </div>
-                    <div className="text-soft-gray">
-                      {charCount} caracteres
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 <textarea
                   ref={textareaRef}
                   value={essayText}
                   onChange={(e) => setEssayText(e.target.value)}
-                  placeholder="Digite sua redação aqui... Lembre-se de seguir a estrutura dissertativo-argumentativa: introdução, desenvolvimento e conclusão com proposta de intervenção."
-                  className="w-full h-96 p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60"
+                  placeholder={config.textProposal ? "Desenvolva sua redação baseada na proposta acima..." : "Digite sua redação aqui... Lembre-se de seguir a estrutura dissertativo-argumentativa: introdução, desenvolvimento e conclusão com proposta de intervenção."}
+                  className={`w-full h-96 p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60 ${config.focusMode ? 'focus:bg-white focus:shadow-2xl' : ''}`}
                   disabled={!isActive || isPaused}
                   data-testid="textarea-essay"
-                  style={{ fontFamily: 'serif', fontSize: '16px', lineHeight: '1.6' }}
+                  spellCheck={config.spellCheck}
+                  style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6' }}
                 />
 
                 {/* Writing Guidelines */}
