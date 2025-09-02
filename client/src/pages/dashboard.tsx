@@ -1659,11 +1659,7 @@ export default function Dashboard() {
             </Button>
           </div>
           <div className="mb-5">
-            <div className={`flex flex-wrap justify-center gap-4 ${
-              visibleFeatures.length === 2 ? 'max-w-md mx-auto' :
-              visibleFeatures.length === 3 ? 'max-w-2xl mx-auto' :
-              'max-w-4xl mx-auto'
-            }`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {getVisibleFeaturesData().map((feature) => {
               const IconComponent = feature.icon;
               const borderColor = feature.color === 'bright-blue' ? 'border-bright-blue/30 hover:border-bright-blue/50'
@@ -1687,7 +1683,7 @@ export default function Dashboard() {
                   key={feature.id}
                   onClick={() => handleQuickAccess(feature.id)}
                   variant="outline" 
-                  className={`p-4 h-auto min-h-[120px] flex flex-col items-center justify-center ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group w-44 flex-shrink-0`}
+                  className={`p-4 h-auto min-h-[120px] flex flex-col items-center justify-center ${borderColor} hover:bg-gradient-to-br ${hoverGradient} transition-all duration-200 group w-full`}
                   data-testid={`button-feature-${feature.id}`}
                 >
                   <div className={`w-10 h-10 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform flex-shrink-0`}>
