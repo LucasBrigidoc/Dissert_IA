@@ -52,11 +52,11 @@ export default function NewsletterPage() {
                 <span className="font-medium">Home</span>
               </Link>
               <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                <Grid3x3 size={14} />
+                <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Newspaper size={14} />
+                <Book size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -116,7 +116,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Grid3x3 size={16} />
+                  <Plus size={16} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -235,7 +235,7 @@ export default function NewsletterPage() {
                 <span className="font-medium">Home</span>
               </Link>
               <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                <Grid3x3 size={14} />
+                <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
@@ -300,7 +300,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Grid3x3 size={16} />
+                  <Plus size={16} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
