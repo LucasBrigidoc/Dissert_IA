@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { LiquidGlassCard } from '@/components/liquid-glass-card';
-import { ArrowLeft, CheckCircle, AlertCircle, Target, TrendingUp, Clock, Save } from 'lucide-react';
+import { ArrowLeft, CheckCircle, AlertCircle, Target, TrendingUp, Clock, Save, Grid } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export function Resultado() {
@@ -27,8 +27,8 @@ export function Resultado() {
     setLocation('/simulador');
   };
 
-  const handleBackToSimulator = () => {
-    setLocation('/simulador');
+  const handleBackToFeatures = () => {
+    setLocation('/features');
   };
 
   // Mock essay analysis data - in a real app this would come from an AI analysis service
@@ -108,11 +108,12 @@ export function Resultado() {
           </Button>
           
           <Button 
-            onClick={handleBackToSimulator}
+            onClick={handleBackToFeatures}
             className="bg-bright-blue hover:bg-bright-blue/90 text-white"
-            data-testid="button-back-to-simulator"
+            data-testid="button-back-to-features"
           >
-            Novo Simulado
+            <Grid className="mr-2" size={16} />
+            Ver Funcionalidades
           </Button>
         </div>
       </div>
@@ -263,11 +264,12 @@ export function Resultado() {
           </Button>
           
           <Button 
-            onClick={handleBackToSimulator}
+            onClick={handleBackToFeatures}
             className="bg-bright-blue hover:bg-bright-blue/90 text-white"
-            data-testid="button-new-simulation"
+            data-testid="button-back-to-features"
           >
-            Nova Simulação
+            <Grid className="mr-2" size={16} />
+            Ver Funcionalidades
           </Button>
         </div>
       </div>
