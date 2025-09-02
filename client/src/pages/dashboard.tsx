@@ -861,46 +861,93 @@ export default function Dashboard() {
               </div>
               <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
-            <div className="h-48 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20 p-4" data-testid="chart-evolution">
+            <div className="h-56 bg-gradient-to-br from-white/80 via-bright-blue/5 to-dark-blue/10 rounded-xl border border-bright-blue/30 p-6 shadow-inner" data-testid="chart-evolution">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#5087ff20" />
+                <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
+                  <defs>
+                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#5087ff" />
+                      <stop offset="50%" stopColor="#7c3aed" />
+                      <stop offset="100%" stopColor="#09072e" />
+                    </linearGradient>
+                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#5087ff" stopOpacity={0.3}/>
+                      <stop offset="50%" stopColor="#7c3aed" stopOpacity={0.1}/>
+                      <stop offset="100%" stopColor="#09072e" stopOpacity={0.05}/>
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                      <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <CartesianGrid 
+                    strokeDasharray="2 6" 
+                    stroke="#5087ff15" 
+                    strokeWidth={1}
+                    vertical={false}
+                  />
                   <XAxis 
                     dataKey="date" 
                     stroke="#09072e"
-                    fontSize={12}
+                    fontSize={11}
+                    fontWeight={500}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ dy: 8 }}
                   />
                   <YAxis 
                     stroke="#09072e"
-                    fontSize={12}
+                    fontSize={11}
+                    fontWeight={500}
                     domain={[400, 1000]}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ dx: -8 }}
+                    tickFormatter={(value) => `${value}`}
                   />
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                      border: '1px solid #5087ff30',
-                      borderRadius: '8px',
-                      fontSize: '12px'
+                      backgroundColor: 'rgba(255, 255, 255, 0.98)', 
+                      border: '2px solid #5087ff40',
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      boxShadow: '0 8px 32px rgba(80, 135, 255, 0.2)',
+                      backdropFilter: 'blur(8px)'
                     }}
                     formatter={(value: any, name: any, props: any) => [
                       `${value} pontos`, 
-                      props.payload.nome
+                      props.payload.nome || 'Simulado'
                     ]}
+                    labelStyle={{ color: '#09072e', fontWeight: '600' }}
                   />
                   <Line 
                     type="monotone" 
                     dataKey="nota" 
                     stroke="url(#lineGradient)" 
-                    strokeWidth={3}
-                    dot={{ fill: '#5087ff', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: '#09072e', strokeWidth: 2 }}
+                    strokeWidth={4}
+                    dot={{ 
+                      fill: '#ffffff', 
+                      stroke: '#5087ff', 
+                      strokeWidth: 3, 
+                      r: 6,
+                      filter: 'url(#glow)'
+                    }}
+                    activeDot={{ 
+                      r: 8, 
+                      stroke: '#09072e', 
+                      strokeWidth: 3,
+                      fill: '#5087ff',
+                      filter: 'url(#glow)',
+                      style: { 
+                        boxShadow: '0 0 20px rgba(80, 135, 255, 0.6)' 
+                      }
+                    }}
+                    filter="url(#glow)"
                   />
-                  <defs>
-                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#5087ff" />
-                      <stop offset="100%" stopColor="#09072e" />
-                    </linearGradient>
-                  </defs>
                 </LineChart>
               </ResponsiveContainer>
             </div>
