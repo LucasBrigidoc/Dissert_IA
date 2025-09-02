@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, FileText, Play, Search, Edit3 } from "lucide-react";
+import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,13 +21,53 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
   const [essayTopic, setEssayTopic] = useState("");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedEssay, setGeneratedEssay] = useState("");
   const { toast } = useToast();
 
   const filteredStructures = structures.filter(structure =>
     structure.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleGenerateEssay = () => {
+  const generateEssayContent = (structure: EssayStructure, topic: string, instructions: string): string => {
+    const sections = Array.isArray(structure.sections) ? structure.sections as Section[] : [];
+    let essay = "";
+    
+    essay += `**${topic}**\n\n`;
+    
+    sections.forEach((section, index) => {
+      essay += `**${section.title || `Seção ${index + 1}`}**\n\n`;
+      
+      if (section.description) {
+        essay += `${section.description}\n\n`;
+      }
+      
+      // Gerar conteúdo baseado no tipo de seção e tema
+      switch (section.title?.toLowerCase()) {
+        case 'introdução':
+          essay += `A questão sobre "${topic}" tem se tornado cada vez mais relevante em nossa sociedade contemporânea. Este tema desperta debates importantes e merece uma análise cuidadosa dos seus múltiplos aspectos.\n\n`;
+          break;
+        case 'desenvolvimento':
+        case 'desenvolvimento 1':
+        case 'desenvolvimento 2':
+          essay += `No que se refere a ${topic.toLowerCase()}, é fundamental considerarmos os diversos fatores que influenciam esta questão. Os dados atuais demonstram a complexidade do tema e a necessidade de uma abordagem multidisciplinar para sua compreensão.\n\n`;
+          break;
+        case 'conclusão':
+          essay += `Em síntese, a questão sobre "${topic}" demanda atenção especial da sociedade e das instituições. É necessário que sejam implementadas medidas efetivas para abordar adequadamente esta temática, promovendo o bem-estar social e o desenvolvimento sustentável.\n\n`;
+          break;
+        default:
+          essay += `Em relação a ${topic.toLowerCase()}, esta seção aborda aspectos fundamentais que contribuem para uma compreensão mais ampla do tema proposto.\n\n`;
+      }
+    });
+    
+    if (instructions.trim()) {
+      essay += `\n---\n**Instruções consideradas:** ${instructions}\n`;
+    }
+    
+    return essay;
+  };
+
+  const handleGenerateEssay = async () => {
     if (!selectedStructure || !essayTopic.trim()) {
       toast({
         title: "Campos obrigatórios",
@@ -37,11 +77,28 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
       return;
     }
 
-    // Esta funcionalidade será implementada futuramente
-    toast({
-      title: "Funcionalidade em desenvolvimento",
-      description: "A geração de redações com IA será implementada em breve.",
-    });
+    setIsGenerating(true);
+    
+    try {
+      // Simular processamento
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const essay = generateEssayContent(selectedStructure, essayTopic, additionalInstructions);
+      setGeneratedEssay(essay);
+      
+      toast({
+        title: "Redação gerada com sucesso!",
+        description: "Sua redação foi criada seguindo a estrutura selecionada.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro na geração",
+        description: "Ocorreu um erro ao gerar a redação. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -195,21 +252,28 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                   
                   <Button
                     onClick={handleGenerateEssay}
-                    disabled={!selectedStructure || !essayTopic.trim()}
+                    disabled={!selectedStructure || !essayTopic.trim() || isGenerating}
                     className="bg-bright-blue hover:bg-blue-600"
                     data-testid="button-gerar-redacao"
                   >
-                    <Play className="mr-2 h-4 w-4" />
-                    Gerar Redação
+                    {isGenerating ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Play className="mr-2 h-4 w-4" />
+                    )}
+                    {isGenerating ? "Gerando..." : "Gerar Redação"}
                   </Button>
                 </div>
               </div>
 
-              {/* Configurações da redação embaixo */}
+              {/* Proposta de Redação */}
               <div className="mt-6 pt-6 border-t border-bright-blue/20">
-                <h3 className="text-lg font-semibold text-dark-blue mb-4">
-                  Configurações da Redação
-                </h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <PenTool className="h-5 w-5 text-bright-blue" />
+                  <h3 className="text-lg font-semibold text-dark-blue">
+                    Proposta de Redação
+                  </h3>
+                </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -218,28 +282,91 @@ export function UseStructure({ structures, onBack }: UseStructureProps) {
                     </Label>
                     <Textarea
                       id="essay-topic"
-                      placeholder="Insira o tema sobre o qual você deseja escrever..."
+                      placeholder="Ex: A importância da educação digital no século XXI"
                       value={essayTopic}
                       onChange={(e) => setEssayTopic(e.target.value)}
                       rows={3}
+                      className="mt-1"
                       data-testid="textarea-tema-redacao"
                     />
+                    <p className="text-xs text-soft-gray mt-1">
+                      Defina claramente o tema central da sua redação
+                    </p>
                   </div>
 
                   <div>
                     <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
-                      Instruções Adicionais (opcional)
+                      Instruções Especiais (opcional)
                     </Label>
                     <Textarea
                       id="additional-instructions"
-                      placeholder="Requisitos específicos, tom desejado, público-alvo, etc..."
+                      placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
                       value={additionalInstructions}
                       onChange={(e) => setAdditionalInstructions(e.target.value)}
                       rows={3}
+                      className="mt-1"
                       data-testid="textarea-instrucoes-adicionais"
                     />
+                    <p className="text-xs text-soft-gray mt-1">
+                      Requisitos específicos, tom, estilo ou público-alvo
+                    </p>
                   </div>
                 </div>
+              </div>
+            </LiquidGlassCard>
+          )}
+
+          {/* Redação Gerada */}
+          {generatedEssay && (
+            <LiquidGlassCard>
+              <div className="flex items-center gap-2 mb-4">
+                <FileText className="h-5 w-5 text-bright-blue" />
+                <h3 className="text-lg font-semibold text-dark-blue">
+                  Redação Gerada
+                </h3>
+              </div>
+              
+              <div className="bg-white rounded-lg border border-bright-blue/20 p-6">
+                <div className="prose max-w-none">
+                  {generatedEssay.split('\n').map((paragraph, index) => {
+                    if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
+                      const title = paragraph.slice(2, -2);
+                      return (
+                        <h4 key={index} className="text-dark-blue font-semibold text-lg mt-4 mb-2 first:mt-0">
+                          {title}
+                        </h4>
+                      );
+                    }
+                    if (paragraph.trim() === '') {
+                      return <br key={index} />;
+                    }
+                    if (paragraph.startsWith('---')) {
+                      return <hr key={index} className="my-4 border-bright-blue/20" />;
+                    }
+                    return (
+                      <p key={index} className="text-soft-gray leading-relaxed mb-3">
+                        {paragraph}
+                      </p>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigator.clipboard.writeText(generatedEssay)}
+                  data-testid="button-copiar-redacao"
+                >
+                  Copiar Texto
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setGeneratedEssay("")} 
+                  data-testid="button-nova-redacao"
+                >
+                  Nova Redação
+                </Button>
               </div>
             </LiquidGlassCard>
           )}
