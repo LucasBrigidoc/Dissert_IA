@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { LiquidGlassCard } from '@/components/liquid-glass-card';
-import { ArrowLeft, CheckCircle, AlertCircle, Target, TrendingUp } from 'lucide-react';
+import { ArrowLeft, CheckCircle, AlertCircle, Target, TrendingUp, Clock } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export function Resultado() {
@@ -59,6 +59,22 @@ export function Resultado() {
     ]
   };
 
+  // Mock time data - in a real app this would come from the simulation session
+  const timeAnalysis = {
+    checkpoints: [
+      { name: "Brainstorm", timeSpent: 15 * 60, completed: true }, // 15 minutes
+      { name: "Rascunho", timeSpent: 45 * 60, completed: true }, // 45 minutes  
+      { name: "Passa a Limpo", timeSpent: 30 * 60, completed: true } // 30 minutes
+    ],
+    totalTime: 90 * 60 // 90 minutes total
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-bright-blue/10 via-white to-dark-blue/10 p-4">
       {/* Header with Back Button */}
@@ -106,6 +122,34 @@ export function Resultado() {
               <div className="inline-block px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
                 {essayAnalysis.grade >= 8 ? 'Excelente' : essayAnalysis.grade >= 6 ? 'Bom' : 'Precisa melhorar'}
               </div>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
+        {/* Time Summary */}
+        <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-6 h-6 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+              <Clock className="text-white" size={12} />
+            </div>
+            <h2 className="text-xl font-bold text-dark-blue">Resumo de Tempos</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {timeAnalysis.checkpoints.map((checkpoint, index) => (
+              <div key={index} className="text-center p-4 bg-white/50 rounded-lg border">
+                <div className="text-2xl font-bold text-bright-blue mb-1">
+                  {formatTime(checkpoint.timeSpent)}
+                </div>
+                <div className="text-sm font-medium text-dark-blue">{checkpoint.name}</div>
+              </div>
+            ))}
+            
+            <div className="text-center p-4 bg-bright-blue/10 rounded-lg border border-bright-blue/30">
+              <div className="text-2xl font-bold text-dark-blue mb-1">
+                {formatTime(timeAnalysis.totalTime)}
+              </div>
+              <div className="text-sm font-medium text-dark-blue">Tempo Total</div>
             </div>
           </div>
         </LiquidGlassCard>
