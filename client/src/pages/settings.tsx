@@ -162,14 +162,13 @@ export default function SettingsPage() {
           )}
         </div>
       </nav>
-
       {/* Settings Content */}
       <div className="container mx-auto px-6 py-8 pt-24 space-y-6">
         
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-dark-blue mb-2">Configurações</h1>
-          <p className="text-soft-gray">Gerencie suas metas, perfil e informações da conta</p>
+          <p className="text-soft-gray">Gerencie seu perfil e informações da conta</p>
         </div>
 
         {/* Profile Section */}
