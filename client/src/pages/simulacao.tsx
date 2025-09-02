@@ -267,9 +267,9 @@ export default function SimulacaoPage() {
         </div>
       </div>
       
-      {/* Top Bar with Timer, Steps and Stats */}
+      {/* First Row - Steps and Timer */}
       <div className="max-w-7xl mx-auto mb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Writing Process Checkpoints */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="flex items-center space-x-3 mb-4">
@@ -315,7 +315,7 @@ export default function SimulacaoPage() {
             </div>
           </LiquidGlassCard>
           
-          {/* Timer Display - Center */}
+          {/* Timer Display - Right */}
           <div className="flex flex-col items-center space-y-4">
             {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
               <div className="text-center p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
@@ -376,34 +376,38 @@ export default function SimulacaoPage() {
               )}
             </div>
           </div>
-          
-          {/* Writing Stats */}
-          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex items-center space-x-3 mb-4">
+        </div>
+      </div>
+
+      {/* Second Row - Statistics spanning full width */}
+      <div className="max-w-7xl mx-auto mb-6">
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
               <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                 <FileText className="text-white" size={12} />
               </div>
               <h4 className="font-medium text-dark-blue">Estatísticas</h4>
             </div>
             
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2 bg-bright-blue/10 rounded-lg">
-                <div className="text-lg font-bold text-bright-blue mb-1">{wordCount}</div>
+            <div className="flex items-center space-x-6">
+              <div className="text-center px-4 py-2 bg-bright-blue/10 rounded-lg">
+                <div className="text-lg font-bold text-bright-blue">{wordCount}</div>
                 <div className="text-xs text-gray-600">Palavras</div>
               </div>
               
-              <div className="text-center p-2 bg-dark-blue/10 rounded-lg">
-                <div className="text-lg font-bold text-dark-blue mb-1">{lineCount}</div>
+              <div className="text-center px-4 py-2 bg-dark-blue/10 rounded-lg">
+                <div className="text-lg font-bold text-dark-blue">{lineCount}</div>
                 <div className="text-xs text-gray-600">Linhas</div>
               </div>
               
-              <div className="text-center p-2 bg-gray-100 rounded-lg">
-                <div className="text-lg font-bold text-dark-blue mb-1">{charCount}</div>
+              <div className="text-center px-4 py-2 bg-gray-100 rounded-lg">
+                <div className="text-lg font-bold text-dark-blue">{charCount}</div>
                 <div className="text-xs text-gray-600">Caracteres</div>
               </div>
             </div>
-          </LiquidGlassCard>
-        </div>
+          </div>
+        </LiquidGlassCard>
       </div>
 
       <div className="max-w-7xl mx-auto">
