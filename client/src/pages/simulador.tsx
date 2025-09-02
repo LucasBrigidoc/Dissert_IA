@@ -33,9 +33,9 @@ export default function Simulador() {
       </div>
 
       {/* Statistics - Top Section */}
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-6 py-3">
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-          <div className="flex items-center space-x-3 mb-6">
+          <div className="flex items-center space-x-3 mb-3">
             <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
               <Award className="text-white" size={16} />
             </div>
@@ -62,7 +62,7 @@ export default function Simulador() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-4">
         <div className="space-y-6">
           {/* Exam Selection */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
@@ -140,24 +140,24 @@ export default function Simulador() {
               <h4 className="font-semibold text-dark-blue">Dicas para o Simulado</h4>
             </div>
             
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <CheckCircle className="text-bright-blue mt-0.5" size={16} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
                 <div className="text-sm text-soft-gray">Leia atentamente a proposta antes de começar</div>
               </div>
               
-              <div className="flex items-start space-x-2">
-                <CheckCircle className="text-bright-blue mt-0.5" size={16} />
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
                 <div className="text-sm text-soft-gray">Faça um rascunho para organizar as ideias</div>
               </div>
               
-              <div className="flex items-start space-x-2">
-                <CheckCircle className="text-bright-blue mt-0.5" size={16} />
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
                 <div className="text-sm text-soft-gray">Reserve tempo para revisão final</div>
               </div>
               
-              <div className="flex items-start space-x-2">
-                <CheckCircle className="text-bright-blue mt-0.5" size={16} />
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
                 <div className="text-sm text-soft-gray">Simule as condições reais do exame</div>
               </div>
             </div>
