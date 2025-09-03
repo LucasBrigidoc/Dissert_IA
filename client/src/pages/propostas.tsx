@@ -309,7 +309,7 @@ export default function PropostasPage() {
         {/* Filtros e Busca */}
         <LiquidGlassCard className="mb-8 bg-white/80 border-gray-200/50" data-testid="card-search-filters">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mr-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
               <Search className="text-white" size={20} />
             </div>
             <div>
