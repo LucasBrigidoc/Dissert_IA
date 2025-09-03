@@ -302,17 +302,6 @@ export default function Argumentos() {
                       }
                     }}
                   />
-                  <Button
-                    onClick={() => {
-                      if (newArgument.trim()) {
-                        addToCategory('argumentos', newArgument.trim());
-                        setNewArgument('');
-                      }
-                    }}
-                    className="bg-gradient-to-r from-dark-blue to-bright-blue"
-                  >
-                    <Plus size={14} />
-                  </Button>
                 </div>
               </div>
               <div className="space-y-3">
