@@ -226,11 +226,10 @@ export default function ControladorEscrita() {
                 <h1 className="text-2xl font-bold text-dark-blue">Controlador de Escrita</h1>
               </div>
             </div>
-            <p className="text-soft-gray">Ajuste o estilo de escrita do seu texto</p>
+            <p className="text-soft-gray">Refine seu texto com os controles de estilo</p>
           </div>
         </div>
       </div>
-
       {/* Content */}
       <div className="container mx-auto px-6 py-8 h-[calc(100vh-200px)] flex flex-col">
         {/* Área de Texto Original */}
