@@ -288,6 +288,7 @@ export default function Argumentos() {
               
               {/* Adicionar novo argumento */}
               <div className="mb-4">
+                <p className="text-soft-gray text-sm mb-2">Adicione argumentos para sua redação</p>
                 <div className="flex space-x-2">
                   <Input
                     value={newArgument}
@@ -344,6 +345,7 @@ export default function Argumentos() {
               
               {/* Adicionar novo repertório */}
               <div className="mb-4">
+                <p className="text-soft-gray text-sm mb-2">Adicione repertórios para enriquecer sua redação</p>
                 <div className="flex space-x-2">
                   <Input
                     value={newRepertorio}
