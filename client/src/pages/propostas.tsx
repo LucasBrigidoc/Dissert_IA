@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Plus, FileText, Calendar, BookOpen, Target, Filter, ArrowLeft, Eye, Edit, Download, Star, Trophy, School, Building } from "lucide-react";
+import { Search, Plus, FileText, Calendar, BookOpen, Target, Filter, ArrowLeft, Eye, Edit, Download, Star, Trophy, School, Building, Lightbulb } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 
@@ -161,7 +161,7 @@ export default function PropostasPage() {
               </Button>
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                  <FileText className="text-white" size={24} />
+                  <Lightbulb className="text-white" size={24} />
                 </div>
                 <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas</h1>
               </div>
