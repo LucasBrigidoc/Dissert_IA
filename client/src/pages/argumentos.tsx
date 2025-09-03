@@ -257,35 +257,6 @@ export default function Argumentos() {
         <div className="grid gap-6">
           {/* Main Content Area */}
           <div className="space-y-6">
-            {/* Progress Bar */}
-            <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-dark-blue text-sm">Progresso do Brainstorming</h4>
-                <div className="flex items-center space-x-6">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Tema</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Tese</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Argumentos</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.argumentos.length >= 2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Repertórios</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.repertorios.length > 0 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Conclusão</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                </div>
-              </div>
-            </LiquidGlassCard>
-
             {/* Tema e Tese */}
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
               <h3 className="text-lg font-semibold text-dark-blue mb-4">Tema e Tese</h3>
@@ -407,6 +378,35 @@ export default function Argumentos() {
                 className="border-purple-200/50 focus:border-purple-300 h-24"
               />
               <ChatMini section="conclusao" title="conclusão" />
+            </LiquidGlassCard>
+
+            {/* Progress Bar */}
+            <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-dark-blue text-sm">Progresso do Brainstorming</h4>
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Tema</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Tese</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Argumentos</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.argumentos.length >= 2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Repertórios</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.repertorios.length > 0 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Conclusão</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                </div>
+              </div>
             </LiquidGlassCard>
 
             {/* Botão para Mapa Mental */}
