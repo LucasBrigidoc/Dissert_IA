@@ -14,8 +14,9 @@ export default function Argumentos() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
-                <ArrowLeft size={16} />
+              <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" data-testid="button-back">
+                <ArrowLeft size={14} />
+                <span className="text-sm font-medium">Voltar</span>
               </Link>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
