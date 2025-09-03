@@ -31,7 +31,7 @@ export const mockFeatures = [
     id: 1,
     name: "Refinamento do Brainstorming",
     description: "Brainstorming com IA para construção de redação",
-    icon: "comments"
+    icon: "brain"
   },
   {
     id: 2,
