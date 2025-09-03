@@ -345,17 +345,6 @@ export default function Argumentos() {
                       }
                     }}
                   />
-                  <Button
-                    onClick={() => {
-                      if (newRepertorio.trim()) {
-                        addToCategory('repertorios', newRepertorio.trim());
-                        setNewRepertorio('');
-                      }
-                    }}
-                    className="bg-gradient-to-r from-soft-gray to-bright-blue"
-                  >
-                    <Plus size={14} />
-                  </Button>
                 </div>
               </div>
               <div className="space-y-3">
