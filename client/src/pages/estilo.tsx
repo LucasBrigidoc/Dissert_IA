@@ -145,9 +145,11 @@ export default function Estilo() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
-                  <p className="text-soft-gray">Gere redações personalizadas seguindo sua metodologia preferida</p>
                 </div>
               </div>
+            </div>
+            <div>
+              <p className="text-soft-gray">Gere redações personalizadas seguindo sua metodologia preferida</p>
             </div>
           </div>
         </div>
