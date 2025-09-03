@@ -33,7 +33,7 @@ export default function Simulador() {
                 </Button>
               </Link>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
                   <GraduationCap className="text-white" size={20} />
                 </div>
                 <div>
