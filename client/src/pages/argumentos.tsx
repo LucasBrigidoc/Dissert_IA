@@ -255,7 +255,7 @@ export default function Argumentos() {
       {/* Progress Bar - Fixed */}
       <div className="sticky top-0 z-10 bg-white">
         <div className="container mx-auto px-6 py-3">
-          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-3">
+          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-3 shadow-none">
             <div className="flex items-center justify-between">
               <h4 className="font-semibold text-dark-blue text-sm">Progresso do Brainstorming</h4>
               <div className="flex items-center space-x-6">
