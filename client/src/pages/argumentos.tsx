@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, MessageCircle, Lightbulb, BookOpen, Target, Zap } from "lucide-react";
+import { ArrowLeft, Brain, Lightbulb, BookOpen, Target, Zap } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Argumentos() {
@@ -19,13 +19,13 @@ export default function Argumentos() {
               </Link>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <MessageCircle className="text-white" size={16} />
+                  <Brain className="text-white" size={16} />
                 </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Arquiteto de Argumentos</h1>
+                <h1 className="text-2xl font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
             </div>
             <div className="text-sm text-soft-gray">
-              Construa argumentos sólidos e persuasivos
+              Brainstorming com IA para construção de redação
             </div>
           </div>
         </div>
