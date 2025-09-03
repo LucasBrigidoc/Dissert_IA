@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,19 +9,39 @@ import { Link, useLocation } from "wouter";
 
 export default function Argumentos() {
   const [location] = useLocation();
+  const [backUrl, setBackUrl] = useState('/dashboard');
   
-  // Detectar página de origem através dos parâmetros da URL
-  const getBackUrl = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const from = urlParams.get('from');
+  useEffect(() => {
+    // Detectar página de origem através de múltiplas fontes
+    const detectPreviousPage = () => {
+      // 1. Verificar parâmetro 'from' na URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromParam = urlParams.get('from');
+      
+      if (fromParam === 'functionalities') {
+        return '/functionalities';
+      }
+      
+      // 2. Verificar o referrer do documento
+      if (document.referrer) {
+        const referrerUrl = new URL(document.referrer);
+        const referrerPath = referrerUrl.pathname;
+        
+        if (referrerPath === '/functionalities') {
+          return '/functionalities';
+        }
+        if (referrerPath === '/dashboard') {
+          return '/dashboard';
+        }
+      }
+      
+      // 3. Padrão
+      return '/dashboard';
+    };
     
-    if (from === 'functionalities') {
-      return '/functionalities';
-    }
-    return '/dashboard'; // padrão
-  };
-  
-  const backUrl = getBackUrl();
+    const detectedUrl = detectPreviousPage();
+    setBackUrl(detectedUrl);
+  }, []);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -29,10 +50,21 @@ export default function Argumentos() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href={backUrl} className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" data-testid="button-back">
+              <button 
+                onClick={() => {
+                  // Tentar usar history.back() se possível, caso contrário usar a URL detectada
+                  if (window.history.length > 1 && document.referrer) {
+                    window.history.back();
+                  } else {
+                    window.location.href = backUrl;
+                  }
+                }}
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" 
+                data-testid="button-back"
+              >
                 <ArrowLeft size={14} />
                 <span className="text-sm font-medium">Voltar</span>
-              </Link>
+              </button>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Brain className="text-white" size={16} />
