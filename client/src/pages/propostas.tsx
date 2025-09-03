@@ -163,11 +163,11 @@ export default function PropostasPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
                   <FileText className="text-white" size={24} />
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas </h1>
-                  <p className="text-soft-gray">Crie e explore temas para praticar</p>
-                </div>
+                <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas</h1>
               </div>
+            </div>
+            <div className="text-sm text-soft-gray">
+              Crie e explore temas para praticar
             </div>
           </div>
         </div>
