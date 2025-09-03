@@ -253,7 +253,7 @@ export default function Argumentos() {
       </div>
 
       {/* Progress Bar - Fixed */}
-      <div className="sticky top-0 z-10 bg-white shadow-sm border-b">
+      <div className="sticky top-0 z-10 bg-white">
         <div className="container mx-auto px-6 py-3">
           <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-3">
             <div className="flex items-center justify-between">
