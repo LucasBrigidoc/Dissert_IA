@@ -223,12 +223,10 @@ export default function ControladorEscrita() {
                 <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
                   <Edit3 className="text-white" size={20} />
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-dark-blue">Controlador de Escrita</h1>
-                  <p className="text-soft-gray">Ajuste o estilo de escrita do seu texto</p>
-                </div>
+                <h1 className="text-2xl font-bold text-dark-blue">Controlador de Escrita</h1>
               </div>
             </div>
+            <p className="text-soft-gray">Ajuste o estilo de escrita do seu texto</p>
           </div>
         </div>
       </div>
