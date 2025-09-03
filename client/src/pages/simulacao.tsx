@@ -221,12 +221,15 @@ export default function SimulacaoPage() {
   };
 
   const handleBack = () => {
+    const savedOrigin = sessionStorage.getItem('simulador-origin');
+    const backUrl = savedOrigin ? `/simulador?from=${savedOrigin}` : '/simulador';
+    
     if (isActive || essayText.trim().length > 0) {
       if (confirm('Você tem certeza que deseja sair? Seu progresso será perdido.')) {
-        setLocation('/simulador');
+        setLocation(backUrl);
       }
     } else {
-      setLocation('/simulador');
+      setLocation(backUrl);
     }
   };
 

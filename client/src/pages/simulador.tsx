@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -12,8 +13,16 @@ export default function Simulador() {
   const [location] = useLocation();
   const [, setLocation] = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
-  const fromPage = urlParams.get('from') || 'dashboard';
+  const fromPage = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  
+  // Salvar a origem no sessionStorage quando a página carrega
+  useEffect(() => {
+    const currentFrom = urlParams.get('from');
+    if (currentFrom) {
+      sessionStorage.setItem('simulador-origin', currentFrom);
+    }
+  }, []);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -185,7 +194,12 @@ export default function Simulador() {
             
             
             <Button 
-              onClick={() => setLocation('/simulacao')}
+              onClick={() => {
+                // Garantir que a origem está salva antes de navegar
+                const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
+                sessionStorage.setItem('simulador-origin', currentFrom);
+                setLocation('/simulacao');
+              }}
               className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
               data-testid="button-start-simulation"
             >
