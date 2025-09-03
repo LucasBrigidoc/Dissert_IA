@@ -158,17 +158,6 @@ export default function Argumentos() {
             <Target className="inline-block mr-2" size={16} />
             Organizar Ideias
           </button>
-          <button
-            onClick={() => setActiveTab('mindmap')}
-            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
-              activeTab === 'mindmap' 
-                ? 'bg-white text-bright-blue shadow-sm' 
-                : 'text-soft-gray hover:text-dark-blue'
-            }`}
-          >
-            <Map className="inline-block mr-2" size={16} />
-            Mapa Mental
-          </button>
         </div>
 
         <div className="grid lg:grid-cols-4 gap-6">
@@ -335,35 +324,6 @@ export default function Argumentos() {
               </div>
             )}
 
-            {/* Mind Map Tab */}
-            {activeTab === 'mindmap' && (
-              <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-[600px]">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-dark-blue">Mapa Mental das Ideias</h3>
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline">
-                      <Save size={14} className="mr-1" />
-                      Salvar
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Download size={14} className="mr-1" />
-                      Exportar
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="h-full bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
-                  <div className="text-center">
-                    <Map size={48} className="text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg font-medium">Mapa Mental Interativo</p>
-                    <p className="text-gray-400 text-sm mt-2">Organize suas ideias visualmente conectando argumentos, repertórios e conclusão</p>
-                    <Button className="mt-4 bg-gradient-to-r from-bright-blue to-dark-blue">
-                      Gerar Mapa Mental
-                    </Button>
-                  </div>
-                </div>
-              </LiquidGlassCard>
-            )}
           </div>
 
           {/* Sidebar */}
@@ -434,10 +394,6 @@ export default function Argumentos() {
                 <div className="p-3 bg-purple-100/50 rounded-lg">
                   <div className="font-medium text-dark-blue text-sm mb-1">Organize gradualmente</div>
                   <div className="text-soft-gray text-xs">Vá organizando suas ideias em categorias conforme surgem</div>
-                </div>
-                <div className="p-3 bg-purple-100/50 rounded-lg">
-                  <div className="font-medium text-dark-blue text-sm mb-1">Use o mapa mental</div>
-                  <div className="text-soft-gray text-xs">Visualize conexões entre suas ideias</div>
                 </div>
               </div>
             </LiquidGlassCard>
