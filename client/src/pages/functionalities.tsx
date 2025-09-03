@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, Menu } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, Menu, PenTool } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { mockFeatures } from "@/lib/mock-data";
 
@@ -38,6 +38,7 @@ export default function FunctionalitiesPage() {
     edit: Edit,
     newspaper: Newspaper,
     sliders: Sliders,
+    pen: PenTool,
     "graduation-cap": GraduationCap,
     lightbulb: Lightbulb,
     archive: Archive
