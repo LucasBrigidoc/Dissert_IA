@@ -332,9 +332,6 @@ export default function Argumentos() {
                     </Button>
                   </div>
                 ))}
-                {brainstormData.argumentos.length === 0 && (
-                  <p className="text-soft-gray text-sm text-center py-4">Adicione argumentos para sua redação</p>
-                )}
               </div>
               <ChatMini section="argumentos" title="argumentos" />
             </LiquidGlassCard>
@@ -389,9 +386,6 @@ export default function Argumentos() {
                     </Button>
                   </div>
                 ))}
-                {brainstormData.repertorios.length === 0 && (
-                  <p className="text-soft-gray text-sm text-center py-4">Adicione repertórios para enriquecer sua redação</p>
-                )}
               </div>
               <ChatMini section="repertorios" title="repertórios" />
             </LiquidGlassCard>
