@@ -66,7 +66,7 @@ export const mockFeatures = [
   {
     id: 7,
     name: "Criador de Propostas",
-    description: "Ferramenta para elaborar temas de redação",
+    description: "Ferramenta para elaborar e pesquisar temas de redação",
     icon: "lightbulb"
   },
 ];
