@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { HeroCharacter } from "@/components/hero-character";
 import { mockFeatures, mockTestimonials } from "@/lib/mock-data";
-import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users } from "lucide-react";
+import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users, Pen } from "lucide-react";
 
 const iconMap = {
   brain: Brain,
@@ -17,7 +17,8 @@ const iconMap = {
   sliders: Sliders,
   "graduation-cap": GraduationCap,
   lightbulb: Lightbulb,
-  archive: Archive
+  archive: Archive,
+  pen: Pen
 };
 
 export default function Landing() {
@@ -102,7 +103,7 @@ export default function Landing() {
             {mockFeatures
               .filter((feature) => feature.name !== "Newsletter Educacional")
               .map((feature) => {
-                const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
+                const IconComponent = iconMap[feature.icon as keyof typeof iconMap] || Brain;
                 return (
                   <LiquidGlassCard key={feature.id} className="feature-card" data-testid={`card-feature-${feature.id}`}>
                     <div className="text-3xl text-bright-blue mb-4">
