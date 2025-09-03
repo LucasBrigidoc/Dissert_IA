@@ -40,7 +40,10 @@ export default function Repertorio() {
                   </div>
                   <h1 className="text-2xl font-bold text-dark-blue">Explorador de Repertório</h1>
                 </div>
-                <p className="text-soft-gray mr-8">Descubra referências para enriquecer suas redações</p>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-dark-blue">Explorador de Repertório</div>
+                  <p className="text-soft-gray text-xs">Descubra referências para enriquecer suas redações</p>
+                </div>
               </div>
             </div>
           </div>
