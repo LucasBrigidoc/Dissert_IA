@@ -33,14 +33,14 @@ export default function Repertorio() {
                   <span>Voltar</span>
                 </Button>
               </Link>
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Search className="text-white" size={20} />
-                </div>
-                <div>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <Search className="text-white" size={20} />
+                  </div>
                   <h1 className="text-2xl font-bold text-dark-blue">Explorador de Repertório</h1>
-                  <p className="text-soft-gray">Descubra referências para enriquecer suas redações</p>
                 </div>
+                <p className="text-soft-gray">Descubra referências para enriquecer suas redações</p>
               </div>
             </div>
           </div>
