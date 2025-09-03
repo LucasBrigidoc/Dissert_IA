@@ -202,7 +202,7 @@ export default function BibliotecaPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -224,7 +224,7 @@ export default function BibliotecaPage() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 pt-24">
         {/* Search and Filter Bar */}
         <LiquidGlassCard className="mb-8 p-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
