@@ -164,7 +164,7 @@ export default function PropostasPage() {
                   <FileText className="text-white" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-dark-blue">Propostas de Redação</h1>
+                  <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas </h1>
                   <p className="text-soft-gray">Crie e explore temas para praticar</p>
                 </div>
               </div>
@@ -172,7 +172,6 @@ export default function PropostasPage() {
           </div>
         </div>
       </div>
-
       <div className="container mx-auto px-6 py-8">
         {/* Formulário de Criação */}
         <LiquidGlassCard className="mb-8 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-create-proposal">
