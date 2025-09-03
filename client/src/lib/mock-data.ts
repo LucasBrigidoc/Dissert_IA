@@ -29,7 +29,7 @@ export const mockUserData = {
 export const mockFeatures = [
   {
     id: 1,
-    name: "Arquiteto de Argumentos",
+    name: "Refinamento do Brainstorming",
     description: "Diálogo socrático para construção de argumentos sólidos",
     icon: "comments"
   },

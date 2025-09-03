@@ -15,7 +15,7 @@ export default function FunctionalitiesPage() {
 
   const handleFeatureAccess = (featureName: string) => {
     const routeMap: { [key: string]: string } = {
-      "Arquiteto de Argumentos": "/argumentos",
+      "Refinamento do Brainstorming": "/argumentos",
       "Explorador de Repertório": "/repertorio?from=functionalities", 
       "Simulador de Prova": "/simulador?from=functionalities",
       "Controlador de Escrita": "/controlador-escrita?from=functionalities",
@@ -342,7 +342,7 @@ export default function FunctionalitiesPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
-                onClick={() => handleFeatureAccess("Arquiteto de Argumentos")}
+                onClick={() => handleFeatureAccess("Refinamento do Brainstorming")}
                 className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                 data-testid="button-quick-arguments"
               >
