@@ -21,7 +21,7 @@ export default function FunctionalitiesPage() {
       "Controlador de Escrita": "/controlador-escrita?from=functionalities",
       "Estrutura Coringa": "/estilo?from=functionalities",
       "Newsletter Educacional": "/dashboard",
-      "Criador de Propostas": "/propostas?from=functionalities",
+      "Explorador de Propostas": "/propostas?from=functionalities",
       "Biblioteca Pessoal": "/biblioteca?from=functionalities"
     };
     
