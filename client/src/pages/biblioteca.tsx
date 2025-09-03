@@ -3,7 +3,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export default function BibliotecaPage() {
@@ -114,6 +114,46 @@ export default function BibliotecaPage() {
         type: "Estilo",
         description: "Configurações de formalidade para textos acadêmicos"
       }
+    ],
+    newsletters: [
+      {
+        id: 7,
+        title: "Newsletter - Tecnologia e Sociedade",
+        category: "Atualidades",
+        date: "2024-01-22",
+        size: "2.1 MB",
+        type: "Newsletter",
+        description: "Curadoria semanal sobre IA e transformação digital"
+      },
+      {
+        id: 8,
+        title: "Newsletter - Sustentabilidade e Meio Ambiente",
+        category: "Meio Ambiente",
+        date: "2024-01-15",
+        size: "1.8 MB",
+        type: "Newsletter",
+        description: "Análise completa sobre mudanças climáticas e políticas ambientais"
+      }
+    ],
+    propostas: [
+      {
+        id: 9,
+        title: "Proposta ENEM - Democratização do Acesso Digital",
+        category: "Tecnologia",
+        date: "2024-01-20",
+        size: "650 KB",
+        type: "Proposta",
+        description: "Tema personalizado com textos motivadores sobre inclusão digital"
+      },
+      {
+        id: 10,
+        title: "Proposta Vestibular - Violência Urbana",
+        category: "Sociedade",
+        date: "2024-01-18",
+        size: "580 KB",
+        type: "Proposta",
+        description: "Proposta completa com contexto e materiais de apoio"
+      }
     ]
   };
 
@@ -122,7 +162,9 @@ export default function BibliotecaPage() {
     ...bibliotecaData.repertorios,
     ...bibliotecaData.redacoes, 
     ...bibliotecaData.temas,
-    ...bibliotecaData.estilos
+    ...bibliotecaData.estilos,
+    ...bibliotecaData.newsletters,
+    ...bibliotecaData.propostas
   ];
 
   // Filtrar arquivos baseado na busca e categoria
@@ -139,6 +181,8 @@ export default function BibliotecaPage() {
       case "Redação": return <PenTool size={20} className="text-green-600" />;
       case "Tema": return <Lightbulb size={20} className="text-yellow-600" />;
       case "Estilo": return <Target size={20} className="text-purple-600" />;
+      case "Newsletter": return <Newspaper size={20} className="text-orange-600" />;
+      case "Proposta": return <FolderOpen size={20} className="text-indigo-600" />;
       default: return <FileText size={20} className="text-gray-600" />;
     }
   };
@@ -149,6 +193,8 @@ export default function BibliotecaPage() {
       case "Redação": return "bg-green-100 text-green-800";
       case "Tema": return "bg-yellow-100 text-yellow-800";
       case "Estilo": return "bg-purple-100 text-purple-800";
+      case "Newsletter": return "bg-orange-100 text-orange-800";
+      case "Proposta": return "bg-indigo-100 text-indigo-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -234,12 +280,28 @@ export default function BibliotecaPage() {
               >
                 Estilos
               </Button>
+              <Button
+                variant={selectedCategory === "newsletter" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("newsletter")}
+                data-testid="filter-newsletter"
+              >
+                Newsletters
+              </Button>
+              <Button
+                variant={selectedCategory === "proposta" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("proposta")}
+                data-testid="filter-proposta"
+              >
+                Propostas
+              </Button>
             </div>
           </div>
         </LiquidGlassCard>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <LiquidGlassCard className="p-4 text-center">
             <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
             <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
@@ -262,6 +324,18 @@ export default function BibliotecaPage() {
             <Target className="mx-auto mb-2 text-purple-600" size={24} />
             <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.estilos.length}</div>
             <div className="text-sm text-soft-gray">Estilos</div>
+          </LiquidGlassCard>
+          
+          <LiquidGlassCard className="p-4 text-center">
+            <Newspaper className="mx-auto mb-2 text-orange-600" size={24} />
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.newsletters.length}</div>
+            <div className="text-sm text-soft-gray">Newsletters</div>
+          </LiquidGlassCard>
+          
+          <LiquidGlassCard className="p-4 text-center">
+            <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.propostas.length}</div>
+            <div className="text-sm text-soft-gray">Propostas</div>
           </LiquidGlassCard>
         </div>
 
