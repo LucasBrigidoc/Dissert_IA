@@ -38,9 +38,11 @@ export default function Simulador() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-dark-blue">Simulador de Prova</h1>
-                  <p className="text-soft-gray">Pratique em condições reais de exame</p>
                 </div>
               </div>
+            </div>
+            <div>
+              <p className="text-soft-gray">Pratique em condições reais de exame</p>
             </div>
           </div>
         </div>
