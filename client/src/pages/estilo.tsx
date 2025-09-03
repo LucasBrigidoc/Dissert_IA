@@ -125,7 +125,7 @@ export default function Estilo() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+      <div className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
@@ -153,7 +153,7 @@ export default function Estilo() {
         </div>
       </div>
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pt-24">
         {/* Introduction Section */}
         <div className="max-w-4xl mx-auto mb-12">
           <div className="text-center mb-12">
