@@ -254,9 +254,9 @@ export default function Argumentos() {
 
       {/* Content */}
       <div className="container mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-4 gap-6">
+        <div className="grid gap-6">
           {/* Main Content Area */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="space-y-6">
             {/* Progress Bar */}
             <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
               <div className="flex items-center justify-between">
@@ -425,44 +425,7 @@ export default function Argumentos() {
             </LiquidGlassCard>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <h4 className="font-semibold text-dark-blue mb-4">Ações Rápidas</h4>
-              <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full text-left justify-start border-bright-blue/30 hover:bg-bright-blue/10"
-                >
-                  <Save className="mr-2" size={14} />
-                  Salvar Brainstorm
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full text-left justify-start border-dark-blue/30 hover:bg-dark-blue/10"
-                >
-                  <Download className="mr-2" size={14} />
-                  Exportar PDF
-                </Button>
-              </div>
-            </LiquidGlassCard>
-
-            {/* Tips */}
-            <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50">
-              <h4 className="font-semibold text-dark-blue mb-4">Dicas de Brainstorming</h4>
-              <div className="space-y-3">
-                <div className="p-3 bg-purple-100/50 rounded-lg">
-                  <div className="font-medium text-dark-blue text-sm mb-1">Converse com a IA</div>
-                  <div className="text-soft-gray text-xs">Use o chat para desenvolver e refinar suas ideias em cada seção</div>
-                </div>
-                <div className="p-3 bg-purple-100/50 rounded-lg">
-                  <div className="font-medium text-dark-blue text-sm mb-1">Organize gradualmente</div>
-                  <div className="text-soft-gray text-xs">Vá organizando suas ideias em categorias conforme surgem</div>
-                </div>
-              </div>
-            </LiquidGlassCard>
-          </div>
+          
         </div>
       </div>
     </div>
