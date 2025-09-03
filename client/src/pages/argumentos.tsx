@@ -4,9 +4,24 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Brain, Lightbulb, BookOpen, Target, Zap } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function Argumentos() {
+  const [location] = useLocation();
+  
+  // Detectar página de origem através dos parâmetros da URL
+  const getBackUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get('from');
+    
+    if (from === 'functionalities') {
+      return '/functionalities';
+    }
+    return '/dashboard'; // padrão
+  };
+  
+  const backUrl = getBackUrl();
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -14,7 +29,7 @@ export default function Argumentos() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" data-testid="button-back">
+              <Link href={backUrl} className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" data-testid="button-back">
                 <ArrowLeft size={14} />
                 <span className="text-sm font-medium">Voltar</span>
               </Link>
