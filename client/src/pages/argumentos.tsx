@@ -16,6 +16,8 @@ export default function Argumentos() {
     repertorios: [] as Array<{id: number, content: string}>,
     conclusao: ''
   });
+  const [newArgument, setNewArgument] = useState('');
+  const [newRepertorio, setNewRepertorio] = useState('');
   const [chatStates, setChatStates] = useState({
     argumentos: { 
       messages: [{ id: 1, type: 'ai', content: 'Vou te ajudar a desenvolver argumentos sólidos. Qual é o tema da sua redação?' }], 
@@ -282,18 +284,35 @@ export default function Argumentos() {
 
             {/* Argumentos */}
             <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-dark-blue">Argumentos</h3>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const content = prompt('Adicione um argumento:');
-                    if (content) addToCategory('argumentos', content);
-                  }}
-                  className="bg-gradient-to-r from-dark-blue to-bright-blue"
-                >
-                  <Plus size={14} />
-                </Button>
+              <h3 className="text-lg font-semibold text-dark-blue mb-4">Argumentos</h3>
+              
+              {/* Adicionar novo argumento */}
+              <div className="mb-4">
+                <div className="flex space-x-2">
+                  <Input
+                    value={newArgument}
+                    onChange={(e) => setNewArgument(e.target.value)}
+                    placeholder="Digite um novo argumento..."
+                    className="flex-1 border-dark-blue/20 focus:border-dark-blue"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newArgument.trim()) {
+                        addToCategory('argumentos', newArgument.trim());
+                        setNewArgument('');
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newArgument.trim()) {
+                        addToCategory('argumentos', newArgument.trim());
+                        setNewArgument('');
+                      }
+                    }}
+                    className="bg-gradient-to-r from-dark-blue to-bright-blue"
+                  >
+                    <Plus size={14} />
+                  </Button>
+                </div>
               </div>
               <div className="space-y-3">
                 {brainstormData.argumentos.map((arg, index) => (
@@ -321,18 +340,35 @@ export default function Argumentos() {
 
             {/* Repertórios */}
             <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-dark-blue">Repertórios Culturais</h3>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const content = prompt('Adicione um repertório (filme, livro, dados, etc.):');
-                    if (content) addToCategory('repertorios', content);
-                  }}
-                  className="bg-gradient-to-r from-soft-gray to-bright-blue"
-                >
-                  <Plus size={14} />
-                </Button>
+              <h3 className="text-lg font-semibold text-dark-blue mb-4">Repertórios Culturais</h3>
+              
+              {/* Adicionar novo repertório */}
+              <div className="mb-4">
+                <div className="flex space-x-2">
+                  <Input
+                    value={newRepertorio}
+                    onChange={(e) => setNewRepertorio(e.target.value)}
+                    placeholder="Digite um repertório (filme, livro, dados, etc.)..."
+                    className="flex-1 border-soft-gray/20 focus:border-soft-gray"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newRepertorio.trim()) {
+                        addToCategory('repertorios', newRepertorio.trim());
+                        setNewRepertorio('');
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newRepertorio.trim()) {
+                        addToCategory('repertorios', newRepertorio.trim());
+                        setNewRepertorio('');
+                      }
+                    }}
+                    className="bg-gradient-to-r from-soft-gray to-bright-blue"
+                  >
+                    <Plus size={14} />
+                  </Button>
+                </div>
               </div>
               <div className="space-y-3">
                 {brainstormData.repertorios.map((rep, index) => (
