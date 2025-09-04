@@ -58,6 +58,7 @@ export default {
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],
+        playfair: ["Playfair Display", "serif"],
         sans: ["Inter", "sans-serif"],
       },
       backdropBlur: {
