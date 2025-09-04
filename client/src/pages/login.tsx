@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff, Plus } from "lucide-react";
+import { Eye, EyeOff, Sparkles } from "lucide-react";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -100,7 +100,7 @@ export default function Login() {
             <div className="w-full lg:w-1/2 gradient-bg p-12 flex items-center justify-center relative">
               <div className="text-center">
                 <div className="text-6xl text-white mb-4">
-                  <Plus className="mx-auto" size={64} />
+                  <Sparkles className="mx-auto" size={64} />
                 </div>
                 <h2 className="text-4xl font-bold text-white mb-4">
                   DISSERT<span className="text-yellow-400">AI</span>
