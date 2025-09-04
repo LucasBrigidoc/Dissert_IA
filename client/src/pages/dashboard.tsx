@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -384,7 +384,7 @@ export default function Dashboard() {
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                <Star className="text-white text-sm fill-white" />
+                <Sparkles className="text-white text-sm" />
               </div>
               <span className="text-2xl font-bold font-playfair" style={{color: '#5087ff'}}>
                 DISSERT<span style={{color: '#12143d'}}>AI</span>
