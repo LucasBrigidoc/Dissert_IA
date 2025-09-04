@@ -27,9 +27,9 @@ export default function Landing() {
       <Navigation />
       {/* Hero Section */}
       <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6">
+        <div className="container mx-auto px-2 sm:px-4">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-0">
-            <div className="w-full lg:w-1/2 text-white text-center lg:text-left">
+            <div className="w-full lg:w-[55%] text-white text-center lg:text-left">
               <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#5087ff] text-[57px]" data-testid="text-hero-title">
                 Revolucione Sua Escrita com IA
               </h1>
@@ -48,7 +48,7 @@ export default function Landing() {
               </div>
             </div>
             
-            <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-end">
+            <div className="w-full lg:w-[45%] relative flex justify-center lg:justify-start">
               <div className="hidden sm:block">
                 <HeroCharacter variant="default" size="lg" />
               </div>
