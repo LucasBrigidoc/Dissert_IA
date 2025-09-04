@@ -14,7 +14,7 @@ export function HeroCharacter({ variant = "default", size = "md" }: HeroCharacte
     return (
       <div className={`relative ${sizeClasses[size]} mx-auto`}>
         <img 
-          src="/imagem/21.svg" 
+          src="/imagem/22.svg" 
           alt="Hero Character Study" 
           className={`${sizeClasses[size]} object-contain mx-auto`}
           data-testid="hero-character-study-image"
