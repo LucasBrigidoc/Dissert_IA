@@ -384,7 +384,15 @@ export default function Dashboard() {
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                <Star className="text-white text-sm fill-white" />
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="white"
+                  className="text-white"
+                >
+                  <path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14 2 9.5h7.5L12 2z" />
+                </svg>
               </div>
               <span className="text-2xl font-bold font-playfair" style={{color: '#5087ff'}}>
                 DISSERT<span style={{color: '#12143d'}}>AI</span>
