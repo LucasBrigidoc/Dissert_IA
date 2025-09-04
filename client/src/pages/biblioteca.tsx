@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import jsPDF from 'jspdf';
 import { Link, useLocation } from "wouter";
 
 export default function BibliotecaPage() {
@@ -167,6 +168,110 @@ export default function BibliotecaPage() {
   };
 
   const [bibliotecaState, setBibliotecaState] = useState(bibliotecaData);
+
+  // Função para gerar e baixar PDF
+  const downloadAsPDF = (file: any) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxWidth = pageWidth - 2 * margin;
+    let yPosition = 30;
+
+    // Cabeçalho do documento
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DissertAI - Biblioteca Pessoal', margin, yPosition);
+    yPosition += 15;
+
+    // Informações do arquivo
+    doc.setFontSize(16);
+    doc.text(file.title, margin, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Tipo: ${file.type}`, margin, yPosition);
+    yPosition += 5;
+    doc.text(`Categoria: ${file.category}`, margin, yPosition);
+    yPosition += 5;
+    doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR')}`, margin, yPosition);
+    yPosition += 5;
+    
+    if (file.grade) {
+      doc.text(`Nota: ${file.grade}`, margin, yPosition);
+      yPosition += 5;
+    }
+
+    doc.text(`Descrição: ${file.description}`, margin, yPosition);
+    yPosition += 15;
+
+    // Linha separadora
+    doc.setDrawColor(0, 0, 0);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 10;
+
+    // Conteúdo
+    if (file.content) {
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Conteúdo:', margin, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      
+      const lines = file.content.split('\\n');
+      
+      lines.forEach((line: string) => {
+        if (line.trim()) {
+          // Verifica se precisa de nova página
+          if (yPosition > doc.internal.pageSize.getHeight() - 30) {
+            doc.addPage();
+            yPosition = 30;
+          }
+          
+          if (line.startsWith('**') && line.endsWith('**')) {
+            // Títulos em negrito
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            const title = line.replace(/\*\*/g, '');
+            const titleLines = doc.splitTextToSize(title, maxWidth);
+            doc.text(titleLines, margin, yPosition);
+            yPosition += titleLines.length * 6 + 3;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+          } else if (line.startsWith('•')) {
+            // Listas com marcadores
+            const listItem = line.substring(2);
+            const listLines = doc.splitTextToSize(`• ${listItem}`, maxWidth);
+            doc.text(listLines, margin + 5, yPosition);
+            yPosition += listLines.length * 5;
+          } else {
+            // Texto normal
+            const textLines = doc.splitTextToSize(line, maxWidth);
+            doc.text(textLines, margin, yPosition);
+            yPosition += textLines.length * 5;
+          }
+        } else {
+          yPosition += 3; // Espaço em branco
+        }
+      });
+    }
+
+    // Rodapé
+    const pageCount = doc.internal.pages.length - 1;
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'italic');
+      doc.text(`Página ${i} de ${pageCount} - Gerado pelo DissertAI`, 
+        pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+    }
+
+    // Download do PDF
+    const fileName = `${file.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
+    doc.save(fileName);
+  };
 
   // Função para deletar arquivo
   const deleteFile = (fileId: number) => {
@@ -425,7 +530,12 @@ export default function BibliotecaPage() {
                     >
                       <Eye size={16} />
                     </Button>
-                    <Button size="sm" variant="ghost" data-testid={`button-download-${file.id}`}>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      onClick={() => downloadAsPDF(file)}
+                      data-testid={`button-download-${file.id}`}
+                    >
                       <Download size={16} />
                     </Button>
                     <Button 
@@ -546,6 +656,7 @@ export default function BibliotecaPage() {
                   <Button
                     variant="outline"
                     className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                    onClick={() => downloadAsPDF(selectedFile)}
                     data-testid={`button-download-details-${selectedFile.id}`}
                   >
                     <Download size={14} className="mr-2" />
