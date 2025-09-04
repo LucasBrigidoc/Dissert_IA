@@ -386,7 +386,7 @@ export default function Dashboard() {
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
                 <Sparkles className="text-white text-sm" />
               </div>
-              <span className="text-xl font-bold font-playfair" style={{color: '#5087ff'}}>
+              <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
                 DISSERT<span style={{color: '#6b7280'}}>AI</span>
               </span>
             </Link>
