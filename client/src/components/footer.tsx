@@ -9,11 +9,11 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                <Sparkles className="text-white text-sm" />
+              <div className="w-8 h-8 bg-transparent rounded-lg flex items-center justify-center">
+                <Sparkles className="text-sm" style={{color: '#5087ff'}} />
               </div>
               <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
-                DISSERT<span style={{color: '#6b7280'}}>AI</span>
+                DISSERT<span style={{color: '#ffffff'}}>AI</span>
               </span>
             </div>
             <p className="text-white/70 mb-4">
