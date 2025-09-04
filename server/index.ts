@@ -6,6 +6,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Serve static files from the imagem directory
+app.use('/imagem', express.static('imagem'));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
