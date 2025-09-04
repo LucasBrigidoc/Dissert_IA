@@ -1758,6 +1758,31 @@ export default function Dashboard() {
           </div>
         </LiquidGlassCard>
 
+        {/* Biblioteca Pessoal - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50" data-testid="card-biblioteca-pessoal">
+          <div className="flex items-center mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <Archive className="text-white" size={16} />
+            </div>
+            <h4 className="font-semibold text-dark-blue">Biblioteca Pessoal</h4>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-6 items-center">
+            <div className="lg:col-span-2">
+              <div className="font-medium text-dark-blue mb-2 text-lg">Repositório inteligente do seu aprendizado 📚</div>
+              <p className="text-soft-gray leading-relaxed">Organize e acesse todo seu conteúdo criado: redações salvas, estruturas personalizadas, repertórios favoritos e argumentos desenvolvidos, tudo categorizado de forma inteligente.</p>
+            </div>
+            <div className="flex justify-end">
+              <Button 
+                onClick={() => setLocation('/biblioteca')}
+                className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800 px-8 py-3"
+                data-testid="button-access-biblioteca"
+              >
+                Acessar Biblioteca
+              </Button>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
         {/* Sixth Row: System Features - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-5">
