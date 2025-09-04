@@ -382,7 +382,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
+            <Link href="/dashboard" className="flex items-center space-x-1" data-testid="link-dashboard-logo">
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
                 <Sparkles className="text-white text-sm" />
               </div>
@@ -392,7 +392,7 @@ export default function Dashboard() {
             </Link>
             
             {/* Desktop Navigation Menu */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-8">
               <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-home">
                 <Home size={14} />
                 <span className="font-medium">Home</span>
