@@ -410,7 +410,7 @@ export default function SettingsPage() {
               
               {/* Warning Dialog */}
               {showWarning && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 backdrop-blur-sm">
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 backdrop-blur-sm">
                   <div className="bg-white rounded-lg p-8 max-w-lg mx-4 shadow-2xl border-2 border-red-200">
                     <div className="flex flex-col items-center text-center">
                       <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6">
