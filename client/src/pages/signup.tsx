@@ -167,8 +167,8 @@ export default function Signup() {
                 <div className="text-6xl text-white mb-4">
                   <Sparkles className="mx-auto" size={64} />
                 </div>
-                <h2 className="text-4xl font-bold text-white mb-4">
-                  DISSERT<span className="text-yellow-400">AI</span>
+                <h2 className="text-4xl font-bold mb-4" style={{color: '#5087ff'}}>
+                  DISSERT<span style={{color: '#6b7280'}}>AI</span>
                 </h2>
                 <HeroCharacter variant="ai" size="md" />
               </div>
