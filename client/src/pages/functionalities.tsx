@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, Menu, PenTool } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, Menu, PenTool } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { mockFeatures } from "@/lib/mock-data";
 
@@ -56,17 +56,17 @@ export default function FunctionalitiesPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
+            <Link href="/dashboard" className="flex items-center space-x-1" data-testid="link-dashboard-logo">
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                <Plus className="text-white text-sm" />
+                <Sparkles className="text-white text-sm" />
               </div>
-              <span className="text-2xl font-bold text-dark-blue">
-                DISSERT<span className="text-bright-blue">AI</span>
+              <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
+                DISSERT<span style={{color: '#6b7280'}}>AI</span>
               </span>
             </Link>
             
             {/* Desktop Navigation Menu */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
                 <Home size={14} />
                 <span className="font-medium">Home</span>
@@ -76,7 +76,7 @@ export default function FunctionalitiesPage() {
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Book size={14} />
+                <Newspaper size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -86,7 +86,7 @@ export default function FunctionalitiesPage() {
             </div>
             
             {/* Desktop Right Side */}
-            <div className="hidden lg:flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-8">
               <Button
                 onClick={handleLogout}
                 variant="outline"

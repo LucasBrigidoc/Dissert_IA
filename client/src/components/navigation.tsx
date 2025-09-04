@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Plus, Menu, X } from "lucide-react";
+import { Sparkles, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 export function Navigation() {
@@ -12,17 +12,17 @@ export function Navigation() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b border-white/20">
       <nav className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2" data-testid="link-home" onClick={closeMenu}>
+        <Link href="/" className="flex items-center space-x-1" data-testid="link-home" onClick={closeMenu}>
           <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-            <Plus className="text-white text-sm" />
+            <Sparkles className="text-white text-sm" />
           </div>
-          <span className="text-xl sm:text-2xl font-bold text-dark-blue">
-            DISSERT<span className="text-bright-blue">AI</span>
+          <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
+            DISSERT<span style={{color: '#6b7280'}}>AI</span>
           </span>
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+        <div className="hidden md:flex items-center space-x-4">
           <Link href="/" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-inicio">
             Início
           </Link>
@@ -38,7 +38,7 @@ export function Navigation() {
         </div>
         
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+        <div className="hidden md:flex items-center space-x-8">
           <Link href="/login" className="bg-bright-blue text-white px-4 lg:px-6 py-2 rounded-lg hover:bg-blue-600 smooth-transition hover-scale text-sm lg:text-base" data-testid="button-entrar">
             Entrar
           </Link>
