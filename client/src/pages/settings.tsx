@@ -408,47 +408,54 @@ export default function SettingsPage() {
                 </div>
               )}
               
-              {/* Warning Dialog */}
-              {showWarning && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 backdrop-blur-sm">
-                  <div className="bg-white rounded-lg p-8 max-w-lg mx-4 shadow-2xl border-2 border-red-200">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6">
-                        <AlertTriangle className="text-red-600" size={40} />
-                      </div>
-                      <h3 className="text-2xl font-bold text-red-600 mb-4">⚠️ CUIDADO, TEM CERTEZA?</h3>
-                      <p className="text-gray-700 mb-8 text-lg leading-relaxed">
-                        Você está prestes a <span className="font-semibold text-red-600">{selectedAction.toLowerCase()}</span>. 
-                        <br />
-                        <span className="text-red-500">Esta ação pode afetar permanentemente seu acesso às funcionalidades premium.</span>
-                      </p>
-                      <div className="flex space-x-4 w-full">
-                        <Button 
-                          onClick={() => setShowWarning(false)}
-                          variant="outline"
-                          className="flex-1 text-gray-600 border-gray-300 hover:bg-gray-50 py-3"
-                        >
-                          Cancelar
-                        </Button>
-                        <Button 
-                          onClick={() => {
-                            setShowWarning(false);
-                            setShowPlanOptions(false);
-                            // Aqui você adicionaria a lógica para executar a ação
-                          }}
-                          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 font-semibold"
-                        >
-                          ⚠️ Confirmar
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </LiquidGlassCard>
         </div>
       </div>
+      
+      {/* Warning Dialog - Outside all containers to cover everything */}
+      {showWarning && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] backdrop-blur-sm"
+          onClick={() => setShowWarning(false)}
+        >
+          <div 
+            className="bg-white rounded-lg p-8 max-w-lg mx-4 shadow-2xl border-2 border-red-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                <AlertTriangle className="text-red-600" size={40} />
+              </div>
+              <h3 className="text-2xl font-bold text-red-600 mb-4">⚠️ CUIDADO, TEM CERTEZA?</h3>
+              <p className="text-gray-700 mb-8 text-lg leading-relaxed">
+                Você está prestes a <span className="font-semibold text-red-600">{selectedAction.toLowerCase()}</span>. 
+                <br />
+                <span className="text-red-500">Esta ação pode afetar permanentemente seu acesso às funcionalidades premium.</span>
+              </p>
+              <div className="flex space-x-4 w-full">
+                <Button 
+                  onClick={() => setShowWarning(false)}
+                  variant="outline"
+                  className="flex-1 text-gray-600 border-gray-300 hover:bg-gray-50 py-3"
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setShowWarning(false);
+                    setShowPlanOptions(false);
+                    // Aqui você adicionaria a lógica para executar a ação
+                  }}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 font-semibold"
+                >
+                  ⚠️ Confirmar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
