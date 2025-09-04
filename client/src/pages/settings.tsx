@@ -2,7 +2,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
@@ -410,30 +410,37 @@ export default function SettingsPage() {
               
               {/* Warning Dialog */}
               {showWarning && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
-                    <h3 className="text-lg font-semibold text-dark-blue mb-4">Cuidado, tem certeza?</h3>
-                    <p className="text-soft-gray mb-6">
-                      Você está prestes a {selectedAction.toLowerCase()}. Esta ação pode afetar seu acesso às funcionalidades premium.
-                    </p>
-                    <div className="flex space-x-3">
-                      <Button 
-                        onClick={() => setShowWarning(false)}
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        Cancelar
-                      </Button>
-                      <Button 
-                        onClick={() => {
-                          setShowWarning(false);
-                          setShowPlanOptions(false);
-                          // Aqui você adicionaria a lógica para executar a ação
-                        }}
-                        className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-                      >
-                        Confirmar
-                      </Button>
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 backdrop-blur-sm">
+                  <div className="bg-white rounded-lg p-8 max-w-lg mx-4 shadow-2xl border-2 border-red-200">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                        <AlertTriangle className="text-red-600" size={40} />
+                      </div>
+                      <h3 className="text-2xl font-bold text-red-600 mb-4">⚠️ CUIDADO, TEM CERTEZA?</h3>
+                      <p className="text-gray-700 mb-8 text-lg leading-relaxed">
+                        Você está prestes a <span className="font-semibold text-red-600">{selectedAction.toLowerCase()}</span>. 
+                        <br />
+                        <span className="text-red-500">Esta ação pode afetar permanentemente seu acesso às funcionalidades premium.</span>
+                      </p>
+                      <div className="flex space-x-4 w-full">
+                        <Button 
+                          onClick={() => setShowWarning(false)}
+                          variant="outline"
+                          className="flex-1 text-gray-600 border-gray-300 hover:bg-gray-50 py-3"
+                        >
+                          Cancelar
+                        </Button>
+                        <Button 
+                          onClick={() => {
+                            setShowWarning(false);
+                            setShowPlanOptions(false);
+                            // Aqui você adicionaria a lógica para executar a ação
+                          }}
+                          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 font-semibold"
+                        >
+                          ⚠️ Confirmar
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
