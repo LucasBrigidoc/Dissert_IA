@@ -1733,6 +1733,31 @@ export default function Dashboard() {
           </div>
         </LiquidGlassCard>
 
+        {/* Simulador de Provas - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-simulador-provas">
+          <div className="flex items-center mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <GraduationCap className="text-white" size={16} />
+            </div>
+            <h4 className="font-semibold text-dark-blue">Simulador de Provas</h4>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-6 items-center">
+            <div className="lg:col-span-2">
+              <div className="font-medium text-dark-blue mb-2 text-lg">Pratique redações em ambiente simulado 📝</div>
+              <p className="text-soft-gray leading-relaxed">Teste seus conhecimentos com simulados completos que replicam o formato das principais provas do país. Cronômetro, temas atuais e correção detalhada.</p>
+            </div>
+            <div className="flex justify-end">
+              <Button 
+                onClick={() => handleQuickAccess('simulador')}
+                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 px-8 py-3"
+                data-testid="button-access-simulador"
+              >
+                Iniciar Simulado
+              </Button>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
         {/* Sixth Row: System Features - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-system-features">
           <div className="flex items-center justify-between mb-5">
