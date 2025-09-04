@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { HeroCharacter } from "@/components/hero-character";
 import { mockFeatures, mockTestimonials } from "@/lib/mock-data";
-import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users, Pen } from "lucide-react";
+import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users, Pen, Star } from "lucide-react";
 
 const iconMap = {
   brain: Brain,
@@ -39,7 +39,8 @@ export default function Landing() {
               <p className="text-base sm:text-lg mb-6 sm:mb-8 text-white/80" data-testid="text-hero-description">
                 Sua Redação Nota 1000 Apenas a Passos de Distância 
               </p>
-              <Link href="/signup" className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale inline-block" data-testid="button-hero-signup">
+              <Link href="/pricing" className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-flex items-center gap-2" data-testid="button-hero-signup">
+                <Star size={20} />
                 Começar Agora
               </Link>
               <div className="mt-6 sm:mt-8 text-white/70 text-sm sm:text-base" data-testid="text-online-students">
