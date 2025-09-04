@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { HeroCharacter } from "@/components/hero-character";
 import { mockFeatures, mockTestimonials } from "@/lib/mock-data";
-import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users, Pen } from "lucide-react";
+import { Brain, Book, Clock, MessageCircle, Search, Edit, Newspaper, Sliders, GraduationCap, Lightbulb, Archive, Users, Pen, Sparkles } from "lucide-react";
 
 const iconMap = {
   brain: Brain,
@@ -39,7 +39,8 @@ export default function Landing() {
               <p className="text-base sm:text-lg mb-6 sm:mb-8 text-white/80" data-testid="text-hero-description">
                 Sua Redação Nota 1000 Apenas a Passos de Distância 
               </p>
-              <Link href="/signup" className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale inline-block" data-testid="button-hero-signup">
+              <Link href="/signup" className="bg-white text-dark-blue px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-base sm:text-lg font-bold hover:bg-gray-50 hover:shadow-2xl hover:shadow-white/20 smooth-transition hover-scale inline-flex items-center gap-3 shadow-lg border border-white/20 backdrop-blur-sm" data-testid="button-hero-signup">
+                <Sparkles size={20} className="text-bright-blue" />
                 Começar Agora
               </Link>
               <div className="mt-6 sm:mt-8 text-white/70 text-sm sm:text-base" data-testid="text-online-students">
