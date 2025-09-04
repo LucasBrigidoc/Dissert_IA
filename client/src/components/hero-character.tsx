@@ -7,7 +7,7 @@ export function HeroCharacter({ variant = "default", size = "md" }: HeroCharacte
   const sizeClasses = {
     sm: "w-32 h-32",
     md: "w-64 h-64",
-    lg: "w-96 h-96"
+    lg: "w-[500px] h-[500px]"
   };
 
   if (variant === "study") {
