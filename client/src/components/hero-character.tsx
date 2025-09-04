@@ -6,7 +6,7 @@ interface HeroCharacterProps {
 export function HeroCharacter({ variant = "default", size = "md" }: HeroCharacterProps) {
   const sizeClasses = {
     sm: "w-32 h-32",
-    md: "w-64 h-64",
+    md: "w-[450px] h-[450px]",
     lg: "w-[500px] h-[500px]"
   };
 
