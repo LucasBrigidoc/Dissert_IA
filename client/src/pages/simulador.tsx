@@ -177,7 +177,6 @@ export default function Simulador() {
                     <SelectItem value="10min">Atualizar a cada 10 minutos</SelectItem>
                     <SelectItem value="15min">Atualizar a cada 15 minutos</SelectItem>
                     <SelectItem value="30min">Atualizar a cada 30 minutos</SelectItem>
-                    <SelectItem value="hidden">Oculto (apenas no final)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
