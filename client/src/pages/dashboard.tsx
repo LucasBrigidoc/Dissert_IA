@@ -392,7 +392,7 @@ export default function Dashboard() {
             </Link>
             
             {/* Desktop Navigation Menu */}
-            <div className="hidden lg:flex items-center space-x-12">
+            <div className="hidden lg:flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-home">
                 <Home size={14} />
                 <span className="font-medium">Home</span>
@@ -412,7 +412,7 @@ export default function Dashboard() {
             </div>
             
             {/* Desktop Right Side */}
-            <div className="hidden lg:flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-8">
               <Button
                 onClick={handleLogout}
                 variant="outline"
