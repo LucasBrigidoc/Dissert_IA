@@ -166,14 +166,28 @@ export default function BibliotecaPage() {
     ]
   };
 
+  const [bibliotecaState, setBibliotecaState] = useState(bibliotecaData);
+
+  // Função para deletar arquivo
+  const deleteFile = (fileId: number) => {
+    setBibliotecaState(prev => ({
+      repertorios: prev.repertorios.filter(item => item.id !== fileId),
+      redacoes: prev.redacoes.filter(item => item.id !== fileId),
+      temas: prev.temas.filter(item => item.id !== fileId),
+      estilos: prev.estilos.filter(item => item.id !== fileId),
+      newsletters: prev.newsletters.filter(item => item.id !== fileId),
+      propostas: prev.propostas.filter(item => item.id !== fileId)
+    }));
+  };
+
   // Combinar todos os arquivos para busca
   const allFiles = [
-    ...bibliotecaData.repertorios,
-    ...bibliotecaData.redacoes, 
-    ...bibliotecaData.temas,
-    ...bibliotecaData.estilos,
-    ...bibliotecaData.newsletters,
-    ...bibliotecaData.propostas
+    ...bibliotecaState.repertorios,
+    ...bibliotecaState.redacoes, 
+    ...bibliotecaState.temas,
+    ...bibliotecaState.estilos,
+    ...bibliotecaState.newsletters,
+    ...bibliotecaState.propostas
   ];
 
   // Filtrar arquivos baseado na busca e categoria
@@ -319,37 +333,37 @@ export default function BibliotecaPage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <LiquidGlassCard className="p-4 text-center">
             <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.repertorios.length}</div>
             <div className="text-sm text-soft-gray">Repertórios</div>
           </LiquidGlassCard>
           
           <LiquidGlassCard className="p-4 text-center">
             <PenTool className="mx-auto mb-2 text-green-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.redacoes.length}</div>
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.redacoes.length}</div>
             <div className="text-sm text-soft-gray">Redações</div>
           </LiquidGlassCard>
           
           <LiquidGlassCard className="p-4 text-center">
             <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.temas.length}</div>
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.temas.length}</div>
             <div className="text-sm text-soft-gray">Temas</div>
           </LiquidGlassCard>
           
           <LiquidGlassCard className="p-4 text-center">
             <Target className="mx-auto mb-2 text-purple-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.estilos.length}</div>
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.estilos.length}</div>
             <div className="text-sm text-soft-gray">Estilos</div>
           </LiquidGlassCard>
           
           <LiquidGlassCard className="p-4 text-center">
             <Newspaper className="mx-auto mb-2 text-orange-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.newsletters.length}</div>
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.newsletters.length}</div>
             <div className="text-sm text-soft-gray">Newsletters</div>
           </LiquidGlassCard>
           
           <LiquidGlassCard className="p-4 text-center">
             <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.propostas.length}</div>
+            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.propostas.length}</div>
             <div className="text-sm text-soft-gray">Propostas</div>
           </LiquidGlassCard>
         </div>
@@ -414,7 +428,13 @@ export default function BibliotecaPage() {
                     <Button size="sm" variant="ghost" data-testid={`button-download-${file.id}`}>
                       <Download size={16} />
                     </Button>
-                    <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700" data-testid={`button-delete-${file.id}`}>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="text-red-600 hover:text-red-700" 
+                      onClick={() => deleteFile(file.id)}
+                      data-testid={`button-delete-${file.id}`}
+                    >
                       <Trash2 size={16} />
                     </Button>
                   </div>
