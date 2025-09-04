@@ -44,18 +44,12 @@ export function HeroCharacter({ variant = "default", size = "md" }: HeroCharacte
 
   return (
     <div className={`relative ${sizeClasses[size]} mx-auto`}>
-      {/* Yellow bean bag chair */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-64 h-48 bg-yellow-400 rounded-full"></div>
-      {/* Student character */}
-      <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-24 h-32 bg-orange-300 rounded-t-full"></div>
-      {/* Laptop */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 translate-x-4 w-16 h-10 bg-gray-800 rounded"></div>
-      {/* Blue bookshelf */}
-      <div className="absolute top-0 right-0 w-20 h-40 bg-blue-500 rounded"></div>
-      {/* Plant */}
-      <div className="absolute top-20 left-0 w-12 h-16 bg-green-500 rounded-t-full"></div>
-      {/* Yellow lamp */}
-      <div className="absolute top-0 left-20 w-8 h-20 bg-yellow-400 rounded-full"></div>
+      <img 
+        src="@assets/22.png" 
+        alt="Hero Character" 
+        className={`${sizeClasses[size]} object-contain mx-auto`}
+        data-testid="hero-character-image"
+      />
     </div>
   );
 }
