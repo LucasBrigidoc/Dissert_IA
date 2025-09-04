@@ -76,7 +76,7 @@ export default function FunctionalitiesPage() {
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Newspaper size={14} />
+                <Book size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -127,7 +127,7 @@ export default function FunctionalitiesPage() {
                   data-testid="button-mobile-nav-home"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Home size={16} />
+                  <Home size={12} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link 
@@ -136,7 +136,7 @@ export default function FunctionalitiesPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Grid3x3 size={16} />
+                  <Grid3x3 size={10} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -145,7 +145,7 @@ export default function FunctionalitiesPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Book size={16} />
+                  <Book size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -154,7 +154,7 @@ export default function FunctionalitiesPage() {
                   data-testid="button-mobile-nav-settings"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Settings size={16} />
+                  <Settings size={12} />
                   <span className="font-medium">Configurações</span>
                 </Link>
                 <div className="pt-3 border-t border-gray-200">
@@ -167,7 +167,7 @@ export default function FunctionalitiesPage() {
                     className="flex items-center space-x-3 w-full text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                     data-testid="button-mobile-logout"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={12} />
                     <span>Sair</span>
                   </Button>
                 </div>
