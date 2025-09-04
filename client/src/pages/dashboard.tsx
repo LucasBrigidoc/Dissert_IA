@@ -386,8 +386,8 @@ export default function Dashboard() {
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
                 <Star className="text-white text-sm fill-white" />
               </div>
-              <span className="text-2xl font-bold text-dark-blue font-playfair">
-                DISSERT<span className="text-bright-blue">AI</span>
+              <span className="text-2xl font-bold font-playfair" style={{color: '#5087ff'}}>
+                DISSERT<span style={{color: '#12143d'}}>AI</span>
               </span>
             </Link>
             
