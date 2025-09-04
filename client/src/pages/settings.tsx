@@ -10,6 +10,9 @@ export default function SettingsPage() {
   const [, setLocation] = useLocation();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showPlanOptions, setShowPlanOptions] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [selectedAction, setSelectedAction] = useState('');
   
   // Mock data for user settings
   const [userProfile, setUserProfile] = useState({
@@ -369,22 +372,72 @@ export default function SettingsPage() {
                 </div>
               </div>
               
-              <div className="flex space-x-3">
-                <Button 
-                  variant="outline"
-                  className="flex-1 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-                  data-testid="button-change-plan"
-                >
-                  Alterar Plano
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="flex-1 text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
-                  data-testid="button-cancel-subscription"
-                >
-                  Cancelar Assinatura
-                </Button>
-              </div>
+              <Button 
+                onClick={() => setShowPlanOptions(!showPlanOptions)}
+                className="w-full bg-red-600 hover:bg-red-700 text-white"
+                data-testid="button-plan-settings"
+              >
+                Configurações do Plano
+              </Button>
+              
+              {/* Plan Options Card */}
+              {showPlanOptions && (
+                <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm space-y-3">
+                  <Button 
+                    onClick={() => {
+                      setSelectedAction('Alterar Plano');
+                      setShowWarning(true);
+                    }}
+                    variant="outline"
+                    className="w-full text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                    data-testid="button-change-plan"
+                  >
+                    Alterar Plano
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      setSelectedAction('Cancelar Assinatura');
+                      setShowWarning(true);
+                    }}
+                    variant="outline"
+                    className="w-full text-red-600 border-red-300 hover:bg-red-50"
+                    data-testid="button-cancel-subscription"
+                  >
+                    Cancelar Assinatura
+                  </Button>
+                </div>
+              )}
+              
+              {/* Warning Dialog */}
+              {showWarning && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
+                    <h3 className="text-lg font-semibold text-dark-blue mb-4">Cuidado, tem certeza?</h3>
+                    <p className="text-soft-gray mb-6">
+                      Você está prestes a {selectedAction.toLowerCase()}. Esta ação pode afetar seu acesso às funcionalidades premium.
+                    </p>
+                    <div className="flex space-x-3">
+                      <Button 
+                        onClick={() => setShowWarning(false)}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          setShowWarning(false);
+                          setShowPlanOptions(false);
+                          // Aqui você adicionaria a lógica para executar a ação
+                        }}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        Confirmar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </LiquidGlassCard>
         </div>
