@@ -10,8 +10,8 @@ export function Navigation() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b border-white/20">
-      <nav className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
+      <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-1" data-testid="link-home" onClick={closeMenu}>
           <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
             <Sparkles className="text-white text-sm" />
@@ -22,113 +22,101 @@ export function Navigation() {
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Link href="/" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-inicio">
-            Início
+        <div className="hidden lg:flex items-center space-x-4">
+          <Link href="/" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-inicio">
+            <span className="font-medium">Início</span>
           </Link>
-          <Link href="/features" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-funcionalidades">
-            Funcionalidades
+          <Link href="/features" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-funcionalidades">
+            <span className="font-medium">Funcionalidades</span>
           </Link>
-          <Link href="/pricing" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-planos">
-            Planos
+          <Link href="/pricing" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-planos">
+            <span className="font-medium">Planos</span>
           </Link>
-          <Link href="/about" className="text-dark-blue hover:text-bright-blue smooth-transition" data-testid="link-sobre">
-            Sobre
+          <Link href="/about" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-sobre">
+            <span className="font-medium">Sobre</span>
           </Link>
         </div>
         
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/login" className="bg-bright-blue text-white px-4 lg:px-6 py-2 rounded-lg hover:bg-blue-600 smooth-transition hover-scale text-sm lg:text-base" data-testid="button-entrar">
-            Entrar
+        <div className="hidden lg:flex items-center space-x-3">
+          <Link href="/login" className="flex items-center space-x-2 px-4 py-2 rounded-lg text-soft-gray hover:text-bright-blue border border-soft-gray/30 hover:border-bright-blue transition-all duration-200" data-testid="button-entrar">
+            <span className="font-medium">Entrar</span>
           </Link>
-          <Link href="/signup" className="bg-bright-blue text-white px-4 lg:px-6 py-2 rounded-lg hover:bg-blue-600 smooth-transition hover-scale text-sm lg:text-base" data-testid="button-comecar">
-            Começar Agora
+          <Link href="/signup" className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 transition-all duration-200" data-testid="button-comecar">
+            <span className="font-medium">Começar Agora</span>
           </Link>
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={toggleMenu}
-          className="md:hidden p-2 text-dark-blue hover:text-bright-blue smooth-transition"
-          data-testid="button-menu-toggle"
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="lg:hidden flex items-center space-x-3">
+          <button
+            onClick={toggleMenu}
+            className="p-2 border border-soft-gray/30 hover:border-bright-blue text-soft-gray hover:text-bright-blue rounded-lg transition-all duration-200"
+            data-testid="button-menu-toggle"
+            aria-label="Toggle menu"
+          >
+            <Menu size={16} />
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={closeMenu}
-          data-testid="overlay-mobile-menu"
-        />
-      )}
-
       {/* Mobile Navigation Menu */}
-      <div className={`fixed top-[73px] right-0 h-[calc(100vh-73px)] w-80 max-w-[90vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
-        isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      }`} data-testid="menu-mobile">
-        <div className="p-6 space-y-6">
-          {/* Mobile Navigation Links */}
-          <div className="space-y-4">
+      {isMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b shadow-lg z-40">
+          <div className="container mx-auto px-6 py-4 space-y-2">
             <Link 
               href="/" 
-              className="block text-lg text-dark-blue hover:text-bright-blue smooth-transition py-2 border-b border-gray-100" 
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-inicio-mobile"
               onClick={closeMenu}
             >
-              Início
+              <span className="font-medium">Início</span>
             </Link>
             <Link 
               href="/features" 
-              className="block text-lg text-dark-blue hover:text-bright-blue smooth-transition py-2 border-b border-gray-100" 
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-funcionalidades-mobile"
               onClick={closeMenu}
             >
-              Funcionalidades
+              <span className="font-medium">Funcionalidades</span>
             </Link>
             <Link 
               href="/pricing" 
-              className="block text-lg text-dark-blue hover:text-bright-blue smooth-transition py-2 border-b border-gray-100" 
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-planos-mobile"
               onClick={closeMenu}
             >
-              Planos
+              <span className="font-medium">Planos</span>
             </Link>
             <Link 
               href="/about" 
-              className="block text-lg text-dark-blue hover:text-bright-blue smooth-transition py-2 border-b border-gray-100" 
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-sobre-mobile"
               onClick={closeMenu}
             >
-              Sobre
+              <span className="font-medium">Sobre</span>
             </Link>
-          </div>
-
-          {/* Mobile Auth Buttons */}
-          <div className="space-y-3 pt-4">
-            <Link 
-              href="/login" 
-              className="block w-full text-center text-bright-blue border border-bright-blue px-6 py-3 rounded-lg smooth-transition hover:bg-bright-blue/10" 
-              data-testid="button-entrar-mobile"
-              onClick={closeMenu}
-            >
-              Entrar
-            </Link>
-            <Link 
-              href="/signup" 
-              className="block w-full text-center bg-bright-blue text-white px-6 py-3 rounded-lg hover:bg-blue-600 smooth-transition" 
-              data-testid="button-comecar-mobile"
-              onClick={closeMenu}
-            >
-              Começar Agora
-            </Link>
+            <div className="border-t pt-4">
+              <Link 
+                href="/login" 
+                className="block w-full text-center text-soft-gray hover:text-bright-blue border border-soft-gray/30 hover:border-bright-blue px-6 py-3 rounded-lg mb-3 transition-all duration-200" 
+                data-testid="button-entrar-mobile"
+                onClick={closeMenu}
+              >
+                Entrar
+              </Link>
+              <Link 
+                href="/signup" 
+                className="block w-full text-center bg-gradient-to-r from-bright-blue to-dark-blue text-white px-6 py-3 rounded-lg transition-all duration-200" 
+                data-testid="button-comecar-mobile"
+                onClick={closeMenu}
+              >
+                Começar Agora
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }
