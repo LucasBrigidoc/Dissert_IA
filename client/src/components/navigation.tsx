@@ -1,7 +1,6 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Plus, Menu, X } from "lucide-react";
 import { useState } from "react";
-import logoSvg from "@assets/logo.svg";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -13,8 +12,13 @@ export function Navigation() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b border-white/20">
       <nav className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center" data-testid="link-home" onClick={closeMenu}>
-          <img src={logoSvg} alt="DissertAI Logo" className="h-24 w-auto" />
+        <Link href="/" className="flex items-center space-x-2" data-testid="link-home" onClick={closeMenu}>
+          <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
+            <Plus className="text-white text-sm" />
+          </div>
+          <span className="text-xl sm:text-2xl font-bold text-dark-blue">
+            DISSERT<span className="text-bright-blue">AI</span>
+          </span>
         </Link>
         
         {/* Desktop Navigation */}

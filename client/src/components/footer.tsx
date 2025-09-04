@@ -1,6 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Twitter, ArrowRight } from "lucide-react";
-import logoSvg from "@assets/logo.svg";
+import { Plus, Facebook, Instagram, Twitter, ArrowRight } from "lucide-react";
 
 export function Footer() {
   return (
@@ -9,8 +8,13 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <div className="mb-4">
-              <img src={logoSvg} alt="DissertAI Logo" className="h-32 w-auto" />
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
+                <Plus className="text-white text-sm" />
+              </div>
+              <span className="text-2xl font-bold">
+                DISSERT<span className="text-bright-blue">AI</span>
+              </span>
             </div>
             <p className="text-white/70 mb-4">
               Revolucionando a escrita educacional com inteligência artificial para estudantes brasileiros.
