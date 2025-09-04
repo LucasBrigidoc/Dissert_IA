@@ -22,6 +22,10 @@ export default function Simulador() {
   const [theme, setTheme] = useState("");
   const [timerDisplay, setTimerDisplay] = useState("");
   
+  // Estados para campos opcionais
+  const [customTheme, setCustomTheme] = useState("");
+  const [textProposal, setTextProposal] = useState("");
+  
   // Verificar se todos os campos obrigatórios estão preenchidos
   const isFormComplete = examType && timeLimit && theme && timerDisplay;
   
@@ -185,6 +189,8 @@ export default function Simulador() {
             <div className="mb-6">
               <label className="block text-sm font-medium text-dark-blue mb-2">Tema Personalizado (opcional)</label>
               <Input 
+                value={customTheme}
+                onChange={(e) => setCustomTheme(e.target.value)}
                 placeholder="Digite seu tema específico aqui..."
                 className="border-bright-blue/20"
                 data-testid="input-custom-theme"
@@ -194,6 +200,8 @@ export default function Simulador() {
             <div className="mb-6">
               <label className="block text-sm font-medium text-dark-blue mb-2">Proposta de Texto (opcional)</label>
               <Textarea 
+                value={textProposal}
+                onChange={(e) => setTextProposal(e.target.value)}
                 placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
                 className="border-bright-blue/20 min-h-[100px]"
                 data-testid="textarea-text-proposal"
@@ -205,6 +213,19 @@ export default function Simulador() {
             <Button 
               onClick={() => {
                 if (isFormComplete) {
+                  // Salvar todas as configurações escolhidas
+                  const simulationConfig = {
+                    examType,
+                    timeLimit: parseInt(timeLimit === "no-limit" ? "0" : timeLimit),
+                    theme,
+                    timerDisplay,
+                    customTheme,
+                    textProposal
+                  };
+                  
+                  // Salvar configurações no sessionStorage
+                  sessionStorage.setItem('simulation-config', JSON.stringify(simulationConfig));
+                  
                   // Garantir que a origem está salva antes de navegar
                   const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
                   sessionStorage.setItem('simulador-origin', currentFrom);

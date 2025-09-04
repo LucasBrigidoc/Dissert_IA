@@ -23,20 +23,47 @@ import {
 export default function SimulacaoPage() {
   const [, setLocation] = useLocation();
   
-  // Configuration settings (could come from URL params or state)
-  const [config] = useState({
-    examType: 'ENEM',
-    timeLimit: 90, // minutes
-    theme: 'Tecnologia e Sociedade',
-    customTheme: '',
-    textProposal: '',
-    timerDisplay: 'always', // always, 1min, 5min, 10min, hidden
-    showWordCount: true,
-    autoSave: true,
-    spellCheck: true,
-    fontSize: 'medium', // small, medium, large
-    autoSaveInterval: 30, // seconds
-    focusMode: false
+  // Configuration settings from simulator
+  const [config] = useState(() => {
+    // Tentar recuperar configurações salvas do simulador
+    const savedConfig = sessionStorage.getItem('simulation-config');
+    if (savedConfig) {
+      try {
+        const parsedConfig = JSON.parse(savedConfig);
+        return {
+          examType: parsedConfig.examType || 'ENEM',
+          timeLimit: parsedConfig.timeLimit || 90, // minutes
+          theme: parsedConfig.theme || 'technology',
+          customTheme: parsedConfig.customTheme || '',
+          textProposal: parsedConfig.textProposal || '',
+          timerDisplay: parsedConfig.timerDisplay || 'always',
+          showWordCount: true,
+          autoSave: true,
+          spellCheck: true,
+          fontSize: 'medium', // small, medium, large
+          autoSaveInterval: 30, // seconds
+          focusMode: false
+        };
+      } catch (error) {
+        console.error('Erro ao parsear configurações:', error);
+      }
+    }
+    
+    // Configurações padrão caso não tenha configuração salva
+    return {
+      examType: 'ENEM',
+      timeLimit: 90, // minutes
+      theme: 'technology',
+      customTheme: '',
+      textProposal: '',
+      timerDisplay: 'always',
+      showWordCount: true,
+      autoSave: true,
+      spellCheck: true,
+      fontSize: 'medium',
+      autoSaveInterval: 30,
+      focusMode: false
+    };
   });
   
   // Simulation state
@@ -58,36 +85,86 @@ export default function SimulacaoPage() {
   const [lastCheckpointTime, setLastCheckpointTime] = useState(0);
   
   // Generate topic based on configuration
-  const getTopicByTheme = (theme: string, customTheme: string, customProposal: string) => {
+  const getTopicByTheme = (theme: string, customTheme: string, customProposal: string, examType: string) => {
     if (customProposal) {
       return {
-        title: customTheme || theme,
+        title: customTheme || "Tema Personalizado",
         instruction: customProposal,
-        examType: config.examType,
+        examType: examType,
         category: "Personalizado"
       };
     }
     
     const topics: Record<string, any> = {
+      'random': {
+        title: "A importância da inteligência artificial na educação brasileira",
+        instruction: "Com base na leitura dos textos motivadores seguintes e nos conhecimentos construídos ao longo de sua formação, redija texto dissertativo-argumentativo em modalidade escrita formal da língua portuguesa sobre o tema 'A importância da inteligência artificial na educação brasileira', apresentando proposta de intervenção que respeite os direitos humanos.",
+        category: "Tema Aleatório"
+      },
       'technology': {
         title: "A importância da inteligência artificial na educação brasileira",
         instruction: "Com base na leitura dos textos motivadores seguintes e nos conhecimentos construídos ao longo de sua formação, redija texto dissertativo-argumentativo em modalidade escrita formal da língua portuguesa sobre o tema 'A importância da inteligência artificial na educação brasileira', apresentando proposta de intervenção que respeite os direitos humanos.",
-        category: "Tecnologia"
+        category: "Tecnologia e Sociedade"
       },
       'environment': {
         title: "Sustentabilidade e preservação ambiental no Brasil contemporâneo",
         instruction: "Redija um texto dissertativo-argumentativo sobre os desafios da sustentabilidade e preservação ambiental no Brasil, propondo soluções viáveis que conciliem desenvolvimento econômico e conservação.",
-        category: "Meio Ambiente"
+        category: "Meio Ambiente e Sustentabilidade"
       },
       'education': {
         title: "Democratização do ensino superior no Brasil: avanços e desafios",
         instruction: "Desenvolva uma dissertação sobre a democratização do acesso ao ensino superior brasileiro, analisando políticas públicas e propondo melhorias para ampliar oportunidades educacionais.",
-        category: "Educação"
+        category: "Educação e Conhecimento"
       },
       'social': {
         title: "Desigualdade social e seus reflexos na sociedade brasileira",
         instruction: "Elabore um texto dissertativo-argumentativo sobre os impactos da desigualdade social no Brasil, apresentando causas, consequências e propostas de intervenção.",
         category: "Questões Sociais"
+      },
+      'politics': {
+        title: "Participação política e cidadania na democracia brasileira",
+        instruction: "Desenvolva um texto dissertativo-argumentativo sobre a importância da participação política ativa na consolidação da democracia brasileira, propondo formas de engajamento cidadão.",
+        category: "Política e Cidadania"
+      },
+      'economy': {
+        title: "Desafios do mercado de trabalho na era digital",
+        instruction: "Redija uma dissertação sobre as transformações no mercado de trabalho causadas pela digitalização, analisando impactos e propondo soluções para adaptação profissional.",
+        category: "Economia e Trabalho"
+      },
+      'health': {
+        title: "Saúde mental na sociedade contemporânea",
+        instruction: "Elabore um texto dissertativo-argumentativo sobre os desafios da saúde mental no Brasil atual, apresentando causas e propostas de intervenção para promoção do bem-estar.",
+        category: "Saúde e Bem-estar"
+      },
+      'culture': {
+        title: "Preservação da diversidade cultural brasileira",
+        instruction: "Desenvolva uma dissertação sobre a importância de preservar a diversidade cultural do Brasil, analisando ameaças e propondo estratégias de valorização.",
+        category: "Cultura e Arte"
+      },
+      'human-rights': {
+        title: "Combate ao preconceito e promoção dos direitos humanos",
+        instruction: "Redija um texto dissertativo-argumentativo sobre a necessidade de combater o preconceito para garantir os direitos humanos, propondo ações efetivas.",
+        category: "Direitos Humanos"
+      },
+      'media': {
+        title: "O papel da mídia na formação da opinião pública",
+        instruction: "Elabore uma dissertação sobre a influência dos meios de comunicação na sociedade brasileira, analisando responsabilidades e propondo melhorias.",
+        category: "Mídia e Comunicação"
+      },
+      'ethics': {
+        title: "Dilemas éticos na sociedade digital",
+        instruction: "Desenvolva um texto dissertativo-argumentativo sobre os principais dilemas éticos enfrentados na era digital, propondo diretrizes para conduta responsável.",
+        category: "Ética e Moral"
+      },
+      'science': {
+        title: "Ciência e inovação como motores do desenvolvimento nacional",
+        instruction: "Redija uma dissertação sobre o papel da pesquisa científica e inovação no desenvolvimento do Brasil, propondo políticas de incentivo.",
+        category: "Ciência e Inovação"
+      },
+      'custom': {
+        title: customTheme || "Tema Personalizado",
+        instruction: "Desenvolva um texto dissertativo-argumentativo sobre o tema escolhido, seguindo a estrutura formal da redação e apresentando proposta de intervenção.",
+        category: "Tema Personalizado"
       }
     };
     
@@ -95,11 +172,11 @@ export default function SimulacaoPage() {
     return {
       ...selectedTopic,
       title: customTheme || selectedTopic.title,
-      examType: config.examType
+      examType: examType
     };
   };
   
-  const [topic] = useState(getTopicByTheme(config.theme, config.customTheme, config.textProposal));
+  const [topic] = useState(getTopicByTheme(config.theme, config.customTheme, config.textProposal, config.examType));
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
