@@ -4,12 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link, useLocation } from "wouter";
 
 export default function BibliotecaPage() {
   const [location, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todos");
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [showFileDetails, setShowFileDetails] = useState(false);
 
   // Lógica para voltar inteligente - detecta automaticamente a página anterior
   const getSmartBackUrl = () => {
@@ -59,7 +62,8 @@ export default function BibliotecaPage() {
         date: "2024-01-15",
         size: "1.2 MB",
         type: "Repertório",
-        description: "Dados estatísticos e citações sobre sustentabilidade"
+        description: "Dados estatísticos e citações sobre sustentabilidade",
+        content: "**Repertório Completo: Meio Ambiente e Sustentabilidade**\n\n**Dados Estatísticos:**\n• O Brasil possui 60% da Floresta Amazônica (aproximadamente 5,5 milhões de km²)\n• Desmatamento de 10.476 km² em 2022 (redução de 11,3% em relação a 2021)\n• País ocupa 4º lugar mundial em emissões de CO2\n\n**Citações Relevantes:**\n\"A natureza não faz milagres, faz revelações\" - Carlos Drummond de Andrade\n\"O meio ambiente não é propriedade de ninguém para ser destruído, mas responsabilidade de todos para ser protegido\" - ONU\n\n**Exemplos Práticos:**\n• Acordo de Paris (2015): Compromisso global de limitar aquecimento a 1,5°C\n• Lei 9.985/2000: Sistema Nacional de Unidades de Conservação\n• Código Florestal Brasileiro: Proteção de 80% da vegetação nativa na Amazônia"
       },
       {
         id: 2,
@@ -68,7 +72,8 @@ export default function BibliotecaPage() {
         date: "2024-01-10", 
         size: "800 KB",
         type: "Repertório",
-        description: "Referências históricas e casos emblemáticos"
+        description: "Referências históricas e casos emblemáticos",
+        content: "**Repertório: Direitos Humanos - Marcos Históricos**\n\n**Documentos Fundamentais:**\n• Declaração Universal dos Direitos Humanos (1948) - ONU\n• Constituição Federal Brasileira (1988) - \"Constituição Cidadã\"\n• Convenção sobre Eliminação de Discriminação Racial (1965)\n\n**Casos Emblemáticos:**\n• Nelson Mandela e o fim do Apartheid na África do Sul\n• Malala Yousafzai: defesa da educação para meninas\n• Caso Brown vs. Board of Education (1954) - EUA\n\n**Citações Históricas:**\n\"A injustiça em qualquer lugar é uma ameaça à justiça em todos os lugares\" - Martin Luther King Jr.\n\"Ninguém nasce odiando outra pessoa pela cor de sua pele\" - Nelson Mandela\n\n**Violações Contemporâneas:**\n• Trabalho infantil: 152 milhões de crianças mundialmente\n• Feminicídio no Brasil: 1 mulher morta a cada 7 horas"
       }
     ],
     redacoes: [
@@ -80,7 +85,8 @@ export default function BibliotecaPage() {
         size: "450 KB", 
         type: "Redação",
         description: "Dissertação argumentativa sobre impactos da tecnologia",
-        grade: 920
+        grade: 920,
+        content: "**Redação ENEM 2023: Os impactos da tecnologia na educação brasileira**\n\n**Introdução:**\nA revolução digital transformou radicalmente os paradigmas educacionais no século XXI. No Brasil, país marcado por profundas desigualdades sociais, a incorporação de tecnologias no ambiente escolar representa tanto uma oportunidade de democratização do conhecimento quanto um desafio de inclusão digital. Diante desse cenário, é fundamental analisar como a tecnologia pode contribuir para a melhoria da qualidade educacional, desde que implementada de forma equitativa e planejada.\n\n**Desenvolvimento 1: Benefícios da tecnologia educacional**\nPrimeiramente, é inegável que a tecnologia oferece ferramentas pedagógicas inovadoras... [CONTEÚDO COMPLETO DA REDAÇÃO]\n\n**Desenvolvimento 2: Desafios da inclusão digital**\nPor outro lado, a implementação tecnológica na educação enfrenta obstáculos significativos...\n\n**Conclusão:**\nPortanto, a tecnologia na educação brasileira deve ser vista como instrumento de transformação social..."
       },
       {
         id: 4,
@@ -90,7 +96,8 @@ export default function BibliotecaPage() {
         size: "380 KB",
         type: "Redação", 
         description: "Análise sociológica com proposta de intervenção",
-        grade: 860
+        grade: 860,
+        content: "**Redação: A urgência no combate à violência contra a mulher no Brasil**\n\n**Introdução:**\nO feminicídio representa uma das mais graves violações dos direitos humanos na sociedade contemporânea. No Brasil, de acordo com o Atlas da Violência 2023, uma mulher é assassinada a cada 7 horas, colocando o país entre os que mais registram crimes dessa natureza no mundo...\n\n**Desenvolvimento 1: Raízes culturais do problema**\nA violência contra a mulher tem raízes profundas na cultura patriarcal brasileira...\n\n**Desenvolvimento 2: Falhas nas políticas públicas**\nAlém dos fatores culturais, a insuficiência das políticas públicas agrava o cenário...\n\n**Proposta de Intervenção:**\nPara enfrentar essa problemática, é necessário um plano integrado que envolva educação, legislação e atendimento especializado..."
       }
     ],
     temas: [
@@ -101,7 +108,8 @@ export default function BibliotecaPage() {
         date: "2024-01-14",
         size: "250 KB",
         type: "Tema",
-        description: "Tema criado com textos motivadores sobre IA"
+        description: "Tema criado com textos motivadores sobre IA",
+        content: "**Tema: Os desafios da Inteligência Artificial na sociedade contemporânea**\n\n**Textos Motivadores:**\n\n**Texto 1 - Revolução Tecnológica**\n'A inteligência artificial não é mais ficção científica, é uma realidade que está redefinindo o mercado de trabalho, a educação e as relações sociais.' - Revista Época, 2023\n\n**Texto 2 - Dados e Estatísticas**\nSegundo o McKinsey Global Institute, até 2030, cerca de 375 milhões de trabalhadores podem precisar mudar completamente de ocupação devido à automação. No Brasil, 54% dos empregos têm alto potencial de automação.\n\n**Texto 3 - Aspectos Éticos**\n'O desenvolvimento da IA deve ser guiado por princípios éticos que garantam benefícios para toda a humanidade, não apenas para alguns poucos.' - UNESCO, Recomendação sobre Ética da IA\n\n**Instruções:**\nA partir dos textos motivadores e com base nos seus conhecimentos, redija um texto dissertativo-argumentativo sobre os desafios da implementação da inteligência artificial na sociedade brasileira, apresentando proposta de intervenção."
       }
     ],
     estilos: [
@@ -112,7 +120,8 @@ export default function BibliotecaPage() {
         date: "2024-01-13",
         size: "180 KB",
         type: "Estilo",
-        description: "Configurações de formalidade para textos acadêmicos"
+        description: "Configurações de formalidade para textos acadêmicos",
+        content: "**Estilo Formal Acadêmico - Configurações Salvas**\n\n**Parâmetros de Formalidade:**\n• Nível de formalidade: Alto (9/10)\n• Tom: Impessoal e objetivo\n• Vocabulário: Técnico-científico\n• Estrutura: Clássica dissertativa\n\n**Conectivos Preferenciais:**\n• Introdução: \"Primeiramente\", \"Inicialmente\", \"É fundamental considerar\"\n• Desenvolvimento: \"Ademais\", \"Outrossim\", \"Nesse contexto\"\n• Conclusão: \"Portanto\", \"Dessarte\", \"Conclui-se\"\n\n**Expressões Vedadas:**\n• Gírias e informalidades\n• Primeira pessoa (eu, nós)\n• Expressões coloquiais\n• Repetições desnecessárias\n\n**Características do Estilo:**\n• Períodos longos e bem estruturados\n• Subordinação abundante\n• Referências externas obrigatórias\n• Linguagem culta e rebuscada"
       }
     ],
     newsletters: [
@@ -391,7 +400,15 @@ export default function BibliotecaPage() {
                   </div>
                   
                   <div className="flex items-center space-x-2 flex-shrink-0">
-                    <Button size="sm" variant="ghost" data-testid={`button-view-${file.id}`}>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      onClick={() => {
+                        setSelectedFile(file);
+                        setShowFileDetails(true);
+                      }}
+                      data-testid={`button-view-${file.id}`}
+                    >
                       <Eye size={16} />
                     </Button>
                     <Button size="sm" variant="ghost" data-testid={`button-download-${file.id}`}>
@@ -407,6 +424,128 @@ export default function BibliotecaPage() {
           )}
         </div>
       </div>
+      
+      {/* Modal de Detalhes do Arquivo */}
+      <Dialog open={showFileDetails} onOpenChange={setShowFileDetails}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <div className="flex items-center space-x-3 mb-2">
+              {selectedFile && getIcon(selectedFile.type)}
+              <div>
+                <DialogTitle className="text-xl font-bold text-dark-blue">
+                  {selectedFile?.title}
+                </DialogTitle>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge className={`text-xs ${selectedFile ? getTypeColor(selectedFile.type) : ''}`}>
+                    {selectedFile?.type}
+                  </Badge>
+                  {selectedFile?.grade && (
+                    <Badge className="bg-green-100 text-green-800 text-xs">
+                      Nota: {selectedFile.grade}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </div>
+          </DialogHeader>
+          
+          {selectedFile && (
+            <div className="flex-1 overflow-hidden flex flex-col">
+              {/* Informações do Arquivo */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium text-dark-blue">Categoria: </span>
+                    <span className="text-soft-gray">{selectedFile.category}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-dark-blue">Data de Criação: </span>
+                    <span className="text-soft-gray">{new Date(selectedFile.date).toLocaleDateString('pt-BR')}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-dark-blue">Tamanho: </span>
+                    <span className="text-soft-gray">{selectedFile.size}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-dark-blue">Tipo: </span>
+                    <span className="text-soft-gray">{selectedFile.type}</span>
+                  </div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <span className="font-medium text-dark-blue">Descrição: </span>
+                  <span className="text-soft-gray">{selectedFile.description}</span>
+                </div>
+              </div>
+              
+              {/* Conteúdo Completo */}
+              <div className="flex-1 overflow-hidden">
+                <h4 className="font-semibold text-dark-blue mb-3">Conteúdo Completo:</h4>
+                <div className="bg-white border border-gray-200 rounded-lg p-6 h-full overflow-y-auto">
+                  {selectedFile.content ? (
+                    <div className="prose prose-sm max-w-none">
+                      {selectedFile.content.split('\\n').map((line: string, index: number) => (
+                        <div key={index} className="mb-2">
+                          {line.startsWith('**') && line.endsWith('**') ? (
+                            <h5 className="font-bold text-dark-blue text-base mt-4 mb-2">
+                              {line.replace(/\*\*/g, '')}
+                            </h5>
+                          ) : line.startsWith('•') ? (
+                            <ul className="ml-4">
+                              <li className="text-soft-gray">{line.substring(2)}</li>
+                            </ul>
+                          ) : line.trim() ? (
+                            <p className="text-gray-700 leading-relaxed">{line}</p>
+                          ) : (
+                            <div className="h-2"></div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-32 text-gray-500">
+                      <div className="text-center">
+                        <FileText size={32} className="mx-auto mb-2 text-gray-400" />
+                        <p>Conteúdo não disponível para visualização</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Botões de Ação */}
+              <div className="flex justify-between items-center pt-6 border-t border-gray-200 mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFileDetails(false)}
+                  className="text-soft-gray border-soft-gray/30 hover:border-bright-blue hover:text-bright-blue"
+                  data-testid="button-close-details"
+                >
+                  Fechar
+                </Button>
+                <div className="flex space-x-3">
+                  <Button
+                    variant="outline"
+                    className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                    data-testid={`button-download-details-${selectedFile.id}`}
+                  >
+                    <Download size={14} className="mr-2" />
+                    Download
+                  </Button>
+                  {(selectedFile.type === 'Redação' || selectedFile.type === 'Estrutura') && (
+                    <Button
+                      className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                      data-testid={`button-edit-${selectedFile.id}`}
+                    >
+                      <PenTool size={14} className="mr-2" />
+                      Editar
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
