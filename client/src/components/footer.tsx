@@ -10,7 +10,7 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <div className="mb-4">
-              <img src={logoSvg} alt="DissertAI Logo" className="h-12 w-auto" />
+              <img src={logoSvg} alt="DissertAI Logo" className="h-20 w-auto" />
             </div>
             <p className="text-white/70 mb-4">
               Revolucionando a escrita educacional com inteligência artificial para estudantes brasileiros.

@@ -14,7 +14,7 @@ export function Navigation() {
     <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b border-white/20">
       <nav className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center" data-testid="link-home" onClick={closeMenu}>
-          <img src={logoSvg} alt="DissertAI Logo" className="h-10 w-auto" />
+          <img src={logoSvg} alt="DissertAI Logo" className="h-16 w-auto" />
         </Link>
         
         {/* Desktop Navigation */}
