@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import { Plus, Facebook, Instagram, Twitter, ArrowRight } from "lucide-react";
+import { Facebook, Instagram, Twitter, ArrowRight } from "lucide-react";
+import logoSvg from "@assets/logo.svg";
 
 export function Footer() {
   return (
@@ -9,8 +10,8 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                <Plus className="text-white text-sm" />
+              <div className="w-8 h-8 flex items-center justify-center">
+                <img src={logoSvg} alt="DissertAI Logo" className="w-8 h-8" />
               </div>
               <span className="text-2xl font-bold">
                 DISSERT<span className="text-bright-blue">AI</span>
