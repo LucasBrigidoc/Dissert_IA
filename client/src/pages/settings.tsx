@@ -2,7 +2,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
@@ -45,17 +45,17 @@ export default function SettingsPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/dashboard" className="flex items-center space-x-2" data-testid="link-dashboard-logo">
+            <Link href="/dashboard" className="flex items-center space-x-1" data-testid="link-dashboard-logo">
               <div className="w-8 h-8 bg-bright-blue rounded-lg flex items-center justify-center">
-                <Plus className="text-white text-sm" />
+                <Sparkles className="text-white text-sm" />
               </div>
-              <span className="text-2xl font-bold text-dark-blue">
-                DISSERT<span className="text-bright-blue">AI</span>
+              <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
+                DISSERT<span style={{color: '#6b7280'}}>AI</span>
               </span>
             </Link>
             
             {/* Desktop Navigation Menu */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-home">
                 <Home size={14} />
                 <span className="font-medium">Home</span>
@@ -75,7 +75,7 @@ export default function SettingsPage() {
             </div>
             
             {/* Desktop Right Side */}
-            <div className="hidden lg:flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-8">
               <Button
                 onClick={handleLogout}
                 variant="outline"
@@ -116,7 +116,7 @@ export default function SettingsPage() {
                   data-testid="button-mobile-nav-home"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Home size={16} />
+                  <Home size={12} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link 
@@ -125,7 +125,7 @@ export default function SettingsPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Plus size={16} />
+                  <Plus size={10} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -134,7 +134,7 @@ export default function SettingsPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Book size={16} />
+                  <Book size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -143,7 +143,7 @@ export default function SettingsPage() {
                   data-testid="button-mobile-nav-settings"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Settings size={16} />
+                  <Settings size={12} />
                   <span className="font-medium">Configurações</span>
                 </Link>
                 <div className="pt-3 border-t border-gray-200">
@@ -156,7 +156,7 @@ export default function SettingsPage() {
                     className="flex items-center space-x-3 w-full text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                     data-testid="button-mobile-logout"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={12} />
                     <span>Sair</span>
                   </Button>
                 </div>

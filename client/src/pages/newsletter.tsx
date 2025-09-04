@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, ArrowRight, Eye, Menu } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Plus, Archive, ArrowRight, Eye, Menu } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { mockNewsletters } from "@/lib/mock-data";
 import { useState } from "react";
@@ -52,11 +52,11 @@ export default function NewsletterPage() {
                 <span className="font-medium">Home</span>
               </Link>
               <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                <Grid3x3 size={14} />
+                <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Newspaper size={14} />
+                <Book size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -107,7 +107,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-home"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Home size={16} />
+                  <Home size={12} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link 
@@ -116,7 +116,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Grid3x3 size={16} />
+                  <Plus size={10} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -125,7 +125,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Newspaper size={16} />
+                  <Book size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -134,7 +134,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-settings"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Settings size={16} />
+                  <Settings size={12} />
                   <span className="font-medium">Configurações</span>
                 </Link>
                 <div className="pt-3 border-t border-gray-200">
@@ -147,7 +147,7 @@ export default function NewsletterPage() {
                     className="flex items-center space-x-3 w-full text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                     data-testid="button-mobile-logout"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={12} />
                     <span>Sair</span>
                   </Button>
                 </div>
@@ -235,11 +235,11 @@ export default function NewsletterPage() {
                 <span className="font-medium">Home</span>
               </Link>
               <Link href="/functionalities" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-functionalities">
-                <Grid3x3 size={14} />
+                <Plus size={14} />
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Newspaper size={14} />
+                <Book size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -256,7 +256,7 @@ export default function NewsletterPage() {
                 className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                 data-testid="button-logout"
               >
-                <LogOut size={16} />
+                <LogOut size={12} />
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
@@ -291,7 +291,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-home"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Home size={16} />
+                  <Home size={12} />
                   <span className="font-medium">Home</span>
                 </Link>
                 <Link 
@@ -300,7 +300,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-functionalities"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Grid3x3 size={16} />
+                  <Plus size={10} />
                   <span className="font-medium">Funcionalidades</span>
                 </Link>
                 <Link 
@@ -309,7 +309,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Newspaper size={16} />
+                  <Book size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -318,7 +318,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-settings"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Settings size={16} />
+                  <Settings size={12} />
                   <span className="font-medium">Configurações</span>
                 </Link>
                 <div className="border-t pt-4">
@@ -331,7 +331,7 @@ export default function NewsletterPage() {
                     className="w-full flex items-center justify-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue"
                     data-testid="button-mobile-logout"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={12} />
                     <span>Sair</span>
                   </Button>
                 </div>
