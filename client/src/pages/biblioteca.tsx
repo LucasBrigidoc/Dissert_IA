@@ -206,9 +206,15 @@ export default function BibliotecaPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href={backUrl} className="text-soft-gray hover:text-bright-blue" data-testid="button-back">
-                <ArrowLeft size={16} />
-              </Link>
+              <Button
+                onClick={() => setLocation(backUrl)}
+                variant="outline"
+                className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
+                data-testid="button-back"
+              >
+                <ArrowLeft size={14} />
+                <span>Voltar</span>
+              </Button>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
                   <Archive className="text-white" size={16} />
