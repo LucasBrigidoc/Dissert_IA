@@ -164,11 +164,9 @@ export default function Signup() {
             {/* Illustration */}
             <div className="w-full lg:w-1/2 gradient-bg p-12 flex items-center justify-center relative">
               <div className="text-center">
-                <div className="text-6xl text-white mb-4">
-                  <Sparkles className="mx-auto" size={64} />
-                </div>
-                <h2 className="text-4xl font-bold mb-4" style={{color: '#5087ff'}}>
-                  DISSERT<span style={{color: '#6b7280'}}>AI</span>
+                <h2 className="text-4xl font-bold mb-4 font-playfair flex items-center justify-center gap-2" style={{color: '#5087ff'}}>
+                  <Sparkles size={48} style={{color: '#5087ff'}} />
+                  DISSERT<span style={{color: '#ffffff'}}>AI</span>
                 </h2>
                 <HeroCharacter variant="ai" size="md" />
               </div>
