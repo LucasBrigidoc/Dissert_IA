@@ -374,7 +374,7 @@ export default function SettingsPage() {
               
               <Button 
                 onClick={() => setShowPlanOptions(!showPlanOptions)}
-                className="w-full bg-red-600 hover:bg-red-700 text-white"
+                className="w-full bg-gray-400 hover:bg-gray-500 text-white"
                 data-testid="button-plan-settings"
               >
                 Configurações do Plano
