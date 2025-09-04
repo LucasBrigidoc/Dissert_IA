@@ -173,9 +173,10 @@ export default function Simulador() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="always">Sempre visível</SelectItem>
-                    <SelectItem value="1min">Atualizar a cada 1 minuto</SelectItem>
                     <SelectItem value="5min">Atualizar a cada 5 minutos</SelectItem>
                     <SelectItem value="10min">Atualizar a cada 10 minutos</SelectItem>
+                    <SelectItem value="15min">Atualizar a cada 15 minutos</SelectItem>
+                    <SelectItem value="30min">Atualizar a cada 30 minutos</SelectItem>
                     <SelectItem value="hidden">Oculto (apenas no final)</SelectItem>
                   </SelectContent>
                 </Select>
