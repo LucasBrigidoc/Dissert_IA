@@ -87,17 +87,17 @@ export function Footer() {
           </div>
           
           {/* Newsletter */}
-          <div>
+          <div className="max-w-full">
             <h4 className="font-semibold mb-4">Newsletter</h4>
             <p className="text-white/70 mb-4">Receba dicas semanais de redação</p>
-            <div className="flex">
+            <div className="flex w-full max-w-full overflow-hidden">
               <input
                 type="email"
                 placeholder="Seu email"
-                className="flex-1 px-3 py-2 bg-white/10 rounded-l-lg border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-bright-blue"
+                className="flex-1 min-w-0 px-3 py-2 bg-white/10 rounded-l-lg border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-bright-blue"
                 data-testid="input-newsletter-email"
               />
-              <button className="bg-bright-blue px-4 py-2 rounded-r-lg hover:bg-blue-600 smooth-transition" data-testid="button-newsletter-submit">
+              <button className="bg-bright-blue px-3 py-2 rounded-r-lg hover:bg-blue-600 smooth-transition flex-shrink-0" data-testid="button-newsletter-submit">
                 <ArrowRight size={16} />
               </button>
             </div>
