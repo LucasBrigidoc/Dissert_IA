@@ -1,7 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Plus, Archive, ArrowRight, Eye, Menu, Newspaper } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Plus, Archive, ArrowRight, Eye, Menu, Newspaper, BookOpen } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { mockNewsletters } from "@/lib/mock-data";
 import { useState } from "react";
@@ -56,7 +56,7 @@ export default function NewsletterPage() {
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Book size={14} />
+                <BookOpen size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -125,7 +125,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Book size={12} />
+                  <BookOpen size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
@@ -239,7 +239,7 @@ export default function NewsletterPage() {
                 <span className="font-medium">Funcionalidades</span>
               </Link>
               <Link href="/newsletter" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-bright-blue bg-bright-blue/10 border border-bright-blue/20 hover:bg-bright-blue/20 transition-all duration-200" data-testid="button-nav-newsletter">
-                <Book size={14} />
+                <BookOpen size={14} />
                 <span className="font-medium">Newsletter</span>
               </Link>
               <Link href="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="button-nav-settings">
@@ -309,7 +309,7 @@ export default function NewsletterPage() {
                   data-testid="button-mobile-nav-newsletter"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Book size={12} />
+                  <BookOpen size={12} />
                   <span className="font-medium">Newsletter</span>
                 </Link>
                 <Link 
