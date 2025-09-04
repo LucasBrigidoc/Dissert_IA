@@ -9,13 +9,8 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 flex items-center justify-center">
-                <img src={logoSvg} alt="DissertAI Logo" className="w-8 h-8" />
-              </div>
-              <span className="text-2xl font-bold">
-                DISSERT<span className="text-bright-blue">AI</span>
-              </span>
+            <div className="mb-4">
+              <img src={logoSvg} alt="DissertAI Logo" className="h-12 w-auto" />
             </div>
             <p className="text-white/70 mb-4">
               Revolucionando a escrita educacional com inteligência artificial para estudantes brasileiros.
