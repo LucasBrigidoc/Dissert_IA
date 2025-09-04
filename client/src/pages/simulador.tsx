@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +15,15 @@ export default function Simulador() {
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  
+  // Estados para os campos obrigatórios
+  const [examType, setExamType] = useState("");
+  const [timeLimit, setTimeLimit] = useState("");
+  const [theme, setTheme] = useState("");
+  const [timerDisplay, setTimerDisplay] = useState("");
+  
+  // Verificar se todos os campos obrigatórios estão preenchidos
+  const isFormComplete = examType && timeLimit && theme && timerDisplay;
   
   // Salvar a origem no sessionStorage quando a página carrega
   useEffect(() => {
@@ -101,7 +110,7 @@ export default function Simulador() {
             <div className="grid md:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-dark-blue mb-2">Tipo de Exame</label>
-                <Select data-testid="select-exam-type">
+                <Select onValueChange={setExamType} data-testid="select-exam-type">
                   <SelectTrigger className="border-bright-blue/20">
                     <SelectValue placeholder="Selecione o exame" />
                   </SelectTrigger>
@@ -116,7 +125,7 @@ export default function Simulador() {
               
               <div>
                 <label className="block text-sm font-medium text-dark-blue mb-2">Tempo Limite</label>
-                <Select data-testid="select-time-limit">
+                <Select onValueChange={setTimeLimit} data-testid="select-time-limit">
                   <SelectTrigger className="border-bright-blue/20">
                     <SelectValue placeholder="Tempo" />
                   </SelectTrigger>
@@ -133,7 +142,7 @@ export default function Simulador() {
             <div className="grid md:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-dark-blue mb-2">Tema do Simulado</label>
-                <Select data-testid="select-theme">
+                <Select onValueChange={setTheme} data-testid="select-theme">
                   <SelectTrigger className="border-bright-blue/20">
                     <SelectValue placeholder="Escolha um tema" />
                   </SelectTrigger>
@@ -158,7 +167,7 @@ export default function Simulador() {
               
               <div>
                 <label className="block text-sm font-medium text-dark-blue mb-2">Exibição do Timer</label>
-                <Select data-testid="select-timer-display">
+                <Select onValueChange={setTimerDisplay} data-testid="select-timer-display">
                   <SelectTrigger className="border-bright-blue/20">
                     <SelectValue placeholder="Como mostrar o tempo" />
                   </SelectTrigger>
@@ -195,12 +204,19 @@ export default function Simulador() {
             
             <Button 
               onClick={() => {
-                // Garantir que a origem está salva antes de navegar
-                const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
-                sessionStorage.setItem('simulador-origin', currentFrom);
-                setLocation('/simulacao');
+                if (isFormComplete) {
+                  // Garantir que a origem está salva antes de navegar
+                  const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
+                  sessionStorage.setItem('simulador-origin', currentFrom);
+                  setLocation('/simulacao');
+                }
               }}
-              className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
+              disabled={!isFormComplete}
+              className={`w-full ${
+                isFormComplete 
+                  ? 'bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
               data-testid="button-start-simulation"
             >
               <Play className="mr-2" size={16} />
