@@ -13,37 +13,37 @@ export default function About() {
       <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8 sm:pb-12">
         {/* Hero Section */}
         <section className="gradient-bg pt-20 sm:pt-24 pb-16 relative overflow-hidden -mt-20 sm:-mt-24 mb-12">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-4" data-testid="text-about-title">
-              Sobre o DissertAI
-            </h1>
-            <p className="text-lg text-white/90">
-              Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
-            </p>
-          </div>
-        </section>
-
-        {/* Mission Statement */}
-        <div className="mb-12 sm:mb-16">
-          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-            <div className="w-full md:w-1/2 text-center md:text-left">
-              <h2 className="text-2xl sm:text-3xl font-bold text-dark-blue mb-4 sm:mb-6">
-                Nossa Proposta: Democratizando a Excelência na Escrita
-              </h2>
-              <p className="text-soft-gray mb-4 sm:mb-6 text-sm sm:text-base">
-                Sabemos o quão desafiador é dominar a arte da escrita no contexto dos vestibulares brasileiros. Nossa missão é eliminar as barreiras que impedem estudantes de alcançar seu potencial máximo, oferecendo tecnologia de inteligência artificial que funciona como um tutor pessoal disponível 24/7.
-              </p>
-              <p className="text-soft-gray text-sm sm:text-base">
-                Combinamos ciências cognitivas, pedagogia e tecnologia para criar uma experiência de aprendizado que se adapta ao ritmo e estilo único de cada estudante.
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="text-center text-white mb-12">
+              <h1 className="text-4xl font-bold mb-4" data-testid="text-about-title">
+                Sobre o DissertAI
+              </h1>
+              <p className="text-lg text-white/90">
+                Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
               </p>
             </div>
-            <div className="w-full md:w-1/2 text-center">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto gradient-bg rounded-full flex items-center justify-center">
-                <GraduationCap className="text-white" size={60} />
+            
+            {/* Mission Statement */}
+            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+              <div className="w-full md:w-1/2 text-center md:text-left text-white">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
+                  Nossa Proposta: Democratizando a Excelência na Escrita
+                </h2>
+                <p className="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base">
+                  Sabemos o quão desafiador é dominar a arte da escrita no contexto dos vestibulares brasileiros. Nossa missão é eliminar as barreiras que impedem estudantes de alcançar seu potencial máximo, oferecendo tecnologia de inteligência artificial que funciona como um tutor pessoal disponível 24/7.
+                </p>
+                <p className="text-white/80 text-sm sm:text-base">
+                  Combinamos ciências cognitivas, pedagogia e tecnologia para criar uma experiência de aprendizado que se adapta ao ritmo e estilo único de cada estudante.
+                </p>
+              </div>
+              <div className="w-full md:w-1/2 text-center">
+                <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <GraduationCap className="text-white" size={60} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Our Project */}
         <div className="mb-12 sm:mb-16">
