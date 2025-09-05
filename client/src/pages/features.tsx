@@ -214,43 +214,6 @@ export default function Features() {
                 </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-writing-assistant">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <PenTool className="text-white" size={24} />
-                  </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Assistente de Escrita IA</h4>
-                </div>
-                <p className="text-soft-gray mb-4">
-                  Companheiro de escrita que oferece sugestões contextuais, correções gramaticais, melhorias estilísticas e orientações pedagógicas durante todo o processo de redação.
-                </p>
-                <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Correção gramatical e ortográfica inteligente</li>
-                  <li>• Sugestões de melhorias estilísticas contextuais</li>
-                  <li>• Análise de coesão e coerência textual</li>
-                  <li>• Orientações pedagógicas personalizadas</li>
-                  <li>• Feedback construtivo e explicativo</li>
-                </ul>
-              </LiquidGlassCard>
-
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-paragraph-builder">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <Edit className="text-white" size={24} />
-                  </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Construtor de Parágrafos</h4>
-                </div>
-                <p className="text-soft-gray mb-4">
-                  Ferramenta que te guia na construção de parágrafos bem estruturados, ensinando técnicas de desenvolvimento de ideias e organização lógica do pensamento.
-                </p>
-                <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Estruturação guiada de parágrafos (tópico frasal, desenvolvimento, conclusão)</li>
-                  <li>• Técnicas de desenvolvimento (exemplificação, causa-efeito, comparação)</li>
-                  <li>• Orientações sobre extensão e densidade informacional</li>
-                  <li>• Verificação de unidade temática e progressão</li>
-                  <li>• Sugestões de conectivos e elementos coesivos</li>
-                </ul>
-              </LiquidGlassCard>
             </div>
           </div>
 
