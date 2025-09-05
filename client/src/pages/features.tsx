@@ -292,49 +292,7 @@ export default function Features() {
             </div>
           </div>
 
-          {/* Analysis and Review Tools */}
-          <div className="mb-8 sm:mb-12">
-            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Análise e Revisão:</h3>
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-text-analyzer">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <BarChart3 className="text-white" size={24} />
-                  </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Analisador de Texto Avançado</h4>
-                </div>
-                <p className="text-soft-gray mb-4">
-                  Sistema completo de análise que avalia seu texto em múltiplas dimensões, fornecendo feedback detalhado sobre estrutura, conteúdo, linguagem e adequação aos critérios avaliativos.
-                </p>
-                <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Análise de coesão, coerência e estrutura textual</li>
-                  <li>• Avaliação de adequação ao gênero e registro</li>
-                  <li>• Verificação de critérios específicos por tipo de prova</li>
-                  <li>• Métricas de legibilidade e fluência</li>
-                  <li>• Relatório detalhado com pontuação estimada</li>
-                </ul>
-              </LiquidGlassCard>
-
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-smart-review">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <CheckCircle className="text-white" size={24} />
-                  </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Revisor Inteligente</h4>
-                </div>
-                <p className="text-soft-gray mb-4">
-                  Ferramenta de revisão automatizada que identifica e sugere correções para diferentes tipos de problemas textuais, desde questões gramaticais até melhorias estruturais.
-                </p>
-                <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Correção automática de erros gramaticais e ortográficos</li>
-                  <li>• Identificação de problemas de coesão e coerência</li>
-                  <li>• Sugestões de melhorias vocabulares e estilísticas</li>
-                  <li>• Verificação de repetições e redundâncias</li>
-                  <li>• Análise de clareza e precisão argumentativa</li>
-                </ul>
-              </LiquidGlassCard>
-            </div>
-          </div>
+          
 
           {/* Simulation and Practice Tools */}
           <div className="mb-8 sm:mb-12">
