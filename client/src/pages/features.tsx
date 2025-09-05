@@ -35,13 +35,12 @@ export default function Features() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
       {/* Hero Section */}
       <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
         <div className="container mx-auto px-2 sm:px-4">
           {/* Título centralizado ocupando toda a largura */}
           <div className="w-full text-center mb-4 sm:mb-6">
-            <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#5087ff] text-[57px]" data-testid="text-features-title">
+            <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[57px] text-[#f4f4f4]" data-testid="text-features-title">
               Conheça as Principais Funcionalidades
             </h1>
           </div>
@@ -70,7 +69,6 @@ export default function Features() {
           </div>
         </div>
       </section>
-
       <div className="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-8 sm:pb-12">
 
         {/* Challenge Section */}
@@ -224,7 +222,6 @@ export default function Features() {
           </Button>
         </LiquidGlassCard>
       </div>
-
       <Footer />
     </div>
   );
