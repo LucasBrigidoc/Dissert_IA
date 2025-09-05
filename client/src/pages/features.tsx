@@ -95,7 +95,7 @@ export default function Features() {
             </LiquidGlassCard>
             <LiquidGlassCard className="p-8" data-testid="card-solution">
               <h3 className="text-xl font-semibold text-dark-blue mb-4">Nossa Solução</h3>
-              <div className="text-4xl text-green-500 mb-4">
+              <div className="text-4xl mb-4 text-[#6b87f6]">
                 <Lightbulb className="mx-auto" size={48} />
               </div>
               <p className="text-soft-gray">IA que vai te acompanhar e escrever junto com você todos os pontos</p>
