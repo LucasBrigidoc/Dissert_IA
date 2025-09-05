@@ -311,7 +311,7 @@ export default function Features() {
                 </p>
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Temas de redação semanais comentados</li>
-                  <li>• Dicas de especialistas em ensino</li>
+                  <li>• receba um resumo das principais noticias</li>
                   <li>• Análises de atualidades relevantes</li>
                   <li>• Estratégias de estudo personalizadas</li>
                   <li>• Conteúdo exclusivo para assinantes</li>
