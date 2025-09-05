@@ -276,48 +276,7 @@ export default function Argumentos() {
               </div>
             </LiquidGlassCard>
 
-            {/* Argumentos */}
-            <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20">
-              <h3 className="text-lg font-semibold text-dark-blue mb-4">Argumentos</h3>
-              
-              {/* Adicionar novo argumento */}
-              <div className="mb-4">
-                <p className="text-soft-gray text-sm mb-2">Adicione argumentos para sua redação</p>
-                <div className="flex space-x-2">
-                  <Input
-                    value={newArgument}
-                    onChange={(e) => setNewArgument(e.target.value)}
-                    placeholder="Digite um novo argumento..."
-                    className="flex-1 border-dark-blue/20 focus:border-dark-blue"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && newArgument.trim()) {
-                        addToCategory('argumentos', newArgument.trim());
-                        setNewArgument('');
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="space-y-3">
-                {brainstormData.argumentos.map((arg, index) => (
-                  <div key={arg.id} className="p-3 bg-white rounded-lg border border-dark-blue/20 flex items-center justify-between">
-                    <div>
-                      <span className="font-medium text-dark-blue text-sm">Argumento {index + 1}</span>
-                      <p className="text-soft-gray text-sm mt-1">{arg.content}</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => removeFromCategory('argumentos', arg.id)}
-                      className="text-red-500 hover:bg-red-50"
-                    >
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              <ChatMini section="argumentos" title="argumentos" />
-            </LiquidGlassCard>
+            
 
             {/* Estrutura dos Parágrafos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
