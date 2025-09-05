@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Heart, Lightbulb, Users, Trophy, GraduationCap, Brain } from "lucide-react";
+import fimagem2 from "../../imagens funcionalidades/fimagem2.svg";
 
 export default function About() {
   return (
@@ -37,7 +38,7 @@ export default function About() {
             </div>
             <div className="w-full md:w-1/2 text-center">
               <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <GraduationCap className="text-white" size={60} />
+                <img src={fimagem2} alt="Ilustração DissertAI" className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48" />
               </div>
             </div>
           </div>
