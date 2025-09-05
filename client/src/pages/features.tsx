@@ -47,7 +47,7 @@ export default function Features() {
           
           <div className="flex flex-col lg:flex-row items-center justify-between gap-0">
             <div className="w-full lg:w-[55%] text-white text-center lg:text-left">
-              <p className="sm:text-xl lg:text-2xl mb-3 sm:mb-4 font-semibold text-[#5087ff] text-left text-[30px]" data-testid="text-features-subtitle">
+              <p className="sm:text-xl lg:text-2xl sm:mb-4 font-semibold text-[#5087ff] text-left text-[33px] mt-[5px] mb-[5px]" data-testid="text-features-subtitle">
                 Ferramentas inteligentes para revolucionar sua escrita
               </p>
               <p className="text-base sm:text-lg mb-6 sm:mb-8 text-white/80" data-testid="text-features-description">
