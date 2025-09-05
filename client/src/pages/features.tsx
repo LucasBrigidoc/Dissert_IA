@@ -105,9 +105,14 @@ export default function Features() {
 
         {/* Core Features */}
         <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-core-features-title">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-4 sm:mb-6" data-testid="text-core-features-title">
             Funcionalidades que Transformam sua Escrita
           </h2>
+          <div className="text-center mb-8 sm:mb-12">
+            <p className="text-lg text-soft-gray max-w-3xl mx-auto">
+              Nossas funcionalidades são ferramentas pensadas para lhe ensinar e ajudar em toda as etapas da escrita de um texto.
+            </p>
+          </div>
           
           {/* Pre-writing Tools */}
           <div className="mb-8 sm:mb-12">
