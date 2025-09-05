@@ -182,7 +182,7 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <FileText className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Estrutura Curinga Personalizada</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Estrutura Coringa Personalizada</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
                   Sistema que analisa seu estilo de escrita e cria estruturas de redação modelo adaptadas às suas preferências, forças e ao tipo de prova que você vai fazer.
