@@ -109,7 +109,7 @@ export default function Features() {
             Funcionalidades que Transformam sua Escrita
           </h2>
           <div className="text-center mb-8 sm:mb-12">
-            <p className="text-lg text-soft-gray max-w-3xl mx-auto">
+            <p className="text-soft-gray max-w-3xl mx-auto text-[21px]">
               Nossas funcionalidades são ferramentas pensadas para lhe ensinar e ajudar em toda as etapas da escrita de um texto.
             </p>
           </div>
