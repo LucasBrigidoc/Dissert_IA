@@ -98,9 +98,7 @@ export default function About() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-dark-blue mb-3">Aprendizagem Multidimensional</h3>
-                  <p className="text-soft-gray">
-                    Combinamos desenvolvimento de competências técnicas (gramática, estrutura) com habilidades metacognitivas (autoconhecimento, reflexão crítica) e socioemocionais (gestão de ansiedade, autoconfiança), oferecendo formação integral para o sucesso acadêmico e além.
-                  </p>
+                  <p className="text-soft-gray">Combinamos desenvolvimento de competências técnicas (gramática, estrutura) com habilidades metacognitivas (autoconhecimento, reflexão crítica) e socioemocionais (gestão de ansiedade, autoconfiança), oferecendo ferramentas para refinar sua escrita.</p>
                 </div>
               </div>
             </LiquidGlassCard>
