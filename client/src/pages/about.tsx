@@ -12,14 +12,16 @@ export default function About() {
       
       <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8 sm:pb-12">
         {/* Hero Section */}
-        <div className="text-center mb-12 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-2xl py-12 px-6">
-          <h1 className="text-4xl font-bold text-dark-blue mb-4" data-testid="text-about-title">
-            Sobre o DissertAI
-          </h1>
-          <p className="text-lg text-soft-gray">
-            Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
-          </p>
-        </div>
+        <section className="gradient-bg pt-20 sm:pt-24 pb-16 relative overflow-hidden -mt-20 sm:-mt-24 mb-12">
+          <div className="text-center text-white">
+            <h1 className="text-4xl font-bold mb-4" data-testid="text-about-title">
+              Sobre o DissertAI
+            </h1>
+            <p className="text-lg text-white/90">
+              Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
+            </p>
+          </div>
+        </section>
 
         {/* Mission Statement */}
         <div className="mb-12 sm:mb-16">
