@@ -39,7 +39,7 @@ export default function Features() {
       <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
         <div className="container mx-auto px-2 sm:px-4">
           {/* Título centralizado ocupando toda a largura */}
-          <div className="w-full text-center mb-4 sm:mb-6">
+          <div className="w-full text-center mb-0">
             <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[57px] text-[#f4f4f4]" data-testid="text-features-title">
               Conheça as Principais Funcionalidades
             </h1>
