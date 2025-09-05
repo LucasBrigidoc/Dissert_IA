@@ -13,19 +13,18 @@ export default function Argumentos() {
     tema: '',
     tese: '',
     argumentos: [] as Array<{id: number, content: string}>,
-    repertorios: [] as Array<{id: number, content: string}>,
+    paragrafos: {
+      introducao: '',
+      desenvolvimento1: '',
+      desenvolvimento2: '',
+      conclusao: ''
+    },
     conclusao: ''
   });
   const [newArgument, setNewArgument] = useState('');
-  const [newRepertorio, setNewRepertorio] = useState('');
   const [chatStates, setChatStates] = useState({
     argumentos: { 
       messages: [{ id: 1, type: 'ai', content: 'Vou te ajudar a desenvolver argumentos sólidos. Qual é o tema da sua redação?' }], 
-      currentMessage: '',
-      isOpen: false
-    },
-    repertorios: { 
-      messages: [{ id: 1, type: 'ai', content: 'Que repertórios culturais você conhece sobre esse tema? Filmes, livros, dados estatísticos?' }], 
       currentMessage: '',
       isOpen: false
     },
@@ -95,11 +94,6 @@ export default function Argumentos() {
           'Esse ponto é muito forte! Você pode conectar isso com algum exemplo prático?',
           'Interessante! Como isso se relaciona com o contexto brasileiro atual?'
         ],
-        repertorios: [
-          'Excelente referência! Como você pode conectar isso ao seu argumento principal?',
-          'Essa fonte é muito relevante. Você tem mais exemplos nessa linha?',
-          'Perfeito! Isso vai enriquecer muito sua argumentação.'
-        ],
         conclusao: [
           'Boa proposta! Como garantir que seja viável e realista?',
           'Interessante ideia! Quem seria responsável por implementar isso?',
@@ -148,7 +142,7 @@ export default function Argumentos() {
   const addToCategory = (category: string, content: string) => {
     setBrainstormData(prev => ({
       ...prev,
-      [category]: category === 'argumentos' || category === 'repertorios' 
+      [category]: category === 'argumentos' 
         ? [...prev[category], { id: Date.now(), content }]
         : content
     }));
@@ -157,7 +151,7 @@ export default function Argumentos() {
   const removeFromCategory = (category: string, id: number) => {
     setBrainstormData(prev => ({
       ...prev,
-      [category]: category === 'argumentos' || category === 'repertorios' 
+      [category]: category === 'argumentos' 
         ? (prev[category as keyof typeof prev] as Array<{id: number, content: string}>).filter(item => item.id !== id)
         : prev[category as keyof typeof prev]
     }));
@@ -325,48 +319,68 @@ export default function Argumentos() {
               <ChatMini section="argumentos" title="argumentos" />
             </LiquidGlassCard>
 
-            {/* Repertórios */}
-            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <h3 className="text-lg font-semibold text-dark-blue mb-4">Repertórios Culturais</h3>
-              
-              {/* Adicionar novo repertório */}
-              <div className="mb-4">
-                <p className="text-soft-gray text-sm mb-2">Adicione repertórios para enriquecer sua redação</p>
-                <div className="flex space-x-2">
-                  <Input
-                    value={newRepertorio}
-                    onChange={(e) => setNewRepertorio(e.target.value)}
-                    placeholder="Digite um repertório (filme, livro, dados, etc.)..."
-                    className="flex-1 border-soft-gray/20 focus:border-soft-gray"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && newRepertorio.trim()) {
-                        addToCategory('repertorios', newRepertorio.trim());
-                        setNewRepertorio('');
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="space-y-3">
-                {brainstormData.repertorios.map((rep, index) => (
-                  <div key={rep.id} className="p-3 bg-white rounded-lg border border-soft-gray/20 flex items-center justify-between">
-                    <div>
-                      <span className="font-medium text-dark-blue text-sm">Repertório {index + 1}</span>
-                      <p className="text-soft-gray text-sm mt-1">{rep.content}</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => removeFromCategory('repertorios', rep.id)}
-                      className="text-red-500 hover:bg-red-50"
-                    >
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              <ChatMini section="repertorios" title="repertórios" />
-            </LiquidGlassCard>
+            {/* Estrutura dos Parágrafos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Introdução */}
+              <LiquidGlassCard className="bg-gradient-to-br from-green-50/80 to-green-100/50 border-green-200/50">
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">1. Introdução</h3>
+                <p className="text-soft-gray text-sm mb-3">Apresentação do tema, contextualização e tese</p>
+                <Textarea
+                  value={brainstormData.paragrafos.introducao}
+                  onChange={(e) => setBrainstormData(prev => ({
+                    ...prev,
+                    paragrafos: { ...prev.paragrafos, introducao: e.target.value }
+                  }))}
+                  placeholder="Escreva sua introdução aqui..."
+                  className="border-green-200/50 focus:border-green-300 h-24"
+                />
+              </LiquidGlassCard>
+
+              {/* Desenvolvimento 1 */}
+              <LiquidGlassCard className="bg-gradient-to-br from-blue-50/80 to-blue-100/50 border-blue-200/50">
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">2. Desenvolvimento I</h3>
+                <p className="text-soft-gray text-sm mb-3">Primeiro argumento com sustentação e exemplos</p>
+                <Textarea
+                  value={brainstormData.paragrafos.desenvolvimento1}
+                  onChange={(e) => setBrainstormData(prev => ({
+                    ...prev,
+                    paragrafos: { ...prev.paragrafos, desenvolvimento1: e.target.value }
+                  }))}
+                  placeholder="Desenvolva seu primeiro argumento..."
+                  className="border-blue-200/50 focus:border-blue-300 h-24"
+                />
+              </LiquidGlassCard>
+
+              {/* Desenvolvimento 2 */}
+              <LiquidGlassCard className="bg-gradient-to-br from-orange-50/80 to-orange-100/50 border-orange-200/50">
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">3. Desenvolvimento II</h3>
+                <p className="text-soft-gray text-sm mb-3">Segundo argumento com sustentação e exemplos</p>
+                <Textarea
+                  value={brainstormData.paragrafos.desenvolvimento2}
+                  onChange={(e) => setBrainstormData(prev => ({
+                    ...prev,
+                    paragrafos: { ...prev.paragrafos, desenvolvimento2: e.target.value }
+                  }))}
+                  placeholder="Desenvolva seu segundo argumento..."
+                  className="border-orange-200/50 focus:border-orange-300 h-24"
+                />
+              </LiquidGlassCard>
+
+              {/* Conclusão */}
+              <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50">
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">4. Conclusão</h3>
+                <p className="text-soft-gray text-sm mb-3">Síntese dos argumentos e proposta de intervenção</p>
+                <Textarea
+                  value={brainstormData.paragrafos.conclusao}
+                  onChange={(e) => setBrainstormData(prev => ({
+                    ...prev,
+                    paragrafos: { ...prev.paragrafos, conclusao: e.target.value }
+                  }))}
+                  placeholder="Escreva sua conclusão e proposta de intervenção..."
+                  className="border-purple-200/50 focus:border-purple-300 h-24"
+                />
+              </LiquidGlassCard>
+            </div>
 
             {/* Conclusão */}
             <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50">
@@ -398,8 +412,8 @@ export default function Argumentos() {
                     <div className={`w-3 h-3 rounded-full ${brainstormData.argumentos.length >= 2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Repertórios</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.repertorios.length > 0 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <span className="text-xs text-dark-blue">Parágrafos</span>
+                    <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-dark-blue">Conclusão</span>
