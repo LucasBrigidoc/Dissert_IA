@@ -79,7 +79,7 @@ export const mockPricingPlans = [
     period: "",
     features: [
       "Acesso à Newsletter",
-      "Cronograma simples",
+      "Dashboard e Cronograma",
       "Newsletter semanal",
       "Acesso limitado às funcionalidades"
     ],
