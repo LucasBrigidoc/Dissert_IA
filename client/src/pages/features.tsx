@@ -156,7 +156,8 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Lightbulb className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Brainstorm Assistido</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Refinamento do Brainstorming
+</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
                   Sistema que estimula a criatividade e organiza suas ideias através de técnicas de brainstorming estruturado, ajudando a mapear todos os aspectos do tema.
