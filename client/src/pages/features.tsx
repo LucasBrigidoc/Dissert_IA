@@ -50,7 +50,7 @@ export default function Features() {
               <p className="sm:text-xl lg:text-2xl sm:mb-4 font-semibold text-[#5087ff] text-left mt-[10px] mb-[10px] text-[35px]" data-testid="text-features-subtitle">
                 Ferramentas inteligentes para revolucionar sua escrita
               </p>
-              <p className="text-base sm:text-lg mb-6 sm:mb-8 text-white/80" data-testid="text-features-description">
+              <p className="sm:text-lg sm:mb-8 text-white/80 text-[20px] font-medium mt-[10px] mb-[10px]" data-testid="text-features-description">
                 Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
               </p>
               <Button asChild className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-flex items-center gap-2 mt-[7px] mb-[7px]" data-testid="button-try-now">
