@@ -17,7 +17,14 @@ import {
   AlertTriangle,
   CheckCircle,
   TriangleAlert,
-  Sparkles 
+  Sparkles,
+  FileText,
+  Target,
+  Clock,
+  BookOpen,
+  Zap,
+  PenTool,
+  BarChart3
 } from "lucide-react";
 
 const iconMap = {
@@ -28,7 +35,14 @@ const iconMap = {
   sliders: Sliders,
   "graduation-cap": GraduationCap,
   lightbulb: Lightbulb,
-  archive: Archive
+  archive: Archive,
+  "file-text": FileText,
+  target: Target,
+  clock: Clock,
+  "book-open": BookOpen,
+  zap: Zap,
+  "pen-tool": PenTool,
+  "bar-chart-3": BarChart3
 };
 
 export default function Features() {
@@ -123,15 +137,17 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <MessageCircle className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Arquiteto de Argumentos</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Arquiteto de Argumentos Socráticos</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
-                  Ferramenta de diálogo socrático que te faz perguntas inteligentes e profundas sobre o tema proposto para você encontrar argumentos sólidos.
+                  Sistema de diálogo interativo que utiliza o método socrático para te ajudar a desenvolver argumentos sólidos e bem fundamentados através de perguntas estratégicas.
                 </p>
                 <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Perguntas personalizadas baseadas no tema</li>
-                  <li>• Desenvolvimento de raciocínio crítico</li>
-                  <li>• Sugestões de contra-argumentos</li>
+                  <li>• Perguntas personalizadas baseadas no tema específico</li>
+                  <li>• Desenvolvimento progressivo do raciocínio crítico</li>
+                  <li>• Identificação e tratamento de contra-argumentos</li>
+                  <li>• Análise da consistência lógica dos argumentos</li>
+                  <li>• Sugestões de evidências e exemplos relevantes</li>
                 </ul>
               </LiquidGlassCard>
 
@@ -140,15 +156,55 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Search className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Explorador de Repertório</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Explorador de Repertório Inteligente</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
-                  Banco de dados inteligente conectado com mais de 50 fontes de notícias, artigos acadêmicos e bases de dados estatísticas atualizadas.
+                  Banco de dados conectado a mais de 100 fontes confiáveis que fornece repertório atualizado, dados estatísticos e referências acadêmicas relevantes para enriquecer sua argumentação.
                 </p>
                 <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Conexão com fontes confiáveis</li>
-                  <li>• Sugestões contextualizadas</li>
-                  <li>• Dados estatísticos relevantes</li>
+                  <li>• Acesso a fontes jornalísticas e acadêmicas verificadas</li>
+                  <li>• Dados estatísticos atualizados e contextualizados</li>
+                  <li>• Citações e referências organizadas por tema</li>
+                  <li>• Filtros por área do conhecimento e relevância</li>
+                  <li>• Sugestões automáticas baseadas no seu texto</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-theme-analyzer">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <Target className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Analisador de Temas</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Ferramenta que decompõe e analisa propostas de redação, identificando palavras-chave, conceitos centrais e possíveis abordagens para o desenvolvimento do texto.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Identificação automática de palavras-chave</li>
+                  <li>• Mapeamento de conceitos e subtemas</li>
+                  <li>• Sugestões de abordagens e perspectivas</li>
+                  <li>• Análise do comando da proposta</li>
+                  <li>• Orientações sobre o tipo de texto solicitado</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-brainstorm">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <Lightbulb className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Brainstorm Assistido</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Sistema que estimula a criatividade e organiza suas ideias através de técnicas de brainstorming estruturado, ajudando a mapear todos os aspectos do tema.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Técnicas de associação livre e mapeamento mental</li>
+                  <li>• Organização automática de ideias por categoria</li>
+                  <li>• Estímulos criativos personalizados</li>
+                  <li>• Conexões entre diferentes conceitos</li>
+                  <li>• Salvamento e recuperação de sessões anteriores</li>
                 </ul>
               </LiquidGlassCard>
             </div>
@@ -161,17 +217,19 @@ export default function Features() {
               <LiquidGlassCard className="p-8 feature-card" data-testid="card-structure-creator">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <Edit className="text-white" size={24} />
+                    <FileText className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Criador de Estrutura Personalizada</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Estrutura Curinga Personalizada</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
-                  A partir da análise do seu estilo de escrita, a IA cria estruturas de redação modelo que incorporam suas preferências e pontos fortes.
+                  Sistema que analisa seu estilo de escrita e cria estruturas de redação modelo adaptadas às suas preferências, forças e ao tipo de prova que você vai fazer.
                 </p>
                 <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Análise do estilo pessoal</li>
-                  <li>• Estruturas personalizadas</li>
-                  <li>• Adaptação contínua</li>
+                  <li>• Análise do seu estilo pessoal de escrita</li>
+                  <li>• Estruturas adaptadas por tipo de prova (ENEM, vestibulares, concursos)</li>
+                  <li>• Templates personalizados para diferentes gêneros textuais</li>
+                  <li>• Sugestões de transições e conectivos adequados</li>
+                  <li>• Evolução contínua baseada no seu progresso</li>
                 </ul>
               </LiquidGlassCard>
 
@@ -180,42 +238,189 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Sliders className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Controlador de Estilo</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Controlador de Estilo Inteligente</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
-                  Ajustes interativos de formalidade, tom e complexidade vocabular com visualização em tempo real das alterações no texto.
+                  Ferramenta interativa que permite ajustar em tempo real a formalidade, tom, complexidade vocabular e estilo do seu texto, com visualização imediata das mudanças.
                 </p>
                 <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Controle de formalidade</li>
-                  <li>• Ajuste de complexidade</li>
-                  <li>• Visualização em tempo real</li>
+                  <li>• Controle dinâmico de formalidade e registro linguístico</li>
+                  <li>• Ajuste de complexidade vocabular por nível</li>
+                  <li>• Adaptação de tom (impessoal, persuasivo, expositivo)</li>
+                  <li>• Visualização em tempo real das alterações</li>
+                  <li>• Sugestões de melhorias automáticas</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-writing-assistant">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <PenTool className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Assistente de Escrita IA</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Companheiro de escrita que oferece sugestões contextuais, correções gramaticais, melhorias estilísticas e orientações pedagógicas durante todo o processo de redação.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Correção gramatical e ortográfica inteligente</li>
+                  <li>• Sugestões de melhorias estilísticas contextuais</li>
+                  <li>• Análise de coesão e coerência textual</li>
+                  <li>• Orientações pedagógicas personalizadas</li>
+                  <li>• Feedback construtivo e explicativo</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-paragraph-builder">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <Edit className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Construtor de Parágrafos</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Ferramenta que te guia na construção de parágrafos bem estruturados, ensinando técnicas de desenvolvimento de ideias e organização lógica do pensamento.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Estruturação guiada de parágrafos (tópico frasal, desenvolvimento, conclusão)</li>
+                  <li>• Técnicas de desenvolvimento (exemplificação, causa-efeito, comparação)</li>
+                  <li>• Orientações sobre extensão e densidade informacional</li>
+                  <li>• Verificação de unidade temática e progressão</li>
+                  <li>• Sugestões de conectivos e elementos coesivos</li>
                 </ul>
               </LiquidGlassCard>
             </div>
           </div>
 
-          {/* Complementary Tools */}
+          {/* Analysis and Review Tools */}
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Análise e Revisão:</h3>
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-text-analyzer">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <BarChart3 className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Analisador de Texto Avançado</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Sistema completo de análise que avalia seu texto em múltiplas dimensões, fornecendo feedback detalhado sobre estrutura, conteúdo, linguagem e adequação aos critérios avaliativos.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Análise de coesão, coerência e estrutura textual</li>
+                  <li>• Avaliação de adequação ao gênero e registro</li>
+                  <li>• Verificação de critérios específicos por tipo de prova</li>
+                  <li>• Métricas de legibilidade e fluência</li>
+                  <li>• Relatório detalhado com pontuação estimada</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-smart-review">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <CheckCircle className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Revisor Inteligente</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Ferramenta de revisão automatizada que identifica e sugere correções para diferentes tipos de problemas textuais, desde questões gramaticais até melhorias estruturais.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Correção automática de erros gramaticais e ortográficos</li>
+                  <li>• Identificação de problemas de coesão e coerência</li>
+                  <li>• Sugestões de melhorias vocabulares e estilísticas</li>
+                  <li>• Verificação de repetições e redundâncias</li>
+                  <li>• Análise de clareza e precisão argumentativa</li>
+                </ul>
+              </LiquidGlassCard>
+            </div>
+          </div>
+
+          {/* Simulation and Practice Tools */}
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Simulação e Prática:</h3>
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-exam-simulator">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <Clock className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Simulador de Prova Realista</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Ambiente de simulação que replica fielmente as condições reais de prova, incluindo cronômetro, interface similar ao exame oficial e limitações de recursos.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Cronômetro oficial com alertas de tempo</li>
+                  <li>• Interface idêntica aos exames reais</li>
+                  <li>• Simulação de pressão e condições adversas</li>
+                  <li>• Diferentes modalidades (ENEM, vestibulares, concursos)</li>
+                  <li>• Relatório de desempenho e tempo gasto por seção</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-proposal-creator">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <Newspaper className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Gerador de Propostas Personalizadas</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Sistema que cria propostas de redação customizadas baseadas em temas atuais, seu nível de conhecimento e áreas de interesse, incluindo textos motivadores relevantes.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Geração automática baseada em temas da atualidade</li>
+                  <li>• Personalização por área de interesse e dificuldade</li>
+                  <li>• Textos motivadores atualizados e relevantes</li>
+                  <li>• Diferentes tipos de comando (dissertativo, narrativo, carta)</li>
+                  <li>• Banco com milhares de propostas categorizadas</li>
+                </ul>
+              </LiquidGlassCard>
+            </div>
+          </div>
+
+          {/* Learning and Development Tools */}
           <div>
-            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas Complementares:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <LiquidGlassCard className="p-6 text-center feature-card" data-testid="card-exam-simulator">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <GraduationCap className="text-white" size={24} />
+            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Aprendizado e Desenvolvimento:</h3>
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-progress-tracker">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <BarChart3 className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Acompanhamento de Progresso</h4>
                 </div>
-                <h4 className="font-semibold text-dark-blue mb-2">Simulador de Prova</h4>
-                <p className="text-soft-gray text-sm">Ambiente realista com cronômetro e condições idênticas ao exame</p>
+                <p className="text-soft-gray mb-4">
+                  Dashboard personalizado que monitora sua evolução em todas as competências de escrita, identificando pontos fortes, áreas de melhoria e sugerindo planos de estudo específicos.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Métricas detalhadas de progresso por competência</li>
+                  <li>• Gráficos de evolução temporal e comparativos</li>
+                  <li>• Identificação automática de pontos fracos</li>
+                  <li>• Sugestões de exercícios e práticas direcionadas</li>
+                  <li>• Metas personalizadas e planos de estudo</li>
+                </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-6 text-center feature-card" data-testid="card-proposal-creator">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Lightbulb className="text-white" size={24} />
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-knowledge-library">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <BookOpen className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Biblioteca de Conhecimento</h4>
                 </div>
-                <h4 className="font-semibold text-dark-blue mb-2">Criador de Propostas</h4>
-                <p className="text-soft-gray text-sm">Elabore temas personalizados com textos motivadores</p>
+                <p className="text-soft-gray mb-4">
+                  Acervo completo de materiais didáticos, exemplos de redações nota máxima, técnicas de escrita, teoria gramatical e conteúdos organizados por tema e nível.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Redações nota 1000 comentadas e analisadas</li>
+                  <li>• Teoria gramatical aplicada à redação</li>
+                  <li>• Técnicas de escrita e estratégias argumentativas</li>
+                  <li>• Materiais organizados por tema e dificuldade</li>
+                  <li>• Conteúdo atualizado com tendências dos exames</li>
+                </ul>
               </LiquidGlassCard>
-
-
-              
             </div>
           </div>
         </div>
