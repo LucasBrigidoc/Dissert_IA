@@ -86,9 +86,7 @@ export default function About() {
                   <h3 className="text-xl font-semibold text-dark-blue mb-3">
                     IA Treinada Especificamente para o Contexto Brasileiro
                   </h3>
-                  <p className="text-soft-gray">
-                    Nossa inteligência artificial foi desenvolvida com milhares de redações de vestibulares brasileiros, entendendo nuances culturais, referências nacionais e expectativas específicas de bancas examinadoras como FUVEST, UERJ, e outras instituições renomadas.
-                  </p>
+                  <p className="text-soft-gray">Nossa inteligência artificial foi desenvolvida conversando com vários estudantes e com redações de vestibulares e concurso brasileiros referências nacionais para atender a expectativas específicas de bancas examinadoras de instituições renomadas.</p>
                 </div>
               </div>
             </LiquidGlassCard>
