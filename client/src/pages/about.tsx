@@ -71,9 +71,7 @@ export default function About() {
                   <span className="text-white font-bold">1</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-dark-blue mb-3">
-                    Metodologia Neuropsicológica de Andaimes Cognitivos
-                  </h3>
+                  <h3 className="text-xl font-semibold text-dark-blue mb-3">Metodologia de refinamento com IA sem lhe deixar dependente de IA</h3>
                   <p className="text-soft-gray">
                     Baseado nas teorias de Vygotsky e Bruner, nosso sistema oferece suporte personalizado que se adapta à zona de desenvolvimento proximal de cada estudante, proporcionando desafios na medida certa para promover crescimento cognitivo acelerado.
                   </p>
