@@ -7,14 +7,36 @@ import { Link, useLocation } from "wouter";
 
 export default function Repertorio() {
   const [location] = useLocation();
-  const urlParams = new URLSearchParams(window.location.search);
-  const fromPage = urlParams.get('from') || 'dashboard';
-  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
   
-  console.log('Current location:', location);
-  console.log('URL search params:', window.location.search);
-  console.log('From page:', fromPage);
-  console.log('Back URL:', backUrl);
+  // Sistema inteligente de detecção de origem
+  const getBackUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromUrl = urlParams.get('from');
+    const fromSession = sessionStorage.getItem('repertorio-origin');
+    const fromPage = fromUrl || fromSession || 'dashboard';
+    
+    console.log('Detectando origem da página repertório:');
+    console.log('- URL param "from":', fromUrl);
+    console.log('- SessionStorage "repertorio-origin":', fromSession);
+    console.log('- Origem final detectada:', fromPage);
+    
+    // Salvar a origem atual se vier da URL
+    if (fromUrl) {
+      sessionStorage.setItem('repertorio-origin', fromUrl);
+    }
+    
+    // Retornar URL correta baseada na origem
+    switch (fromPage) {
+      case 'functionalities':
+        return '/functionalities';
+      case 'dashboard':
+        return '/dashboard';
+      default:
+        return '/dashboard'; // fallback seguro
+    }
+  };
+  
+  const backUrl = getBackUrl();
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -12,9 +12,36 @@ import { Link, useLocation } from "wouter";
 export default function Simulador() {
   const [location] = useLocation();
   const [, setLocation] = useLocation();
-  const urlParams = new URLSearchParams(window.location.search);
-  const fromPage = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
-  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  
+  // Sistema inteligente de detecção de origem
+  const getBackUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromUrl = urlParams.get('from');
+    const fromSession = sessionStorage.getItem('simulador-origin');
+    const fromPage = fromUrl || fromSession || 'dashboard';
+    
+    console.log('Detectando origem da página:');
+    console.log('- URL param "from":', fromUrl);
+    console.log('- SessionStorage "simulador-origin":', fromSession);
+    console.log('- Origem final detectada:', fromPage);
+    
+    // Salvar a origem atual se vier da URL
+    if (fromUrl) {
+      sessionStorage.setItem('simulador-origin', fromUrl);
+    }
+    
+    // Retornar URL correta baseada na origem
+    switch (fromPage) {
+      case 'functionalities':
+        return '/functionalities';
+      case 'dashboard':
+        return '/dashboard';
+      default:
+        return '/dashboard'; // fallback seguro
+    }
+  };
+  
+  const backUrl = getBackUrl();
   
   // Estados para os campos obrigatórios
   const [examType, setExamType] = useState("");
@@ -28,14 +55,6 @@ export default function Simulador() {
   
   // Verificar se todos os campos obrigatórios estão preenchidos
   const isFormComplete = examType && timeLimit && theme && timerDisplay;
-  
-  // Salvar a origem no sessionStorage quando a página carrega
-  useEffect(() => {
-    const currentFrom = urlParams.get('from');
-    if (currentFrom) {
-      sessionStorage.setItem('simulador-origin', currentFrom);
-    }
-  }, []);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -227,6 +246,7 @@ export default function Simulador() {
                   sessionStorage.setItem('simulation-config', JSON.stringify(simulationConfig));
                   
                   // Garantir que a origem está salva antes de navegar
+                  const urlParams = new URLSearchParams(window.location.search);
                   const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
                   sessionStorage.setItem('simulador-origin', currentFrom);
                   setLocation('/simulacao');
