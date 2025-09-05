@@ -27,19 +27,33 @@ export default function Pricing() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4" data-testid="text-pricing-title">
             Escolha o Plano Ideal para Você:
           </h1>
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-            <div className="flex items-center space-x-4">
-              <span className="text-white text-sm sm:text-base">Mensal</span>
-              <Switch 
-                checked={isAnnual} 
-                onCheckedChange={setIsAnnual}
-                data-testid="switch-billing-period"
-              />
-              <span className="text-white text-sm sm:text-base">Anual</span>
+          <div className="flex items-center justify-center">
+            <div className="relative bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20">
+              <div className="flex items-center">
+                <button
+                  onClick={() => setIsAnnual(false)}
+                  className={`relative px-6 py-3 rounded-full transition-all duration-300 text-sm font-semibold ${
+                    !isAnnual 
+                      ? "bg-bright-blue text-white shadow-lg" 
+                      : "text-white/80 hover:text-white"
+                  }`}
+                  data-testid="button-monthly"
+                >
+                  Mensal
+                </button>
+                <button
+                  onClick={() => setIsAnnual(true)}
+                  className={`relative px-6 py-3 rounded-full transition-all duration-300 text-sm font-semibold ${
+                    isAnnual 
+                      ? "bg-bright-blue text-white shadow-lg" 
+                      : "text-white/80 hover:text-white"
+                  }`}
+                  data-testid="button-annual"
+                >
+                  Anual
+                </button>
+              </div>
             </div>
-            <Badge className="bg-yellow-400 text-dark-blue text-xs sm:text-sm" data-testid="badge-save-annual">
-              ECONOMIZE 40%
-            </Badge>
           </div>
         </div>
 
