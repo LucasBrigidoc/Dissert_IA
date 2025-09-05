@@ -39,11 +39,15 @@ export default function Features() {
       {/* Hero Section */}
       <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
         <div className="container mx-auto px-2 sm:px-4">
+          {/* Título centralizado ocupando toda a largura */}
+          <div className="w-full text-center mb-8 sm:mb-12">
+            <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#5087ff] text-[57px]" data-testid="text-features-title">
+              Conheça as Principais Funcionalidades
+            </h1>
+          </div>
+          
           <div className="flex flex-col lg:flex-row items-center justify-between gap-0">
             <div className="w-full lg:w-[55%] text-white text-center lg:text-left">
-              <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#5087ff] text-[57px]" data-testid="text-features-title">
-                Conheça as Principais Funcionalidades
-              </h1>
               <p className="text-lg sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-features-subtitle">
                 Ferramentas inteligentes para revolucionar sua escrita
               </p>
