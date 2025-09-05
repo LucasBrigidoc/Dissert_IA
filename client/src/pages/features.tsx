@@ -16,7 +16,8 @@ import {
   Newspaper,
   AlertTriangle,
   CheckCircle,
-  TriangleAlert 
+  TriangleAlert,
+  Sparkles 
 } from "lucide-react";
 
 const iconMap = {
@@ -35,35 +36,38 @@ export default function Features() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8 sm:pb-12">
-        <div className="text-center mb-12 sm:mb-16">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue mb-3 sm:mb-4" data-testid="text-features-title">
-            Conheça as Principais Funcionalidades
-          </h1>
-          <p className="text-lg sm:text-xl text-soft-gray">Ferramentas inteligentes para revolucionar sua escrita</p>
-        </div>
-
-        {/* Hero Feature */}
-        <LiquidGlassCard className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 mb-12 sm:mb-16" data-testid="card-hero-feature">
-          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-            <div className="w-full md:w-1/2 text-center md:text-left">
-              <h2 className="text-2xl sm:text-3xl font-bold text-dark-blue mb-3 sm:mb-4">
-                Refine seu processo de escrita com IA
-              </h2>
-              <p className="text-soft-gray mb-4 sm:mb-6 text-sm sm:text-base">
-                Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Então desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
+      {/* Hero Section */}
+      <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-0">
+            <div className="w-full lg:w-[55%] text-white text-center lg:text-left">
+              <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#5087ff] text-[57px]" data-testid="text-features-title">
+                Conheça as Principais Funcionalidades
+              </h1>
+              <p className="text-lg sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-features-subtitle">
+                Ferramentas inteligentes para revolucionar sua escrita
               </p>
-              <Button asChild className="bg-bright-blue text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-600 smooth-transition hover-scale text-sm sm:text-base" data-testid="button-try-now">
-                <Link href="/signup">Experimente Agora</Link>
+              <p className="text-base sm:text-lg mb-6 sm:mb-8 text-white/80" data-testid="text-features-description">
+                Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
+              </p>
+              <Button asChild className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-flex items-center gap-2" data-testid="button-try-now">
+                <Link href="/signup">
+                  <Sparkles size={20} />
+                  Experimente Agora
+                </Link>
               </Button>
             </div>
-            <div className="w-full md:w-1/2 text-center">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto gradient-bg rounded-full flex items-center justify-center">
+            
+            <div className="w-full lg:w-[45%] relative flex justify-center lg:justify-start">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto gradient-bg rounded-full flex items-center justify-center border-4 border-white/20">
                 <Brain className="text-white" size={60} />
               </div>
             </div>
           </div>
-        </LiquidGlassCard>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-8 sm:pb-12">
 
         {/* Challenge Section */}
         <div className="text-center mb-12 sm:mb-16">
