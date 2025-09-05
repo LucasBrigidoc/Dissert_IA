@@ -184,9 +184,7 @@ export default function Features() {
                   </div>
                   <h4 className="text-xl font-semibold text-dark-blue">Estrutura Coringa Personalizada</h4>
                 </div>
-                <p className="text-soft-gray mb-4">
-                  Sistema que analisa seu estilo de escrita e cria estruturas de redação modelo adaptadas às suas preferências, forças e ao tipo de prova que você vai fazer.
-                </p>
+                <p className="text-soft-gray mb-4">Sistema que analisa seu estilo de escrita e cria estruturas de redação modelo adaptadas às suas preferências, estilo e ao tipo de prova que você vai fazer.</p>
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Análise do seu estilo pessoal de escrita</li>
                   <li>• Estruturas adaptadas por tipo de prova (ENEM, vestibulares, concursos)</li>
