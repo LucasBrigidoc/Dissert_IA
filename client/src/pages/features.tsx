@@ -82,23 +82,23 @@ export default function Features() {
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             <LiquidGlassCard className="p-8" data-testid="card-statistics">
-              <h3 className="text-xl font-semibold text-dark-blue mb-2">Estatísticas Alarmantes</h3>
-              <p className="text-soft-gray mb-4">dos estudantes brasileiros têm dificuldade com redação no ENEM</p>
-              <div className="text-4xl text-red-500">73%</div>
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Estatísticas Alarmantes</h3>
+              <div className="text-4xl text-red-500 mb-4">73%</div>
+              <p className="text-soft-gray">dos estudantes brasileiros têm dificuldade com redação no ENEM</p>
             </LiquidGlassCard>
             <LiquidGlassCard className="p-8" data-testid="card-challenges">
-              <h3 className="text-xl font-semibold text-dark-blue mb-2">Principais Desafios</h3>
-              <p className="text-soft-gray mb-4">Falta de estrutura, repertório limitado e gestão de tempo inadequada</p>
-              <div className="text-4xl text-yellow-500">
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Principais Desafios</h3>
+              <div className="text-4xl text-yellow-500 mb-4">
                 <TriangleAlert className="mx-auto" size={48} />
               </div>
+              <p className="text-soft-gray">Falta de estrutura, repertório limitado e gestão de tempo inadequada</p>
             </LiquidGlassCard>
             <LiquidGlassCard className="p-8" data-testid="card-solution">
-              <h3 className="text-xl font-semibold text-dark-blue mb-2">Nossa Solução</h3>
-              <p className="text-soft-gray mb-4">IA que vai te acompanhar e escrever junto com você todos os pontos</p>
-              <div className="text-4xl text-green-500">
+              <h3 className="text-xl font-semibold text-dark-blue mb-4">Nossa Solução</h3>
+              <div className="text-4xl text-green-500 mb-4">
                 <Lightbulb className="mx-auto" size={48} />
               </div>
+              <p className="text-soft-gray">IA que vai te acompanhar e escrever junto com você todos os pontos</p>
             </LiquidGlassCard>
           </div>
         </div>
