@@ -23,7 +23,7 @@ export default function About() {
           </div>
           
           {/* Mission Statement */}
-          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 -my-8">
             <div className="w-full md:w-1/2 text-center md:text-left text-white">
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
                 Nossa Proposta: Democratizando a Excelência na Escrita
