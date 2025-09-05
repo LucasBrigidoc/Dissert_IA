@@ -65,7 +65,7 @@ export default function Pricing() {
               
               <div className="text-center mb-6">
                 <div className={`text-4xl font-bold mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
-                  {plan.price}
+                  {plan.id === "pro" && isAnnual ? "R$49,90" : plan.price}
                   {plan.period && <span className="text-xl">{plan.period}</span>}
                 </div>
                 {plan.annualPrice && isAnnual && (
