@@ -9,6 +9,7 @@ import { useLocation } from "wouter";
 export default function Argumentos() {
   const [location] = useLocation();
   const [backUrl, setBackUrl] = useState('/dashboard');
+  const [showMindMap, setShowMindMap] = useState(false);
   const [brainstormData, setBrainstormData] = useState({
     tema: '',
     tese: '',
@@ -73,6 +74,15 @@ export default function Argumentos() {
     const detectedUrl = detectPreviousPage();
     setBackUrl(detectedUrl);
   }, []);
+
+  const handleGenerateMindMap = () => {
+    // Verificar se há dados suficientes para gerar o mapa mental
+    if (!brainstormData.tema || !brainstormData.tese) {
+      alert('Por favor, preencha pelo menos a proposta e a tese antes de gerar o mapa mental.');
+      return;
+    }
+    setShowMindMap(true);
+  };
   
   const sendMessageToSection = (section: string) => {
     const currentMessage = chatStates[section as keyof typeof chatStates].currentMessage;
@@ -379,12 +389,78 @@ export default function Argumentos() {
                 <p className="text-soft-gray mb-4">
                   Organize suas ideias visualmente em um mapa mental interativo
                 </p>
-                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue">
+                <Button 
+                  onClick={handleGenerateMindMap}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
+                >
                   <Map className="mr-2" size={16} />
                   Gerar Mapa Mental
                 </Button>
               </div>
             </LiquidGlassCard>
+
+            {/* Resultado do Mapa Mental */}
+            {showMindMap && (
+              <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/30">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold text-dark-blue">Seu Mapa Mental</h3>
+                  <Button 
+                    onClick={() => setShowMindMap(false)}
+                    variant="outline"
+                    size="sm"
+                    className="text-soft-gray hover:text-dark-blue"
+                  >
+                    Fechar
+                  </Button>
+                </div>
+                
+                <div className="space-y-6">
+                  {/* Centro do Mapa - Proposta */}
+                  <div className="text-center">
+                    <div className="inline-block bg-gradient-to-r from-bright-blue to-dark-blue text-white px-6 py-4 rounded-full text-lg font-semibold max-w-md">
+                      {brainstormData.tema || 'Sua Proposta'}
+                    </div>
+                  </div>
+
+                  {/* Tese */}
+                  <div className="text-center">
+                    <div className="bg-bright-blue/10 border border-bright-blue/20 rounded-lg p-4 max-w-2xl mx-auto">
+                      <h4 className="font-semibold text-dark-blue mb-2">Tese Principal</h4>
+                      <p className="text-soft-gray">{brainstormData.tese || 'Desenvolva sua tese aqui...'}</p>
+                    </div>
+                  </div>
+
+                  {/* Estrutura dos Parágrafos */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-dark-blue/5 border border-dark-blue/20 rounded-lg p-4">
+                      <h4 className="font-semibold text-dark-blue mb-2">1. Introdução</h4>
+                      <p className="text-sm text-soft-gray">{brainstormData.paragrafos.introducao || 'Apresentação do tema...'}</p>
+                    </div>
+                    
+                    <div className="bg-soft-gray/5 border border-soft-gray/20 rounded-lg p-4">
+                      <h4 className="font-semibold text-dark-blue mb-2">2. Desenvolvimento I</h4>
+                      <p className="text-sm text-soft-gray">{brainstormData.paragrafos.desenvolvimento1 || 'Primeiro argumento...'}</p>
+                    </div>
+                    
+                    <div className="bg-bright-blue/5 border border-bright-blue/20 rounded-lg p-4">
+                      <h4 className="font-semibold text-dark-blue mb-2">3. Desenvolvimento II</h4>
+                      <p className="text-sm text-soft-gray">{brainstormData.paragrafos.desenvolvimento2 || 'Segundo argumento...'}</p>
+                    </div>
+                    
+                    <div className="bg-dark-blue/5 border border-dark-blue/20 rounded-lg p-4">
+                      <h4 className="font-semibold text-dark-blue mb-2">4. Conclusão</h4>
+                      <p className="text-sm text-soft-gray">{brainstormData.paragrafos.conclusao || 'Síntese e proposta...'}</p>
+                    </div>
+                  </div>
+
+                  <div className="text-center pt-4">
+                    <p className="text-xs text-soft-gray">
+                      Este mapa mental representa a estrutura da sua redação baseada nos dados preenchidos
+                    </p>
+                  </div>
+                </div>
+              </LiquidGlassCard>
+            )}
           </div>
 
           
