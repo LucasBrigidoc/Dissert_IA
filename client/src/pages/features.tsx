@@ -64,7 +64,7 @@ export default function Features() {
             <div className="w-full lg:w-[45%] relative flex justify-center lg:justify-start">
               <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto flex items-center justify-center">
                 <img 
-                  src="/imagens funcionalidades/fimagem1.svg" 
+                  src="/imagem/fimagem1.svg" 
                   alt="Funcionalidades DissertAI" 
                   className="w-full h-full object-contain"
                 />
