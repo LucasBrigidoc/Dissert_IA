@@ -100,18 +100,18 @@ export default function Landing() {
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-center text-dark-blue mb-8 sm:mb-16" data-testid="text-features-title">
             Funcionalidades em Destaque
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             {mockFeatures
               .filter((feature) => feature.name !== "Newsletter Educacional")
               .map((feature) => {
                 const IconComponent = iconMap[feature.icon as keyof typeof iconMap] || Brain;
                 return (
-                  <LiquidGlassCard key={feature.id} className="feature-card p-4 sm:p-6" data-testid={`card-feature-${feature.id}`}>
-                    <div className="text-2xl sm:text-3xl text-bright-blue mb-3 sm:mb-4">
-                      <IconComponent className="mx-auto" size={28} />
+                  <LiquidGlassCard key={feature.id} className="feature-card p-6 sm:p-8 text-center" data-testid={`card-feature-${feature.id}`}>
+                    <div className="text-3xl sm:text-4xl text-bright-blue mb-4 sm:mb-6">
+                      <IconComponent className="mx-auto" size={36} />
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-dark-blue mb-2 sm:mb-3">{feature.name}</h3>
-                    <p className="text-soft-gray text-xs sm:text-sm">{feature.description}</p>
+                    <h3 className="text-lg sm:text-xl font-semibold text-dark-blue mb-3 sm:mb-4">{feature.name}</h3>
+                    <p className="text-soft-gray text-sm sm:text-base">{feature.description}</p>
                   </LiquidGlassCard>
                 );
               })}
