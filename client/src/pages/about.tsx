@@ -25,7 +25,7 @@ export default function About() {
               <h2 className="sm:text-3xl font-bold sm:mb-6 pt-[0px] pb-[0px] mt-[10px] mb-[10px] text-[45px] text-left">
                 Nossa Proposta: Democratizando a Excelência na Escrita
               </h2>
-              <p className="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base">
+              <p className="text-white/90 sm:mb-6 sm:text-base text-[25px] font-medium mt-[10px] mb-[10px]">
                 Sabemos o quão desafiador é dominar a arte da escrita no contexto dos vestibulares brasileiros. Nossa missão é eliminar as barreiras que impedem estudantes de alcançar seu potencial máximo, oferecendo tecnologia de inteligência artificial que funciona como um tutor pessoal disponível 24/7.
               </p>
               <p className="text-white/80 text-sm sm:text-base">
