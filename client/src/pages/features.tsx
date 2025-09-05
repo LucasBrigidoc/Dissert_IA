@@ -132,25 +132,6 @@ export default function Features() {
           <div className="mb-8 sm:mb-12">
             <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Pré-escrita:</h3>
             <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-argument-architect">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <MessageCircle className="text-white" size={24} />
-                  </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Arquiteto de Argumentos Socráticos</h4>
-                </div>
-                <p className="text-soft-gray mb-4">
-                  Sistema de diálogo interativo que utiliza o método socrático para te ajudar a desenvolver argumentos sólidos e bem fundamentados através de perguntas estratégicas.
-                </p>
-                <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Perguntas personalizadas baseadas no tema específico</li>
-                  <li>• Desenvolvimento progressivo do raciocínio crítico</li>
-                  <li>• Identificação e tratamento de contra-argumentos</li>
-                  <li>• Análise da consistência lógica dos argumentos</li>
-                  <li>• Sugestões de evidências e exemplos relevantes</li>
-                </ul>
-              </LiquidGlassCard>
-
               <LiquidGlassCard className="p-8 feature-card" data-testid="card-repertoire-explorer">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
@@ -167,25 +148,6 @@ export default function Features() {
                   <li>• Citações e referências organizadas por tema</li>
                   <li>• Filtros por área do conhecimento e relevância</li>
                   <li>• Sugestões automáticas baseadas no seu texto</li>
-                </ul>
-              </LiquidGlassCard>
-
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-theme-analyzer">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
-                    <Target className="text-white" size={24} />
-                  </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Analisador de Temas</h4>
-                </div>
-                <p className="text-soft-gray mb-4">
-                  Ferramenta que decompõe e analisa propostas de redação, identificando palavras-chave, conceitos centrais e possíveis abordagens para o desenvolvimento do texto.
-                </p>
-                <ul className="text-sm text-soft-gray space-y-1">
-                  <li>• Identificação automática de palavras-chave</li>
-                  <li>• Mapeamento de conceitos e subtemas</li>
-                  <li>• Sugestões de abordagens e perspectivas</li>
-                  <li>• Análise do comando da proposta</li>
-                  <li>• Orientações sobre o tipo de texto solicitado</li>
                 </ul>
               </LiquidGlassCard>
 
