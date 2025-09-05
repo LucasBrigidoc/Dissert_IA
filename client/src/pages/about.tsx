@@ -67,7 +67,7 @@ export default function About() {
           <div className="space-y-6 sm:space-y-8">
             <LiquidGlassCard className="p-8" data-testid="card-neuropsychological-methodology">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Target className="text-white" size={24} />
                 </div>
                 <div>
@@ -79,7 +79,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-brazilian-ai">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Globe className="text-white" size={24} />
                 </div>
                 <div>
@@ -93,7 +93,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-multidimensional-learning">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Layers className="text-white" size={24} />
                 </div>
                 <div>
