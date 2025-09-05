@@ -36,7 +36,7 @@ export default function Features() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       {/* Hero Section */}
-      <section className="gradient-bg pt-0 pb-2 relative overflow-hidden">
+      <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
         <div className="container mx-auto px-2 sm:px-4">
           {/* Título centralizado ocupando toda a largura */}
           <div className="w-full text-center mb-4 sm:mb-6">
