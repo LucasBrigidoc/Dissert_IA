@@ -36,7 +36,7 @@ export default function Features() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       {/* Hero Section */}
-      <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
+      <section className="gradient-bg pt-0 pb-2 relative overflow-hidden">
         <div className="container mx-auto px-2 sm:px-4">
           {/* Título centralizado ocupando toda a largura */}
           <div className="w-full text-center mb-4 sm:mb-6">
@@ -62,7 +62,7 @@ export default function Features() {
             </div>
             
             <div className="w-full lg:w-[45%] relative flex justify-center lg:justify-start">
-              <div className="w-96 h-96 sm:w-[480px] sm:h-[480px] md:w-[600px] md:h-[600px] mx-auto flex items-center justify-center">
+              <div className="w-80 h-80 sm:w-96 sm:h-96 md:w-[400px] md:h-[400px] mx-auto flex items-center justify-center">
                 <img 
                   src="/imagem/fimagem1.svg" 
                   alt="Funcionalidades DissertAI" 
