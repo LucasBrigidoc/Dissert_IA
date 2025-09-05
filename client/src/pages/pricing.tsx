@@ -48,43 +48,53 @@ export default function Pricing() {
             <LiquidGlassCard 
               key={plan.id} 
               dark={plan.id === "free" || plan.id === "pro"}
-              className={`relative ${plan.popular ? "border-2 border-bright-blue" : ""}`}
+              className={`relative p-8 ${
+                plan.popular 
+                  ? "border-2 border-bright-blue shadow-xl scale-105 transform" 
+                  : "border border-gray-200/30"
+              }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-bright-blue text-white" data-testid="badge-most-popular">
+                  <Badge className="bg-bright-blue text-white px-4 py-1 text-sm font-bold" data-testid="badge-most-popular">
                     MAIS PROCURADO
                   </Badge>
                 </div>
               )}
               
-              <div className="text-center mb-8">
-                <h3 className={`text-3xl font-bold mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+              <div className="text-center mb-6">
+                <div className={`text-4xl font-bold mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                   {plan.price}
-                  {plan.period && <span className="text-lg">{plan.period}</span>}
-                </h3>
+                  {plan.period && <span className="text-xl">{plan.period}</span>}
+                </div>
                 {plan.annualPrice && isAnnual && (
-                  <p className={`${plan.id === "free" || plan.id === "pro" ? "text-white/70" : "text-soft-gray"}`}>
+                  <div className={`text-lg mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white/80" : "text-soft-gray"}`}>
                     {plan.annualPrice}
-                  </p>
+                  </div>
                 )}
-                <p className={`font-semibold ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                <h3 className={`text-xl font-bold ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                   {plan.name}
-                </p>
+                </h3>
               </div>
               
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-3 mb-8 min-h-[160px]">
                 {plan.features.map((feature, featureIndex) => {
                   const hasFeature = !feature.includes("limitado") && !feature.includes("limitada");
                   return (
-                    <li key={featureIndex} className={`flex items-center ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
-                      {hasFeature ? (
-                        <Check className="text-green-400 mr-3" size={16} />
-                      ) : (
-                        <X className="text-red-400 mr-3" size={16} />
-                      )}
-                      {feature}
+                    <li key={featureIndex} className={`flex items-start text-sm ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                      <div className="mr-3 mt-0.5">
+                        {hasFeature ? (
+                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                            <Check className="text-white" size={12} />
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                            <X className="text-white" size={12} />
+                          </div>
+                        )}
+                      </div>
+                      <span className="flex-1">{feature}</span>
                     </li>
                   );
                 })}
@@ -92,10 +102,12 @@ export default function Pricing() {
               
               <Button
                 asChild
-                className={`w-full py-3 rounded-lg smooth-transition hover-scale ${
-                  plan.id === "free" 
-                    ? "bg-white/10 text-white border border-white/20 hover:bg-white/20" 
-                    : "bg-bright-blue text-white hover:bg-blue-600"
+                className={`w-full py-4 rounded-xl font-bold text-base smooth-transition hover-scale ${
+                  plan.popular
+                    ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
+                    : plan.id === "free" 
+                      ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
+                      : "bg-bright-blue text-white hover:bg-blue-600"
                 }`}
                 data-testid={`button-plan-${plan.id}`}
               >
