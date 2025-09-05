@@ -91,7 +91,7 @@ export const mockPricingPlans = [
     name: "Plano Base",
     price: "R$39,90",
     period: "/Mês",
-    annualPrice: "R$439/Ano",
+    annualPrice: "R$479/Ano",
     features: [
       "Acesso a todas as funcionalidades",
       "Dashboard e Cronograma",
