@@ -43,7 +43,7 @@ export function Navigation() {
             <span className="font-medium">Entrar</span>
           </Link>
           <Link href="/signup" className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 transition-all duration-200" data-testid="button-comecar">
-            <span className="font-medium">Começar Agora</span>
+            <span className="font-medium">Criar Conta</span>
           </Link>
         </div>
 
@@ -111,7 +111,7 @@ export function Navigation() {
                 data-testid="button-comecar-mobile"
                 onClick={closeMenu}
               >
-                Começar Agora
+                Criar Conta
               </Link>
             </div>
           </div>
