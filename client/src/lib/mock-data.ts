@@ -78,7 +78,7 @@ export const mockPricingPlans = [
     price: "R$0",
     period: "",
     features: [
-      "Acesso à Newsletter",
+      "Acesso à Newsletter limitado",
       "Dashboard e Cronograma",
       "biblioteca pessoal limitada",
       "Acesso mínimo das funcionalidades"
