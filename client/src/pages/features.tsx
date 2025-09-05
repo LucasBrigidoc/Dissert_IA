@@ -24,7 +24,8 @@ import {
   BookOpen,
   Zap,
   PenTool,
-  BarChart3
+  BarChart3,
+  Mail
 } from "lucide-react";
 
 const iconMap = {
@@ -261,7 +262,7 @@ export default function Features() {
           {/* Learning and Development Tools */}
           <div>
             <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Aprendizado e Desenvolvimento:</h3>
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
+            <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
               <LiquidGlassCard className="p-8 feature-card" data-testid="card-progress-tracker">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
@@ -295,6 +296,25 @@ export default function Features() {
                   <li>• Técnicas de escrita e estratégias argumentativas</li>
                   <li>• Materiais organizados por tema e dificuldade</li>
                   <li>• Conteúdo atualizado com tendências dos exames</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-8 feature-card" data-testid="card-newsletter">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
+                    <Mail className="text-white" size={24} />
+                  </div>
+                  <h4 className="text-xl font-semibold text-dark-blue">Newsletter Educacional</h4>
+                </div>
+                <p className="text-soft-gray mb-4">
+                  Receba semanalmente conteúdos exclusivos, dicas de redação, temas atuais e estratégias de estudo enviados diretamente para seu email.
+                </p>
+                <ul className="text-sm text-soft-gray space-y-1">
+                  <li>• Temas de redação semanais comentados</li>
+                  <li>• Dicas de especialistas em ensino</li>
+                  <li>• Análises de atualidades relevantes</li>
+                  <li>• Estratégias de estudo personalizadas</li>
+                  <li>• Conteúdo exclusivo para assinantes</li>
                 </ul>
               </LiquidGlassCard>
             </div>
