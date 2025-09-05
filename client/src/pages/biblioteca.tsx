@@ -15,43 +15,36 @@ export default function BibliotecaPage() {
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [showFileDetails, setShowFileDetails] = useState(false);
 
-  // Lógica para voltar inteligente - detecta automaticamente a página anterior
-  const getSmartBackUrl = () => {
-    // Primeiro, verifica se há um parâmetro 'from' na URL
+  // Sistema inteligente de detecção de origem
+  const getBackUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const fromParam = urlParams.get('from');
+    const fromUrl = urlParams.get('from');
+    const fromSession = sessionStorage.getItem('biblioteca-origin');
+    const fromPage = fromUrl || fromSession || 'dashboard';
     
-    if (fromParam === 'functionalities') {
-      // Salva que veio de functionalities para futuras navegações
-      localStorage.setItem('biblioteca-last-source', 'functionalities');
-      return '/functionalities';
+    console.log('Detectando origem da página biblioteca:');
+    console.log('- URL param "from":', fromUrl);
+    console.log('- SessionStorage "biblioteca-origin":', fromSession);
+    console.log('- Origem final detectada:', fromPage);
+    
+    // Salvar a origem atual se vier da URL (isso sobrescreve qualquer valor anterior)
+    if (fromUrl) {
+      sessionStorage.setItem('biblioteca-origin', fromUrl);
+      console.log('- Salvando nova origem no sessionStorage:', fromUrl);
     }
     
-    // Se não há parâmetro 'from', verifica o localStorage para a última fonte conhecida
-    const lastSource = localStorage.getItem('biblioteca-last-source');
-    if (lastSource === 'functionalities') {
-      return '/functionalities';
-    }
-    
-    // Tenta detectar pela história do navegador
-    if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
-      const referrer = document.referrer;
-      if (referrer.includes('/functionalities')) {
-        localStorage.setItem('biblioteca-last-source', 'functionalities');
+    // Retornar URL correta baseada na origem
+    switch (fromPage) {
+      case 'functionalities':
         return '/functionalities';
-      }
-      if (referrer.includes('/dashboard')) {
-        localStorage.setItem('biblioteca-last-source', 'dashboard');
+      case 'dashboard':
         return '/dashboard';
-      }
+      default:
+        return '/dashboard'; // fallback seguro
     }
-    
-    // Por padrão, volta para dashboard
-    localStorage.setItem('biblioteca-last-source', 'dashboard');
-    return '/dashboard';
   };
   
-  const backUrl = getSmartBackUrl();
+  const backUrl = getBackUrl();
 
   // Mock data para diferentes categorias de arquivos salvos
   const bibliotecaData = {
