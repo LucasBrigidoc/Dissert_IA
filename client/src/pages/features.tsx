@@ -137,7 +137,7 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Search className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Explorador de Repertório Inteligente</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Explorador de Repertório</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
                   Banco de dados conectado a mais de 100 fontes confiáveis que fornece repertório atualizado, dados estatísticos e referências acadêmicas relevantes para enriquecer sua argumentação.
