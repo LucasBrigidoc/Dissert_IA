@@ -25,9 +25,10 @@ export default function Simulador() {
     console.log('- SessionStorage "simulador-origin":', fromSession);
     console.log('- Origem final detectada:', fromPage);
     
-    // Salvar a origem atual se vier da URL
+    // Salvar a origem atual se vier da URL (isso sobrescreve qualquer valor anterior)
     if (fromUrl) {
       sessionStorage.setItem('simulador-origin', fromUrl);
+      console.log('- Salvando nova origem no sessionStorage:', fromUrl);
     }
     
     // Retornar URL correta baseada na origem

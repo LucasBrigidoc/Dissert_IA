@@ -284,7 +284,7 @@ export default function Dashboard() {
         setLocation('/repertorio?from=dashboard');
         break;
       case 'simulador':
-        setLocation('/simulador');
+        setLocation('/simulador?from=dashboard');
         break;
       case 'estilo':
         setLocation('/controlador-escrita?from=dashboard');
