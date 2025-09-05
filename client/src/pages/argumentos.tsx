@@ -12,19 +12,26 @@ export default function Argumentos() {
   const [brainstormData, setBrainstormData] = useState({
     tema: '',
     tese: '',
-    argumentos: [] as Array<{id: number, content: string}>,
     paragrafos: {
       introducao: '',
       desenvolvimento1: '',
       desenvolvimento2: '',
       conclusao: ''
-    },
-    conclusao: ''
+    }
   });
-  const [newArgument, setNewArgument] = useState('');
   const [chatStates, setChatStates] = useState({
-    argumentos: { 
-      messages: [{ id: 1, type: 'ai', content: 'Vou te ajudar a desenvolver argumentos sólidos. Qual é o tema da sua redação?' }], 
+    introducao: { 
+      messages: [{ id: 1, type: 'ai', content: 'Vamos trabalhar na sua introdução. Como você vai apresentar e contextualizar o tema?' }], 
+      currentMessage: '',
+      isOpen: false
+    },
+    desenvolvimento1: { 
+      messages: [{ id: 1, type: 'ai', content: 'Que argumento você vai desenvolver neste parágrafo? Que exemplos podem sustentá-lo?' }], 
+      currentMessage: '',
+      isOpen: false
+    },
+    desenvolvimento2: { 
+      messages: [{ id: 1, type: 'ai', content: 'Qual será seu segundo argumento? Como ele se conecta com o primeiro?' }], 
       currentMessage: '',
       isOpen: false
     },
@@ -89,10 +96,20 @@ export default function Argumentos() {
     // Simular resposta da IA contextual
     setTimeout(() => {
       const responses = {
-        argumentos: [
-          'Ótimo argumento! Agora pense em evidências para sustentá-lo. Que dados ou exemplos você pode usar?',
-          'Esse ponto é muito forte! Você pode conectar isso com algum exemplo prático?',
-          'Interessante! Como isso se relaciona com o contexto brasileiro atual?'
+        introducao: [
+          'Ótima contextualização! Como você vai apresentar sua tese de forma clara?',
+          'Interessante abordagem! Você pode ser mais específico sobre sua posição?',
+          'Boa introdução! Como isso conecta com seus argumentos principais?'
+        ],
+        desenvolvimento1: [
+          'Excelente argumento! Que exemplos concretos podem fortalecê-lo?',
+          'Muito bom! Como você pode relacionar isso com dados ou estatísticas?',
+          'Interessante ponto! Que autoridades ou especialistas apoiam essa visão?'
+        ],
+        desenvolvimento2: [
+          'Ótimo segundo argumento! Como ele complementa o primeiro?',
+          'Perfeito! Que exemplos históricos ou atuais sustentam essa ideia?',
+          'Excelente! Como isso impacta a sociedade brasileira especificamente?'
         ],
         conclusao: [
           'Boa proposta! Como garantir que seja viável e realista?',
@@ -139,23 +156,6 @@ export default function Argumentos() {
     }));
   };
   
-  const addToCategory = (category: string, content: string) => {
-    setBrainstormData(prev => ({
-      ...prev,
-      [category]: category === 'argumentos' 
-        ? [...prev[category], { id: Date.now(), content }]
-        : content
-    }));
-  };
-  
-  const removeFromCategory = (category: string, id: number) => {
-    setBrainstormData(prev => ({
-      ...prev,
-      [category]: category === 'argumentos' 
-        ? (prev[category as keyof typeof prev] as Array<{id: number, content: string}>).filter(item => item.id !== id)
-        : prev[category as keyof typeof prev]
-    }));
-  };
 
   const ChatMini = ({ section, title }: { section: string, title: string }) => {
     const chatData = chatStates[section as keyof typeof chatStates];
@@ -293,6 +293,7 @@ export default function Argumentos() {
                   placeholder="Escreva sua introdução aqui..."
                   className="border-green-200/50 focus:border-green-300 h-24"
                 />
+                <ChatMini section="introducao" title="introdução" />
               </LiquidGlassCard>
 
               {/* Desenvolvimento 1 */}
@@ -308,6 +309,7 @@ export default function Argumentos() {
                   placeholder="Desenvolva seu primeiro argumento..."
                   className="border-blue-200/50 focus:border-blue-300 h-24"
                 />
+                <ChatMini section="desenvolvimento1" title="primeiro argumento" />
               </LiquidGlassCard>
 
               {/* Desenvolvimento 2 */}
@@ -323,6 +325,7 @@ export default function Argumentos() {
                   placeholder="Desenvolva seu segundo argumento..."
                   className="border-orange-200/50 focus:border-orange-300 h-24"
                 />
+                <ChatMini section="desenvolvimento2" title="segundo argumento" />
               </LiquidGlassCard>
 
               {/* Conclusão */}
@@ -338,20 +341,10 @@ export default function Argumentos() {
                   placeholder="Escreva sua conclusão e proposta de intervenção..."
                   className="border-purple-200/50 focus:border-purple-300 h-24"
                 />
+                <ChatMini section="conclusao" title="conclusão" />
               </LiquidGlassCard>
             </div>
 
-            {/* Conclusão */}
-            <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50">
-              <h3 className="text-lg font-semibold text-dark-blue mb-4">Conclusão</h3>
-              <Textarea
-                value={brainstormData.conclusao}
-                onChange={(e) => setBrainstormData(prev => ({...prev, conclusao: e.target.value}))}
-                placeholder="Esboce sua proposta de intervenção e conclusão..."
-                className="border-purple-200/50 focus:border-purple-300 h-24"
-              />
-              <ChatMini section="conclusao" title="conclusão" />
-            </LiquidGlassCard>
 
             {/* Progress Bar */}
             <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
@@ -367,16 +360,12 @@ export default function Argumentos() {
                     <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Argumentos</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.argumentos.length >= 2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
                     <span className="text-xs text-dark-blue">Parágrafos</span>
                     <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-dark-blue">Conclusão</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                 </div>
               </div>
