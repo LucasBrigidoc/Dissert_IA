@@ -201,9 +201,7 @@ export default function Features() {
                   </div>
                   <h4 className="text-xl font-semibold text-dark-blue">Controlador de Escrita</h4>
                 </div>
-                <p className="text-soft-gray mb-4">
-                  Ferramenta interativa que permite ajustar em tempo real a formalidade, tom, complexidade vocabular e estilo do seu texto, com visualização imediata das mudanças.
-                </p>
+                <p className="text-soft-gray mb-4">Ferramenta interativa que permite ajustar em tempo real a formalidade, argumentação, complexidade vocabular e estilo do seu texto, com visualização imediata das mudanças.</p>
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Controle dinâmico de formalidade e registro linguístico</li>
                   <li>• Ajuste de complexidade vocabular por nível</li>
