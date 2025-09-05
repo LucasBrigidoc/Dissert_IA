@@ -89,7 +89,7 @@ export const mockPricingPlans = [
   {
     id: "base",
     name: "Plano Base",
-    price: "R$39,90",
+    price: "R$45,90",
     period: "/Mês",
     annualPrice: "R$479/Ano",
     features: [
