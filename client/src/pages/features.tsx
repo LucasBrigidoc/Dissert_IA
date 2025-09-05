@@ -88,29 +88,29 @@ export default function Features() {
           </div>
         </div>
       </section>
-      <div className="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-8 sm:pb-12">
+      <div className="container mx-auto px-4 sm:px-6 pt-6 sm:pt-12 pb-6 sm:pb-12">
 
         {/* Challenge Section */}
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-dark-blue mb-6 sm:mb-8" data-testid="text-challenge-title">
+        <div className="text-center mb-8 sm:mb-16">
+          <h2 className="text-xl sm:text-3xl font-bold text-dark-blue mb-4 sm:mb-8" data-testid="text-challenge-title">
             Funcionalidades para os principais Desafio da Escrita
           </h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-            <LiquidGlassCard className="p-8" data-testid="card-statistics">
-              <h3 className="text-xl font-semibold text-dark-blue mb-4">Estatísticas Alarmantes</h3>
-              <div className="text-4xl text-red-500 mb-4">73%</div>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
+            <LiquidGlassCard className="p-4 sm:p-8" data-testid="card-statistics">
+              <h3 className="text-lg sm:text-xl font-semibold text-dark-blue mb-3 sm:mb-4">Estatísticas Alarmantes</h3>
+              <div className="text-3xl sm:text-4xl text-red-500 mb-3 sm:mb-4">73%</div>
               <p className="text-soft-gray">dos estudantes brasileiros têm dificuldade com redação no ENEM</p>
             </LiquidGlassCard>
-            <LiquidGlassCard className="p-8" data-testid="card-challenges">
-              <h3 className="text-xl font-semibold text-dark-blue mb-4">Principais Desafios</h3>
-              <div className="text-4xl text-yellow-500 mb-4">
+            <LiquidGlassCard className="p-4 sm:p-8" data-testid="card-challenges">
+              <h3 className="text-lg sm:text-xl font-semibold text-dark-blue mb-3 sm:mb-4">Principais Desafios</h3>
+              <div className="text-3xl sm:text-4xl text-yellow-500 mb-3 sm:mb-4">
                 <TriangleAlert className="mx-auto" size={48} />
               </div>
               <p className="text-soft-gray">Falta de estrutura, repertório limitado e gestão de tempo inadequada</p>
             </LiquidGlassCard>
-            <LiquidGlassCard className="p-8" data-testid="card-solution">
-              <h3 className="text-xl font-semibold text-dark-blue mb-4">Nossa Solução</h3>
-              <div className="text-4xl mb-4 text-[#6b87f6]">
+            <LiquidGlassCard className="p-4 sm:p-8" data-testid="card-solution">
+              <h3 className="text-lg sm:text-xl font-semibold text-dark-blue mb-3 sm:mb-4">Nossa Solução</h3>
+              <div className="text-3xl sm:text-4xl mb-3 sm:mb-4 text-[#6b87f6]">
                 <Lightbulb className="mx-auto" size={48} />
               </div>
               <p className="text-soft-gray">IA que vai te acompanhar e escrever junto com você todos os pontos</p>
@@ -119,21 +119,21 @@ export default function Features() {
         </div>
 
         {/* Core Features */}
-        <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue sm:mb-6 mt-[5px] mb-[5px]" data-testid="text-core-features-title">
+        <div className="mb-8 sm:mb-16">
+          <h2 className="text-xl sm:text-3xl font-bold text-center text-dark-blue mb-4 sm:mb-6" data-testid="text-core-features-title">
             Funcionalidades que Transformam sua Escrita
           </h2>
-          <div className="text-center mb-8 sm:mb-12">
-            <p className="text-soft-gray max-w-3xl mx-auto text-[21px]">
+          <div className="text-center mb-6 sm:mb-12">
+            <p className="text-soft-gray max-w-3xl mx-auto text-base sm:text-lg">
               Nossas funcionalidades são ferramentas pensadas para lhe ensinar e ajudar em toda as etapas da escrita de um texto.
             </p>
           </div>
           
           {/* Pre-writing Tools */}
-          <div className="mb-8 sm:mb-12">
-            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Pré-escrita:</h3>
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-repertoire-explorer">
+          <div className="mb-6 sm:mb-12">
+            <h3 className="text-lg sm:text-2xl font-semibold text-dark-blue mb-3 sm:mb-6">Ferramentas de Pré-escrita:</h3>
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-repertoire-explorer">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Search className="text-white" size={24} />
@@ -152,7 +152,7 @@ export default function Features() {
                 </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-brainstorm">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-brainstorm">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Lightbulb className="text-white" size={24} />
@@ -175,10 +175,10 @@ export default function Features() {
           </div>
 
           {/* Writing Tools */}
-          <div className="mb-8 sm:mb-12">
-            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Escrita:</h3>
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-structure-creator">
+          <div className="mb-6 sm:mb-12">
+            <h3 className="text-lg sm:text-2xl font-semibold text-dark-blue mb-3 sm:mb-6">Ferramentas de Escrita:</h3>
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-structure-creator">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <FileText className="text-white" size={24} />
@@ -195,7 +195,7 @@ export default function Features() {
                 </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-style-controller">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-style-controller">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Sliders className="text-white" size={24} />
@@ -218,10 +218,10 @@ export default function Features() {
           
 
           {/* Simulation and Practice Tools */}
-          <div className="mb-8 sm:mb-12">
-            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Simulação e Prática:</h3>
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-exam-simulator">
+          <div className="mb-6 sm:mb-12">
+            <h3 className="text-lg sm:text-2xl font-semibold text-dark-blue mb-3 sm:mb-6">Ferramentas de Simulação e Prática:</h3>
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-exam-simulator">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Clock className="text-white" size={24} />
@@ -240,7 +240,7 @@ export default function Features() {
                 </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-proposal-creator">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-proposal-creator">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Newspaper className="text-white" size={24} />
@@ -261,9 +261,9 @@ export default function Features() {
 
           {/* Learning and Development Tools */}
           <div>
-            <h3 className="text-xl sm:text-2xl font-semibold text-dark-blue mb-4 sm:mb-6">Ferramentas de Aprendizado e Desenvolvimento:</h3>
-            <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-progress-tracker">
+            <h3 className="text-lg sm:text-2xl font-semibold text-dark-blue mb-3 sm:mb-6">Ferramentas de Aprendizado e Desenvolvimento:</h3>
+            <div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-progress-tracker">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <BarChart3 className="text-white" size={24} />
@@ -282,7 +282,7 @@ export default function Features() {
                 </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-knowledge-library">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-knowledge-library">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <BookOpen className="text-white" size={24} />
@@ -299,7 +299,7 @@ export default function Features() {
                 </ul>
               </LiquidGlassCard>
 
-              <LiquidGlassCard className="p-8 feature-card" data-testid="card-newsletter">
+              <LiquidGlassCard className="p-4 sm:p-8 feature-card" data-testid="card-newsletter">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Mail className="text-white" size={24} />
