@@ -180,7 +180,7 @@ export default function Landing() {
               Ver Planos
             </Link>
           </div>
-          <p className="text-xs sm:text-sm text-white/70 mt-3 sm:mt-4" data-testid="text-trial-info">7 dias grátis. Cancele quando quiser.</p>
+          <p className="sm:text-sm text-white/70 mt-3 sm:mt-4 text-[18px]" data-testid="text-trial-info">7 dias grátis. Cancele quando quiser.</p>
         </div>
       </section>
       <Footer />
