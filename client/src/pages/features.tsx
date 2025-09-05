@@ -188,7 +188,7 @@ export default function Features() {
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Análise do seu estilo pessoal de escrita</li>
                   <li>• Estruturas adaptadas por tipo de prova (ENEM, vestibulares, concursos)</li>
-                  <li>• Templates personalizados para diferentes gêneros textuais</li>
+                  <li>• Templates personalizados </li>
                   <li>• Sugestões de transições e conectivos adequados</li>
                   <li>• Evolução contínua baseada no seu progresso</li>
                 </ul>
