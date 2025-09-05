@@ -286,7 +286,7 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <BookOpen className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Biblioteca de Conhecimento</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Biblioteca pessoal</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
                   Acervo completo de materiais didáticos, exemplos de redações nota máxima, técnicas de escrita, teoria gramatical e conteúdos organizados por tema e nível.
