@@ -44,14 +44,19 @@ export default function About() {
 
         {/* Our Project */}
         <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12 pt-[10px] pb-[10px]" data-testid="text-project-title">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-4 sm:mb-6 pt-[10px] pb-[10px]" data-testid="text-project-title">
             Nosso Projeto:
           </h2>
           <div className="flex justify-center">
             <LiquidGlassCard className="p-8 max-w-4xl" data-testid="card-platform-description">
-              <p className="text-soft-gray text-center text-lg leading-relaxed">
-                Criamos uma plataforma inteligente que atua como um tutor pessoal de escrita, disponível 24/7. Criamos uma IA que te capacita para escrever de forma independente, com uma metodologia cientificamente validada. Diferente das soluções atuais, não apenas apontamos erros: ensinamos, guiamos e capacitamos.
-              </p>
+              <div className="flex flex-col items-center space-y-4">
+                <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center">
+                  <Brain className="text-white" size={32} />
+                </div>
+                <p className="text-soft-gray text-center text-lg leading-relaxed">
+                  Criamos uma plataforma inteligente que atua como um tutor pessoal de escrita, disponível 24/7. Criamos uma IA que te capacita para escrever de forma independente, com uma metodologia cientificamente validada. Diferente das soluções atuais, não apenas apontamos erros: ensinamos, guiamos e capacitamos.
+                </p>
+              </div>
             </LiquidGlassCard>
           </div>
         </div>
