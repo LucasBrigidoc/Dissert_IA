@@ -9,7 +9,6 @@ export default function About() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
       {/* Hero Section */}
       <section className="gradient-bg pt-20 sm:pt-24 pb-16 relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6">
@@ -17,7 +16,7 @@ export default function About() {
             <h1 className="text-4xl font-bold mb-4" data-testid="text-about-title">
               Sobre o DissertAI
             </h1>
-            <p className="text-lg text-white/90">
+            <p className="text-white/90 text-[24px]">
               Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
             </p>
           </div>
@@ -43,7 +42,6 @@ export default function About() {
           </div>
         </div>
       </section>
-      
       <div className="container mx-auto px-4 sm:px-6 pb-8 sm:pb-12">
 
         {/* Our Project */}
@@ -169,7 +167,6 @@ export default function About() {
           </Button>
         </LiquidGlassCard>
       </div>
-
       <Footer />
     </div>
   );
