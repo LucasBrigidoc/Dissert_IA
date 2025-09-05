@@ -246,9 +246,7 @@ export default function Features() {
                   </div>
                   <h4 className="text-xl font-semibold text-dark-blue">Explorador de Propostas</h4>
                 </div>
-                <p className="text-soft-gray mb-4">
-                  Sistema que cria propostas de redação customizadas baseadas em temas atuais, seu nível de conhecimento e áreas de interesse, incluindo textos motivadores relevantes.
-                </p>
+                <p className="text-soft-gray mb-4">Sistema que busca por proposta de provas antigas e pode cria propostas de redação customizadas baseadas em temas atuais, seu nível de conhecimento e áreas de interesse, incluindo textos motivadores relevantes.</p>
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Geração automática baseada em temas da atualidade</li>
                   <li>• Personalização por área de interesse e dificuldade</li>
