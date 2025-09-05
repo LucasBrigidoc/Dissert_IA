@@ -63,43 +63,6 @@ export default function About() {
           </div>
         </div>
 
-        {/* Our Values */}
-        <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-values-title">
-            Nossos Valores:
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-empathy">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="text-white" size={24} />
-              </div>
-              <h3 className="font-semibold text-dark-blue mb-2">Empatia</h3>
-              <p className="text-soft-gray text-sm">Entendemos as dificuldades únicas de cada estudante brasileiro</p>
-            </LiquidGlassCard>
-            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-innovation">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lightbulb className="text-white" size={24} />
-              </div>
-              <h3 className="font-semibold text-dark-blue mb-2">Inovação</h3>
-              <p className="text-soft-gray text-sm">Tecnologia de ponta aplicada à educação brasileira</p>
-            </LiquidGlassCard>
-            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-democratization">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="text-white" size={24} />
-              </div>
-              <h3 className="font-semibold text-dark-blue mb-2">Democratização</h3>
-              <p className="text-soft-gray text-sm">Acesso igualitário à excelência educacional</p>
-            </LiquidGlassCard>
-            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-excellence">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trophy className="text-white" size={24} />
-              </div>
-              <h3 className="font-semibold text-dark-blue mb-2">Excelência</h3>
-              <p className="text-soft-gray text-sm">Resultados mensuráveis e transformadores</p>
-            </LiquidGlassCard>
-          </div>
-        </div>
-
         {/* Why DissertAI is Special */}
         <div className="mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-why-special-title">
@@ -150,6 +113,43 @@ export default function About() {
                   </p>
                 </div>
               </div>
+            </LiquidGlassCard>
+          </div>
+        </div>
+
+        {/* Our Values */}
+        <div className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-values-title">
+            Nossos Valores:
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-empathy">
+              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="text-white" size={24} />
+              </div>
+              <h3 className="font-semibold text-dark-blue mb-2">Empatia</h3>
+              <p className="text-soft-gray text-sm">Entendemos as dificuldades únicas de cada estudante brasileiro</p>
+            </LiquidGlassCard>
+            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-innovation">
+              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lightbulb className="text-white" size={24} />
+              </div>
+              <h3 className="font-semibold text-dark-blue mb-2">Inovação</h3>
+              <p className="text-soft-gray text-sm">Tecnologia de ponta aplicada à educação brasileira</p>
+            </LiquidGlassCard>
+            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-democratization">
+              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="text-white" size={24} />
+              </div>
+              <h3 className="font-semibold text-dark-blue mb-2">Democratização</h3>
+              <p className="text-soft-gray text-sm">Acesso igualitário à excelência educacional</p>
+            </LiquidGlassCard>
+            <LiquidGlassCard className="p-6 text-center" data-testid="card-value-excellence">
+              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trophy className="text-white" size={24} />
+              </div>
+              <h3 className="font-semibold text-dark-blue mb-2">Excelência</h3>
+              <p className="text-soft-gray text-sm">Resultados mensuráveis e transformadores</p>
             </LiquidGlassCard>
           </div>
         </div>
