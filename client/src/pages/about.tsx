@@ -47,17 +47,10 @@ export default function About() {
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12 pt-[10px] pb-[10px]" data-testid="text-project-title">
             Nosso Projeto:
           </h2>
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
-            <LiquidGlassCard className="p-8" data-testid="card-cognitive-technology">
-              <h3 className="text-xl font-semibold text-dark-blue mb-4">Tecnologia Cognitiva Avançada</h3>
-              <p className="text-soft-gray">
-                Desenvolvemos algoritmos que entendem não apenas o que você escreve, mas como você pensa. Nossa IA foi treinada com metodologias neuropsicológicas reconhecidas, incluindo teoria do andaime cognitivo e aprendizagem personalizada baseada em estilos cognitivos únicos para cada estudante brasileiro.
-              </p>
-            </LiquidGlassCard>
-            <LiquidGlassCard className="p-8" data-testid="card-evidence-based-pedagogy">
-              <h3 className="text-xl font-semibold text-dark-blue mb-4">Pedagogia Baseada em Evidências</h3>
-              <p className="text-soft-gray">
-                Cada funcionalidade foi desenhada com base em pesquisas científicas sobre como o cérebro processa informações durante a escrita. Utilizamos métodos comprovados como o diálogo socrático e a metacognição para desenvolver competências fundamentais de forma eficaz.
+          <div className="flex justify-center">
+            <LiquidGlassCard className="p-8 max-w-4xl" data-testid="card-platform-description">
+              <p className="text-soft-gray text-center text-lg leading-relaxed">
+                Criamos uma plataforma inteligente que atua como um tutor pessoal de escrita, disponível 24/7. Criamos uma IA que te capacita para escrever de forma independente, com uma metodologia cientificamente validada. Diferente das soluções atuais, não apenas apontamos erros: ensinamos, guiamos e capacitamos.
               </p>
             </LiquidGlassCard>
           </div>
