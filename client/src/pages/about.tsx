@@ -10,7 +10,7 @@ export default function About() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       {/* Hero Section */}
-      <section className="gradient-bg min-h-screen flex flex-col justify-center relative overflow-hidden pt-24 pb-8">
+      <section className="gradient-bg min-h-[85vh] flex flex-col justify-center relative overflow-hidden pt-24 pb-8">
         <div className="container mx-auto px-4 sm:px-6 w-full flex flex-col justify-center space-y-4 sm:space-y-6 md:space-y-8">
           <div className="text-center text-white mb-2 sm:mb-3 md:mb-4">
             <h1 className="font-bold mb-3 sm:mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl" data-testid="text-about-title">Sobre o Dissert AI</h1>
