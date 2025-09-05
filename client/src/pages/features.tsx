@@ -199,7 +199,7 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Sliders className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Controlador de Estilo Inteligente</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Controlador de Escrita</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
                   Ferramenta interativa que permite ajustar em tempo real a formalidade, tom, complexidade vocabular e estilo do seu texto, com visualização imediata das mudanças.
