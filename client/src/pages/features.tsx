@@ -25,7 +25,8 @@ import {
   Zap,
   PenTool,
   BarChart3,
-  Mail
+  Mail,
+  Calendar
 } from "lucide-react";
 
 const iconMap = {
@@ -262,7 +263,7 @@ export default function Features() {
           {/* Learning and Development Tools */}
           <div>
             <h3 className="text-lg sm:text-2xl font-semibold text-dark-blue mb-3 sm:mb-6">Ferramentas de Aprendizado e Desenvolvimento:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8">
               <LiquidGlassCard className="p-3 sm:p-8 feature-card" data-testid="card-progress-tracker">
                 <div className="flex items-center mb-3 sm:mb-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-3 sm:mr-4">
@@ -315,6 +316,25 @@ export default function Features() {
                   <li>• Análises de atualidades relevantes</li>
                   <li>• Estratégias de estudo personalizadas</li>
                   <li>• Conteúdo exclusivo para assinantes</li>
+                </ul>
+              </LiquidGlassCard>
+
+              <LiquidGlassCard className="p-3 sm:p-8 feature-card" data-testid="card-schedule-manager">
+                <div className="flex items-center mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-3 sm:mr-4">
+                    <Calendar className="text-white" size={20} />
+                  </div>
+                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Gestão de Cronograma e Metas</h4>
+                </div>
+                <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">
+                  Ferramenta completa para organizar seus estudos, definir metas de redação e acompanhar seu cronograma de preparação para provas e vestibulares.
+                </p>
+                <ul className="text-xs sm:text-sm text-soft-gray space-y-0.5 sm:space-y-1">
+                  <li>• Cronograma personalizado de estudos</li>
+                  <li>• Definição e acompanhamento de metas</li>
+                  <li>• Lembretes de provas e prazos importantes</li>
+                  <li>• Organização de simulados e práticas</li>
+                  <li>• Relatórios de produtividade e cumprimento</li>
                 </ul>
               </LiquidGlassCard>
             </div>
