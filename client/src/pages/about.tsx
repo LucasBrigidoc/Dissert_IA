@@ -44,7 +44,7 @@ export default function About() {
 
         {/* Our Project */}
         <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-project-title">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12 pt-[10px] pb-[10px]" data-testid="text-project-title">
             Nosso Projeto:
           </h2>
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
