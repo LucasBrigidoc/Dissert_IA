@@ -10,31 +10,31 @@ export default function About() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       {/* Hero Section */}
-      <section className="gradient-bg pt-16 sm:pt-20 md:pt-24 pb-8 sm:pb-12 md:pb-16 relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center text-white mb-8 sm:mb-12">
-            <h1 className="font-bold mb-4 text-2xl sm:text-3xl md:text-[45px]" data-testid="text-about-title">Sobre o Dissert AI</h1>
-            <p className="text-white/90 text-sm sm:text-lg md:text-[24px]">
+      <section className="gradient-bg min-h-screen flex items-center relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 w-full">
+          <div className="text-center text-white mb-8 sm:mb-12 md:mb-16">
+            <h1 className="font-bold mb-4 sm:mb-6 md:mb-8 text-3xl sm:text-4xl md:text-5xl lg:text-[45px]" data-testid="text-about-title">Sobre o Dissert AI</h1>
+            <p className="text-white/90 text-base sm:text-lg md:text-xl lg:text-[24px] leading-relaxed">
               Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
             </p>
           </div>
           
           {/* Mission Statement */}
-          <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 md:gap-8 -my-4 sm:-my-8">
-            <div className="w-full md:w-1/2 text-center md:text-left text-white">
-              <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-[65px] text-center md:text-left mb-3 sm:mb-4 md:mb-6">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+            <div className="w-full md:w-1/2 text-center md:text-left text-white space-y-4 sm:space-y-6 md:space-y-8">
+              <h2 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[65px] text-center md:text-left leading-tight">
                 Nossa Proposta: Democratizando a Excelência na Escrita
               </h2>
-              <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-[36px] font-medium mb-3 sm:mb-4 md:mb-6">
+              <p className="text-white/90 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[36px] font-medium leading-relaxed">
                 Sabemos o quão desafiador é dominar a arte da escrita no contexto dos vestibulares brasileiros. Nossa missão é eliminar as barreiras que impedem estudantes de alcançar seu potencial máximo, oferecendo tecnologia de inteligência artificial que funciona como um tutor pessoal disponível 24/7.
               </p>
-              <p className="text-white/80 text-xs sm:text-sm md:text-base lg:text-[30px]">
+              <p className="text-white/80 text-sm sm:text-base md:text-lg lg:text-xl xl:text-[30px] leading-relaxed">
                 Combinamos ciências cognitivas, pedagogia e tecnologia para criar uma experiência de aprendizado que se adapta ao ritmo e estilo único de cada estudante.
               </p>
             </div>
-            <div className="w-full md:w-1/2 text-center">
+            <div className="w-full md:w-1/2 text-center flex items-center justify-center">
               <div className="mx-auto flex items-center justify-center">
-                <img src="/imagem/fimagem3.svg" alt="Ilustração DissertAI" className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[26rem] lg:h-[26rem] -my-0" />
+                <img src="/imagem/fimagem3.svg" alt="Ilustração DissertAI" className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] xl:w-[32rem] xl:h-[32rem] object-contain" />
               </div>
             </div>
           </div>
