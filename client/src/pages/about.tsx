@@ -22,7 +22,7 @@ export default function About() {
           {/* Mission Statement */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
             <div className="w-full md:w-1/2 text-center md:text-left text-white space-y-2 sm:space-y-3 md:space-y-4">
-              <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-center md:text-left leading-tight">
+              <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-center md:text-left leading-tight text-[#5087ff]">
                 Nossa Proposta: Democratizando a Excelência na Escrita
               </h2>
               <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed">
