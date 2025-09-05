@@ -94,30 +94,6 @@ export default function Landing() {
           </Link>
         </div>
       </section>
-      {/* Features Grid */}
-      <section className="py-8 sm:py-16 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6">
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-center text-dark-blue mb-8 sm:mb-16" data-testid="text-features-title">
-            Funcionalidades em Destaque
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-            {mockFeatures
-              .filter((feature) => feature.name !== "Newsletter Educacional")
-              .map((feature) => {
-                const IconComponent = iconMap[feature.icon as keyof typeof iconMap] || Brain;
-                return (
-                  <LiquidGlassCard key={feature.id} className="feature-card p-6 sm:p-8 text-center" data-testid={`card-feature-${feature.id}`}>
-                    <div className="text-3xl sm:text-4xl text-bright-blue mb-4 sm:mb-6">
-                      <IconComponent className="mx-auto" size={36} />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-dark-blue mb-3 sm:mb-4">{feature.name}</h3>
-                    <p className="text-soft-gray text-sm sm:text-base">{feature.description}</p>
-                  </LiquidGlassCard>
-                );
-              })}
-          </div>
-        </div>
-      </section>
       {/* How it Works */}
       <section className="py-8 sm:py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6">
