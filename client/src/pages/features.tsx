@@ -51,20 +51,20 @@ export default function Features() {
       <Navigation />
       {/* Hero Section */}
       <section className="gradient-bg pt-20 sm:pt-24 pb-2 relative overflow-hidden">
-        <div className="container mx-auto px-2 sm:px-4">
+        <div className="container mx-auto px-4 sm:px-6">
           {/* Título centralizado ocupando toda a largura */}
-          <div className="w-full text-center mb-0">
-            <h1 className="sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[57px] text-[#f4f4f4]" data-testid="text-features-title">
+          <div className="w-full text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#f4f4f4]" data-testid="text-features-title">
               Conheça as Principais Funcionalidades
             </h1>
           </div>
           
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-0">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-0">
             <div className="w-full lg:w-[55%] text-white text-center lg:text-left">
-              <p className="sm:text-xl lg:text-2xl sm:mb-4 text-[#5087ff] text-left text-[45px] font-semibold mt-[0px] mb-[0px]" data-testid="text-features-subtitle">
+              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-[#5087ff] text-center lg:text-left font-semibold mt-4 mb-2" data-testid="text-features-subtitle">
                 Ferramentas inteligentes para revolucionar sua escrita
               </p>
-              <p className="sm:text-lg sm:mb-8 text-white/80 font-medium text-[32px] mt-[10px] mb-[10px]" data-testid="text-features-description">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/80 font-medium text-center lg:text-left mt-3 mb-6" data-testid="text-features-description">
                 Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
               </p>
               <Button asChild className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-flex items-center gap-2 mt-[7px] mb-[7px]" data-testid="button-try-now">
