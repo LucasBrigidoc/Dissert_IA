@@ -253,14 +253,14 @@ export default function Argumentos() {
           <div className="space-y-6">
             {/* Tema e Tese */}
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <h3 className="text-lg font-semibold text-dark-blue mb-4">Tema e Tese</h3>
+              <h3 className="text-lg font-semibold text-dark-blue mb-4">Proposta e Tese</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Tema</label>
+                  <label className="block text-sm font-medium text-dark-blue mb-2">Proposta</label>
                   <Input
                     value={brainstormData.tema}
                     onChange={(e) => setBrainstormData(prev => ({...prev, tema: e.target.value}))}
-                    placeholder="Ex: O impacto da tecnologia na educação"
+                    placeholder="Ex: A proposta de redução da violência urbana"
                     className="border-bright-blue/20 focus:border-bright-blue"
                   />
                 </div>
