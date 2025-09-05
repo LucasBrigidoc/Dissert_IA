@@ -9,32 +9,6 @@ export function Navigation() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
 
-  // Verifica se é uma página de landing (não internas)
-  const isLandingPage = ['/', '/features', '/pricing', '/about'].includes(location);
-  
-  // Função para verificar se o link está ativo
-  const isActive = (href: string) => {
-    return isLandingPage && location === href;
-  };
-
-  // Classes para links ativos (apenas em páginas de landing)
-  const getNavLinkClasses = (href: string) => {
-    const baseClasses = "flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200";
-    if (isActive(href)) {
-      return `${baseClasses} text-bright-blue bg-bright-blue/15 font-semibold text-lg`;
-    }
-    return `${baseClasses} text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10`;
-  };
-
-  // Classes para navegação mobile
-  const getMobileNavLinkClasses = (href: string) => {
-    const baseClasses = "flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200";
-    if (isActive(href)) {
-      return `${baseClasses} text-bright-blue bg-bright-blue/15 font-semibold text-lg`;
-    }
-    return `${baseClasses} text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10`;
-  };
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
       <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -49,16 +23,16 @@ export function Navigation() {
         
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-4">
-          <Link href="/" className={getNavLinkClasses("/")} data-testid="link-inicio">
+          <Link href="/" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-inicio">
             <span className="font-medium">Início</span>
           </Link>
-          <Link href="/features" className={getNavLinkClasses("/features")} data-testid="link-funcionalidades">
+          <Link href="/features" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-funcionalidades">
             <span className="font-medium">Funcionalidades</span>
           </Link>
-          <Link href="/pricing" className={getNavLinkClasses("/pricing")} data-testid="link-planos">
+          <Link href="/pricing" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-planos">
             <span className="font-medium">Planos</span>
           </Link>
-          <Link href="/about" className={getNavLinkClasses("/about")} data-testid="link-sobre">
+          <Link href="/about" className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200" data-testid="link-sobre">
             <span className="font-medium">Sobre</span>
           </Link>
         </div>
@@ -92,7 +66,7 @@ export function Navigation() {
           <div className="container mx-auto px-6 py-4 space-y-2">
             <Link 
               href="/" 
-              className={getMobileNavLinkClasses("/")}
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-inicio-mobile"
               onClick={closeMenu}
             >
@@ -100,7 +74,7 @@ export function Navigation() {
             </Link>
             <Link 
               href="/features" 
-              className={getMobileNavLinkClasses("/features")}
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-funcionalidades-mobile"
               onClick={closeMenu}
             >
@@ -108,7 +82,7 @@ export function Navigation() {
             </Link>
             <Link 
               href="/pricing" 
-              className={getMobileNavLinkClasses("/pricing")}
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-planos-mobile"
               onClick={closeMenu}
             >
@@ -116,7 +90,7 @@ export function Navigation() {
             </Link>
             <Link 
               href="/about" 
-              className={getMobileNavLinkClasses("/about")}
+              className="flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
               data-testid="link-sobre-mobile"
               onClick={closeMenu}
             >
