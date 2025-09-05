@@ -3,7 +3,7 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
-import { Heart, Lightbulb, Users, Trophy, GraduationCap, Brain } from "lucide-react";
+import { Heart, Lightbulb, Users, Trophy, GraduationCap, Brain, Target, Globe, Layers } from "lucide-react";
 
 export default function About() {
   return (
@@ -68,7 +68,7 @@ export default function About() {
             <LiquidGlassCard className="p-8" data-testid="card-neuropsychological-methodology">
               <div className="flex items-start">
                 <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-6 mt-1">
-                  <span className="text-white font-bold">1</span>
+                  <Target className="text-white" size={24} />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-dark-blue mb-3">Metodologia de refinamento com IA sem lhe deixar dependente de IA</h3>
@@ -80,7 +80,7 @@ export default function About() {
             <LiquidGlassCard className="p-8" data-testid="card-brazilian-ai">
               <div className="flex items-start">
                 <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-6 mt-1">
-                  <span className="text-white font-bold">2</span>
+                  <Globe className="text-white" size={24} />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-dark-blue mb-3">
@@ -94,7 +94,7 @@ export default function About() {
             <LiquidGlassCard className="p-8" data-testid="card-multidimensional-learning">
               <div className="flex items-start">
                 <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-6 mt-1">
-                  <span className="text-white font-bold">3</span>
+                  <Layers className="text-white" size={24} />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-dark-blue mb-3">Aprendizagem Multidimensional</h3>
