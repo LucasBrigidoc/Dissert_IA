@@ -244,7 +244,7 @@ export default function Features() {
                   <div className="w-12 h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-4">
                     <Newspaper className="text-white" size={24} />
                   </div>
-                  <h4 className="text-xl font-semibold text-dark-blue">Gerador de Propostas Personalizadas</h4>
+                  <h4 className="text-xl font-semibold text-dark-blue">Explorador de Propostas</h4>
                 </div>
                 <p className="text-soft-gray mb-4">
                   Sistema que cria propostas de redação customizadas baseadas em temas atuais, seu nível de conhecimento e áreas de interesse, incluindo textos motivadores relevantes.
