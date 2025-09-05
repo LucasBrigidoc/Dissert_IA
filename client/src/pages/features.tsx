@@ -288,9 +288,7 @@ export default function Features() {
                   </div>
                   <h4 className="text-xl font-semibold text-dark-blue">Biblioteca pessoal</h4>
                 </div>
-                <p className="text-soft-gray mb-4">
-                  Acervo completo de materiais didáticos, exemplos de redações nota máxima, técnicas de escrita, teoria gramatical e conteúdos organizados por tema e nível.
-                </p>
+                <p className="text-soft-gray mb-4">Salve de forma organize suas redações, propostas, estruturas de redação, repertórios que você desenvolve com o uso da nossa ferramenta e acesse materiais exclusivos.</p>
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Redações nota 1000 comentadas e analisadas</li>
                   <li>• Teoria gramatical aplicada à redação</li>
