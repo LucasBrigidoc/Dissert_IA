@@ -14,7 +14,7 @@ export default function About() {
         <div className="container mx-auto px-4 sm:px-6 w-full flex flex-col justify-center space-y-4 sm:space-y-6 md:space-y-8">
           <div className="text-center text-white mb-2 sm:mb-3 md:mb-4">
             <h1 className="font-bold mb-3 sm:mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl" data-testid="text-about-title">Sobre o Dissert AI</h1>
-            <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed max-w-4xl mx-auto">
+            <p className="text-white/90 sm:text-base md:text-lg lg:text-xl max-w-4xl mx-auto text-[25px]">
               Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
             </p>
           </div>
