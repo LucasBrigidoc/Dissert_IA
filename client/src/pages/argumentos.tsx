@@ -279,9 +279,9 @@ export default function Argumentos() {
             
 
             {/* Estrutura dos Parágrafos */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               {/* Introdução */}
-              <LiquidGlassCard className="bg-gradient-to-br from-green-50/80 to-green-100/50 border-green-200/50">
+              <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
                 <h3 className="text-lg font-semibold text-dark-blue mb-4">1. Introdução</h3>
                 <p className="text-soft-gray text-sm mb-3">Apresentação do tema, contextualização e tese</p>
                 <Textarea
@@ -291,13 +291,13 @@ export default function Argumentos() {
                     paragrafos: { ...prev.paragrafos, introducao: e.target.value }
                   }))}
                   placeholder="Escreva sua introdução aqui..."
-                  className="border-green-200/50 focus:border-green-300 h-24"
+                  className="border-bright-blue/20 focus:border-bright-blue h-24"
                 />
                 <ChatMini section="introducao" title="introdução" />
               </LiquidGlassCard>
 
               {/* Desenvolvimento 1 */}
-              <LiquidGlassCard className="bg-gradient-to-br from-blue-50/80 to-blue-100/50 border-blue-200/50">
+              <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20">
                 <h3 className="text-lg font-semibold text-dark-blue mb-4">2. Desenvolvimento I</h3>
                 <p className="text-soft-gray text-sm mb-3">Primeiro argumento com sustentação e exemplos</p>
                 <Textarea
@@ -307,13 +307,13 @@ export default function Argumentos() {
                     paragrafos: { ...prev.paragrafos, desenvolvimento1: e.target.value }
                   }))}
                   placeholder="Desenvolva seu primeiro argumento..."
-                  className="border-blue-200/50 focus:border-blue-300 h-24"
+                  className="border-dark-blue/20 focus:border-dark-blue h-24"
                 />
                 <ChatMini section="desenvolvimento1" title="primeiro argumento" />
               </LiquidGlassCard>
 
               {/* Desenvolvimento 2 */}
-              <LiquidGlassCard className="bg-gradient-to-br from-orange-50/80 to-orange-100/50 border-orange-200/50">
+              <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
                 <h3 className="text-lg font-semibold text-dark-blue mb-4">3. Desenvolvimento II</h3>
                 <p className="text-soft-gray text-sm mb-3">Segundo argumento com sustentação e exemplos</p>
                 <Textarea
@@ -323,13 +323,13 @@ export default function Argumentos() {
                     paragrafos: { ...prev.paragrafos, desenvolvimento2: e.target.value }
                   }))}
                   placeholder="Desenvolva seu segundo argumento..."
-                  className="border-orange-200/50 focus:border-orange-300 h-24"
+                  className="border-soft-gray/20 focus:border-soft-gray h-24"
                 />
                 <ChatMini section="desenvolvimento2" title="segundo argumento" />
               </LiquidGlassCard>
 
               {/* Conclusão */}
-              <LiquidGlassCard className="bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50">
+              <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20">
                 <h3 className="text-lg font-semibold text-dark-blue mb-4">4. Conclusão</h3>
                 <p className="text-soft-gray text-sm mb-3">Síntese dos argumentos e proposta de intervenção</p>
                 <Textarea
@@ -339,7 +339,7 @@ export default function Argumentos() {
                     paragrafos: { ...prev.paragrafos, conclusao: e.target.value }
                   }))}
                   placeholder="Escreva sua conclusão e proposta de intervenção..."
-                  className="border-purple-200/50 focus:border-purple-300 h-24"
+                  className="border-bright-blue/20 focus:border-bright-blue h-24"
                 />
                 <ChatMini section="conclusao" title="conclusão" />
               </LiquidGlassCard>
