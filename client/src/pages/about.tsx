@@ -10,9 +10,9 @@ export default function About() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       {/* Hero Section */}
-      <section className="gradient-bg min-h-screen flex items-center relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 w-full">
-          <div className="text-center text-white mb-8 sm:mb-12 md:mb-16">
+      <section className="gradient-bg h-screen flex items-center relative overflow-hidden pt-20">
+        <div className="container mx-auto px-4 sm:px-6 w-full h-full flex flex-col justify-center">
+          <div className="text-center text-white mb-6 sm:mb-8 md:mb-12">
             <h1 className="font-bold mb-4 sm:mb-6 md:mb-8 text-3xl sm:text-4xl md:text-5xl lg:text-[45px]" data-testid="text-about-title">Sobre o Dissert AI</h1>
             <p className="text-white/90 text-base sm:text-lg md:text-xl lg:text-[24px] leading-relaxed">
               Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
