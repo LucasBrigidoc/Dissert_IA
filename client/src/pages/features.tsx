@@ -105,7 +105,7 @@ export default function Features() {
 
         {/* Core Features */}
         <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-4 sm:mb-6" data-testid="text-core-features-title">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue sm:mb-6 mt-[5px] mb-[5px]" data-testid="text-core-features-title">
             Funcionalidades que Transformam sua Escrita
           </h2>
           <div className="text-center mb-8 sm:mb-12">
