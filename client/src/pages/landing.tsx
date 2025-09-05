@@ -176,7 +176,7 @@ export default function Landing() {
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4" data-testid="text-cta-title">Pronto para Transformar Sua Escrita?</h2>
           <p className="text-base sm:text-xl mb-4 sm:mb-8 text-white/90" data-testid="text-cta-subtitle">Junte-se a milhares de estudantes que já estão alcançando seus objetivos</p>
           <div className="max-w-xs sm:max-w-md mx-auto">
-            <Link href="/pricing" className="w-full bg-white text-dark-blue px-4 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-lg font-semibold hover:bg-gray-100 smooth-transition inline-block" data-testid="button-see-plans">
+            <Link href="/pricing" className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-block" data-testid="button-see-plans">
               Ver Planos
             </Link>
           </div>
