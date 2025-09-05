@@ -152,7 +152,7 @@ export default function Landing() {
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-center text-dark-blue mb-4 sm:mb-8" data-testid="text-testimonials-title">Resultado dos nosso alunos:</h2>
           <div className="text-center mb-6 sm:mb-12">
             <div className="text-3xl sm:text-5xl font-bold gradient-text mb-2" data-testid="text-success-rate">80%</div>
-            <p className="text-soft-gray text-xs sm:text-base">dos usuários aumentaram suas notas em média 180 pontos</p>
+            <p className="text-soft-gray sm:text-base text-[18px]">dos usuários aumentaram suas notas em média 180 pontos</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
             {mockTestimonials.map((testimonial) => (
