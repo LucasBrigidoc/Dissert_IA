@@ -91,7 +91,7 @@ export default function Login() {
               <div className="mt-8 text-center">
                 <span className="text-soft-gray">or </span>
                 <Link href="/signup" className="text-bright-blue font-semibold hover:underline" data-testid="link-signup">
-                  Sign up
+                  Criar Conta
                 </Link>
               </div>
             </div>
