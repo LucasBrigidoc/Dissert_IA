@@ -37,7 +37,7 @@ export default function About() {
             </div>
             <div className="w-full md:w-1/2 text-center">
               <div className="mx-auto flex items-center justify-center">
-                <img src="/imagem/fimagem3.svg" alt="Ilustração DissertAI" className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64" />
+                <img src="/imagem/fimagem3.svg" alt="Ilustração DissertAI" className="w-80 h-80 sm:w-96 sm:h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem]" />
               </div>
             </div>
           </div>
