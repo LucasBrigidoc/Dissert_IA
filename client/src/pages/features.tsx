@@ -205,7 +205,7 @@ export default function Features() {
                 <ul className="text-sm text-soft-gray space-y-1">
                   <li>• Controle dinâmico de formalidade e registro linguístico</li>
                   <li>• Ajuste de complexidade vocabular por nível</li>
-                  <li>• Adaptação de tom (impessoal, persuasivo, expositivo)</li>
+                  <li>• Adaptação da estrutura argumentativa</li>
                   <li>• Visualização em tempo real das alterações</li>
                   <li>• Sugestões de melhorias automáticas</li>
                 </ul>
