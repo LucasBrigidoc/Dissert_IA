@@ -38,7 +38,7 @@ export default function FunctionalitiesPage() {
     edit: Edit,
     newspaper: Newspaper,
     sliders: Sliders,
-    pen: Edit3,
+    pen: PenTool,
     "graduation-cap": GraduationCap,
     lightbulb: Lightbulb,
     archive: Archive
@@ -46,13 +46,16 @@ export default function FunctionalitiesPage() {
 
   // Organizar funcionalidades por categorias
   const coreFeatures = mockFeatures.filter(feature => 
-    feature.name === "Refinamento do Brainstorming"
+    feature.name === "Refinamento do Brainstorming" || 
+    feature.name === "Explorador de Repertório"
   );
   const practiceFeatures = mockFeatures.filter(feature => 
-    feature.name === "Simulador de Prova"
+    feature.name === "Simulador de Prova" ||
+    feature.name === "Controlador de Escrita"
   );
   const creationFeatures = mockFeatures.filter(feature => 
-    feature.name === "Estrutura Coringa"
+    feature.name === "Estrutura Coringa" ||
+    feature.name === "Explorador de Propostas"
   );
 
   return (

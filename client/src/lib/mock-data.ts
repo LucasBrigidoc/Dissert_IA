@@ -34,6 +34,12 @@ export const mockFeatures = [
     icon: "brain"
   },
   {
+    id: 2,
+    name: "Explorador de Repertório",
+    description: "Banco de dados inteligente com referências atualizadas",
+    icon: "search"
+  },
+  {
     id: 3,
     name: "Estrutura Coringa",
     description: "Crie e use modelos e gere redações personalizadas",
@@ -46,10 +52,22 @@ export const mockFeatures = [
     icon: "newspaper"
   },
   {
+    id: 5,
+    name: "Controlador de Escrita",
+    description: "Ajustes interativos de formalidade e tom",
+    icon: "pen"
+  },
+  {
     id: 6,
     name: "Simulador de Prova",
     description: "Ambiente realista idêntico ao dia da prova",
     icon: "graduation-cap"
+  },
+  {
+    id: 7,
+    name: "Explorador de Propostas",
+    description: "Ferramenta para elaborar e pesquisar temas de redação",
+    icon: "lightbulb"
   },
 ];
 
