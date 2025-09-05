@@ -22,13 +22,13 @@ export default function About() {
           {/* Mission Statement */}
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 -my-8">
             <div className="w-full md:w-1/2 text-center md:text-left text-white">
-              <h2 className="sm:text-3xl font-bold sm:mb-6 pt-[0px] pb-[0px] mt-[10px] mb-[10px] text-[55px] text-left">
+              <h2 className="sm:text-3xl font-bold sm:mb-6 pt-[0px] pb-[0px] mt-[10px] mb-[10px] text-[65px] text-left">
                 Nossa Proposta: Democratizando a Excelência na Escrita
               </h2>
-              <p className="text-white/90 sm:mb-6 sm:text-base text-[30px] font-medium mt-[10px] mb-[10px]">
+              <p className="text-white/90 sm:mb-6 sm:text-base text-[36px] font-medium mt-[10px] mb-[10px]">
                 Sabemos o quão desafiador é dominar a arte da escrita no contexto dos vestibulares brasileiros. Nossa missão é eliminar as barreiras que impedem estudantes de alcançar seu potencial máximo, oferecendo tecnologia de inteligência artificial que funciona como um tutor pessoal disponível 24/7.
               </p>
-              <p className="text-white/80 sm:text-base text-[24px] pt-[8px] pb-[8px]">
+              <p className="text-white/80 sm:text-base text-[30px] pt-[8px] pb-[8px]">
                 Combinamos ciências cognitivas, pedagogia e tecnologia para criar uma experiência de aprendizado que se adapta ao ritmo e estilo único de cada estudante.
               </p>
             </div>
