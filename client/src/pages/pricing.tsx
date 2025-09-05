@@ -27,7 +27,7 @@ export default function Pricing() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4" data-testid="text-pricing-title">
             Escolha o Plano Ideal para Você:
           </h1>
-          <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center space-y-2">
             <div className="relative bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20">
               <div className="flex items-center">
                 <button
@@ -54,6 +54,9 @@ export default function Pricing() {
                 </button>
               </div>
             </div>
+            <p className="text-white/70 text-xs sm:text-sm">
+              No plano anual você paga menos mensalmente
+            </p>
           </div>
         </div>
 
