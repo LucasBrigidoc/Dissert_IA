@@ -109,7 +109,7 @@ export const mockPricingPlans = [
     annualPrice: "R$599/Ano",
     features: [
       "Acesso a todas as funcionalidades",
-      "Dashboard e Cronograma com IA",
+      "Dashboard e Cronograma",
       "Resposta aprofundada",
       "Material complementar"
     ],
