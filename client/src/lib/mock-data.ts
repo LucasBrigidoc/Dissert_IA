@@ -188,7 +188,7 @@ export const mockFAQ = [
   {
     id: 9,
     question: "Os planos anuais têm desconto?",
-    answer: "Sim! Assinando anualmente você economiza: Plano Base de R$45,90/mês por R$439/ano (economia de 8,3%) e Plano Pro de R$59,90/mês por R$599/ano (economia de 16,7%)."
+    answer: "Sim! Assinando anualmente você economiza: Plano Base de R$45,90/mês por R$439/ano (economia de 9%) e Plano Pro de R$59,90/mês por R$599/ano (economia de 17%)."
   },
   {
     id: 10,
