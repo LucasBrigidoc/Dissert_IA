@@ -145,208 +145,208 @@ export default function Pricing() {
           <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-6 sm:mb-8" data-testid="text-comparison-title">
             Comparação Detalhada dos Planos
           </h3>
-          <LiquidGlassCard className="p-0 overflow-hidden border border-white/20" data-testid="table-comparison">
+          <LiquidGlassCard className="p-0 overflow-hidden border border-[#5087ff]/30" data-testid="table-comparison">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[700px]">
-                <thead className="bg-gradient-to-r from-[#09072e] to-[#1a1550]">
+                <thead className="bg-[#09072e]">
                   <tr>
-                    <th className="p-4 sm:p-6 text-left text-base sm:text-lg font-bold text-white border-r border-white/20">
+                    <th className="p-4 sm:p-6 text-left text-base sm:text-lg font-bold text-white border-r border-[#5087ff]/20">
                       Recursos e Funcionalidades
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/20">
+                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-[#5087ff]/20">
                       <div className="flex flex-col items-center">
                         <span>Gratuito</span>
-                        <span className="text-sm font-normal text-white/80 mt-1">R$0</span>
+                        <span className="text-sm font-normal text-[#adacb7] mt-1">R$0</span>
                       </div>
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/20 bg-[#09072e]/80">
+                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-[#5087ff]/20 bg-[#5087ff]/10">
                       <div className="flex flex-col items-center">
                         <span>Base</span>
-                        <span className="text-sm font-normal text-white/80 mt-1">R$45,90/mês</span>
+                        <span className="text-sm font-normal text-[#adacb7] mt-1">R$45,90/mês</span>
                         <Badge className="bg-[#5087ff] text-white text-xs mt-1 px-2 py-0.5">POPULAR</Badge>
                       </div>
                     </th>
                     <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white">
                       <div className="flex flex-col items-center">
                         <span>Pro</span>
-                        <span className="text-sm font-normal text-white/80 mt-1">R$59,90/mês</span>
+                        <span className="text-sm font-normal text-[#adacb7] mt-1">R$59,90/mês</span>
                       </div>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-[#09072e]/95 backdrop-blur-sm">
-                  <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                <tbody className="bg-[#09072e]/90 backdrop-blur-sm">
+                  <tr className="border-b border-[#5087ff]/20 hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <Mail className="text-white/70" size={18} />
+                        <Mail className="text-[#adacb7]" size={18} />
                         Acesso à Newsletter Educacional
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                  <tr className="border-b border-[#5087ff]/20 hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <BarChart3 className="text-white/70" size={18} />
+                        <BarChart3 className="text-[#adacb7]" size={18} />
                         Dashboard e Cronograma de Estudos
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                  <tr className="border-b border-[#5087ff]/20 hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <BookOpen className="text-white/70" size={18} />
+                        <BookOpen className="text-[#adacb7]" size={18} />
                         Biblioteca Pessoal
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-orange-300 border-orange-400/50 bg-orange-500/20 text-xs px-2 py-1">
+                        <Badge variant="outline" className="text-[#adacb7] border-[#adacb7]/50 bg-[#adacb7]/10 text-xs px-2 py-1">
                           Limitada
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                  <tr className="border-b border-[#5087ff]/20 hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <Settings className="text-white/70" size={18} />
+                        <Settings className="text-[#adacb7]" size={18} />
                         Acesso às Funcionalidades
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-orange-300 border-orange-400/50 bg-orange-500/20 text-xs px-2 py-1">
+                        <Badge variant="outline" className="text-[#adacb7] border-[#adacb7]/50 bg-[#adacb7]/10 text-xs px-2 py-1">
                           Limitado
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-bright-blue/80 text-white text-xs px-2 py-1">
+                        <Badge className="bg-[#5087ff] text-white text-xs px-2 py-1">
                           Completo
                         </Badge>
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-bright-blue/80 text-white text-xs px-2 py-1">
+                        <Badge className="bg-[#5087ff] text-white text-xs px-2 py-1">
                           Completo
                         </Badge>
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                  <tr className="border-b border-[#5087ff]/20 hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <Brain className="text-white/70" size={18} />
+                        <Brain className="text-[#adacb7]" size={18} />
                         Resposta Aprofundada da IA
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                        <X className="text-red-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#adacb7]/20 rounded-full">
+                        <X className="text-[#adacb7]" size={16} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                  <tr className="border-b border-[#5087ff]/20 hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <Gauge className="text-white/70" size={18} />
+                        <Gauge className="text-[#adacb7]" size={18} />
                         Limite de Uso das Funcionalidades
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-red-300 border-red-400/50 bg-red-500/20 text-xs px-2 py-1">
+                        <Badge variant="outline" className="text-[#adacb7] border-[#adacb7]/50 bg-[#adacb7]/10 text-xs px-2 py-1">
                           Básico
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-bright-blue/80 text-white text-xs px-2 py-1">
+                        <Badge className="bg-[#5087ff] text-white text-xs px-2 py-1">
                           Maior
                         </Badge>
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-green-500/80 text-white text-xs px-2 py-1">
+                        <Badge className="bg-[#5087ff]/80 text-white text-xs px-2 py-1">
                           Máximo
                         </Badge>
                       </div>
                     </td>
                   </tr>
-                  <tr className="hover:bg-[#09072e]/80 transition-colors">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
+                  <tr className="hover:bg-[#5087ff]/5 transition-colors">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/20">
                       <div className="flex items-center gap-3">
-                        <Gift className="text-white/70" size={18} />
+                        <Gift className="text-[#adacb7]" size={18} />
                         Material Complementar Exclusivo
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                        <X className="text-red-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#adacb7]/20 rounded-full">
+                        <X className="text-[#adacb7]" size={16} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#09072e]/30">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                        <X className="text-red-400" size={16} />
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/20">
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#adacb7]/20 rounded-full">
+                        <X className="text-[#adacb7]" size={16} />
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-green-500/20 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                      <div className="inline-flex items-center justify-center w-8 h-8 bg-[#5087ff]/20 rounded-full">
+                        <Check className="text-[#5087ff]" size={16} />
                       </div>
                     </td>
                   </tr>
