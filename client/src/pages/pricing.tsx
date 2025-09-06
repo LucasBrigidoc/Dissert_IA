@@ -101,7 +101,7 @@ export default function Pricing() {
               
               <ul className="space-y-3 mb-8 min-h-[160px]">
                 {plan.features.map((feature, featureIndex) => {
-                  const hasFeature = !feature.includes("limitado") && !feature.includes("limitada") && !feature.includes("mínimo") && !feature.includes("algumas");
+                  const hasFeature = !feature.includes("limitado") && !feature.includes("limitada") && !feature.includes("algumas");
                   return (
                     <li key={featureIndex} className={`flex items-start text-sm ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                       <div className="mr-3 mt-0.5">
