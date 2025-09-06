@@ -78,11 +78,11 @@ export const mockPricingPlans = [
     price: "R$0",
     period: "",
     features: [
+      "Acesso apenas a algumas das funcionalidades",
       "Acesso à Newsletter",
       "Dashboard e Cronograma",
       "biblioteca pessoal limitada",
-      "Acesso limitado das funcionalidades",
-      "Acesso apenas a algumas das funcionalidades"
+      "Acesso limitado das funcionalidades"
     ],
     buttonText: "Testar Gratuitamente",
     popular: false
