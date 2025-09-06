@@ -302,7 +302,7 @@ export default function Pricing() {
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-3">
                         <Gauge className="text-emerald-400" size={18} />
-                        Limite de Uso das Funcionalidades
+                        Uso das Funcionalidades
                       </div>
                     </td>
                     <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
@@ -315,7 +315,7 @@ export default function Pricing() {
                     <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
-                          Maior
+                          Intermediário
                         </Badge>
                       </div>
                     </td>
