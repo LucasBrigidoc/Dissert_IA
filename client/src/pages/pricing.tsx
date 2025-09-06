@@ -148,7 +148,7 @@ export default function Pricing() {
           <LiquidGlassCard className="p-0 overflow-hidden border border-white/20" data-testid="table-comparison">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[700px]">
-                <thead className="bg-gradient-to-r from-bright-blue to-blue-600">
+                <thead className="bg-gradient-to-r from-[#09072e] to-[#1a1550]">
                   <tr>
                     <th className="p-4 sm:p-6 text-left text-base sm:text-lg font-bold text-white border-r border-white/20">
                       Recursos e Funcionalidades
@@ -159,11 +159,11 @@ export default function Pricing() {
                         <span className="text-sm font-normal text-white/80 mt-1">R$0</span>
                       </div>
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/20 bg-yellow-500/20">
+                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/20 bg-[#09072e]/80">
                       <div className="flex flex-col items-center">
                         <span>Base</span>
                         <span className="text-sm font-normal text-white/80 mt-1">R$45,90/mês</span>
-                        <Badge className="bg-yellow-500 text-yellow-900 text-xs mt-1 px-2 py-0.5">POPULAR</Badge>
+                        <Badge className="bg-[#5087ff] text-white text-xs mt-1 px-2 py-0.5">POPULAR</Badge>
                       </div>
                     </th>
                     <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white">
@@ -178,7 +178,7 @@ export default function Pricing() {
                   <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <Mail className="text-bright-blue" size={18} />
+                        <Mail className="text-white/70" size={18} />
                         Acesso à Newsletter Educacional
                       </div>
                     </td>
@@ -201,7 +201,7 @@ export default function Pricing() {
                   <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <BarChart3 className="text-bright-blue" size={18} />
+                        <BarChart3 className="text-white/70" size={18} />
                         Dashboard e Cronograma de Estudos
                       </div>
                     </td>
@@ -224,7 +224,7 @@ export default function Pricing() {
                   <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <BookOpen className="text-bright-blue" size={18} />
+                        <BookOpen className="text-white/70" size={18} />
                         Biblioteca Pessoal
                       </div>
                     </td>
@@ -249,7 +249,7 @@ export default function Pricing() {
                   <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <Settings className="text-bright-blue" size={18} />
+                        <Settings className="text-white/70" size={18} />
                         Acesso às Funcionalidades
                       </div>
                     </td>
@@ -278,7 +278,7 @@ export default function Pricing() {
                   <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <Brain className="text-bright-blue" size={18} />
+                        <Brain className="text-white/70" size={18} />
                         Resposta Aprofundada da IA
                       </div>
                     </td>
@@ -301,7 +301,7 @@ export default function Pricing() {
                   <tr className="border-b border-[#09072e]/30 hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <Gauge className="text-bright-blue" size={18} />
+                        <Gauge className="text-white/70" size={18} />
                         Limite de Uso das Funcionalidades
                       </div>
                     </td>
@@ -330,7 +330,7 @@ export default function Pricing() {
                   <tr className="hover:bg-[#09072e]/80 transition-colors">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#09072e]/30">
                       <div className="flex items-center gap-3">
-                        <Gift className="text-bright-blue" size={18} />
+                        <Gift className="text-white/70" size={18} />
                         Material Complementar Exclusivo
                       </div>
                     </td>
