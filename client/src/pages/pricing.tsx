@@ -21,10 +21,9 @@ export default function Pricing() {
   return (
     <div className="min-h-screen gradient-bg">
       <Navigation />
-      
       <div className="container mx-auto px-3 sm:px-6 pt-16 sm:pt-20 pb-6 sm:pb-8">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3" data-testid="text-pricing-title">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white sm:mb-3 mt-[10px] mb-[10px]" data-testid="text-pricing-title">
             Escolha o Plano Ideal para Você:
           </h1>
           <div className="flex flex-col items-center justify-center space-y-2">
