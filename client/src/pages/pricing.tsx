@@ -159,11 +159,11 @@ export default function Pricing() {
                         <span className="text-sm font-normal text-white/90 mt-1">R$0</span>
                       </div>
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/30 bg-gradient-to-b from-yellow-400/20 to-orange-500/20">
+                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/30 bg-gradient-to-b from-purple-500/20 to-violet-600/20">
                       <div className="flex flex-col items-center">
                         <span>Base</span>
                         <span className="text-sm font-normal text-white/90 mt-1">R$45,90/mês</span>
-                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">POPULAR</Badge>
+                        <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">POPULAR</Badge>
                       </div>
                     </th>
                     <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white">
