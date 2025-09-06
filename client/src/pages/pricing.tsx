@@ -65,16 +65,16 @@ export default function Pricing() {
             <LiquidGlassCard 
               key={plan.id} 
               dark={plan.id === "free" || plan.id === "pro"}
-              className={`relative p-4 sm:p-6 ${
+              className={`relative ${
                 plan.popular 
-                  ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform" 
-                  : "border border-gray-200/30"
+                  ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6" 
+                  : "border border-gray-200/30 p-4 sm:p-6"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-bright-blue text-white px-4 py-1 text-sm font-bold" data-testid="badge-most-popular">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <Badge className="bg-bright-blue text-white px-3 py-1 text-xs font-bold shadow-lg" data-testid="badge-most-popular">
                     MAIS PROCURADO
                   </Badge>
                 </div>
