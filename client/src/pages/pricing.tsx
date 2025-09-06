@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { mockPricingPlans, mockFAQ } from "@/lib/mock-data";
-import { Check, X, Mail, BarChart3, BookOpen, Settings, Brain, Gauge, Gift } from "lucide-react";
+import { Check, X, Mail, BarChart3, BookOpen, Settings, Brain, Gauge, Gift, Rocket } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -403,10 +403,13 @@ export default function Pricing() {
         <div className="text-center">
           <Button
             asChild
-            className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base font-semibold hover:bg-gray-100 smooth-transition hover-scale"
+            className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base font-semibold hover:from-[#4c7fff] hover:to-[#4570e6] smooth-transition hover-scale shadow-lg"
             data-testid="button-ready-start"
           >
-            <Link href="/signup">Pronto para Começar?</Link>
+            <Link href="/signup" className="flex items-center gap-2">
+              <Rocket className="w-4 h-4" />
+              Pronto para Começar?
+            </Link>
           </Button>
         </div>
       </div>
