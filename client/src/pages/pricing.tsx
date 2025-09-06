@@ -178,6 +178,35 @@ export default function Pricing() {
                   <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-3">
+                        <Settings className="text-blue-400" size={18} />
+                        Acesso às Funcionalidades
+                      </div>
+                    </td>
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                      <div className="flex items-center justify-center">
+                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-2 py-1">
+                          Algumas
+                        </Badge>
+                      </div>
+                    </td>
+                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                      <div className="flex items-center justify-center">
+                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
+                          Todas
+                        </Badge>
+                      </div>
+                    </td>
+                    <td className="p-4 sm:p-6 text-center">
+                      <div className="flex items-center justify-center">
+                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
+                          Todas
+                        </Badge>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
+                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-3">
                         <Mail className="text-cyan-400" size={18} />
                         Acesso à Newsletter Educacional
                       </div>
@@ -249,35 +278,6 @@ export default function Pricing() {
                   <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
                     <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-3">
-                        <Settings className="text-blue-400" size={18} />
-                        Acesso às Funcionalidades
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-2 py-1">
-                          Mínimo
-                        </Badge>
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
-                          Completo
-                        </Badge>
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center">
-                      <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
-                          Completo
-                        </Badge>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
                         <Brain className="text-violet-400" size={18} />
                         Resposta Aprofundada da IA
                       </div>
@@ -308,7 +308,7 @@ export default function Pricing() {
                     <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge variant="outline" className="text-red-400 border-red-400/60 bg-red-500/20 text-xs px-2 py-1">
-                          Básico
+                          Mínimo
                         </Badge>
                       </div>
                     </td>
