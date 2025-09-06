@@ -402,18 +402,12 @@ export default function Pricing() {
 
         <div className="text-center">
           <Button
-            asChild
-            className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base font-semibold hover:from-[#4c7fff] hover:to-[#4570e6] smooth-transition hover-scale shadow-lg"
+            className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base font-semibold hover:from-[#4c7fff] hover:to-[#4570e6] smooth-transition hover-scale shadow-lg flex items-center gap-2"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             data-testid="button-ready-start"
           >
-            <Link 
-              href="/signup" 
-              className="flex items-center gap-2"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
-              <Rocket className="w-4 h-4" />
-              Pronto para Começar?
-            </Link>
+            <Rocket className="w-4 h-4" />
+            Pronto para Começar?
           </Button>
         </div>
       </div>
