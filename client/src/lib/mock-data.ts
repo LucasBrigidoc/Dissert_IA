@@ -147,28 +147,53 @@ export const mockTestimonials = [
 export const mockFAQ = [
   {
     id: 1,
-    question: "Como funciona o período gratuito?",
-    answer: "O plano gratuito oferece acesso limitado às funcionalidades básicas com cronograma de estudo simples, newsletter semanal e sem anúncios."
+    question: "Qual a diferença entre o Plano Base e Pro?",
+    answer: "O Plano Base oferece acesso completo às funcionalidades com uso intermediário e resposta aprofundada da IA. O Plano Pro inclui tudo do Base, além de uso máximo das funcionalidades e material complementar exclusivo para maximizar seu desempenho."
   },
   {
     id: 2,
-    question: "Posso cancelar a qualquer momento?",
-    answer: "Sim, você pode cancelar sua assinatura a qualquer momento sem penalidades. Cancele através do seu dashboard ou entre em contato conosco."
+    question: "O que está incluído no plano gratuito?",
+    answer: "O plano gratuito inclui acesso a algumas funcionalidades, newsletter educacional, dashboard básico, biblioteca pessoal limitada e uso mínimo das ferramentas para você experimentar a plataforma."
   },
   {
     id: 3,
-    question: "O plano gratuito realmente não tem custo?",
-    answer: "Sim, o plano gratuito é totalmente gratuito e oferece acesso às funcionalidades básicas para você experimentar a plataforma antes de escolher um plano pago."
+    question: "Como funciona o 'Uso das Funcionalidades'?",
+    answer: "O uso determina quantas vezes você pode utilizar nossas ferramentas de IA por mês. Plano Gratuito: uso mínimo (limitado), Base: uso intermediário (moderado), Pro: uso máximo (ilimitado)."
   },
   {
     id: 4,
-    question: "Como funciona a garantia de 7 dias?",
-    answer: "Oferecemos 7 dias grátis para testar todas as funcionalidades premium. Se não cancelar dentro dos primeiros 7 dias, oferecemos reembolso integral se você solicitar dentro dos primeiros 30 dias de compra."
+    question: "O que é a 'Resposta Aprofundada da IA'?",
+    answer: "É nossa funcionalidade premium que oferece análises detalhadas, correções personalizadas e sugestões avançadas para suas redações. Disponível apenas nos planos Base e Pro."
   },
   {
     id: 5,
-    question: "O plano anual tem desconto?",
-    answer: "Sim! O plano Base anual custa R$439 (economia de R$39,80) e o plano Pro anual custa R$599 (economia de R$119,80). Você economiza até 2 meses de anuidade."
+    question: "Posso cancelar minha assinatura a qualquer momento?",
+    answer: "Sim, você pode cancelar sua assinatura a qualquer momento sem penalidades. O cancelamento pode ser feito através do seu dashboard ou entrando em contato conosco."
+  },
+  {
+    id: 6,
+    question: "Como funciona a biblioteca pessoal limitada?",
+    answer: "No plano gratuito, você pode salvar até 5 redações na sua biblioteca pessoal. Nos planos pagos, você tem espaço ilimitado para salvar todas suas redações e acompanhar seu progresso."
+  },
+  {
+    id: 7,
+    question: "O que é o Material Complementar Exclusivo?",
+    answer: "Disponível apenas no Plano Pro, inclui e-books avançados, templates de redação premium, videoaulas exclusivas e materiais de estudo aprofundado para maximizar sua nota."
+  },
+  {
+    id: 8,
+    question: "Posso fazer upgrade do meu plano?",
+    answer: "Sim! Você pode fazer upgrade do seu plano a qualquer momento. O valor será ajustado proporcionalmente e você terá acesso imediato às novas funcionalidades."
+  },
+  {
+    id: 9,
+    question: "Os planos anuais têm desconto?",
+    answer: "Sim! Assinando anualmente você economiza: Plano Base de R$45,90/mês por R$439/ano (economia de R$39,80) e Plano Pro de R$59,90/mês por R$599/ano (economia de R$119,80)."
+  },
+  {
+    id: 10,
+    question: "Como funciona o acesso à Newsletter?",
+    answer: "Todos os planos incluem nossa newsletter educacional semanal com temas atuais, repertório cultural, dicas de redação e análises de propostas para você se manter sempre atualizado."
   }
 ];
 

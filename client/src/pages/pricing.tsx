@@ -357,24 +357,40 @@ export default function Pricing() {
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-2xl mx-auto mb-8 sm:mb-12" id="faq">
+        <div className="max-w-4xl mx-auto mb-8 sm:mb-12" id="faq">
           <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-6 sm:mb-8" data-testid="text-faq-title">
-            Seção de Perguntas Frequentes (FAQ):
+            Perguntas Frequentes sobre os Planos
           </h3>
-          <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
-            {mockFAQ.map((faq) => (
-              <AccordionItem key={faq.id} value={`item-${faq.id}`}>
-                <LiquidGlassCard className="p-0">
-                  <AccordionTrigger className="px-6 py-4 font-semibold text-dark-blue hover:no-underline">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4 text-soft-gray text-sm">
-                    {faq.answer}
-                  </AccordionContent>
-                </LiquidGlassCard>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <LiquidGlassCard className="p-0 overflow-hidden border-2 border-[#5087ff]/60" data-testid="faq-container">
+            <div className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff] p-4 sm:p-6">
+              <h4 className="text-lg font-bold text-white text-center">
+                Tire todas suas dúvidas sobre nossos planos e funcionalidades
+              </h4>
+            </div>
+            <div className="bg-gradient-to-b from-[#09072e]/95 to-[#0d0b3a]/95 backdrop-blur-sm">
+              <Accordion type="single" collapsible className="space-y-0" data-testid="accordion-faq">
+                {mockFAQ.map((faq, index) => (
+                  <AccordionItem key={faq.id} value={`item-${faq.id}`} className="border-0">
+                    <div className={`${index < mockFAQ.length - 1 ? 'border-b border-[#5087ff]/40' : ''} hover:bg-[#5087ff]/10 transition-all duration-300`}>
+                      <AccordionTrigger className="px-4 sm:px-6 py-4 sm:py-6 font-semibold text-white hover:no-underline text-left">
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#5087ff] to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-xs font-bold">{faq.id}</span>
+                          </div>
+                          <span>{faq.question}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 sm:px-6 pb-4 sm:pb-6 text-white/90 text-sm leading-relaxed">
+                        <div className="ml-9 pl-2 border-l-2 border-[#5087ff]/30">
+                          {faq.answer}
+                        </div>
+                      </AccordionContent>
+                    </div>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </LiquidGlassCard>
         </div>
 
         <div className="text-center">
