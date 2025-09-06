@@ -256,7 +256,7 @@ export default function Pricing() {
                     <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-2 py-1">
-                          Limitado
+                          Mínimo
                         </Badge>
                       </div>
                     </td>
