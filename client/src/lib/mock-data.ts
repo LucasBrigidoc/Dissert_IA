@@ -96,7 +96,7 @@ export const mockPricingPlans = [
       "Acesso a todas as funcionalidades",
       "Dashboard e Cronograma",
       "Resposta aprofundada",
-      "Sem anúncios"
+      "limite maior das funcionalidades"
     ],
     buttonText: "Assine Agora",
     popular: true
