@@ -22,9 +22,9 @@ export default function Pricing() {
     <div className="min-h-screen gradient-bg">
       <Navigation />
       
-      <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8 sm:pb-12">
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4" data-testid="text-pricing-title">
+      <div className="container mx-auto px-3 sm:px-6 pt-16 sm:pt-20 pb-6 sm:pb-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3" data-testid="text-pricing-title">
             Escolha o Plano Ideal para Você:
           </h1>
           <div className="flex flex-col items-center justify-center space-y-2">
@@ -32,7 +32,7 @@ export default function Pricing() {
               <div className="flex items-center">
                 <button
                   onClick={() => setIsAnnual(false)}
-                  className={`relative px-6 py-3 rounded-full transition-all duration-300 text-sm font-semibold ${
+                  className={`relative px-4 py-2 rounded-full transition-all duration-300 text-xs sm:text-sm font-semibold ${
                     !isAnnual 
                       ? "bg-bright-blue text-white shadow-lg" 
                       : "text-white/80 hover:text-white"
@@ -43,7 +43,7 @@ export default function Pricing() {
                 </button>
                 <button
                   onClick={() => setIsAnnual(true)}
-                  className={`relative px-6 py-3 rounded-full transition-all duration-300 text-sm font-semibold ${
+                  className={`relative px-4 py-2 rounded-full transition-all duration-300 text-xs sm:text-sm font-semibold ${
                     isAnnual 
                       ? "bg-bright-blue text-white shadow-lg" 
                       : "text-white/80 hover:text-white"
@@ -60,14 +60,14 @@ export default function Pricing() {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto mb-8 sm:mb-12">
           {mockPricingPlans.map((plan, index) => (
             <LiquidGlassCard 
               key={plan.id} 
               dark={plan.id === "free" || plan.id === "pro"}
-              className={`relative p-8 ${
+              className={`relative p-4 sm:p-6 ${
                 plan.popular 
-                  ? "border-2 border-bright-blue shadow-xl scale-105 transform" 
+                  ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform" 
                   : "border border-gray-200/30"
               }`}
               data-testid={`card-plan-${plan.id}`}
@@ -80,30 +80,30 @@ export default function Pricing() {
                 </div>
               )}
               
-              <div className="text-center mb-6">
-                <div className={`text-4xl font-bold mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+              <div className="text-center mb-4 sm:mb-6">
+                <div className={`text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                   {plan.id === "base" && isAnnual 
                     ? "R$39,90" 
                     : plan.id === "pro" && isAnnual 
                     ? "R$49,90" 
                     : plan.price}
-                  {plan.period && <span className="text-xl">{plan.period}</span>}
+                  {plan.period && <span className="text-sm sm:text-lg">{plan.period}</span>}
                 </div>
                 {plan.annualPrice && isAnnual && (
-                  <div className={`text-lg mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white/80" : "text-soft-gray"}`}>
+                  <div className={`text-sm sm:text-base mb-1 sm:mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white/80" : "text-soft-gray"}`}>
                     {plan.annualPrice}
                   </div>
                 )}
-                <h3 className={`text-xl font-bold ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                <h3 className={`text-lg sm:text-xl font-bold ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                   {plan.name}
                 </h3>
               </div>
               
-              <ul className="space-y-3 mb-8 min-h-[160px]">
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 min-h-[120px] sm:min-h-[140px]">
                 {plan.features.map((feature, featureIndex) => {
                   const hasFeature = !feature.includes("limitado") && !feature.includes("limitada") && !feature.includes("mínimo");
                   return (
-                    <li key={featureIndex} className={`flex items-start text-sm ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                    <li key={featureIndex} className={`flex items-start text-xs sm:text-sm ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                       <div className="mr-3 mt-0.5">
                         {hasFeature ? (
                           <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
@@ -123,7 +123,7 @@ export default function Pricing() {
               
               <Button
                 asChild
-                className={`w-full py-4 rounded-xl font-bold text-base smooth-transition hover-scale ${
+                className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base smooth-transition hover-scale ${
                   plan.popular
                     ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
                     : plan.id === "free" 
@@ -141,212 +141,219 @@ export default function Pricing() {
         </div>
 
         {/* Comparison Table */}
-        <div className="max-w-5xl mx-auto mb-12 sm:mb-16">
-          <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-6 sm:mb-8" data-testid="text-comparison-title">
+        <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+          <h3 className="text-lg sm:text-xl font-bold text-white text-center mb-4 sm:mb-6" data-testid="text-comparison-title">
             Comparação Detalhada dos Planos
           </h3>
           <LiquidGlassCard className="p-0 overflow-hidden border-2 border-[#5087ff]/60" data-testid="table-comparison">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[700px]">
+              <table className="w-full min-w-[600px] sm:min-w-[700px]">
                 <thead className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff]">
                   <tr>
-                    <th className="p-4 sm:p-6 text-left text-base sm:text-lg font-bold text-white border-r border-white/30">
-                      Recursos e Funcionalidades
+                    <th className="p-3 sm:p-4 text-left text-sm sm:text-base font-bold text-white border-r border-white/30">
+                      Recursos
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/30">
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white border-r border-white/30">
                       <div className="flex flex-col items-center">
                         <span>Gratuito</span>
-                        <span className="text-sm font-normal text-white/90 mt-1">R$0</span>
+                        <span className="text-xs font-normal text-white/90 mt-1">R$0</span>
                       </div>
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white border-r border-white/30 bg-gradient-to-b from-purple-500/20 to-violet-600/20">
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white border-r border-white/30 bg-gradient-to-b from-purple-500/20 to-violet-600/20">
                       <div className="flex flex-col items-center">
                         <span>Base</span>
-                        <span className="text-sm font-normal text-white/90 mt-1">R$45,90/mês</span>
+                        <span className="text-xs font-normal text-white/90 mt-1">R$45,90/mês</span>
                         <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">POPULAR</Badge>
                       </div>
                     </th>
-                    <th className="p-4 sm:p-6 text-center text-base sm:text-lg font-bold text-white">
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white">
                       <div className="flex flex-col items-center">
                         <span>Pro</span>
-                        <span className="text-sm font-normal text-white/90 mt-1">R$59,90/mês</span>
+                        <span className="text-xs font-normal text-white/90 mt-1">R$59,90/mês</span>
                       </div>
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-gradient-to-b from-[#09072e]/95 to-[#0d0b3a]/95 backdrop-blur-sm">
                   <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <Settings className="text-blue-400" size={18} />
-                        Acesso às Funcionalidades
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Settings className="text-blue-400" size={16} />
+                        <span className="hidden sm:inline">Acesso às Funcionalidades</span>
+                        <span className="sm:hidden">Funcionalidades</span>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-2 py-1">
+                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
                           Algumas
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
+                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-1.5 py-0.5 shadow-md">
                           Todas
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center">
+                    <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
+                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-1.5 py-0.5 shadow-md">
                           Todas
                         </Badge>
                       </div>
                     </td>
                   </tr>
                   <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <Mail className="text-cyan-400" size={18} />
-                        Acesso à Newsletter Educacional
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Mail className="text-cyan-400" size={16} />
+                        <span className="hidden sm:inline">Acesso à Newsletter Educacional</span>
+                        <span className="sm:hidden">Newsletter</span>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <BarChart3 className="text-purple-400" size={18} />
-                        Dashboard e Cronograma de Estudos
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                   </tr>
                   <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <BookOpen className="text-pink-400" size={18} />
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <BarChart3 className="text-purple-400" size={16} />
+                        <span className="hidden sm:inline">Dashboard e Cronograma de Estudos</span>
+                        <span className="sm:hidden">Dashboard</span>
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <BookOpen className="text-pink-400" size={16} />
                         Biblioteca Pessoal
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-2 py-1">
+                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
                           Limitada
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <Brain className="text-violet-400" size={18} />
-                        Resposta Aprofundada da IA
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
-                        <X className="text-red-400" size={16} />
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
-                      </div>
-                    </td>
-                    <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                   </tr>
                   <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <Gauge className="text-emerald-400" size={18} />
-                        Uso das Funcionalidades
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Brain className="text-violet-400" size={16} />
+                        <span className="hidden sm:inline">Resposta Aprofundada da IA</span>
+                        <span className="sm:hidden">Resposta IA</span>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
+                        <X className="text-red-400" size={14} />
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr className="border-b border-[#5087ff]/40 hover:bg-[#5087ff]/10 transition-all duration-300">
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Gauge className="text-emerald-400" size={16} />
+                        <span className="hidden sm:inline">Uso das Funcionalidades</span>
+                        <span className="sm:hidden">Uso</span>
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-red-400 border-red-400/60 bg-red-500/20 text-xs px-2 py-1">
+                        <Badge variant="outline" className="text-red-400 border-red-400/60 bg-red-500/20 text-xs px-1.5 py-0.5">
                           Mínimo
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-2 py-1 shadow-md">
-                          Intermediário
+                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-1.5 py-0.5 shadow-md">
+                          <span className="hidden sm:inline">Intermediário</span>
+                          <span className="sm:hidden">Médio</span>
                         </Badge>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center">
+                    <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-2 py-1 shadow-md">
+                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-1.5 py-0.5 shadow-md">
                           Máximo
                         </Badge>
                       </div>
                     </td>
                   </tr>
                   <tr className="hover:bg-[#5087ff]/10 transition-all duration-300">
-                    <td className="p-4 sm:p-6 text-sm sm:text-base font-medium text-white border-r border-[#5087ff]/40">
-                      <div className="flex items-center gap-3">
-                        <Gift className="text-yellow-400" size={18} />
-                        Material Complementar Exclusivo
+                    <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Gift className="text-yellow-400" size={16} />
+                        <span className="hidden sm:inline">Material Complementar Exclusivo</span>
+                        <span className="sm:hidden">Material Extra</span>
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
-                        <X className="text-red-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
+                        <X className="text-red-400" size={14} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
-                        <X className="text-red-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
+                        <X className="text-red-400" size={14} />
                       </div>
                     </td>
-                    <td className="p-4 sm:p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={16} />
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
+                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                   </tr>
@@ -357,14 +364,14 @@ export default function Pricing() {
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-4xl mx-auto mb-8 sm:mb-12" id="faq">
-          <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-6 sm:mb-8" data-testid="text-faq-title">
-            Perguntas Frequentes sobre os Planos
+        <div className="max-w-4xl mx-auto mb-6 sm:mb-8" id="faq">
+          <h3 className="text-lg sm:text-xl font-bold text-white text-center mb-4 sm:mb-6" data-testid="text-faq-title">
+            Perguntas Frequentes
           </h3>
           <LiquidGlassCard className="p-0 overflow-hidden border-2 border-[#5087ff]/60" data-testid="faq-container">
-            <div className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff] p-4 sm:p-6">
-              <h4 className="text-lg font-bold text-white text-center">
-                Tire todas suas dúvidas sobre nossos planos e funcionalidades
+            <div className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff] p-3 sm:p-4">
+              <h4 className="text-sm sm:text-base font-bold text-white text-center">
+                Tire todas suas dúvidas sobre os planos
               </h4>
             </div>
             <div className="bg-gradient-to-b from-[#09072e]/95 to-[#0d0b3a]/95 backdrop-blur-sm">
@@ -372,16 +379,16 @@ export default function Pricing() {
                 {mockFAQ.map((faq, index) => (
                   <AccordionItem key={faq.id} value={`item-${faq.id}`} className="border-0">
                     <div className={`${index < mockFAQ.length - 1 ? 'border-b border-[#5087ff]/40' : ''} hover:bg-[#5087ff]/10 transition-all duration-300`}>
-                      <AccordionTrigger className="px-4 sm:px-6 py-4 sm:py-6 font-semibold text-white hover:no-underline text-left">
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#5087ff] to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <AccordionTrigger className="px-3 sm:px-4 py-3 sm:py-4 font-semibold text-white hover:no-underline text-left">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-[#5087ff] to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <span className="text-white text-xs font-bold">{faq.id}</span>
                           </div>
-                          <span>{faq.question}</span>
+                          <span className="text-sm sm:text-base">{faq.question}</span>
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="px-4 sm:px-6 pb-4 sm:pb-6 text-white/90 text-sm leading-relaxed">
-                        <div className="ml-9 pl-2 border-l-2 border-[#5087ff]/30">
+                      <AccordionContent className="px-3 sm:px-4 pb-3 sm:pb-4 text-white/90 text-xs sm:text-sm leading-relaxed">
+                        <div className="ml-7 sm:ml-9 pl-2 border-l-2 border-[#5087ff]/30">
                           {faq.answer}
                         </div>
                       </AccordionContent>
@@ -396,7 +403,7 @@ export default function Pricing() {
         <div className="text-center">
           <Button
             asChild
-            className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale"
+            className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base font-semibold hover:bg-gray-100 smooth-transition hover-scale"
             data-testid="button-ready-start"
           >
             <Link href="/signup">Pronto para Começar?</Link>
