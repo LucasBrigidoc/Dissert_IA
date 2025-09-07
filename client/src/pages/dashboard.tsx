@@ -1134,22 +1134,35 @@ export default function Dashboard() {
 
         {/* Fourth Row: Cronograma de Estudos - Full Width */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-study-schedule">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
-                <Timer className="text-white" size={12} />
+          <div className="mb-4 md:mb-6">
+            <div className="flex items-center justify-between md:mb-0 mb-3">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
+                  <Timer className="text-white" size={12} />
+                </div>
+                <h4 className="font-semibold text-dark-blue text-base md:text-lg">Cronograma de Estudos Personalizado</h4>
               </div>
-              <h4 className="font-semibold text-dark-blue text-lg">Cronograma de Estudos Personalizado</h4>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hidden md:flex"
+                onClick={handleScheduleEdit}
+                data-testid="button-customize-schedule"
+              >
+                Personalizar
+              </Button>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
-              onClick={handleScheduleEdit}
-              data-testid="button-customize-schedule"
-            >
-              Personalizar
-            </Button>
+            <div className="md:hidden">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+                onClick={handleScheduleEdit}
+                data-testid="button-customize-schedule-mobile"
+              >
+                Personalizar
+              </Button>
+            </div>
           </div>
           <div className="grid lg:grid-cols-7 gap-4">
             {/* Dias da Semana */}
