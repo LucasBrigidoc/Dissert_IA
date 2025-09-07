@@ -123,6 +123,62 @@ Exemplo: [3, 1, 5, 2, 4]
     return repertoires;
   }
 
+  async generateRepertoires(query: string, analysis: {
+    keywords: string[];
+    suggestedTypes: string[];
+    suggestedCategories: string[];
+  }): Promise<any[]> {
+    const prompt = `
+Gere repertórios relevantes para esta consulta de redação:
+
+Consulta: "${query}"
+Palavras-chave: ${analysis.keywords.join(', ')}
+Tipos sugeridos: ${analysis.suggestedTypes.join(', ')}
+Categorias sugeridas: ${analysis.suggestedCategories.join(', ')}
+
+Crie EXATAMENTE 4-6 repertórios diversos e relevantes. Responda APENAS em formato JSON válido:
+
+{
+  "repertoires": [
+    {
+      "title": "Título exato do repertório",
+      "description": "Descrição detalhada de como usar na redação (100-150 caracteres)",
+      "type": "um dos tipos: movies, laws, books, news, events, music, series, documentaries, research, data",
+      "category": "uma das categorias: social, environment, technology, education, politics, economy, culture, health, ethics, globalization",
+      "popularity": "um dos níveis: very-popular, popular, moderate, uncommon, rare",
+      "year": "ano como string ou período",
+      "rating": número de 30-50,
+      "keywords": ["palavra1", "palavra2", "palavra3", "palavra4", "palavra5"]
+    }
+  ]
+}
+
+REGRAS IMPORTANTES:
+- Repertórios reais e verificáveis (não ficcionais)
+- Variados em tipos (livros, leis, filmes, pesquisas, dados, etc.)
+- Específicos para o contexto brasileiro quando aplicável
+- Diferentes níveis de popularidade para dar opções únicas
+- Keywords relevantes e específicas
+- Descrições práticas de como usar na redação
+`;
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = result.response.text();
+      
+      // Parse JSON response
+      const cleanedResponse = response.replace(/```json|```/g, '').trim();
+      const generated = JSON.parse(cleanedResponse);
+      
+      return generated.repertoires || [];
+    } catch (error) {
+      console.error("Error generating repertoires with Gemini:", error);
+      
+      // Fallback: return empty array to use existing search logic
+      return [];
+    }
+  }
+
   normalizeQuery(query: string): string {
     return query
       .toLowerCase()

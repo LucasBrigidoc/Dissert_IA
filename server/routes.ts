@@ -266,6 +266,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      // If still no results, generate new repertoires using AI
+      if (results.length === 0) {
+        console.log(`No existing repertoires found, generating new ones for: "${query}"`);
+        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis);
+        
+        // Convert generated repertoires to proper format and save them
+        for (const genRep of generatedRepertoires) {
+          try {
+            const createdRepertoire = await storage.createRepertoire({
+              title: genRep.title,
+              description: genRep.description,
+              type: genRep.type,
+              category: genRep.category,
+              popularity: genRep.popularity,
+              year: genRep.year,
+              rating: genRep.rating,
+              keywords: genRep.keywords
+            });
+            results.push(createdRepertoire);
+          } catch (error) {
+            console.error("Error saving generated repertoire:", error);
+          }
+        }
+      }
+      
       // Use AI to rank results by relevance
       if (results.length > 1) {
         results = await geminiService.rankRepertoires(query, results);
