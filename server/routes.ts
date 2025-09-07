@@ -212,13 +212,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/repertoires/search", async (req, res) => {
     try {
       const validatedQuery = searchQuerySchema.parse(req.body);
-      const { query, type, category, popularity } = validatedQuery;
+      const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
       // Normalize query for cache lookup
       const normalizedQuery = geminiService.normalizeQuery(query);
       
-      // Check cache first
-      let cachedResult = await storage.getSearchCache(normalizedQuery);
+      // Check cache first (only if no excluded IDs)
+      let cachedResult = excludeIds.length === 0 ? await storage.getSearchCache(normalizedQuery) : null;
       
       if (cachedResult) {
         // Update cache usage statistics
@@ -266,10 +266,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // If still no results, generate new repertoires using AI
-      if (results.length === 0) {
-        console.log(`No existing repertoires found, generating new ones for: "${query}"`);
-        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis);
+      // If still no results or need more repertoires (when excluding IDs), generate new ones using AI
+      if (results.length === 0 || excludeIds.length > 0) {
+        console.log(`Generating new repertoires for: "${query}" (existing: ${results.length}, excluded: ${excludeIds.length})`);
+        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis, excludeIds);
         
         // Convert generated repertoires to proper format and save them
         for (const genRep of generatedRepertoires) {
@@ -289,6 +289,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.error("Error saving generated repertoire:", error);
           }
         }
+      }
+      
+      // Filter out excluded IDs from final results
+      if (excludeIds.length > 0) {
+        results = results.filter(rep => !excludeIds.includes(rep.id));
       }
       
       // Use AI to rank results by relevance

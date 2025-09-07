@@ -118,6 +118,7 @@ export const searchQuerySchema = z.object({
   type: z.string().optional(),
   category: z.string().optional(),
   popularity: z.string().optional(),
+  excludeIds: z.array(z.string()).optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

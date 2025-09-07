@@ -127,7 +127,7 @@ Exemplo: [3, 1, 5, 2, 4]
     keywords: string[];
     suggestedTypes: string[];
     suggestedCategories: string[];
-  }): Promise<any[]> {
+  }, excludeIds: string[] = []): Promise<any[]> {
     const prompt = `
 Gere repertórios relevantes para esta consulta de redação:
 
@@ -160,6 +160,8 @@ REGRAS IMPORTANTES:
 - Diferentes níveis de popularidade para dar opções únicas
 - Keywords relevantes e específicas
 - Descrições práticas de como usar na redação
+${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs: ${excludeIds.join(', ')})` : ''}
+- Seja criativo e diverso para oferecer opções únicas
 `;
 
     try {

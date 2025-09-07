@@ -78,6 +78,36 @@ export default function Repertorio() {
     }
   });
 
+  // Load more mutation for getting additional repertoires
+  const loadMoreMutation = useMutation({
+    mutationFn: async (query: { query: string; type?: string; category?: string; popularity?: string; excludeIds: string[] }) => {
+      console.log("📚 Carregando mais repertórios:", query);
+      const result = await apiRequest("/api/repertoires/search", {
+        method: "POST",
+        body: query
+      });
+      console.log("✅ Mais repertórios carregados:", result);
+      return result;
+    },
+    onSuccess: (data: SearchResult) => {
+      console.log("🎉 Novos repertórios adicionados");
+      if (searchResults) {
+        // Merge new results with existing ones, avoiding duplicates
+        const existingIds = new Set(searchResults.results.map(r => r.id));
+        const newResults = data.results.filter(r => !existingIds.has(r.id));
+        
+        setSearchResults({
+          ...searchResults,
+          results: [...searchResults.results, ...newResults],
+          count: searchResults.count + newResults.length
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("❌ Erro ao carregar mais repertórios:", error);
+    }
+  });
+
   // Load initial repertoires
   const { data: initialRepertoires, isLoading: isLoadingInitial } = useQuery({
     queryKey: ["/api/repertoires"],
@@ -131,7 +161,31 @@ export default function Repertorio() {
   };
 
   const displayRepertoires = getFilteredRepertoires();
-  const isLoading = searchMutation.isPending || isLoadingInitial;
+  const isLoading = searchMutation.isPending || isLoadingInitial || loadMoreMutation.isPending;
+
+  // Auto-load more repertoires if less than 4 results after filtering
+  useEffect(() => {
+    if (searchResults && displayRepertoires.length < 4 && displayRepertoires.length > 0 && !loadMoreMutation.isPending) {
+      console.log("🤖 Menos de 4 repertórios encontrados, buscando mais automaticamente...");
+      handleLoadMore();
+    }
+  }, [displayRepertoires.length, searchResults]);
+
+  const handleLoadMore = () => {
+    if (!searchQuery.trim() || loadMoreMutation.isPending) return;
+    
+    const existingIds = searchResults?.results.map(r => r.id) || [];
+    
+    const query = {
+      query: searchQuery,
+      type: selectedType !== "all" ? selectedType : undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
+      excludeIds: existingIds
+    };
+    
+    loadMoreMutation.mutate(query);
+  };
 
   // Debug logging for filtering issues
   useEffect(() => {
@@ -446,11 +500,26 @@ export default function Repertorio() {
           )}
 
           {/* Load More */}
-          <div className="flex justify-center">
-            <Button variant="outline" className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10" data-testid="button-load-more">
-              Carregar Mais Resultados
-            </Button>
-          </div>
+          {searchResults && displayRepertoires.length > 0 && (
+            <div className="flex justify-center">
+              <Button 
+                variant="outline" 
+                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10" 
+                data-testid="button-load-more"
+                onClick={handleLoadMore}
+                disabled={loadMoreMutation.isPending}
+              >
+                {loadMoreMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 animate-spin" size={16} />
+                    Buscando Mais...
+                  </>
+                ) : (
+                  "Carregar Mais Resultados"
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
