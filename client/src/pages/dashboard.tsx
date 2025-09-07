@@ -503,25 +503,25 @@ export default function Dashboard() {
         </div>
       </nav>
       {/* Dashboard Content */}
-      <div className="container mx-auto px-6 py-6 pt-20 space-y-5">
+      <div className="container mx-auto px-3 md:px-6 py-4 md:py-6 pt-16 md:pt-20 space-y-3 md:space-y-5">
         
         {/* First Row: All Exams + Activity Stats + Goals */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {/* Welcome + Quick Exam Info Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome-exams">
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Calendar className="text-white" size={16} />
+            <div className="flex items-center mb-2 md:mb-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                <Calendar className="text-white" size={14} />
               </div>
-              <h3 className="text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
+              <h3 className="text-base md:text-lg font-semibold text-dark-blue">Olá, {name.split(' ')[0]}! 👋</h3>
             </div>
-            <p className="text-sm text-soft-gray mb-4">Continue refinando sua escrita.</p>
+            <p className="text-xs md:text-sm text-soft-gray mb-3 md:mb-4">Continue refinando sua escrita.</p>
             
             {/* Próximas Provas Resumo */}
-            <div className="space-y-2">
-              <div className="text-xs font-medium text-dark-blue mb-2">Próximas Provas:</div>
+            <div className="space-y-1 md:space-y-2">
+              <div className="text-xs font-medium text-dark-blue mb-1 md:mb-2">Próximas Provas:</div>
               {displayedExams.map((exam, index) => (
-                <div key={exam.id} className={`flex items-center justify-between p-2 rounded border ${
+                <div key={exam.id} className={`flex items-center justify-between p-1.5 md:p-2 rounded border ${
                   index % 3 === 0 
                     ? 'bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 border-soft-gray/20'
                     : index % 3 === 1
@@ -547,21 +547,21 @@ export default function Dashboard() {
               onClick={() => setShowExamsManagement(true)}
               variant="outline" 
               size="sm" 
-              className="w-full mt-3 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+              className="w-full mt-2 md:mt-3 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-xs md:text-sm h-8 md:h-10"
               data-testid="button-manage-exams"
             >
-              <Edit3 size={10} className="mr-2" />
+              <Edit3 size={8} className="mr-1 md:mr-2" />
               Gerenciar Provas
             </Button>
           </LiquidGlassCard>
 
           {/* Goals Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 h-full" data-testid="card-goals">
-            <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Target className="text-white" size={16} />
+            <div className="flex items-center mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                <Target className="text-white" size={14} />
               </div>
-              <h4 className="font-semibold text-dark-blue">Metas da Semana</h4>
+              <h4 className="text-sm md:text-base font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
               {allTasksCompleted ? (
@@ -637,27 +637,27 @@ export default function Dashboard() {
           {/* Improvement Points - Taking 2 columns */}
           <div className="lg:col-span-2">
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-improvement-points">
-              <div className="flex items-center mb-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <Target className="text-white" size={16} />
+              <div className="flex items-center mb-2 md:mb-3">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                  <Target className="text-white" size={14} />
                 </div>
-                <h4 className="text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
+                <h4 className="text-xs md:text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
               </div>
               
               {/* Competências em linhas horizontais */}
               <div className="space-y-1">
                 {/* Competência 1 */}
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-red-50 to-red-100 rounded border border-red-200">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center justify-between p-1.5 md:p-2 bg-gradient-to-r from-red-50 to-red-100 rounded border border-red-200">
+                  <div className="flex items-center space-x-1 md:space-x-2">
+                    <div className="w-3 h-3 md:w-4 md:h-4 bg-red-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-xs font-bold">1</span>
                     </div>
                     <span className="text-xs font-medium text-dark-blue">Norma Culta</span>
-                    <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">160/200</span>
+                    <span className="text-xs text-red-600 bg-red-100 px-1 md:px-2 py-0.5 md:py-1 rounded">160/200</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-soft-gray">Concordância e regência</span>
-                    <AlertTriangle className="text-red-500" size={10} />
+                  <div className="flex items-center space-x-1 md:space-x-2">
+                    <span className="text-xs text-soft-gray hidden sm:inline">Concordância e regência</span>
+                    <AlertTriangle className="text-red-500" size={8} />
                   </div>
                 </div>
 
@@ -740,15 +740,15 @@ export default function Dashboard() {
         </div>
 
         {/* Second Row: Progress + Evolution Chart + Simulator Time */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {/* Progress Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={16} />
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                  <TrendingUp className="text-white" size={14} />
                 </div>
-                <h4 className="font-semibold text-dark-blue">Progresso Geral</h4>
+                <h4 className="text-sm md:text-base font-semibold text-dark-blue">Progresso Geral</h4>
               </div>
               <Button
                 variant="outline"
@@ -760,9 +760,9 @@ export default function Dashboard() {
                 <Edit3 size={10} />
               </Button>
             </div>
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative w-32 h-32">
-                <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+            <div className="flex items-center justify-center mb-3 md:mb-4">
+              <div className="relative w-24 h-24 md:w-32 md:h-32">
+                <svg className="w-24 h-24 md:w-32 md:h-32 -rotate-90" viewBox="0 0 120 120">
                   <circle
                     cx="60"
                     cy="60"
@@ -792,7 +792,7 @@ export default function Dashboard() {
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-dark-blue" data-testid="text-average-score">
+                    <div className="text-xl md:text-2xl font-bold text-dark-blue" data-testid="text-average-score">
                       {averageScore}
                     </div>
                     <div className="text-xs text-soft-gray">Nota Média</div>
@@ -855,13 +855,13 @@ export default function Dashboard() {
 
           {/* Evolution Chart */}
           <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-bright-blue/5 border-dark-blue/20" data-testid="card-evolution-chart">
-            <div className="flex items-center mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <TrendingUp className="text-white" size={16} />
+            <div className="flex items-center mb-4 md:mb-6">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-dark-blue to-bright-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                <TrendingUp className="text-white" size={14} />
               </div>
-              <h4 className="font-semibold text-dark-blue">Evolução das Notas</h4>
+              <h4 className="text-sm md:text-base font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
-            <div className="h-64 bg-white rounded-2xl border-2 border-bright-blue/20 p-8 shadow-lg" data-testid="chart-evolution">
+            <div className="h-48 md:h-64 bg-white rounded-2xl border-2 border-bright-blue/20 p-4 md:p-8 shadow-lg" data-testid="chart-evolution">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                   <defs>
@@ -986,11 +986,11 @@ export default function Dashboard() {
 
           {/* Simulator Time Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
-            <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Clock className="text-white" size={16} />
+            <div className="flex items-center mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                <Clock className="text-white" size={14} />
               </div>
-              <h4 className="font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
+              <h4 className="text-sm md:text-base font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
             </div>
             <div className="space-y-4">
               <div className="text-center p-3 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
