@@ -82,11 +82,17 @@ export default function Repertorio() {
   const { data: initialRepertoires, isLoading: isLoadingInitial } = useQuery({
     queryKey: ["/api/repertoires"],
     queryFn: () => apiRequest("/api/repertoires"),
-    select: (data) => data.results as Repertoire[]
+    select: (data) => {
+      console.log("📥 Dados recebidos da API:", data);
+      return data.results as Repertoire[];
+    }
   });
 
   const handleSearch = () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      console.log("⚠️ Busca vazia, ignorando");
+      return;
+    }
     
     const query = {
       query: searchQuery,
@@ -95,11 +101,21 @@ export default function Repertorio() {
       popularity: selectedPopularity !== "all" ? selectedPopularity : undefined
     };
     
+    console.log("🚀 Iniciando busca com query:", query);
     searchMutation.mutate(query);
   };
 
   const displayRepertoires = searchResults?.results || initialRepertoires || [];
   const isLoading = searchMutation.isPending || isLoadingInitial;
+
+  // Debug logs para acompanhar o estado
+  console.log("📊 Estado atual:", {
+    searchResults: searchResults,
+    initialRepertoires: initialRepertoires,
+    displayRepertoires: displayRepertoires,
+    isLoading: isLoading,
+    searchPending: searchMutation.isPending
+  });
 
   // Helper functions
   const getTypeIcon = (type: string) => {
