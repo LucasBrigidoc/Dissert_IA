@@ -2,6 +2,14 @@
 
 DissertAI is a comprehensive SaaS educational platform designed to revolutionize essay writing for Brazilian students preparing for entrance exams (vestibulares) and competitive exams (concursos). The platform combines artificial intelligence with pedagogical expertise to provide personalized writing assistance, featuring tools like the Socratic Argument Architect, Intelligent Repertoire Explorer, and personalized structure creators. Built as a full-stack web application with a React frontend and Express backend, it offers a modern "liquid glass" design aesthetic with a blue-themed color scheme.
 
+# Recent Changes
+
+- **September 7, 2025**: Successfully imported GitHub project to Replit environment
+- **Setup Completion**: Fixed tsx dependency issue, configured proper host settings for Replit proxy
+- **AI Enhancement**: Added intelligent repertoire generation using Gemini AI when no existing repertoires match search queries
+- **Search Improvement**: Enhanced search functionality to dynamically create relevant repertoires and save them to the database
+- **Deployment**: Configured autoscale deployment with proper build and start commands
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
