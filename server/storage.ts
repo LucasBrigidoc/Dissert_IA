@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -23,6 +23,16 @@ export interface IStorage {
   updateStructure(id: string, structure: Partial<EssayStructure>): Promise<EssayStructure>;
   deleteStructure(id: string): Promise<void>;
   getStructure(id: string): Promise<EssayStructure | undefined>;
+  
+  // Repertoire operations
+  searchRepertoires(query: string, filters?: { type?: string; category?: string; popularity?: string }): Promise<Repertoire[]>;
+  createRepertoire(repertoire: InsertRepertoire): Promise<Repertoire>;
+  getRepertoires(limit?: number, offset?: number): Promise<Repertoire[]>;
+  
+  // Search cache operations
+  getSearchCache(normalizedQuery: string): Promise<SearchCache | undefined>;
+  createSearchCache(cache: InsertSearchCache): Promise<SearchCache>;
+  updateSearchCache(id: string, cache: Partial<SearchCache>): Promise<SearchCache>;
 }
 
 export class MemStorage implements IStorage {
@@ -30,12 +40,19 @@ export class MemStorage implements IStorage {
   private userProgress: Map<string, UserProgress>;
   private essays: Map<string, Essay>;
   private essayStructures: Map<string, EssayStructure>;
+  private repertoires: Map<string, Repertoire>;
+  private searchCaches: Map<string, SearchCache>;
 
   constructor() {
     this.users = new Map();
     this.userProgress = new Map();
     this.essays = new Map();
     this.essayStructures = new Map();
+    this.repertoires = new Map();
+    this.searchCaches = new Map();
+    
+    // Initialize with basic repertoires
+    this.initializeRepertoires();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -192,6 +209,173 @@ export class MemStorage implements IStorage {
 
   async getStructure(id: string): Promise<EssayStructure | undefined> {
     return this.essayStructures.get(id);
+  }
+
+  // Repertoire operations
+  async searchRepertoires(query: string, filters?: { type?: string; category?: string; popularity?: string }): Promise<Repertoire[]> {
+    const normalizedQuery = query.toLowerCase().trim();
+    let results = Array.from(this.repertoires.values());
+
+    // Filter by query in title, description, or keywords
+    if (normalizedQuery) {
+      results = results.filter(rep => 
+        rep.title.toLowerCase().includes(normalizedQuery) ||
+        rep.description.toLowerCase().includes(normalizedQuery) ||
+        (rep.keywords as string[]).some(k => k.toLowerCase().includes(normalizedQuery))
+      );
+    }
+
+    // Apply filters
+    if (filters?.type && filters.type !== "all") {
+      results = results.filter(rep => rep.type === filters.type);
+    }
+    
+    if (filters?.category && filters.category !== "all") {
+      results = results.filter(rep => rep.category === filters.category);
+    }
+    
+    if (filters?.popularity && filters.popularity !== "all") {
+      results = results.filter(rep => rep.popularity === filters.popularity);
+    }
+
+    // Sort by rating descending
+    return results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  }
+
+  async createRepertoire(insertRepertoire: InsertRepertoire): Promise<Repertoire> {
+    const id = randomUUID();
+    const repertoire: Repertoire = { 
+      ...insertRepertoire,
+      rating: insertRepertoire.rating ?? 0,
+      popularity: insertRepertoire.popularity ?? "moderate",
+      keywords: insertRepertoire.keywords ?? [],
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.repertoires.set(id, repertoire);
+    return repertoire;
+  }
+
+  async getRepertoires(limit = 50, offset = 0): Promise<Repertoire[]> {
+    const allRepertoires = Array.from(this.repertoires.values())
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    return allRepertoires.slice(offset, offset + limit);
+  }
+
+  // Search cache operations
+  async getSearchCache(normalizedQuery: string): Promise<SearchCache | undefined> {
+    return Array.from(this.searchCaches.values()).find(
+      cache => cache.normalizedQuery === normalizedQuery
+    );
+  }
+
+  async createSearchCache(insertCache: InsertSearchCache): Promise<SearchCache> {
+    const id = randomUUID();
+    const cache: SearchCache = { 
+      ...insertCache,
+      searchCount: insertCache.searchCount ?? 1,
+      lastSearched: insertCache.lastSearched ?? new Date(),
+      id,
+      createdAt: new Date()
+    };
+    this.searchCaches.set(id, cache);
+    return cache;
+  }
+
+  async updateSearchCache(id: string, updateData: Partial<SearchCache>): Promise<SearchCache> {
+    const existing = this.searchCaches.get(id);
+    if (!existing) {
+      throw new Error("Search cache not found");
+    }
+    
+    const updated: SearchCache = {
+      ...existing,
+      ...updateData,
+      lastSearched: new Date()
+    };
+    
+    this.searchCaches.set(id, updated);
+    return updated;
+  }
+
+  private initializeRepertoires() {
+    const initialRepertoires: InsertRepertoire[] = [
+      {
+        title: "1984 - George Orwell",
+        description: "Distopia que aborda temas como vigilância estatal, manipulação da informação e controle social. Ideal para redações sobre tecnologia, privacidade e liberdade.",
+        type: "books",
+        category: "technology",
+        popularity: "very-popular",
+        year: "1949",
+        rating: 48,
+        keywords: ["distopia", "vigilância", "estado", "controle", "tecnologia", "privacidade", "liberdade", "orwell"]
+      },
+      {
+        title: "Declaração Universal dos Direitos Humanos",
+        description: "Marco histórico de 1948 que estabelece direitos fundamentais. Excelente referência para temas sobre dignidade humana, igualdade e justiça social.",
+        type: "laws",
+        category: "social",
+        popularity: "very-popular",
+        year: "1948",
+        rating: 49,
+        keywords: ["direitos humanos", "onu", "dignidade", "igualdade", "justiça", "social"]
+      },
+      {
+        title: "Revolução Industrial 4.0",
+        description: "Transformação digital atual com IoT, AI e automação. Perfeito para discussões sobre futuro do trabalho, inovação e impactos socioeconômicos.",
+        type: "research",
+        category: "technology",
+        popularity: "popular",
+        year: "2010s",
+        rating: 47,
+        keywords: ["revolução industrial", "tecnologia", "automação", "ia", "iot", "trabalho", "futuro"]
+      },
+      {
+        title: "Lei Maria da Penha",
+        description: "Marco legal brasileiro de 2006 no combate à violência doméstica. Essencial para redações sobre direitos das mulheres e violência de gênero.",
+        type: "laws",
+        category: "social",
+        popularity: "popular",
+        year: "2006",
+        rating: 46,
+        keywords: ["maria da penha", "violência doméstica", "mulheres", "gênero", "direitos", "brasil"]
+      },
+      {
+        title: "Parasita (Gisaengchung)",
+        description: "Filme sul-coreano que retrata desigualdade social e luta de classes. Vencedor do Oscar, ideal para temas sobre pobreza e sociedade.",
+        type: "movies",
+        category: "social",
+        popularity: "popular",
+        year: "2019",
+        rating: 45,
+        keywords: ["parasita", "desigualdade", "classes sociais", "pobreza", "coreia do sul", "oscar"]
+      },
+      {
+        title: "Acordo de Paris",
+        description: "Acordo climático internacional de 2015 que visa limitar o aquecimento global. Fundamental para discussões ambientais.",
+        type: "laws",
+        category: "environment",
+        popularity: "popular",
+        year: "2015",
+        rating: 44,
+        keywords: ["acordo de paris", "clima", "aquecimento global", "meio ambiente", "sustentabilidade"]
+      }
+    ];
+
+    initialRepertoires.forEach(async (rep, index) => {
+      const id = `initial-${index + 1}`;
+      const repertoire: Repertoire = {
+        ...rep,
+        rating: rep.rating ?? 0,
+        popularity: rep.popularity ?? "moderate",
+        keywords: rep.keywords ?? [],
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.repertoires.set(id, repertoire);
+    });
   }
 }
 
