@@ -61,13 +61,20 @@ export default function Repertorio() {
   // Search mutation for intelligent search
   const searchMutation = useMutation({
     mutationFn: async (query: { query: string; type?: string; category?: string; popularity?: string }) => {
-      return apiRequest("/api/repertoires/search", {
+      console.log("🔍 Fazendo busca com:", query);
+      const result = await apiRequest("/api/repertoires/search", {
         method: "POST",
         body: query
       });
+      console.log("✅ Resultado da busca:", result);
+      return result;
     },
     onSuccess: (data: SearchResult) => {
+      console.log("🎉 Busca bem-sucedida, atualizando resultados:", data);
       setSearchResults(data);
+    },
+    onError: (error) => {
+      console.error("❌ Erro na busca:", error);
     }
   });
 
