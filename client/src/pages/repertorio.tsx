@@ -135,6 +135,14 @@ export default function Repertorio() {
     searchMutation.mutate(query);
   };
 
+  // Auto-search when filters change and there's already a search query
+  useEffect(() => {
+    if (searchQuery.trim() && searchResults) {
+      console.log("🔄 Filtro alterado, executando nova busca automaticamente");
+      handleSearch();
+    }
+  }, [selectedType, selectedCategory, selectedPopularity]);
+
   // Apply client-side filtering based on selected filters
   const getFilteredRepertoires = () => {
     const baseRepertoires = searchResults?.results || initialRepertoires || [];
