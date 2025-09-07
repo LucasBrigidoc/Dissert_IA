@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema } from "@shared/schema";
+import { geminiService } from "./gemini-service";
 import bcrypt from "bcrypt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -204,6 +205,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get structure error:", error);
       res.status(500).json({ message: "Failed to get structure" });
+    }
+  });
+
+  // Intelligent repertoire search endpoint
+  app.post("/api/repertoires/search", async (req, res) => {
+    try {
+      const validatedQuery = searchQuerySchema.parse(req.body);
+      const { query, type, category, popularity } = validatedQuery;
+      
+      // Normalize query for cache lookup
+      const normalizedQuery = geminiService.normalizeQuery(query);
+      
+      // Check cache first
+      let cachedResult = await storage.getSearchCache(normalizedQuery);
+      
+      if (cachedResult) {
+        // Update cache usage statistics
+        await storage.updateSearchCache(cachedResult.id, {
+          searchCount: cachedResult.searchCount + 1,
+          lastSearched: new Date()
+        });
+        
+        console.log(`Cache hit for query: "${query}"`);
+        return res.json({
+          results: cachedResult.results,
+          source: "cache",
+          count: (cachedResult.results as any[]).length
+        });
+      }
+      
+      console.log(`Cache miss for query: "${query}" - using AI analysis`);
+      
+      // Use AI to analyze the query
+      const analysis = await geminiService.analyzeSearchQuery(query);
+      
+      // Search repertoires with AI-enhanced filters
+      const filters = {
+        type: type || undefined,
+        category: category || undefined,
+        popularity: popularity || undefined
+      };
+      
+      // First search with explicit filters
+      let results = await storage.searchRepertoires(normalizedQuery, filters);
+      
+      // If no results, try with AI-suggested filters
+      if (results.length === 0 && analysis.suggestedTypes.length > 0) {
+        for (const suggestedType of analysis.suggestedTypes) {
+          results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
+          if (results.length > 0) break;
+        }
+      }
+      
+      // If still no results, try with AI-suggested categories
+      if (results.length === 0 && analysis.suggestedCategories.length > 0) {
+        for (const suggestedCategory of analysis.suggestedCategories) {
+          results = await storage.searchRepertoires(normalizedQuery, { category: suggestedCategory });
+          if (results.length > 0) break;
+        }
+      }
+      
+      // Use AI to rank results by relevance
+      if (results.length > 1) {
+        results = await geminiService.rankRepertoires(query, results);
+      }
+      
+      // Limit results to top 12
+      results = results.slice(0, 12);
+      
+      // Cache the results for future searches
+      await storage.createSearchCache({
+        queryText: query,
+        normalizedQuery,
+        results: results,
+        searchCount: 1,
+        lastSearched: new Date()
+      });
+      
+      res.json({
+        results,
+        source: "ai",
+        count: results.length,
+        analysis: {
+          keywords: analysis.keywords,
+          suggestedTypes: analysis.suggestedTypes,
+          suggestedCategories: analysis.suggestedCategories
+        }
+      });
+      
+    } catch (error) {
+      console.error("Repertoire search error:", error);
+      res.status(500).json({ message: "Failed to search repertoires" });
+    }
+  });
+
+  // Get all repertoires endpoint (for browsing)
+  app.get("/api/repertoires", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const repertoires = await storage.getRepertoires(limit, offset);
+      res.json({
+        results: repertoires,
+        count: repertoires.length
+      });
+    } catch (error) {
+      console.error("Get repertoires error:", error);
+      res.status(500).json({ message: "Failed to get repertoires" });
     }
   });
 

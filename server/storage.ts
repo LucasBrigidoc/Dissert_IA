@@ -246,6 +246,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const repertoire: Repertoire = { 
       ...insertRepertoire,
+      year: insertRepertoire.year ?? null,
       rating: insertRepertoire.rating ?? 0,
       popularity: insertRepertoire.popularity ?? "moderate",
       keywords: insertRepertoire.keywords ?? [],
@@ -363,10 +364,11 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    initialRepertoires.forEach(async (rep, index) => {
+    initialRepertoires.forEach((rep, index) => {
       const id = `initial-${index + 1}`;
       const repertoire: Repertoire = {
         ...rep,
+        year: rep.year ?? null,
         rating: rep.rating ?? 0,
         popularity: rep.popularity ?? "moderate",
         keywords: rep.keywords ?? [],
