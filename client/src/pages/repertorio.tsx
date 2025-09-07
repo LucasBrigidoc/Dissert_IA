@@ -139,6 +139,20 @@ export default function Repertorio() {
   const displayRepertoires = getFilteredRepertoires();
   const isLoading = searchMutation.isPending || isLoadingInitial;
 
+  // Debug logging for filtering issues
+  useEffect(() => {
+    console.log("🔧 DEBUG - Estado dos filtros:", {
+      selectedType,
+      selectedCategory, 
+      selectedPopularity,
+      hasSearchResults: !!searchResults,
+      searchResultsCount: searchResults?.results?.length || 0,
+      initialRepertoiresCount: initialRepertoires?.length || 0,
+      displayRepertoiresCount: displayRepertoires.length,
+      displayRepertoires: displayRepertoires.map(r => ({ id: r.id, title: r.title, type: r.type }))
+    });
+  }, [selectedType, selectedCategory, selectedPopularity, searchResults, initialRepertoires, displayRepertoires]);
+
   // Debug logs para acompanhar o estado (só quando há mudanças importantes)
   useEffect(() => {
     if (initialRepertoires && initialRepertoires.length > 0) {
