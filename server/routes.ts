@@ -228,11 +228,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         
         console.log(`Cache hit for query: "${query}"`);
-        return res.json({
-          results: cachedResult.results,
-          source: "cache",
-          count: (cachedResult.results as any[]).length
-        });
+        
+        // Check if cached results are enough (minimum 4)
+        const cachedResults = cachedResult.results as any[];
+        if (cachedResults.length >= 4) {
+          return res.json({
+            results: cachedResults,
+            source: "cache",
+            count: cachedResults.length
+          });
+        } else {
+          console.log(`Cache has only ${cachedResults.length} results, generating more to reach 4...`);
+          // Continue to AI generation to complete to 4 results
+          results = cachedResults;
+        }
       }
       
       console.log(`Cache miss for query: "${query}" - using AI analysis`);
@@ -266,10 +275,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // If still no results or need more repertoires (when excluding IDs), generate new ones using AI
-      if (results.length === 0 || excludeIds.length > 0) {
-        console.log(`Generating new repertoires for: "${query}" (existing: ${results.length}, excluded: ${excludeIds.length})`);
-        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis, excludeIds);
+      // If still no results or less than 4 results, generate new ones using AI
+      if (results.length < 4) {
+        console.log(`Generating repertoires to reach minimum 4 for: "${query}" (current: ${results.length})`);
+        const existingIds = results.map(r => r.id).concat(excludeIds);
+        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis, existingIds);
         
         // Convert generated repertoires to proper format and save them
         for (const genRep of generatedRepertoires) {
@@ -285,6 +295,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               keywords: genRep.keywords
             });
             results.push(createdRepertoire);
+            
+            // Stop when we reach at least 4 results
+            if (results.length >= 4) break;
           } catch (error) {
             console.error("Error saving generated repertoire:", error);
           }
