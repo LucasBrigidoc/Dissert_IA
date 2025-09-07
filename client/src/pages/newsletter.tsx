@@ -342,50 +342,50 @@ export default function NewsletterPage() {
       </nav>
 
       {/* Newsletter Content */}
-      <div className="container mx-auto px-6 py-8 pt-24 space-y-8">
+      <div className="container mx-auto px-3 md:px-6 py-6 md:py-8 pt-20 md:pt-24 space-y-6 md:space-y-8">
         
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-dark-blue mb-4">Newsletter Educacional</h1>
-          <p className="text-lg text-soft-gray">Conteúdo semanal curado para enriquecer suas redações</p>
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-2xl md:text-4xl font-bold text-dark-blue mb-3 md:mb-4">Newsletter Educacional</h1>
+          <p className="text-base md:text-lg text-soft-gray">Conteúdo semanal curado para enriquecer suas redações</p>
         </div>
 
         {/* Latest Newsletter Section */}
-        <div className="mb-12">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-4">
-              <Newspaper className="text-white" size={20} />
+        <div className="mb-8 md:mb-12">
+          <div className="flex items-center mb-4 md:mb-6">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 md:mr-4">
+              <Newspaper className="text-white" size={16} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-dark-blue">Newsletter da Semana</h2>
-              <p className="text-soft-gray">Conteúdo mais recente e relevante</p>
+              <h2 className="text-xl md:text-2xl font-bold text-dark-blue">Newsletter da Semana</h2>
+              <p className="text-sm md:text-base text-soft-gray">Conteúdo mais recente e relevante</p>
             </div>
           </div>
           
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200" data-testid={`card-newsletter-${latestNewsletter.id}`}>
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <Badge className="bg-green-500 text-white">Nova</Badge>
-                <Badge className="bg-bright-blue/20 text-bright-blue">{latestNewsletter.category}</Badge>
+            <div className="flex items-start justify-between mb-3 md:mb-4">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <Badge className="bg-green-500 text-white text-xs">Nova</Badge>
+                <Badge className="bg-bright-blue/20 text-bright-blue text-xs">{latestNewsletter.category}</Badge>
               </div>
-              <div className="text-sm text-soft-gray">{latestNewsletter.readTime} de leitura</div>
+              <div className="text-xs md:text-sm text-soft-gray">{latestNewsletter.readTime} de leitura</div>
             </div>
             
-            <h3 className="text-2xl font-bold text-dark-blue mb-4">{latestNewsletter.title}</h3>
-            <p className="text-soft-gray mb-6 leading-relaxed">{latestNewsletter.excerpt}</p>
+            <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">{latestNewsletter.title}</h3>
+            <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 leading-relaxed">{latestNewsletter.excerpt}</p>
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center text-sm text-soft-gray">
-                <Calendar className="mr-2" size={16} />
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+              <div className="flex items-center text-xs md:text-sm text-soft-gray">
+                <Calendar className="mr-2" size={14} />
                 <span>Publicada em {new Date(latestNewsletter.publishDate).toLocaleDateString('pt-BR')}</span>
               </div>
               <Button 
                 onClick={() => handleReadNewsletter(latestNewsletter.id)}
-                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                className="w-full md:w-auto bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                 data-testid={`button-read-newsletter-${latestNewsletter.id}`}
               >
-                <Eye className="mr-2" size={16} />
-                Ler Newsletter Completa
+                <Eye className="mr-2" size={14} />
+                <span className="text-sm md:text-base">Ler Newsletter Completa</span>
               </Button>
             </div>
           </LiquidGlassCard>
@@ -393,28 +393,28 @@ export default function NewsletterPage() {
 
         {/* Previous Newsletters Section */}
         <div>
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center mr-4">
-              <Archive className="text-white" size={20} />
+          <div className="flex items-center mb-4 md:mb-6">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center mr-3 md:mr-4">
+              <Archive className="text-white" size={16} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-dark-blue">Newsletters Anteriores</h2>
-              <p className="text-soft-gray">Acesse todo o conteúdo educacional já publicado</p>
+              <h2 className="text-xl md:text-2xl font-bold text-dark-blue">Newsletters Anteriores</h2>
+              <p className="text-sm md:text-base text-soft-gray">Acesse todo o conteúdo educacional já publicado</p>
             </div>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {previousNewsletters.map((newsletter) => (
               <LiquidGlassCard key={newsletter.id} className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid={`card-newsletter-${newsletter.id}`}>
-                <div className="flex items-start justify-between mb-4">
-                  <Badge className="bg-soft-gray/20 text-dark-blue">{newsletter.category}</Badge>
-                  <div className="text-sm text-soft-gray">{newsletter.readTime}</div>
+                <div className="flex items-start justify-between mb-3 md:mb-4">
+                  <Badge className="bg-soft-gray/20 text-dark-blue text-xs">{newsletter.category}</Badge>
+                  <div className="text-xs md:text-sm text-soft-gray">{newsletter.readTime}</div>
                 </div>
                 
-                <h3 className="text-lg font-semibold text-dark-blue mb-3 group-hover:text-bright-blue transition-colors">{newsletter.title}</h3>
-                <p className="text-soft-gray text-sm mb-4 leading-relaxed line-clamp-3">{newsletter.excerpt}</p>
+                <h3 className="text-base md:text-lg font-semibold text-dark-blue mb-2 md:mb-3 group-hover:text-bright-blue transition-colors">{newsletter.title}</h3>
+                <p className="text-soft-gray text-xs md:text-sm mb-3 md:mb-4 leading-relaxed line-clamp-3">{newsletter.excerpt}</p>
                 
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
                   <div className="text-xs text-soft-gray">
                     {new Date(newsletter.publishDate).toLocaleDateString('pt-BR')}
                   </div>
@@ -422,11 +422,11 @@ export default function NewsletterPage() {
                     onClick={() => handleReadNewsletter(newsletter.id)}
                     variant="outline"
                     size="sm"
-                    className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 group-hover:border-bright-blue/50"
+                    className="w-full md:w-auto text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 group-hover:border-bright-blue/50"
                     data-testid={`button-read-newsletter-${newsletter.id}`}
                   >
-                    <Eye className="mr-2" size={14} />
-                    Ler
+                    <Eye className="mr-2" size={12} />
+                    <span className="text-xs md:text-sm">Ler</span>
                   </Button>
                 </div>
               </LiquidGlassCard>
@@ -436,21 +436,21 @@ export default function NewsletterPage() {
 
         {/* Call to Action */}
         <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 text-center" data-testid="card-newsletter-cta">
-          <div className="py-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-6">
-              <Newspaper className="text-white" size={24} />
+          <div className="py-6 md:py-8 px-4 md:px-6">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <Newspaper className="text-white" size={20} />
             </div>
-            <h3 className="text-2xl font-bold text-dark-blue mb-4">Não perca nenhuma newsletter!</h3>
-            <p className="text-soft-gray mb-6 max-w-2xl mx-auto">
+            <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">Não perca nenhuma newsletter!</h3>
+            <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 max-w-2xl mx-auto">
               Receba notificações toda semana quando uma nova newsletter for publicada. 
               Conteúdo sempre atualizado com os temas mais relevantes para suas redações.
             </p>
             <Button 
-              className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+              className="w-full md:w-auto bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
               data-testid="button-enable-notifications"
             >
-              <Newspaper className="mr-2" size={16} />
-              Ativar Notificações
+              <Newspaper className="mr-2" size={14} />
+              <span className="text-sm md:text-base">Ativar Notificações</span>
             </Button>
           </div>
         </LiquidGlassCard>
