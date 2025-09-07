@@ -410,6 +410,7 @@ export default function Pricing() {
           </Button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
