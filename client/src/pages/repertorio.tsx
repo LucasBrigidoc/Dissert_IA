@@ -163,13 +163,8 @@ export default function Repertorio() {
   const displayRepertoires = getFilteredRepertoires();
   const isLoading = searchMutation.isPending || isLoadingInitial || loadMoreMutation.isPending;
 
-  // Auto-load more repertoires if less than 4 results after filtering
-  useEffect(() => {
-    if (searchResults && displayRepertoires.length < 4 && displayRepertoires.length > 0 && !loadMoreMutation.isPending) {
-      console.log("🤖 Menos de 4 repertórios encontrados, buscando mais automaticamente...");
-      handleLoadMore();
-    }
-  }, [displayRepertoires.length, searchResults]);
+  // Disable auto-load functionality to prevent infinite loops
+  // Will be manually triggered only by user actions
 
   const handleLoadMore = () => {
     if (!searchQuery.trim() || loadMoreMutation.isPending) return;
@@ -187,19 +182,7 @@ export default function Repertorio() {
     loadMoreMutation.mutate(query);
   };
 
-  // Debug logging for filtering issues
-  useEffect(() => {
-    console.log("🔧 DEBUG - Estado dos filtros:", {
-      selectedType,
-      selectedCategory, 
-      selectedPopularity,
-      hasSearchResults: !!searchResults,
-      searchResultsCount: searchResults?.results?.length || 0,
-      initialRepertoiresCount: initialRepertoires?.length || 0,
-      displayRepertoiresCount: displayRepertoires.length,
-      displayRepertoires: displayRepertoires.map(r => ({ id: r.id, title: r.title, type: r.type }))
-    });
-  }, [selectedType, selectedCategory, selectedPopularity, searchResults, initialRepertoires, displayRepertoires]);
+  // Debug logging removed to improve performance
 
   // Debug logs para acompanhar o estado (só quando há mudanças importantes)
   useEffect(() => {
