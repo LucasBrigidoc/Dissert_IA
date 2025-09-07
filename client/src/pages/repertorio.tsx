@@ -2,11 +2,31 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock } from "lucide-react";
+import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock, Loader2, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import type { Repertoire } from "@shared/schema";
+
+interface SearchResult {
+  results: Repertoire[];
+  source: "cache" | "ai";
+  count: number;
+  analysis?: {
+    keywords: string[];
+    suggestedTypes: string[];
+    suggestedCategories: string[];
+  };
+}
 
 export default function Repertorio() {
   const [location] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedPopularity, setSelectedPopularity] = useState<string>("all");
+  const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   
   // Sistema inteligente de detecção de origem
   const getBackUrl = () => {
@@ -37,6 +57,86 @@ export default function Repertorio() {
   };
   
   const backUrl = getBackUrl();
+
+  // Search mutation for intelligent search
+  const searchMutation = useMutation({
+    mutationFn: async (query: { query: string; type?: string; category?: string; popularity?: string }) => {
+      return apiRequest("/api/repertoires/search", {
+        method: "POST",
+        body: query
+      });
+    },
+    onSuccess: (data: SearchResult) => {
+      setSearchResults(data);
+    }
+  });
+
+  // Load initial repertoires
+  const { data: initialRepertoires, isLoading: isLoadingInitial } = useQuery({
+    queryKey: ["/api/repertoires"],
+    queryFn: () => apiRequest("/api/repertoires"),
+    select: (data) => data.results as Repertoire[]
+  });
+
+  const handleSearch = () => {
+    if (!searchQuery.trim()) return;
+    
+    const query = {
+      query: searchQuery,
+      type: selectedType !== "all" ? selectedType : undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined
+    };
+    
+    searchMutation.mutate(query);
+  };
+
+  const displayRepertoires = searchResults?.results || initialRepertoires || [];
+  const isLoading = searchMutation.isPending || isLoadingInitial;
+
+  // Helper functions
+  const getTypeIcon = (type: string) => {
+    const icons = {
+      books: BookOpen,
+      laws: Users,
+      movies: Globe,
+      research: TrendingUp,
+      news: Globe,
+      events: Users,
+      music: Globe,
+      series: Globe,
+      documentaries: Globe,
+      data: TrendingUp
+    };
+    return icons[type as keyof typeof icons] || BookOpen;
+  };
+
+  const getTypeLabel = (type: string) => {
+    const labels = {
+      books: "Literatura",
+      laws: "Legislação", 
+      movies: "Cinema",
+      research: "Pesquisa",
+      news: "Notícias",
+      events: "Acontecimentos",
+      music: "Música",
+      series: "Séries",
+      documentaries: "Documentários",
+      data: "Dados"
+    };
+    return labels[type as keyof typeof labels] || "Geral";
+  };
+
+  const getPopularityColor = (popularity: string) => {
+    const colors = {
+      "very-popular": "from-red-500 to-orange-500",
+      "popular": "from-bright-blue to-dark-blue", 
+      "moderate": "from-green-500 to-blue-500",
+      "uncommon": "from-purple-500 to-pink-500",
+      "rare": "from-yellow-500 to-orange-500"
+    };
+    return colors[popularity as keyof typeof colors] || "from-bright-blue to-dark-blue";
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,6 +190,9 @@ export default function Repertorio() {
                     placeholder="Ex: 'Os desafios da democratização do acesso às tecnologias digitais' ou 'meio ambiente', 'fake news', 'George Orwell'..."
                     className="border-bright-blue/20 focus:border-bright-blue text-base h-12"
                     data-testid="input-main-search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   />
                   <p className="text-xs text-soft-gray mt-1">
                     💡 Dica: Cole sua proposta de redação completa ou digite palavras-chave
@@ -97,7 +200,7 @@ export default function Repertorio() {
                 </div>
                 
                 <div>
-                  <Select data-testid="select-type">
+                  <Select value={selectedType} onValueChange={setSelectedType} data-testid="select-type">
                     <SelectTrigger className="border-bright-blue/20 h-12">
                       <SelectValue placeholder="🎯 Tipo de Repertório" />
                     </SelectTrigger>
@@ -117,9 +220,18 @@ export default function Repertorio() {
                   </Select>
                 </div>
                 
-                <Button className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue h-12" data-testid="button-search">
-                  <Search className="mr-2" size={16} />
-                  Buscar Repertórios
+                <Button 
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue h-12" 
+                  data-testid="button-search"
+                  onClick={handleSearch}
+                  disabled={!searchQuery.trim() || isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 animate-spin" size={16} />
+                  ) : (
+                    <Search className="mr-2" size={16} />
+                  )}
+                  {isLoading ? "Buscando..." : "Buscar Repertórios"}
                 </Button>
               </div>
 
@@ -132,7 +244,7 @@ export default function Repertorio() {
                 <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white/30 rounded-lg">
                   <div>
                     <label className="block text-sm font-medium text-dark-blue mb-2">Tema Específico</label>
-                    <Select data-testid="select-category">
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory} data-testid="select-category">
                       <SelectTrigger className="border-bright-blue/20">
                         <SelectValue placeholder="Todos os temas" />
                       </SelectTrigger>
@@ -153,7 +265,7 @@ export default function Repertorio() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-dark-blue mb-2">Popularidade</label>
-                    <Select data-testid="select-popularity">
+                    <Select value={selectedPopularity} onValueChange={setSelectedPopularity} data-testid="select-popularity">
                       <SelectTrigger className="border-bright-blue/20">
                         <SelectValue placeholder="Todos os níveis" />
                       </SelectTrigger>
@@ -180,128 +292,92 @@ export default function Repertorio() {
         <div className="space-y-6">
           {/* Results Header */}
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-dark-blue">Resultados da Busca</h2>
-            <div className="text-sm text-soft-gray">247 referências encontradas</div>
+            <div className="flex items-center space-x-3">
+              <h2 className="text-xl font-semibold text-dark-blue">
+                {searchResults ? "Resultados da Busca" : "Repertórios Disponíveis"}
+              </h2>
+              {searchResults && (
+                <div className="flex items-center space-x-2">
+                  {searchResults.source === "cache" ? (
+                    <div className="flex items-center space-x-1 text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs">
+                      <Clock size={12} />
+                      <span>Cache</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-1 text-purple-600 bg-purple-50 px-2 py-1 rounded-full text-xs">
+                      <Sparkles size={12} />
+                      <span>IA</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="text-sm text-soft-gray">
+              {displayRepertoires.length} referências {searchResults ? "encontradas" : "disponíveis"}
+            </div>
           </div>
 
           {/* Result Cards */}
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Result 1 */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <BookOpen className="text-white" size={14} />
-                  </div>
-                  <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Literatura</span>
-                </div>
-                <div className="flex items-center space-x-1 text-yellow-500">
-                  <Star size={14} fill="currentColor" />
-                  <span className="text-xs">4.8</span>
-                </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex items-center space-x-3 text-bright-blue">
+                <Loader2 className="animate-spin" size={24} />
+                <span className="text-lg">Buscando repertórios...</span>
               </div>
-              
-              <h3 className="font-semibold text-dark-blue mb-2">1984 - George Orwell</h3>
-              <p className="text-soft-gray text-sm mb-3">Distopia que aborda temas como vigilância estatal, manipulação da informação e controle social. Ideal para redações sobre tecnologia, privacidade e liberdade.</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                  <Clock size={12} />
-                  <span>Século XX</span>
-                </div>
-                <Button variant="outline" size="sm" className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" data-testid="button-save-reference-1">
-                  Salvar
-                </Button>
+            </div>
+          ) : displayRepertoires.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-4">
+              {displayRepertoires.map((repertoire, index) => {
+                const IconComponent = getTypeIcon(repertoire.type);
+                const gradientClass = getPopularityColor(repertoire.popularity);
+                
+                return (
+                  <LiquidGlassCard key={repertoire.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-8 h-8 bg-gradient-to-br ${gradientClass} rounded-full flex items-center justify-center`}>
+                          <IconComponent className="text-white" size={14} />
+                        </div>
+                        <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">
+                          {getTypeLabel(repertoire.type)}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-yellow-500">
+                        <Star size={14} fill="currentColor" />
+                        <span className="text-xs">{((repertoire.rating || 0) / 10).toFixed(1)}</span>
+                      </div>
+                    </div>
+                    
+                    <h3 className="font-semibold text-dark-blue mb-2">{repertoire.title}</h3>
+                    <p className="text-soft-gray text-sm mb-3">{repertoire.description}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 text-xs text-soft-gray">
+                        <Clock size={12} />
+                        <span>{repertoire.year || "N/A"}</span>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" 
+                        data-testid={`button-save-reference-${index + 1}`}
+                      >
+                        Salvar
+                      </Button>
+                    </div>
+                  </LiquidGlassCard>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="text-gray-400" size={24} />
               </div>
-            </LiquidGlassCard>
-
-            {/* Result 2 */}
-            <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                    <Users className="text-white" size={14} />
-                  </div>
-                  <span className="text-xs bg-dark-blue/20 text-dark-blue px-2 py-1 rounded">História</span>
-                </div>
-                <div className="flex items-center space-x-1 text-yellow-500">
-                  <Star size={14} fill="currentColor" />
-                  <span className="text-xs">4.9</span>
-                </div>
-              </div>
-              
-              <h3 className="font-semibold text-dark-blue mb-2">Declaração Universal dos Direitos Humanos</h3>
-              <p className="text-soft-gray text-sm mb-3">Marco histórico de 1948 que estabelece direitos fundamentais. Excelente referência para temas sobre dignidade humana, igualdade e justiça social.</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                  <Clock size={12} />
-                  <span>1948</span>
-                </div>
-                <Button variant="outline" size="sm" className="text-dark-blue border-dark-blue/30 hover:bg-dark-blue/10" data-testid="button-save-reference-2">
-                  Salvar
-                </Button>
-              </div>
-            </LiquidGlassCard>
-
-            {/* Result 3 */}
-            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                    <TrendingUp className="text-white" size={14} />
-                  </div>
-                  <span className="text-xs bg-soft-gray/20 text-dark-blue px-2 py-1 rounded">Ciência</span>
-                </div>
-                <div className="flex items-center space-x-1 text-yellow-500">
-                  <Star size={14} fill="currentColor" />
-                  <span className="text-xs">4.7</span>
-                </div>
-              </div>
-              
-              <h3 className="font-semibold text-dark-blue mb-2">Revolução Industrial 4.0</h3>
-              <p className="text-soft-gray text-sm mb-3">Transformação digital atual com IoT, AI e automação. Perfeito para discussões sobre futuro do trabalho, inovação e impactos socioeconômicos.</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                  <Clock size={12} />
-                  <span>Século XXI</span>
-                </div>
-                <Button variant="outline" size="sm" className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10" data-testid="button-save-reference-3">
-                  Salvar
-                </Button>
-              </div>
-            </LiquidGlassCard>
-
-            {/* Result 4 */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <Globe className="text-white" size={14} />
-                  </div>
-                  <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">Sociedade</span>
-                </div>
-                <div className="flex items-center space-x-1 text-yellow-500">
-                  <Star size={14} fill="currentColor" />
-                  <span className="text-xs">4.6</span>
-                </div>
-              </div>
-              
-              <h3 className="font-semibold text-dark-blue mb-2">Lei Maria da Penha</h3>
-              <p className="text-soft-gray text-sm mb-3">Marco legal brasileiro de 2006 no combate à violência doméstica. Essencial para redações sobre direitos das mulheres e violência de gênero.</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                  <Clock size={12} />
-                  <span>2006</span>
-                </div>
-                <Button variant="outline" size="sm" className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" data-testid="button-save-reference-4">
-                  Salvar
-                </Button>
-              </div>
-            </LiquidGlassCard>
-          </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum repertório encontrado</h3>
+              <p className="text-gray-500">Tente ajustar sua busca ou usar palavras-chave diferentes.</p>
+            </div>
+          )}
 
           {/* Load More */}
           <div className="flex justify-center">

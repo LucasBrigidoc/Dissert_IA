@@ -223,7 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (cachedResult) {
         // Update cache usage statistics
         await storage.updateSearchCache(cachedResult.id, {
-          searchCount: cachedResult.searchCount + 1,
+          searchCount: (cachedResult.searchCount || 0) + 1,
           lastSearched: new Date()
         });
         
