@@ -145,9 +145,15 @@ export default function Repertorio() {
 
   // Apply client-side filtering based on selected filters
   const getFilteredRepertoires = () => {
-    const baseRepertoires = searchResults?.results || initialRepertoires || [];
+    // If we have search results, show them as-is (server already handled filtering)
+    if (searchResults?.results) {
+      console.log("🎯 Resultados de busca atualizados:", searchResults);
+      return searchResults.results;
+    }
     
-    // Always apply client-side filtering when filters are selected
+    // Only apply client-side filtering to initial repertoires when no search is active
+    const baseRepertoires = initialRepertoires || [];
+    
     return baseRepertoires.filter((repertoire) => {
       // Filter by type
       if (selectedType !== "all" && repertoire.type !== selectedType) {
