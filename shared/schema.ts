@@ -46,6 +46,30 @@ export const essayStructures = pgTable("essay_structures", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const repertoires = pgTable("repertoires", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  type: varchar("type", { enum: ["movies", "laws", "books", "news", "events", "music", "series", "documentaries", "research", "data"] }).notNull(),
+  category: varchar("category", { enum: ["social", "environment", "technology", "education", "politics", "economy", "culture", "health", "ethics", "globalization"] }).notNull(),
+  popularity: varchar("popularity", { enum: ["very-popular", "popular", "moderate", "uncommon", "rare"] }).notNull().default("moderate"),
+  year: text("year"),
+  rating: integer("rating").default(0),
+  keywords: json("keywords").notNull().default([]),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const searchCache = pgTable("search_cache", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  queryText: text("query_text").notNull(),
+  normalizedQuery: text("normalized_query").notNull(),
+  results: json("results").notNull(),
+  searchCount: integer("search_count").default(1),
+  lastSearched: timestamp("last_searched").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -78,6 +102,24 @@ export const insertEssayStructureSchema = createInsertSchema(essayStructures).om
   sections: z.array(sectionSchema),
 });
 
+export const insertRepertoireSchema = createInsertSchema(repertoires).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSearchCacheSchema = createInsertSchema(searchCache).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const searchQuerySchema = z.object({
+  query: z.string().min(1, "Query é obrigatória"),
+  type: z.string().optional(),
+  category: z.string().optional(),
+  popularity: z.string().optional(),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
@@ -90,3 +132,11 @@ export type Essay = typeof essays.$inferSelect;
 export type Section = z.infer<typeof sectionSchema>;
 export type InsertEssayStructure = z.infer<typeof insertEssayStructureSchema>;
 export type EssayStructure = typeof essayStructures.$inferSelect;
+
+export type InsertRepertoire = z.infer<typeof insertRepertoireSchema>;
+export type Repertoire = typeof repertoires.$inferSelect;
+
+export type InsertSearchCache = z.infer<typeof insertSearchCacheSchema>;
+export type SearchCache = typeof searchCache.$inferSelect;
+
+export type SearchQuery = z.infer<typeof searchQuerySchema>;
