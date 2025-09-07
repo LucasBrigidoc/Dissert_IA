@@ -217,6 +217,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Normalize query for cache lookup
       const normalizedQuery = geminiService.normalizeQuery(query);
       
+      // Initialize results array
+      let results: any[] = [];
+      
       // Check cache first (only if no excluded IDs)
       let cachedResult = excludeIds.length === 0 ? await storage.getSearchCache(normalizedQuery) : null;
       
@@ -256,8 +259,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         popularity: popularity || undefined
       };
       
-      // First search with explicit filters
-      let results = await storage.searchRepertoires(normalizedQuery, filters);
+      // First search with explicit filters  
+      results = await storage.searchRepertoires(normalizedQuery, filters);
       
       // If no results, try with AI-suggested filters
       if (results.length === 0 && analysis.suggestedTypes.length > 0) {
