@@ -105,7 +105,31 @@ export default function Repertorio() {
     searchMutation.mutate(query);
   };
 
-  const displayRepertoires = searchResults?.results || initialRepertoires || [];
+  // Apply client-side filtering based on selected filters
+  const getFilteredRepertoires = () => {
+    const baseRepertoires = searchResults?.results || initialRepertoires || [];
+    
+    return baseRepertoires.filter((repertoire) => {
+      // Filter by type
+      if (selectedType !== "all" && repertoire.type !== selectedType) {
+        return false;
+      }
+      
+      // Filter by category
+      if (selectedCategory !== "all" && repertoire.category !== selectedCategory) {
+        return false;
+      }
+      
+      // Filter by popularity
+      if (selectedPopularity !== "all" && repertoire.popularity !== selectedPopularity) {
+        return false;
+      }
+      
+      return true;
+    });
+  };
+
+  const displayRepertoires = getFilteredRepertoires();
   const isLoading = searchMutation.isPending || isLoadingInitial;
 
   // Debug logs para acompanhar o estado (só quando há mudanças importantes)
