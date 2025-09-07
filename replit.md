@@ -6,9 +6,12 @@ DissertAI is a comprehensive SaaS educational platform designed to revolutionize
 
 - **September 7, 2025**: Successfully imported GitHub project to Replit environment
 - **Setup Completion**: Fixed tsx dependency issue, configured proper host settings for Replit proxy
-- **AI Enhancement**: Added intelligent repertoire generation using Gemini AI when no existing repertoires match search queries
+- **AI Enhancement**: Added intelligent repertoire generation using Gemini AI when no existing repertoires match search queries  
 - **Search Improvement**: Enhanced search functionality to dynamically create relevant repertoires and save them to the database
+- **UX Enhancement**: Improved repertoire search to auto-execute when filter options are changed (if search query exists)
 - **Deployment**: Configured autoscale deployment with proper build and start commands
+- **Environment Setup**: Added GEMINI_API_KEY secret for AI functionality
+- **Project Import**: Completed Replit environment setup with working frontend on port 5000
 
 # User Preferences
 
