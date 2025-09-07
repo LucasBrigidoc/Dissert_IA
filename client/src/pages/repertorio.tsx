@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock, Loader2, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { Repertoire } from "@shared/schema";
@@ -108,14 +108,18 @@ export default function Repertorio() {
   const displayRepertoires = searchResults?.results || initialRepertoires || [];
   const isLoading = searchMutation.isPending || isLoadingInitial;
 
-  // Debug logs para acompanhar o estado
-  console.log("📊 Estado atual:", {
-    searchResults: searchResults,
-    initialRepertoires: initialRepertoires,
-    displayRepertoires: displayRepertoires,
-    isLoading: isLoading,
-    searchPending: searchMutation.isPending
-  });
+  // Debug logs para acompanhar o estado (só quando há mudanças importantes)
+  useEffect(() => {
+    if (initialRepertoires && initialRepertoires.length > 0) {
+      console.log("✅ Repertórios iniciais carregados:", initialRepertoires.length, "itens");
+    }
+  }, [initialRepertoires]);
+
+  useEffect(() => {
+    if (searchResults) {
+      console.log("🎯 Resultados de busca atualizados:", searchResults);
+    }
+  }, [searchResults]);
 
   // Helper functions
   const getTypeIcon = (type: string) => {
