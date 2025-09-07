@@ -163,8 +163,22 @@ export default function Repertorio() {
   const displayRepertoires = getFilteredRepertoires();
   const isLoading = searchMutation.isPending || isLoadingInitial || loadMoreMutation.isPending;
 
-  // Disable auto-load functionality to prevent infinite loops
-  // Will be manually triggered only by user actions
+  // Auto-load more repertoires to ensure minimum 4 results
+  const [autoLoadCompleted, setAutoLoadCompleted] = useState(false);
+  
+  useEffect(() => {
+    if (searchResults && displayRepertoires.length < 4 && displayRepertoires.length > 0 && 
+        !loadMoreMutation.isPending && !autoLoadCompleted) {
+      console.log("🤖 Garantindo 4 repertórios mínimos, buscando mais automaticamente...");
+      setAutoLoadCompleted(true);
+      handleLoadMore();
+    }
+  }, [searchResults, displayRepertoires.length, autoLoadCompleted]);
+  
+  // Reset auto-load flag when new search is made
+  useEffect(() => {
+    setAutoLoadCompleted(false);
+  }, [searchQuery]);
 
   const handleLoadMore = () => {
     if (!searchQuery.trim() || loadMoreMutation.isPending) return;
