@@ -135,13 +135,47 @@ export default function Repertorio() {
     searchMutation.mutate(query);
   };
 
-  // Auto-search when filters change and there's already a search query
+  // Auto-search when filters change
   useEffect(() => {
+    // If there's already a search query and results, re-search with new filters
     if (searchQuery.trim() && searchResults) {
       console.log("🔄 Filtro alterado, executando nova busca automaticamente");
       handleSearch();
     }
+    // If no search query but a specific type is selected, search for that type
+    else if (!searchQuery.trim() && selectedType !== "all") {
+      console.log("🎯 Tipo selecionado, buscando repertórios desse tipo:", selectedType);
+      handleTypeSearch();
+    }
   }, [selectedType, selectedCategory, selectedPopularity]);
+
+  // Search for repertoires of a specific type
+  const handleTypeSearch = () => {
+    const typeLabels: { [key: string]: string } = {
+      movies: "filmes populares para redação",
+      laws: "leis importantes para redação",
+      books: "livros clássicos para redação",
+      news: "notícias relevantes para redação",
+      events: "acontecimentos históricos para redação",
+      music: "músicas e artistas para redação",
+      series: "séries populares para redação",
+      documentaries: "documentários importantes para redação",
+      research: "pesquisas acadêmicas para redação",
+      data: "dados estatísticos para redação"
+    };
+
+    const searchTerm = typeLabels[selectedType] || selectedType;
+    
+    const query = {
+      query: searchTerm,
+      type: selectedType !== "all" ? selectedType : undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined
+    };
+    
+    console.log("🤖 Busca automática por tipo:", query);
+    searchMutation.mutate(query);
+  };
 
   // Apply client-side filtering based on selected filters
   const getFilteredRepertoires = () => {
