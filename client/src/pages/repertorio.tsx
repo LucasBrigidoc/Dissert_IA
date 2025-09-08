@@ -549,10 +549,6 @@ export default function Repertorio() {
                           {getTypeLabel(repertoire.type)}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-1 text-yellow-500">
-                        <Star size={14} fill="currentColor" />
-                        <span className="text-xs">{((repertoire.rating || 0) / 10).toFixed(1)}</span>
-                      </div>
                     </div>
                     
                     <h3 className="font-semibold text-dark-blue mb-2">{repertoire.title}</h3>
