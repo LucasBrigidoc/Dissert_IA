@@ -422,10 +422,31 @@ export default function Repertorio() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header - Mobile Optimized */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Link href={backUrl} data-testid="button-back">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-1 h-8 px-2 text-xs"
+                >
+                  <ArrowLeft size={14} />
+                  <span>Voltar</span>
+                </Button>
+              </Link>
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Search className="text-white" size={14} />
+              </div>
+            </div>
+            <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Repertório</h1>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Link href={backUrl} data-testid="button-back">
                 <Button
@@ -450,7 +471,7 @@ export default function Repertorio() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 pt-20 sm:pt-24">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-16 sm:pt-24">
         {/* Search Bar - Mobile Optimized */}
         <div className="mb-6 sm:mb-8">
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
@@ -582,8 +603,8 @@ export default function Repertorio() {
                 return (
                   <LiquidGlassCard key={repertoire.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 p-4 sm:p-6">
                     {/* Header with Icon and Type */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2 min-w-0">
+                    <div className="flex items-start justify-between mb-3 sm:mb-3">
+                      <div className="flex items-center space-x-2 min-w-0 flex-1">
                         <div className={`w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br ${gradientClass} rounded-full flex items-center justify-center flex-shrink-0`}>
                           <IconComponent className="text-white" size={12} />
                         </div>
@@ -591,45 +612,79 @@ export default function Repertorio() {
                           {getTypeLabel(repertoire.type)}
                         </span>
                       </div>
-                    </div>
-                    
-                    {/* Title */}
-                    <h3 className="font-semibold text-dark-blue mb-2 text-sm sm:text-base leading-tight">{repertoire.title}</h3>
-                    
-                    {/* Description - Truncated on Mobile */}
-                    <p className="text-soft-gray text-xs sm:text-sm mb-3 leading-relaxed">
-                      <span className="sm:hidden">
-                        {repertoire.description.length > 80 
-                          ? `${repertoire.description.substring(0, 80)}...`
-                          : repertoire.description}
-                      </span>
-                      <span className="hidden sm:block">{repertoire.description}</span>
-                    </p>
-                    
-                    {/* Footer with Year and Save Button */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center space-x-1 sm:space-x-2 text-xs text-soft-gray">
+                      {/* Year info moved to top on mobile */}
+                      <div className="flex sm:hidden items-center space-x-1 text-xs text-soft-gray flex-shrink-0">
                         <Clock size={10} />
                         <span>{repertoire.year || "N/A"}</span>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3" 
-                        data-testid={`button-save-reference-${index + 1}`}
-                        onClick={() => saveRepertoireMutation.mutate(repertoire.id)}
-                        disabled={saveRepertoireMutation.isPending}
-                      >
-                        {saveRepertoireMutation.isPending ? (
-                          <>
-                            <Loader2 className="mr-1 animate-spin" size={10} />
-                            <span className="hidden sm:inline">Salvando...</span>
-                            <span className="sm:hidden">...</span>
-                          </>
-                        ) : (
-                          "Salvar"
-                        )}
-                      </Button>
+                    </div>
+                    
+                    {/* Title - Better spacing */}
+                    <div className="mb-3 sm:mb-4">
+                      <h3 className="font-semibold text-dark-blue text-sm sm:text-base leading-tight line-clamp-2">{repertoire.title}</h3>
+                    </div>
+                    
+                    {/* Description - Better spacing and readability */}
+                    <div className="mb-4 sm:mb-5">
+                      <p className="text-soft-gray text-xs sm:text-sm leading-relaxed">
+                        <span className="sm:hidden">
+                          {repertoire.description.length > 90 
+                            ? `${repertoire.description.substring(0, 90)}...`
+                            : repertoire.description}
+                        </span>
+                        <span className="hidden sm:block">{repertoire.description}</span>
+                      </p>
+                    </div>
+                    
+                    {/* Footer - Mobile optimized */}
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Year only shows on desktop now */}
+                      <div className="hidden sm:flex items-center space-x-2 text-xs text-soft-gray">
+                        <Clock size={12} />
+                        <span>{repertoire.year || "N/A"}</span>
+                      </div>
+                      
+                      {/* Mobile: Full width button */}
+                      <div className="sm:hidden w-full">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-sm w-full h-9 font-medium" 
+                          data-testid={`button-save-reference-${index + 1}`}
+                          onClick={() => saveRepertoireMutation.mutate(repertoire.id)}
+                          disabled={saveRepertoireMutation.isPending}
+                        >
+                          {saveRepertoireMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 animate-spin" size={14} />
+                              Salvando...
+                            </>
+                          ) : (
+                            "Salvar Repertório"
+                          )}
+                        </Button>
+                      </div>
+                      
+                      {/* Desktop: Compact button */}
+                      <div className="hidden sm:block">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-sm h-8 px-3" 
+                          data-testid={`button-save-reference-${index + 1}`}
+                          onClick={() => saveRepertoireMutation.mutate(repertoire.id)}
+                          disabled={saveRepertoireMutation.isPending}
+                        >
+                          {saveRepertoireMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-1 animate-spin" size={12} />
+                              Salvando...
+                            </>
+                          ) : (
+                            "Salvar"
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </LiquidGlassCard>
                 );
