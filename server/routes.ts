@@ -214,13 +214,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedQuery = searchQuerySchema.parse(req.body);
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
-      // Rate limiting check (10 AI searches per hour per IP)
+      // Rate limiting check (40 AI searches per hour per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(clientIP, 10, 60);
+      const rateLimitCheck = await storage.checkRateLimit(clientIP, 40, 60);
       
       if (!rateLimitCheck.allowed) {
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can make 10 AI searches per hour.", 
+          message: "Rate limit exceeded. You can make 40 AI searches per hour.", 
           retryAfter: 3600 
         });
       }
