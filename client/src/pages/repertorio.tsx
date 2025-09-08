@@ -5,8 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock, Loader2, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, queryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import type { Repertoire } from "@shared/schema";
 
 interface SearchResult {
@@ -27,6 +28,31 @@ export default function Repertorio() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedPopularity, setSelectedPopularity] = useState<string>("all");
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
+  
+  const { toast } = useToast();
+  
+  // Mutation para salvar repertório na biblioteca pessoal
+  const saveRepertoireMutation = useMutation({
+    mutationFn: async (repertoireId: string) => {
+      return apiRequest(`/api/repertoires/${repertoireId}/save`, {
+        method: "POST"
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Repertório salvo!",
+        description: "O repertório foi adicionado à sua biblioteca pessoal.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar o repertório. Tente novamente.",
+        variant: "destructive",
+      });
+      console.error("Error saving repertoire:", error);
+    }
+  });
   
   // Sistema inteligente de detecção de origem
   const getBackUrl = () => {
@@ -564,8 +590,17 @@ export default function Repertorio() {
                         size="sm" 
                         className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" 
                         data-testid={`button-save-reference-${index + 1}`}
+                        onClick={() => saveRepertoireMutation.mutate(repertoire.id)}
+                        disabled={saveRepertoireMutation.isPending}
                       >
-                        Salvar
+                        {saveRepertoireMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-1 animate-spin" size={12} />
+                            Salvando...
+                          </>
+                        ) : (
+                          "Salvar"
+                        )}
                       </Button>
                     </div>
                   </LiquidGlassCard>
