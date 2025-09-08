@@ -142,15 +142,60 @@ export default function Repertorio() {
       console.log("🔄 Filtro alterado, executando nova busca automaticamente");
       handleSearch();
     }
-    // If no search query but a specific type is selected, search for that type
+    // If no search query but a specific type is selected, check cache first
     else if (!searchQuery.trim() && selectedType !== "all") {
-      console.log("🎯 Tipo selecionado, buscando repertórios desse tipo:", selectedType);
-      handleTypeSearch();
+      console.log("🎯 Tipo selecionado, verificando cache primeiro:", selectedType);
+      handleTypeSelection();
+    }
+    // Reset search results when going back to "all"
+    else if (selectedType === "all" && !searchQuery.trim()) {
+      setSearchResults(null);
     }
   }, [selectedType, selectedCategory, selectedPopularity]);
 
-  // Search for repertoires of a specific type
-  const handleTypeSearch = () => {
+  // Handle type selection: check cache first, then AI if needed
+  const handleTypeSelection = () => {
+    if (!initialRepertoires) return;
+    
+    // Filter initial repertoires by selected type
+    const filteredFromCache = initialRepertoires.filter((repertoire) => {
+      if (selectedType !== "all" && repertoire.type !== selectedType) return false;
+      if (selectedCategory !== "all" && repertoire.category !== selectedCategory) return false;
+      if (selectedPopularity !== "all" && repertoire.popularity !== selectedPopularity) return false;
+      return true;
+    });
+
+    console.log(`📦 Encontrados ${filteredFromCache.length} repertórios no cache para o tipo ${selectedType}`);
+
+    // If we have enough from cache (at least 4), show them
+    if (filteredFromCache.length >= 4) {
+      console.log("✅ Cache suficiente, mostrando resultados do cache");
+      setSearchResults({
+        results: filteredFromCache,
+        source: "cache",
+        count: filteredFromCache.length
+      });
+    }
+    // If we have some but not enough, show them and auto-load more from AI
+    else if (filteredFromCache.length > 0) {
+      console.log("⚠️ Cache insuficiente, mostrando cache + busca IA");
+      setSearchResults({
+        results: filteredFromCache,
+        source: "cache",
+        count: filteredFromCache.length
+      });
+      // Auto-trigger AI search to get more
+      setTimeout(() => handleTypeSearchAI(), 100);
+    }
+    // If no cache results, go directly to AI
+    else {
+      console.log("❌ Nenhum resultado no cache, usando IA");
+      handleTypeSearchAI();
+    }
+  };
+
+  // Search for repertoires of a specific type using AI
+  const handleTypeSearchAI = () => {
     const typeLabels: { [key: string]: string } = {
       movies: "filmes populares para redação",
       laws: "leis importantes para redação",
@@ -166,15 +211,25 @@ export default function Repertorio() {
 
     const searchTerm = typeLabels[selectedType] || selectedType;
     
+    // Exclude already shown repertoires
+    const excludeIds = searchResults?.results.map(r => r.id) || [];
+    
     const query = {
       query: searchTerm,
       type: selectedType !== "all" ? selectedType : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
-      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined
+      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
+      excludeIds: excludeIds.length > 0 ? excludeIds : undefined
     };
     
-    console.log("🤖 Busca automática por tipo:", query);
-    searchMutation.mutate(query);
+    console.log("🤖 Busca IA para completar resultados:", query);
+    
+    // Use loadMoreMutation to append results instead of replacing
+    if (searchResults && searchResults.results.length > 0) {
+      loadMoreMutation.mutate(query);
+    } else {
+      searchMutation.mutate(query);
+    }
   };
 
   // Apply client-side filtering based on selected filters
