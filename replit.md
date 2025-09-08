@@ -4,6 +4,11 @@ DissertAI is a comprehensive SaaS educational platform designed to revolutionize
 
 # Recent Changes
 
+- **September 8, 2025**: AI Cost Optimization Enhancements
+  - **AI Ranking Removed**: Eliminated AI-based ranking function, replaced with efficient local keyword matching (saves 100% of ranking tokens)
+  - **Cache TTL System**: Added 30-day expiration to search cache with automatic cleanup of stale data
+  - **Rate Limiting**: Implemented intelligent rate limiting (10 AI searches per hour per IP) to prevent excessive usage and costs
+  - **Enhanced Local Analysis**: All query analysis now done locally without AI tokens, maintaining accuracy while reducing costs
 - **September 7, 2025**: Successfully imported GitHub project to Replit environment
 - **Setup Completion**: Fixed tsx dependency issue, configured proper host settings for Replit proxy
 - **AI Enhancement**: Added intelligent repertoire generation using Gemini AI when no existing repertoires match search queries  
