@@ -450,153 +450,181 @@ export default function Repertorio() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8 pt-24">
-        {/* Search Bar - Full Width */}
-        <div className="mb-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 pt-20 sm:pt-24">
+        {/* Search Bar - Mobile Optimized */}
+        <div className="mb-6 sm:mb-8">
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="space-y-4">
+              {/* Header Section */}
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Search className="text-white" size={16} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+                  <Search className="text-white" size={14} />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-dark-blue">Buscar Repertório</h3>
-                  <p className="text-xs text-soft-gray">Busque por proposta de redação, tema específico ou qualquer palavra-chave</p>
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-dark-blue text-sm sm:text-base">Buscar Repertório</h3>
+                  <p className="text-xs text-soft-gray hidden sm:block">Busque por proposta de redação, tema específico ou qualquer palavra-chave</p>
                 </div>
               </div>
               
-              {/* Campo de Busca Principal */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-2">
+              {/* Search Form - Mobile First */}
+              <div className="space-y-3 sm:space-y-4">
+                {/* Search Input */}
+                <div className="w-full">
                   <Input 
-                    placeholder="Ex: 'Os desafios da democratização do acesso às tecnologias digitais' ou 'meio ambiente', 'fake news', 'George Orwell'..."
-                    className="border-bright-blue/20 focus:border-bright-blue text-base h-12"
+                    placeholder="Digite tema, palavra-chave ou cole sua proposta..."
+                    className="border-bright-blue/20 focus:border-bright-blue text-sm sm:text-base h-10 sm:h-12 w-full"
                     data-testid="input-main-search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <p className="text-xs text-soft-gray mt-1">
+                  <p className="text-xs text-soft-gray mt-1 sm:hidden">
+                    💡 Cole sua proposta ou digite palavras-chave
+                  </p>
+                  <p className="text-xs text-soft-gray mt-1 hidden sm:block">
                     💡 Dica: Cole sua proposta de redação completa ou digite palavras-chave
                   </p>
                 </div>
                 
-                <div>
-                  <Select value={selectedType} onValueChange={setSelectedType} data-testid="select-type">
-                    <SelectTrigger className="border-bright-blue/20 h-12">
-                      <SelectValue placeholder="🎯 Tipo de Repertório" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os tipos</SelectItem>
-                      <SelectItem value="movies">📽️ Filmes</SelectItem>
-                      <SelectItem value="laws">⚖️ Leis</SelectItem>
-                      <SelectItem value="books">📚 Livros</SelectItem>
-                      <SelectItem value="news">📰 Notícias</SelectItem>
-                      <SelectItem value="events">📅 Acontecimentos</SelectItem>
-                      <SelectItem value="music">🎵 Música</SelectItem>
-                      <SelectItem value="series">📺 Séries</SelectItem>
-                      <SelectItem value="documentaries">🎬 Documentários</SelectItem>
-                      <SelectItem value="research">🔬 Pesquisas</SelectItem>
-                      <SelectItem value="data">📊 Dados/Estatísticas</SelectItem>
-                    </SelectContent>
-                  </Select>
+                {/* Filters and Button Row */}
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <div className="flex-1">
+                    <Select value={selectedType} onValueChange={setSelectedType} data-testid="select-type">
+                      <SelectTrigger className="border-bright-blue/20 h-10 sm:h-12 text-sm sm:text-base">
+                        <SelectValue placeholder="🎯 Tipo de Repertório" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos os tipos</SelectItem>
+                        <SelectItem value="movies">📽️ Filmes</SelectItem>
+                        <SelectItem value="laws">⚖️ Leis</SelectItem>
+                        <SelectItem value="books">📚 Livros</SelectItem>
+                        <SelectItem value="news">📰 Notícias</SelectItem>
+                        <SelectItem value="events">📅 Acontecimentos</SelectItem>
+                        <SelectItem value="music">🎵 Música</SelectItem>
+                        <SelectItem value="series">📺 Séries</SelectItem>
+                        <SelectItem value="documentaries">🎬 Documentários</SelectItem>
+                        <SelectItem value="research">🔬 Pesquisas</SelectItem>
+                        <SelectItem value="data">📊 Dados/Estatísticas</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button 
+                    className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue h-10 sm:h-12 px-4 sm:px-6 text-sm sm:text-base flex-shrink-0" 
+                    data-testid="button-search"
+                    onClick={handleSearch}
+                    disabled={(!searchQuery.trim() && selectedType === "all") || isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 animate-spin" size={14} />
+                        <span className="hidden sm:inline">Buscando...</span>
+                        <span className="sm:hidden">...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="mr-2" size={14} />
+                        <span className="hidden sm:inline">Buscar Repertórios</span>
+                        <span className="sm:hidden">Buscar</span>
+                      </>
+                    )}
+                  </Button>
                 </div>
-                
-                <Button 
-                  className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue h-12" 
-                  data-testid="button-search"
-                  onClick={handleSearch}
-                  disabled={(!searchQuery.trim() && selectedType === "all") || isLoading}
-                >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 animate-spin" size={16} />
-                  ) : (
-                    <Search className="mr-2" size={16} />
-                  )}
-                  {isLoading ? "Buscando..." : "Buscar Repertórios"}
-                </Button>
               </div>
-
             </div>
           </LiquidGlassCard>
         </div>
 
         {/* Results */}
-        <div className="space-y-6">
-          {/* Results Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <h2 className="text-xl font-semibold text-dark-blue">
+        <div className="space-y-4 sm:space-y-6">
+          {/* Results Header - Mobile Optimized */}
+          <div className="flex items-start sm:items-center justify-between gap-2">
+            <div className="flex items-start sm:items-center flex-col sm:flex-row gap-1 sm:gap-3 min-w-0">
+              <h2 className="text-lg sm:text-xl font-semibold text-dark-blue">
                 {searchResults ? "Resultados da Busca" : "Repertórios Disponíveis"}
               </h2>
               {searchResults && (
                 <div className="flex items-center space-x-2">
                   {searchResults.source === "cache" ? (
                     <div className="flex items-center space-x-1 text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs">
-                      <Clock size={12} />
+                      <Clock size={10} />
                       <span>Cache</span>
                     </div>
                   ) : (
                     <div className="flex items-center space-x-1 text-purple-600 bg-purple-50 px-2 py-1 rounded-full text-xs">
-                      <Sparkles size={12} />
+                      <Sparkles size={10} />
                       <span>IA</span>
                     </div>
                   )}
                 </div>
               )}
             </div>
-            <div className="text-sm text-soft-gray">
-              {displayRepertoires.length} referências {searchResults ? "encontradas" : "disponíveis"}
+            <div className="text-xs sm:text-sm text-soft-gray flex-shrink-0 text-right">
+              <span className="block sm:hidden">{displayRepertoires.length}</span>
+              <span className="hidden sm:block">{displayRepertoires.length} referências {searchResults ? "encontradas" : "disponíveis"}</span>
             </div>
           </div>
 
-          {/* Result Cards */}
+          {/* Result Cards - Mobile Optimized */}
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex items-center justify-center py-8 sm:py-12">
               <div className="flex items-center space-x-3 text-bright-blue">
-                <Loader2 className="animate-spin" size={24} />
-                <span className="text-lg">Buscando repertórios...</span>
+                <Loader2 className="animate-spin" size={20} />
+                <span className="text-base sm:text-lg">Buscando repertórios...</span>
               </div>
             </div>
           ) : displayRepertoires.length > 0 ? (
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {displayRepertoires.map((repertoire, index) => {
                 const IconComponent = getTypeIcon(repertoire.type);
                 const gradientClass = getPopularityColor(repertoire.popularity);
                 
                 return (
-                  <LiquidGlassCard key={repertoire.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-8 h-8 bg-gradient-to-br ${gradientClass} rounded-full flex items-center justify-center`}>
-                          <IconComponent className="text-white" size={14} />
+                  <LiquidGlassCard key={repertoire.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 p-4 sm:p-6">
+                    {/* Header with Icon and Type */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2 min-w-0">
+                        <div className={`w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br ${gradientClass} rounded-full flex items-center justify-center flex-shrink-0`}>
+                          <IconComponent className="text-white" size={12} />
                         </div>
-                        <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded">
+                        <span className="text-xs bg-bright-blue/20 text-bright-blue px-2 py-1 rounded whitespace-nowrap">
                           {getTypeLabel(repertoire.type)}
                         </span>
                       </div>
                     </div>
                     
-                    <h3 className="font-semibold text-dark-blue mb-2">{repertoire.title}</h3>
-                    <p className="text-soft-gray text-sm mb-3">{repertoire.description}</p>
+                    {/* Title */}
+                    <h3 className="font-semibold text-dark-blue mb-2 text-sm sm:text-base leading-tight">{repertoire.title}</h3>
                     
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-xs text-soft-gray">
-                        <Clock size={12} />
+                    {/* Description - Truncated on Mobile */}
+                    <p className="text-soft-gray text-xs sm:text-sm mb-3 leading-relaxed">
+                      <span className="sm:hidden">
+                        {repertoire.description.length > 80 
+                          ? `${repertoire.description.substring(0, 80)}...`
+                          : repertoire.description}
+                      </span>
+                      <span className="hidden sm:block">{repertoire.description}</span>
+                    </p>
+                    
+                    {/* Footer with Year and Save Button */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center space-x-1 sm:space-x-2 text-xs text-soft-gray">
+                        <Clock size={10} />
                         <span>{repertoire.year || "N/A"}</span>
                       </div>
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10" 
+                        className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3" 
                         data-testid={`button-save-reference-${index + 1}`}
                         onClick={() => saveRepertoireMutation.mutate(repertoire.id)}
                         disabled={saveRepertoireMutation.isPending}
                       >
                         {saveRepertoireMutation.isPending ? (
                           <>
-                            <Loader2 className="mr-1 animate-spin" size={12} />
-                            Salvando...
+                            <Loader2 className="mr-1 animate-spin" size={10} />
+                            <span className="hidden sm:inline">Salvando...</span>
+                            <span className="sm:hidden">...</span>
                           </>
                         ) : (
                           "Salvar"
@@ -608,32 +636,36 @@ export default function Repertorio() {
               })}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="text-gray-400" size={24} />
+            <div className="text-center py-8 sm:py-12">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Search className="text-gray-400" size={20} />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum repertório encontrado</h3>
-              <p className="text-gray-500">Tente ajustar sua busca ou usar palavras-chave diferentes.</p>
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Nenhum repertório encontrado</h3>
+              <p className="text-sm sm:text-base text-gray-500">Tente ajustar sua busca ou usar palavras-chave diferentes.</p>
             </div>
           )}
 
-          {/* Load More */}
+          {/* Load More - Mobile Optimized */}
           {searchResults && displayRepertoires.length > 0 && (
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2">
               <Button 
                 variant="outline" 
-                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10" 
+                className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3" 
                 data-testid="button-load-more"
                 onClick={handleLoadMore}
                 disabled={loadMoreMutation.isPending}
               >
                 {loadMoreMutation.isPending ? (
                   <>
-                    <Loader2 className="mr-2 animate-spin" size={16} />
-                    Buscando Mais...
+                    <Loader2 className="mr-2 animate-spin" size={14} />
+                    <span className="hidden sm:inline">Buscando Mais...</span>
+                    <span className="sm:hidden">Buscando...</span>
                   </>
                 ) : (
-                  "Carregar Mais Resultados"
+                  <>
+                    <span className="hidden sm:inline">Carregar Mais Resultados</span>
+                    <span className="sm:hidden">Carregar Mais</span>
+                  </>
                 )}
               </Button>
             </div>
