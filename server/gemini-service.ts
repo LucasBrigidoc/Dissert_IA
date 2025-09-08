@@ -154,6 +154,46 @@ Exemplo: [3, 1, 5, 2, 4]
     return repertoires;
   }
 
+  // ULTRA-OPTIMIZED: Generate 6 repertoires in 1 request with minimal tokens
+  async generateRepertoiresBatch(query: string, userFilters: {
+    type?: string;
+    category?: string;
+    popularity?: string;
+  } = {}, batchSize: number = 6): Promise<any[]> {
+    // Use local analysis (0 tokens)
+    const analysis = this.analyzeSearchQueryLocal(query);
+    
+    // Ultra-concise prompt - 80% fewer tokens
+    const prompt = `Query: "${query}"
+Type: ${userFilters.type || 'any'}
+Generate ${batchSize} relevant repertoires as JSON:
+[{
+  "title": "Title",
+  "description": "Use description (80-120 chars)", 
+  "type": "${userFilters.type || 'books|laws|movies|research|documentaries|news|data|events'}",
+  "category": "${userFilters.category || 'social|environment|technology|education|politics'}",
+  "popularity": "${userFilters.popularity || 'very-popular|popular|moderate'}",
+  "year": "year",
+  "rating": 35-49,
+  "keywords": ["k1","k2","k3","k4"]
+}]`;
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = result.response.text();
+      
+      // Parse JSON array directly
+      const cleanedResponse = response.replace(/```json|```/g, '').trim();
+      const repertoires = JSON.parse(cleanedResponse);
+      
+      return Array.isArray(repertoires) ? repertoires : repertoires.repertoires || [];
+    } catch (error) {
+      console.error("Error generating batch repertoires:", error);
+      return this.generateFallbackRepertoires(query, analysis, userFilters);
+    }
+  }
+
+  // Keep old method for backward compatibility
   async generateRepertoires(query: string, analysis: {
     keywords: string[];
     suggestedTypes: string[];
