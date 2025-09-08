@@ -250,12 +250,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      console.log(`Cache miss for query: "${query}" - using AI analysis`);
+      console.log(`Cache miss for query: "${query}" - using OPTIMIZED AI system`);
       
-      // Use AI to analyze the query
-      const analysis = await geminiService.analyzeSearchQuery(query);
+      // OPTIMIZED: Use local analysis (0 tokens)
+      const analysis = geminiService.analyzeSearchQueryLocal(query);
       
-      // Search repertoires with AI-enhanced filters
+      // Search repertoires with local analysis
       const filters = {
         type: type || undefined,
         category: category || undefined,
@@ -265,18 +265,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // First search with explicit filters  
       results = await storage.searchRepertoires(normalizedQuery, filters);
       
-      // Only try alternative filters if user didn't specify a type explicitly
+      // Try with suggested filters if no results
       if (results.length === 0 && !type) {
-        // If no results and no type specified, try with AI-suggested filters
-        if (analysis.suggestedTypes.length > 0) {
-          for (const suggestedType of analysis.suggestedTypes) {
-            results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
-            if (results.length > 0) break;
-          }
+        for (const suggestedType of analysis.suggestedTypes) {
+          results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
+          if (results.length > 0) break;
         }
         
-        // If still no results, try with AI-suggested categories
-        if (results.length === 0 && analysis.suggestedCategories.length > 0) {
+        if (results.length === 0) {
           for (const suggestedCategory of analysis.suggestedCategories) {
             results = await storage.searchRepertoires(normalizedQuery, { category: suggestedCategory });
             if (results.length > 0) break;
@@ -284,13 +280,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // If still no results or less than 4 results, generate new ones using AI
+      // OPTIMIZED: Generate 6 repertoires in 1 AI request (instead of multiple)
       if (results.length < 4) {
-        console.log(`Generating repertoires to reach minimum 4 for: "${query}" (current: ${results.length})`);
-        const existingIds = results.map(r => r.id).concat(excludeIds);
-        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis, existingIds, filters);
+        console.log(`🚀 OPTIMIZED: Generating batch of repertoires for: "${query}" (current: ${results.length})`);
         
-        // Convert generated repertoires to proper format and save them
+        // Single optimized AI call that generates 6 repertoires
+        const generatedRepertoires = await geminiService.generateRepertoiresBatch(query, filters, 6);
+        
+        // Save all generated repertoires to database
         for (const genRep of generatedRepertoires) {
           try {
             const createdRepertoire = await storage.createRepertoire({
@@ -304,23 +301,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
               keywords: genRep.keywords
             });
             results.push(createdRepertoire);
-            
-            // Stop when we reach at least 4 results
-            if (results.length >= 4) break;
           } catch (error) {
             console.error("Error saving generated repertoire:", error);
           }
         }
       }
       
-      // Filter out excluded IDs from final results
+      // Filter out excluded IDs
       if (excludeIds.length > 0) {
         results = results.filter(rep => !excludeIds.includes(rep.id));
       }
       
-      // Use AI to rank results by relevance
+      // Local ranking instead of AI (simple keyword matching)
       if (results.length > 1) {
-        results = await geminiService.rankRepertoires(query, results);
+        const queryWords = query.toLowerCase().split(/\s+/);
+        results = results.sort((a, b) => {
+          const aScore = queryWords.reduce((score, word) => {
+            if (a.title.toLowerCase().includes(word)) score += 3;
+            if (a.description.toLowerCase().includes(word)) score += 2;
+            if (a.keywords && (a.keywords as string[]).some((k: string) => k.toLowerCase().includes(word))) score += 1;
+            return score;
+          }, 0);
+          const bScore = queryWords.reduce((score, word) => {
+            if (b.title.toLowerCase().includes(word)) score += 3;
+            if (b.description.toLowerCase().includes(word)) score += 2;
+            if (b.keywords && (b.keywords as string[]).some((k: string) => k.toLowerCase().includes(word))) score += 1;
+            return score;
+          }, 0);
+          return bScore - aScore;
+        });
       }
       
       // Limit results to top 12
