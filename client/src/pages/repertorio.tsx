@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock, Loader2, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
-import { useMutation, useQuery, queryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Repertoire } from "@shared/schema";
