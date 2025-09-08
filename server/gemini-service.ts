@@ -79,8 +79,8 @@ export class GeminiService {
     }
     
     // Remove duplicates and limit
-    suggestedCategories = [...new Set(suggestedCategories)].slice(0, 3);
-    suggestedTypes = [...new Set(suggestedTypes)].slice(0, 4);
+    suggestedCategories = Array.from(new Set(suggestedCategories)).slice(0, 3);
+    suggestedTypes = Array.from(new Set(suggestedTypes)).slice(0, 4);
     
     return {
       keywords,
