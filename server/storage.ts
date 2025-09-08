@@ -328,8 +328,6 @@ export class MemStorage implements IStorage {
   }
 
   // Rate limiting operations
-  private rateLimits = new Map<string, RateLimit>();
-
   async checkRateLimit(identifier: string, maxRequests = 10, windowMinutes = 60): Promise<{ allowed: boolean; remaining: number }> {
     const now = new Date();
     const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000);

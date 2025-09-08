@@ -393,6 +393,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Save repertoire to user's personal library
+  app.post("/api/repertoires/:id/save", async (req, res) => {
+    try {
+      const repertoireId = req.params.id;
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const savedRepertoire = await storage.saveRepertoire(userId, repertoireId);
+      res.json({
+        message: "Repertório salvo com sucesso!",
+        savedRepertoire
+      });
+    } catch (error) {
+      console.error("Save repertoire error:", error);
+      res.status(500).json({ message: "Failed to save repertoire" });
+    }
+  });
+
+  // Remove repertoire from user's personal library
+  app.delete("/api/repertoires/:id/save", async (req, res) => {
+    try {
+      const repertoireId = req.params.id;
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const removed = await storage.removeSavedRepertoire(userId, repertoireId);
+      if (removed) {
+        res.json({ message: "Repertório removido da biblioteca pessoal!" });
+      } else {
+        res.status(404).json({ message: "Repertório não encontrado na biblioteca" });
+      }
+    } catch (error) {
+      console.error("Remove saved repertoire error:", error);
+      res.status(500).json({ message: "Failed to remove saved repertoire" });
+    }
+  });
+
+  // Get user's saved repertoires
+  app.get("/api/repertoires/saved", async (req, res) => {
+    try {
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const savedRepertoires = await storage.getUserSavedRepertoires(userId);
+      res.json({
+        results: savedRepertoires,
+        count: savedRepertoires.length
+      });
+    } catch (error) {
+      console.error("Get saved repertoires error:", error);
+      res.status(500).json({ message: "Failed to get saved repertoires" });
+    }
+  });
+
+  // Check if repertoire is saved by user
+  app.get("/api/repertoires/:id/saved", async (req, res) => {
+    try {
+      const repertoireId = req.params.id;
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const isSaved = await storage.isRepertoireSaved(userId, repertoireId);
+      res.json({ isSaved });
+    } catch (error) {
+      console.error("Check saved repertoire error:", error);
+      res.status(500).json({ message: "Failed to check if repertoire is saved" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
