@@ -232,19 +232,6 @@ export default function Repertorio() {
 
   // Search for repertoires of a specific type using AI
   const handleTypeSearchAI = () => {
-    const typeLabels: { [key: string]: string } = {
-      movies: "filmes populares para redação",
-      laws: "leis importantes para redação",
-      books: "livros clássicos para redação",
-      news: "notícias relevantes para redação",
-      events: "acontecimentos históricos para redação",
-      music: "músicas e artistas para redação",
-      series: "séries populares para redação",
-      documentaries: "documentários importantes para redação",
-      research: "pesquisas acadêmicas para redação",
-      data: "dados estatísticos para redação"
-    };
-
     const searchTerm = typeLabels[selectedType] || selectedType;
     
     // Exclude already shown repertoires
@@ -320,19 +307,39 @@ export default function Repertorio() {
   }, [searchQuery]);
 
   const handleLoadMore = () => {
-    if (!searchQuery.trim() || loadMoreMutation.isPending) return;
+    if (loadMoreMutation.isPending) return;
     
     const existingIds = searchResults?.results.map(r => r.id) || [];
     
+    // Use searchQuery if available, otherwise use type-based search
+    const baseQuery = searchQuery.trim() || (selectedType !== "all" ? 
+      (typeLabels[selectedType] || selectedType) : "");
+    
+    if (!baseQuery) return;
+    
     const query = {
-      query: searchQuery,
+      query: baseQuery,
       type: selectedType !== "all" ? selectedType : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
-      excludeIds: existingIds
+      ...(existingIds.length > 0 && { excludeIds: existingIds })
     };
     
     loadMoreMutation.mutate(query);
+  };
+
+  // Define typeLabels here so it's accessible
+  const typeLabels: { [key: string]: string } = {
+    movies: "filmes populares para redação",
+    laws: "leis importantes para redação",
+    books: "livros clássicos para redação",
+    news: "notícias relevantes para redação",
+    events: "acontecimentos históricos para redação",
+    music: "músicas e artistas para redação",
+    series: "séries populares para redação",
+    documentaries: "documentários importantes para redação",
+    research: "pesquisas acadêmicas para redação",
+    data: "dados estatísticos para redação"
   };
 
   // Debug logging removed to improve performance
