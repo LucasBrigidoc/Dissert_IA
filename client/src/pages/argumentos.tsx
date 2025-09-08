@@ -223,10 +223,35 @@ export default function Argumentos() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header - Mobile Optimized */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <button 
+                onClick={() => {
+                  if (window.history.length > 1 && document.referrer) {
+                    window.history.back();
+                  } else {
+                    window.location.href = backUrl;
+                  }
+                }}
+                className="flex items-center space-x-1 px-2 py-1 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30 text-xs h-8" 
+                data-testid="button-back"
+              >
+                <ArrowLeft size={14} />
+                <span className="font-medium">Voltar</span>
+              </button>
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Brain className="text-white" size={14} />
+              </div>
+            </div>
+            <h1 className="text-sm font-bold text-dark-blue truncate">Brainstorming</h1>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button 
                 onClick={() => {
@@ -257,7 +282,7 @@ export default function Argumentos() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8 pt-24">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-16 sm:pt-24">
         <div className="grid gap-6">
           {/* Main Content Area */}
           <div className="space-y-6">
@@ -356,11 +381,13 @@ export default function Argumentos() {
             </div>
 
 
-            {/* Progress Bar */}
+            {/* Progress Bar - Mobile Optimized */}
             <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <div className="flex items-center justify-between">
+              <div className="space-y-3 sm:space-y-0">
                 <h4 className="font-semibold text-dark-blue text-sm">Progresso do Brainstorming</h4>
-                <div className="flex items-center space-x-6">
+                
+                {/* Mobile: Grid Layout */}
+                <div className="grid grid-cols-2 gap-3 sm:hidden">
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-dark-blue">Tema</span>
                     <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
@@ -378,23 +405,46 @@ export default function Argumentos() {
                     <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                 </div>
+                
+                {/* Desktop: Horizontal Layout */}
+                <div className="hidden sm:flex items-center justify-between">
+                  <div className="flex items-center space-x-6">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-dark-blue">Tema</span>
+                      <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-dark-blue">Tese</span>
+                      <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-dark-blue">Parágrafos</span>
+                      <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-dark-blue">Conclusão</span>
+                      <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </LiquidGlassCard>
 
-            {/* Botão para Mapa Mental */}
+            {/* Botão para Mapa Mental - Mobile Optimized */}
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="text-center py-6">
-                <Map size={48} className="text-bright-blue mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-dark-blue mb-2">Visualizar Mapa Mental</h3>
-                <p className="text-soft-gray mb-4">
+              <div className="text-center py-4 sm:py-6">
+                <Map size={40} className="text-bright-blue mx-auto mb-3 sm:mb-4 sm:w-12 sm:h-12" />
+                <h3 className="text-lg sm:text-xl font-semibold text-dark-blue mb-2">Visualizar Mapa Mental</h3>
+                <p className="text-soft-gray mb-4 text-sm sm:text-base px-2">
                   Organize suas ideias visualmente em um mapa mental interativo
                 </p>
                 <Button 
                   onClick={handleGenerateMindMap}
-                  className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue w-full sm:w-auto text-sm sm:text-base"
                 >
-                  <Map className="mr-2" size={16} />
-                  Gerar Mapa Mental
+                  <Map className="mr-2" size={14} />
+                  <span className="hidden sm:inline">Gerar Mapa Mental</span>
+                  <span className="sm:hidden">Gerar Mapa</span>
                 </Button>
               </div>
             </LiquidGlassCard>
