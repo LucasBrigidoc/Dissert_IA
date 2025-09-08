@@ -127,16 +127,26 @@ Exemplo: [3, 1, 5, 2, 4]
     keywords: string[];
     suggestedTypes: string[];
     suggestedCategories: string[];
-  }, excludeIds: string[] = []): Promise<any[]> {
+  }, excludeIds: string[] = [], userFilters: {
+    type?: string;
+    category?: string;
+    popularity?: string;
+  } = {}): Promise<any[]> {
+    // Use user-specified filters or fallback to AI suggestions
+    const targetTypes = userFilters.type ? [userFilters.type] : analysis.suggestedTypes;
+    const targetCategories = userFilters.category ? [userFilters.category] : analysis.suggestedCategories;
+    const targetPopularity = userFilters.popularity;
+
     const prompt = `
 Gere repertórios relevantes para esta consulta de redação:
 
 Consulta: "${query}"
 Palavras-chave: ${analysis.keywords.join(', ')}
-Tipos sugeridos: ${analysis.suggestedTypes.join(', ')}
-Categorias sugeridas: ${analysis.suggestedCategories.join(', ')}
+${userFilters.type ? `TIPO OBRIGATÓRIO: ${userFilters.type} (gere APENAS deste tipo)` : `Tipos sugeridos: ${analysis.suggestedTypes.join(', ')}`}
+${userFilters.category ? `CATEGORIA OBRIGATÓRIA: ${userFilters.category} (gere APENAS desta categoria)` : `Categorias sugeridas: ${analysis.suggestedCategories.join(', ')}`}
+${userFilters.popularity ? `POPULARIDADE OBRIGATÓRIA: ${userFilters.popularity}` : ''}
 
-Crie EXATAMENTE 4-6 repertórios diversos e relevantes. Responda APENAS em formato JSON válido:
+Crie EXATAMENTE 4-6 repertórios ${userFilters.type ? `do tipo ${userFilters.type}` : 'diversos'} e relevantes. Responda APENAS em formato JSON válido:
 
 {
   "repertoires": [
@@ -155,9 +165,10 @@ Crie EXATAMENTE 4-6 repertórios diversos e relevantes. Responda APENAS em forma
 
 REGRAS IMPORTANTES:
 - Repertórios reais e verificáveis (não ficcionais)
-- Variados em tipos (livros, leis, filmes, pesquisas, dados, etc.)
+${userFilters.type ? `- TODOS os repertórios devem ser do tipo: ${userFilters.type}` : '- Variados em tipos (livros, leis, filmes, pesquisas, dados, etc.)'}
+${userFilters.category ? `- TODOS os repertórios devem ser da categoria: ${userFilters.category}` : ''}
+${userFilters.popularity ? `- TODOS os repertórios devem ter popularidade: ${userFilters.popularity}` : '- Diferentes níveis de popularidade para dar opções únicas'}
 - Específicos para o contexto brasileiro quando aplicável
-- Diferentes níveis de popularidade para dar opções únicas
 - Keywords relevantes e específicas
 - Descrições práticas de como usar na redação
 ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs: ${excludeIds.join(', ')})` : ''}

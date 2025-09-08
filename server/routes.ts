@@ -214,14 +214,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedQuery = searchQuerySchema.parse(req.body);
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
-      // Normalize query for cache lookup
+      // Normalize query for cache lookup with type filter
       const normalizedQuery = geminiService.normalizeQuery(query);
+      const cacheKey = type ? `${normalizedQuery}__type:${type}` : normalizedQuery;
       
       // Initialize results array
       let results: any[] = [];
       
       // Check cache first (only if no excluded IDs)
-      let cachedResult = excludeIds.length === 0 ? await storage.getSearchCache(normalizedQuery) : null;
+      let cachedResult = excludeIds.length === 0 ? await storage.getSearchCache(cacheKey) : null;
       
       if (cachedResult) {
         // Update cache usage statistics
@@ -262,19 +263,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // First search with explicit filters  
       results = await storage.searchRepertoires(normalizedQuery, filters);
       
-      // If no results, try with AI-suggested filters
-      if (results.length === 0 && analysis.suggestedTypes.length > 0) {
-        for (const suggestedType of analysis.suggestedTypes) {
-          results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
-          if (results.length > 0) break;
+      // Only try alternative filters if user didn't specify a type explicitly
+      if (results.length === 0 && !type) {
+        // If no results and no type specified, try with AI-suggested filters
+        if (analysis.suggestedTypes.length > 0) {
+          for (const suggestedType of analysis.suggestedTypes) {
+            results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
+            if (results.length > 0) break;
+          }
         }
-      }
-      
-      // If still no results, try with AI-suggested categories
-      if (results.length === 0 && analysis.suggestedCategories.length > 0) {
-        for (const suggestedCategory of analysis.suggestedCategories) {
-          results = await storage.searchRepertoires(normalizedQuery, { category: suggestedCategory });
-          if (results.length > 0) break;
+        
+        // If still no results, try with AI-suggested categories
+        if (results.length === 0 && analysis.suggestedCategories.length > 0) {
+          for (const suggestedCategory of analysis.suggestedCategories) {
+            results = await storage.searchRepertoires(normalizedQuery, { category: suggestedCategory });
+            if (results.length > 0) break;
+          }
         }
       }
       
@@ -282,7 +286,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (results.length < 4) {
         console.log(`Generating repertoires to reach minimum 4 for: "${query}" (current: ${results.length})`);
         const existingIds = results.map(r => r.id).concat(excludeIds);
-        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis, existingIds);
+        const generatedRepertoires = await geminiService.generateRepertoires(query, analysis, existingIds, filters);
         
         // Convert generated repertoires to proper format and save them
         for (const genRep of generatedRepertoires) {
@@ -323,7 +327,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Cache the results for future searches
       await storage.createSearchCache({
         queryText: query,
-        normalizedQuery,
+        normalizedQuery: cacheKey,
         results: results,
         searchCount: 1,
         lastSearched: new Date()
