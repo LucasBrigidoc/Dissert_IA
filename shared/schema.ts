@@ -81,6 +81,14 @@ export const rateLimits = pgTable("rate_limits", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Saved repertoires for user's personal library
+export const savedRepertoires = pgTable("saved_repertoires", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  repertoireId: varchar("repertoire_id").notNull().references(() => repertoires.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -129,6 +137,11 @@ export const insertRateLimitSchema = createInsertSchema(rateLimits).omit({
   createdAt: true,
 });
 
+export const insertSavedRepertoireSchema = createInsertSchema(savedRepertoires).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const searchQuerySchema = z.object({
   query: z.string().min(1, "Query é obrigatória"),
   type: z.string().optional(),
@@ -158,5 +171,8 @@ export type SearchCache = typeof searchCache.$inferSelect;
 
 export type InsertRateLimit = z.infer<typeof insertRateLimitSchema>;
 export type RateLimit = typeof rateLimits.$inferSelect;
+
+export type InsertSavedRepertoire = z.infer<typeof insertSavedRepertoireSchema>;
+export type SavedRepertoire = typeof savedRepertoires.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
