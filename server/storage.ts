@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -36,6 +36,12 @@ export interface IStorage {
   
   // Rate limiting operations
   checkRateLimit(identifier: string, maxRequests?: number, windowMinutes?: number): Promise<{ allowed: boolean; remaining: number }>;
+  
+  // Saved repertoires operations
+  saveRepertoire(userId: string, repertoireId: string): Promise<SavedRepertoire>;
+  removeSavedRepertoire(userId: string, repertoireId: string): Promise<boolean>;
+  getUserSavedRepertoires(userId: string): Promise<Repertoire[]>;
+  isRepertoireSaved(userId: string, repertoireId: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -45,6 +51,8 @@ export class MemStorage implements IStorage {
   private essayStructures: Map<string, EssayStructure>;
   private repertoires: Map<string, Repertoire>;
   private searchCaches: Map<string, SearchCache>;
+  private rateLimits: Map<string, RateLimit>;
+  private savedRepertoires: Map<string, SavedRepertoire>;
 
   constructor() {
     this.users = new Map();
@@ -53,6 +61,8 @@ export class MemStorage implements IStorage {
     this.essayStructures = new Map();
     this.repertoires = new Map();
     this.searchCaches = new Map();
+    this.rateLimits = new Map();
+    this.savedRepertoires = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -435,6 +445,60 @@ export class MemStorage implements IStorage {
       };
       this.repertoires.set(id, repertoire);
     });
+  }
+
+  // Saved repertoires operations
+  async saveRepertoire(userId: string, repertoireId: string): Promise<SavedRepertoire> {
+    // Check if already saved
+    const existing = Array.from(this.savedRepertoires.values()).find(
+      saved => saved.userId === userId && saved.repertoireId === repertoireId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const id = randomUUID();
+    const savedRepertoire: SavedRepertoire = {
+      id,
+      userId,
+      repertoireId,
+      createdAt: new Date()
+    };
+    
+    this.savedRepertoires.set(id, savedRepertoire);
+    return savedRepertoire;
+  }
+
+  async removeSavedRepertoire(userId: string, repertoireId: string): Promise<boolean> {
+    const existing = Array.from(this.savedRepertoires.entries()).find(
+      ([_, saved]) => saved.userId === userId && saved.repertoireId === repertoireId
+    );
+    
+    if (existing) {
+      this.savedRepertoires.delete(existing[0]);
+      return true;
+    }
+    
+    return false;
+  }
+
+  async getUserSavedRepertoires(userId: string): Promise<Repertoire[]> {
+    const savedIds = Array.from(this.savedRepertoires.values())
+      .filter(saved => saved.userId === userId)
+      .map(saved => saved.repertoireId);
+    
+    const repertoires = savedIds
+      .map(id => this.repertoires.get(id))
+      .filter((rep): rep is Repertoire => rep !== undefined);
+    
+    return repertoires.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  }
+
+  async isRepertoireSaved(userId: string, repertoireId: string): Promise<boolean> {
+    return Array.from(this.savedRepertoires.values()).some(
+      saved => saved.userId === userId && saved.repertoireId === repertoireId
+    );
   }
 }
 
