@@ -491,55 +491,6 @@ export default function Repertorio() {
                 </Button>
               </div>
 
-              {/* Filtros Avançados (Expandíveis) */}
-              <details className="group">
-                <summary className="cursor-pointer text-sm text-dark-blue hover:text-bright-blue flex items-center gap-2">
-                  <span>Filtros Avançados</span>
-                  <span className="transform group-open:rotate-180 transition-transform">▼</span>
-                </summary>
-                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white/30 rounded-lg">
-                  <div>
-                    <label className="block text-sm font-medium text-dark-blue mb-2">Tema Específico</label>
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory} data-testid="select-category">
-                      <SelectTrigger className="border-bright-blue/20">
-                        <SelectValue placeholder="Todos os temas" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todos os temas</SelectItem>
-                        <SelectItem value="social">Questões Sociais</SelectItem>
-                        <SelectItem value="environment">Meio Ambiente</SelectItem>
-                        <SelectItem value="technology">Tecnologia e Sociedade</SelectItem>
-                        <SelectItem value="education">Educação</SelectItem>
-                        <SelectItem value="politics">Política e Cidadania</SelectItem>
-                        <SelectItem value="economy">Economia e Trabalho</SelectItem>
-                        <SelectItem value="culture">Cultura e Identidade</SelectItem>
-                        <SelectItem value="health">Saúde Pública</SelectItem>
-                        <SelectItem value="ethics">Ética e Moral</SelectItem>
-                        <SelectItem value="globalization">Globalização</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-dark-blue mb-2">Popularidade</label>
-                    <Select value={selectedPopularity} onValueChange={setSelectedPopularity} data-testid="select-popularity">
-                      <SelectTrigger className="border-bright-blue/20">
-                        <SelectValue placeholder="Todos os níveis" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todos os níveis</SelectItem>
-                        <SelectItem value="very-popular">🔥 Muito populares (mais usados)</SelectItem>
-                        <SelectItem value="popular">⭐ Populares (conhecidos)</SelectItem>
-                        <SelectItem value="moderate">🎯 Moderadamente conhecidos</SelectItem>
-                        <SelectItem value="uncommon">💎 Pouco conhecidos (diferenciados)</SelectItem>
-                        <SelectItem value="rare">🏆 Raros (únicos)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-xs text-soft-gray mt-1">
-                      💡 Repertórios raros podem destacar sua redação
-                    </p>
-                  </div>
-                </div>
-              </details>
             </div>
           </LiquidGlassCard>
         </div>
