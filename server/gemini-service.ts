@@ -164,13 +164,21 @@ Exemplo: [3, 1, 5, 2, 4]
     const analysis = this.analyzeSearchQueryLocal(query);
     
     // Ultra-concise prompt - 80% fewer tokens
+    const typeInstruction = userFilters.type && userFilters.type !== 'all' 
+      ? `IMPORTANT: Generate ONLY "${userFilters.type}" type repertoires. All items must have "type": "${userFilters.type}".`
+      : '';
+    
+    const allowedTypes = userFilters.type && userFilters.type !== 'all' 
+      ? userFilters.type 
+      : 'books|laws|movies|research|documentaries|news|data|events';
+    
     const prompt = `Query: "${query}"
-Type: ${userFilters.type || 'any'}
+${typeInstruction}
 Generate ${batchSize} relevant repertoires as JSON:
 [{
   "title": "Title",
   "description": "Use description (80-120 chars)", 
-  "type": "${userFilters.type || 'books|laws|movies|research|documentaries|news|data|events'}",
+  "type": "${allowedTypes}",
   "category": "${userFilters.category || 'social|environment|technology|education|politics'}",
   "popularity": "${userFilters.popularity || 'very-popular|popular|moderate'}",
   "year": "year",
