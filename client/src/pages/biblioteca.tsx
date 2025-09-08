@@ -550,7 +550,7 @@ export default function BibliotecaPage() {
       
       {/* Modal de Detalhes do Arquivo */}
       <Dialog open={showFileDetails} onOpenChange={setShowFileDetails}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col" aria-describedby="file-details-description">
           <DialogHeader>
             <div className="flex items-center space-x-3 mb-2">
               {selectedFile && getIcon(selectedFile.type)}
@@ -573,7 +573,7 @@ export default function BibliotecaPage() {
           </DialogHeader>
           
           {selectedFile && (
-            <div className="flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 min-h-0 flex flex-col" id="file-details-description">
               {/* Informações do Arquivo */}
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -601,9 +601,9 @@ export default function BibliotecaPage() {
               </div>
               
               {/* Conteúdo Completo */}
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 min-h-0 flex flex-col">
                 <h4 className="font-semibold text-dark-blue mb-3">Conteúdo Completo:</h4>
-                <div className="bg-white border border-gray-200 rounded-lg p-6 h-full overflow-y-auto">
+                <div className="bg-white border border-gray-200 rounded-lg p-6 flex-1 overflow-y-auto min-h-0">
                   {selectedFile.content ? (
                     <div className="prose prose-sm max-w-none">
                       {selectedFile.content.split('\\n').map((line: string, index: number) => (
