@@ -5,6 +5,32 @@ export class GeminiService {
   private genAI: GoogleGenerativeAI;
   private model: any;
 
+  // Local analysis mappings - no AI required
+  private queryPatterns = {
+    'clima': ['environment', 'research', 'documentaries'],
+    'tecnologia': ['technology', 'books', 'documentaries'], 
+    'educação': ['education', 'books', 'laws'],
+    'sociedade': ['social', 'research', 'news'],
+    'política': ['politics', 'books', 'news'],
+    'meio ambiente': ['environment', 'research', 'documentaries'],
+    'direitos humanos': ['social', 'laws', 'events'],
+    'economia': ['economy', 'research', 'news'],
+    'cultura': ['culture', 'books', 'movies'],
+    'saúde': ['health', 'research', 'news'],
+    'globalização': ['globalization', 'books', 'research']
+  };
+
+  private typeCategories = {
+    'movies': ['culture', 'social', 'politics'],
+    'books': ['education', 'culture', 'politics', 'social'], 
+    'laws': ['politics', 'social', 'education'],
+    'research': ['health', 'environment', 'technology', 'social'],
+    'news': ['politics', 'economy', 'social'],
+    'documentaries': ['environment', 'technology', 'social'],
+    'events': ['politics', 'social', 'culture'],
+    'data': ['economy', 'health', 'social']
+  };
+
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -15,59 +41,64 @@ export class GeminiService {
     this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   }
 
+  // Local analysis - NO AI TOKENS USED!
+  analyzeSearchQueryLocal(query: string): {
+    keywords: string[];
+    suggestedTypes: string[];
+    suggestedCategories: string[];
+    normalizedQuery: string;
+  } {
+    const normalizedQuery = query.toLowerCase().trim();
+    const words = normalizedQuery.split(/\s+/).filter(w => w.length > 2);
+    
+    // Extract keywords
+    const keywords = words.slice(0, 8);
+    
+    // Find matching patterns
+    let suggestedCategories: string[] = [];
+    let suggestedTypes: string[] = [];
+    
+    // Check for theme matches
+    for (const [pattern, categories] of Object.entries(this.queryPatterns)) {
+      if (normalizedQuery.includes(pattern) || words.some(w => pattern.includes(w))) {
+        suggestedCategories.push(...categories);
+      }
+    }
+    
+    // If no theme match, use generic suggestions
+    if (suggestedCategories.length === 0) {
+      suggestedCategories = ['social', 'technology'];
+      suggestedTypes = ['books', 'research', 'news'];
+    } else {
+      // Get types based on categories
+      for (const [type, typeCategories] of Object.entries(this.typeCategories)) {
+        if (typeCategories.some(cat => suggestedCategories.includes(cat))) {
+          suggestedTypes.push(type);
+        }
+      }
+    }
+    
+    // Remove duplicates and limit
+    suggestedCategories = [...new Set(suggestedCategories)].slice(0, 3);
+    suggestedTypes = [...new Set(suggestedTypes)].slice(0, 4);
+    
+    return {
+      keywords,
+      suggestedTypes,
+      suggestedCategories,
+      normalizedQuery
+    };
+  }
+
+  // Keep old method for backward compatibility but use local analysis
   async analyzeSearchQuery(query: string): Promise<{
     keywords: string[];
     suggestedTypes: string[];
     suggestedCategories: string[];
     normalizedQuery: string;
   }> {
-    const prompt = `
-Analise esta consulta de busca por repertórios para redações e extraia:
-
-Consulta: "${query}"
-
-Responda APENAS em formato JSON válido com:
-{
-  "keywords": ["palavra1", "palavra2", ...], // 5-10 palavras-chave principais
-  "suggestedTypes": ["tipo1", "tipo2", ...], // tipos de repertório mais adequados
-  "suggestedCategories": ["categoria1", "categoria2", ...], // categorias temáticas
-  "normalizedQuery": "consulta normalizada em minúsculas"
-}
-
-Tipos disponíveis: movies, laws, books, news, events, music, series, documentaries, research, data
-Categorias disponíveis: social, environment, technology, education, politics, economy, culture, health, ethics, globalization
-
-Foque em identificar o tema central e sugerir os tipos mais relevantes.
-`;
-
-    try {
-      const result = await this.model.generateContent(prompt);
-      const response = result.response.text();
-      
-      // Parse JSON response
-      const cleanedResponse = response.replace(/```json|```/g, '').trim();
-      const analysis = JSON.parse(cleanedResponse);
-      
-      return {
-        keywords: analysis.keywords || [],
-        suggestedTypes: analysis.suggestedTypes || [],
-        suggestedCategories: analysis.suggestedCategories || [],
-        normalizedQuery: analysis.normalizedQuery || query.toLowerCase().trim()
-      };
-    } catch (error) {
-      console.error("Error analyzing query with Gemini:", error);
-      
-      // Fallback analysis
-      const normalizedQuery = query.toLowerCase().trim();
-      const words = normalizedQuery.split(' ').filter(w => w.length > 2);
-      
-      return {
-        keywords: words.slice(0, 5),
-        suggestedTypes: ["books", "news", "research"],
-        suggestedCategories: ["social", "technology"],
-        normalizedQuery
-      };
-    }
+    // Use local analysis instead of AI - saves 100% of analysis tokens
+    return this.analyzeSearchQueryLocal(query);
   }
 
   async rankRepertoires(query: string, repertoires: Repertoire[]): Promise<Repertoire[]> {
