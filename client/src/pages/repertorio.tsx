@@ -119,20 +119,56 @@ export default function Repertorio() {
   });
 
   const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      console.log("⚠️ Busca vazia, ignorando");
+    // If there's a search query, do normal search
+    if (searchQuery.trim()) {
+      const query = {
+        query: searchQuery,
+        type: selectedType !== "all" ? selectedType : undefined,
+        category: selectedCategory !== "all" ? selectedCategory : undefined,
+        popularity: selectedPopularity !== "all" ? selectedPopularity : undefined
+      };
+      
+      console.log("🚀 Iniciando busca com query:", query);
+      searchMutation.mutate(query);
+    }
+    // If no search query but a type is selected, search both cache and AI
+    else if (selectedType !== "all") {
+      console.log("🔍 Botão clicado com tipo selecionado, buscando cache + IA");
+      handleSearchWithTypeAndAI();
+    }
+    else {
+      console.log("⚠️ Busca vazia e nenhum tipo selecionado");
       return;
     }
+  };
+
+  // Search both cache and AI when type is selected and search button is clicked
+  const handleSearchWithTypeAndAI = () => {
+    if (!initialRepertoires) return;
     
-    const query = {
-      query: searchQuery,
-      type: selectedType !== "all" ? selectedType : undefined,
-      category: selectedCategory !== "all" ? selectedCategory : undefined,
-      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined
-    };
+    // Filter initial repertoires by selected type (cache search)
+    const filteredFromCache = initialRepertoires.filter((repertoire) => {
+      if (selectedType !== "all" && repertoire.type !== selectedType) return false;
+      if (selectedCategory !== "all" && repertoire.category !== selectedCategory) return false;
+      if (selectedPopularity !== "all" && repertoire.popularity !== selectedPopularity) return false;
+      return true;
+    });
+
+    console.log(`🔍 Busca manual: encontrados ${filteredFromCache.length} repertórios no cache para o tipo ${selectedType}`);
+
+    // Always show cache results first
+    if (filteredFromCache.length > 0) {
+      console.log("✅ Mostrando resultados do cache");
+      setSearchResults({
+        results: filteredFromCache,
+        source: "cache",
+        count: filteredFromCache.length
+      });
+    }
     
-    console.log("🚀 Iniciando busca com query:", query);
-    searchMutation.mutate(query);
+    // Then search AI for additional results (always, regardless of cache amount)
+    console.log("🤖 Buscando IA para expandir resultados");
+    setTimeout(() => handleTypeSearchAI(), 200);
   };
 
   // Auto-search when filters change
@@ -219,7 +255,7 @@ export default function Repertorio() {
       type: selectedType !== "all" ? selectedType : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
-      excludeIds: excludeIds.length > 0 ? excludeIds : undefined
+      ...(excludeIds.length > 0 && { excludeIds })
     };
     
     console.log("🤖 Busca IA para completar resultados:", query);
@@ -444,7 +480,7 @@ export default function Repertorio() {
                   className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue h-12" 
                   data-testid="button-search"
                   onClick={handleSearch}
-                  disabled={!searchQuery.trim() || isLoading}
+                  disabled={(!searchQuery.trim() && selectedType === "all") || isLoading}
                 >
                   {isLoading ? (
                     <Loader2 className="mr-2 animate-spin" size={16} />
