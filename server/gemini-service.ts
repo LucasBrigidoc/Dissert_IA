@@ -151,7 +151,7 @@ ${typeInstruction}
 Generate ${batchSize} relevant repertoires as JSON:
 [{
   "title": "Title",
-  "description": "Use description (80-120 chars)", 
+  "description": "Detailed description explaining what this repertoire is, how to use it effectively in essays, which themes it supports, and specific argumentative angles it provides. Include practical usage tips and contexts where it's most powerful (200-300 characters)", 
   "type": "${allowedTypes}",
   "category": "${userFilters.category || 'social|environment|technology|education|politics'}",
   "popularity": "${userFilters.popularity || 'very-popular|popular|moderate'}",
@@ -205,7 +205,7 @@ Crie EXATAMENTE 4-6 repertórios ${userFilters.type ? `do tipo ${userFilters.typ
   "repertoires": [
     {
       "title": "Título exato do repertório",
-      "description": "Descrição detalhada de como usar na redação (100-150 caracteres)",
+      "description": "Descrição completa e detalhada explicando: 1) O que é este repertório, 2) Como usá-lo efetivamente em redações, 3) Em quais temas se aplica, 4) Quais argumentos e perspectivas oferece, 5) Dicas práticas de aplicação e contextos onde é mais poderoso (200-400 caracteres)",
       "type": "um dos tipos: movies, laws, books, news, events, music, series, documentaries, research, data",
       "category": "uma das categorias: social, environment, technology, education, politics, economy, culture, health, ethics, globalization",
       "popularity": "um dos níveis: very-popular, popular, moderate, uncommon, rare",
