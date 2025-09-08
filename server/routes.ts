@@ -218,6 +218,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const normalizedQuery = geminiService.normalizeQuery(query);
       const cacheKey = type ? `${normalizedQuery}__type:${type}` : normalizedQuery;
       
+      console.log(`🔑 Cache key gerado: "${cacheKey}" (query: "${query}", type: "${type || 'undefined'}")`);
+      
       // Initialize results array
       let results: any[] = [];
       

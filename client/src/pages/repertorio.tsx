@@ -119,6 +119,9 @@ export default function Repertorio() {
   });
 
   const handleSearch = () => {
+    // Clear any existing search results to avoid cache conflicts
+    setSearchResults(null);
+    
     // If there's a search query, do normal search
     if (searchQuery.trim()) {
       const query = {
@@ -171,23 +174,13 @@ export default function Repertorio() {
     setTimeout(() => handleTypeSearchAI(), 200);
   };
 
-  // Auto-search when filters change
+  // No auto-search - user must click search button
+  // Only reset search results when going back to "all" without search query
   useEffect(() => {
-    // If there's already a search query and results, re-search with new filters
-    if (searchQuery.trim() && searchResults) {
-      console.log("🔄 Filtro alterado, executando nova busca automaticamente");
-      handleSearch();
-    }
-    // If no search query but a specific type is selected, check cache first
-    else if (!searchQuery.trim() && selectedType !== "all") {
-      console.log("🎯 Tipo selecionado, verificando cache primeiro:", selectedType);
-      handleTypeSelection();
-    }
-    // Reset search results when going back to "all"
-    else if (selectedType === "all" && !searchQuery.trim()) {
+    if (selectedType === "all" && !searchQuery.trim()) {
       setSearchResults(null);
     }
-  }, [selectedType, selectedCategory, selectedPopularity]);
+  }, [selectedType, searchQuery]);
 
   // Handle type selection: check cache first, then AI if needed
   const handleTypeSelection = () => {
@@ -242,7 +235,7 @@ export default function Repertorio() {
       type: selectedType !== "all" ? selectedType : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
-      ...(excludeIds.length > 0 && { excludeIds })
+      excludeIds: excludeIds.length > 0 ? excludeIds : []
     };
     
     console.log("🤖 Busca IA para completar resultados:", query);
@@ -322,7 +315,7 @@ export default function Repertorio() {
       type: selectedType !== "all" ? selectedType : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
-      ...(existingIds.length > 0 && { excludeIds: existingIds })
+      excludeIds: existingIds.length > 0 ? existingIds : []
     };
     
     loadMoreMutation.mutate(query);
