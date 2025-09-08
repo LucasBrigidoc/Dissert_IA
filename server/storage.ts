@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -33,6 +33,9 @@ export interface IStorage {
   getSearchCache(normalizedQuery: string): Promise<SearchCache | undefined>;
   createSearchCache(cache: InsertSearchCache): Promise<SearchCache>;
   updateSearchCache(id: string, cache: Partial<SearchCache>): Promise<SearchCache>;
+  
+  // Rate limiting operations
+  checkRateLimit(identifier: string, maxRequests?: number, windowMinutes?: number): Promise<{ allowed: boolean; remaining: number }>;
 }
 
 export class MemStorage implements IStorage {
@@ -264,19 +267,33 @@ export class MemStorage implements IStorage {
     return allRepertoires.slice(offset, offset + limit);
   }
 
-  // Search cache operations
+  // Search cache operations with TTL check
   async getSearchCache(normalizedQuery: string): Promise<SearchCache | undefined> {
-    return Array.from(this.searchCaches.values()).find(
+    const cache = Array.from(this.searchCaches.values()).find(
       cache => cache.normalizedQuery === normalizedQuery
     );
+    
+    // Check if cache has expired
+    if (cache && cache.expiresAt && new Date() > cache.expiresAt) {
+      console.log(`🗑️ Cache expired for query: "${normalizedQuery}"`);
+      this.searchCaches.delete(cache.id);
+      return undefined;
+    }
+    
+    return cache;
   }
 
   async createSearchCache(insertCache: InsertSearchCache): Promise<SearchCache> {
     const id = randomUUID();
+    // TTL: Cache expires in 30 days
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+    
     const cache: SearchCache = { 
       ...insertCache,
       searchCount: insertCache.searchCount ?? 1,
       lastSearched: insertCache.lastSearched ?? new Date(),
+      expiresAt,
       id,
       createdAt: new Date()
     };
@@ -298,6 +315,46 @@ export class MemStorage implements IStorage {
     
     this.searchCaches.set(id, updated);
     return updated;
+  }
+
+  // Rate limiting operations
+  private rateLimits = new Map<string, RateLimit>();
+
+  async checkRateLimit(identifier: string, maxRequests = 10, windowMinutes = 60): Promise<{ allowed: boolean; remaining: number }> {
+    const now = new Date();
+    const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000);
+    
+    let rateLimit = Array.from(this.rateLimits.values()).find(
+      limit => limit.identifier === identifier
+    );
+    
+    // Clean up or reset if window has passed
+    if (!rateLimit || (rateLimit.windowStart && rateLimit.windowStart < windowStart)) {
+      const id = randomUUID();
+      rateLimit = {
+        id,
+        identifier,
+        requestCount: 1,
+        windowStart: now,
+        lastRequest: now,
+        createdAt: new Date()
+      };
+      this.rateLimits.set(id, rateLimit);
+      return { allowed: true, remaining: maxRequests - 1 };
+    }
+    
+    // Check if within limits
+    const currentCount = rateLimit.requestCount || 0;
+    if (currentCount >= maxRequests) {
+      return { allowed: false, remaining: 0 };
+    }
+    
+    // Increment count
+    rateLimit.requestCount = currentCount + 1;
+    rateLimit.lastRequest = now;
+    this.rateLimits.set(rateLimit.id, rateLimit);
+    
+    return { allowed: true, remaining: maxRequests - rateLimit.requestCount };
   }
 
   private initializeRepertoires() {

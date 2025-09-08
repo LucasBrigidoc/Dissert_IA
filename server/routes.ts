@@ -208,11 +208,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Intelligent repertoire search endpoint
+  // Intelligent repertoire search endpoint with rate limiting
   app.post("/api/repertoires/search", async (req, res) => {
     try {
       const validatedQuery = searchQuerySchema.parse(req.body);
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
+      
+      // Rate limiting check (10 AI searches per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(clientIP, 10, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can make 10 AI searches per hour.", 
+          retryAfter: 3600 
+        });
+      }
       
       // Normalize query for cache lookup with type filter
       const normalizedQuery = geminiService.normalizeQuery(query);
@@ -335,13 +346,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Limit results to top 12
       results = results.slice(0, 12);
       
-      // Cache the results for future searches
+      // Cache the results for future searches (TTL: 30 days)
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30);
+      
       await storage.createSearchCache({
         queryText: query,
         normalizedQuery: cacheKey,
         results: results,
         searchCount: 1,
-        lastSearched: new Date()
+        lastSearched: new Date(),
+        expiresAt
       });
       
       res.json({

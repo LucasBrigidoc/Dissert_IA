@@ -67,6 +67,17 @@ export const searchCache = pgTable("search_cache", {
   results: json("results").notNull(),
   searchCount: integer("search_count").default(1),
   lastSearched: timestamp("last_searched").defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Rate limiting table to control AI usage
+export const rateLimits = pgTable("rate_limits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  identifier: text("identifier").notNull(), // IP address or user ID
+  requestCount: integer("request_count").default(1),
+  windowStart: timestamp("window_start").defaultNow(),
+  lastRequest: timestamp("last_request").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -113,6 +124,11 @@ export const insertSearchCacheSchema = createInsertSchema(searchCache).omit({
   createdAt: true,
 });
 
+export const insertRateLimitSchema = createInsertSchema(rateLimits).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const searchQuerySchema = z.object({
   query: z.string().min(1, "Query é obrigatória"),
   type: z.string().optional(),
@@ -139,5 +155,8 @@ export type Repertoire = typeof repertoires.$inferSelect;
 
 export type InsertSearchCache = z.infer<typeof insertSearchCacheSchema>;
 export type SearchCache = typeof searchCache.$inferSelect;
+
+export type InsertRateLimit = z.infer<typeof insertRateLimitSchema>;
+export type RateLimit = typeof rateLimits.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;

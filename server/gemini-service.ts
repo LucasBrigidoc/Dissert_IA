@@ -101,57 +101,31 @@ export class GeminiService {
     return this.analyzeSearchQueryLocal(query);
   }
 
-  async rankRepertoires(query: string, repertoires: Repertoire[]): Promise<Repertoire[]> {
-    if (repertoires.length === 0) return [];
+  // REMOVED: AI ranking function replaced with local ranking for cost optimization
+  // Local ranking is now handled directly in routes.ts with keyword matching
+  // This saves 100% of ranking tokens and provides faster response times
+  rankRepertoiresLocal(query: string, repertoires: Repertoire[]): Repertoire[] {
+    if (repertoires.length <= 1) return repertoires;
     
-    const prompt = `
-Ranqueie estes repertórios por relevância para a consulta: "${query}"
-
-Repertórios:
-${repertoires.map((rep, index) => `
-${index + 1}. ${rep.title}
-   Descrição: ${rep.description}
-   Tipo: ${rep.type}
-   Categoria: ${rep.category}
-   Palavras-chave: ${(rep.keywords as string[]).join(', ')}
-`).join('')}
-
-Responda APENAS com uma lista de números em ordem de relevância (do mais para o menos relevante):
-Exemplo: [3, 1, 5, 2, 4]
-`;
-
-    try {
-      const result = await this.model.generateContent(prompt);
-      const response = result.response.text();
+    const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    
+    return repertoires.sort((a, b) => {
+      const aScore = queryWords.reduce((score, word) => {
+        if (a.title.toLowerCase().includes(word)) score += 3;
+        if (a.description.toLowerCase().includes(word)) score += 2;
+        if (a.keywords && (a.keywords as string[]).some((k: string) => k.toLowerCase().includes(word))) score += 1;
+        return score;
+      }, 0);
       
-      // Extract array from response
-      const matches = response.match(/\[[\d,\s]+\]/);
-      if (matches) {
-        const ranking = JSON.parse(matches[0]);
-        
-        // Reorder repertoires based on ranking
-        const rankedRepertoires: Repertoire[] = [];
-        ranking.forEach((index: number) => {
-          if (index > 0 && index <= repertoires.length) {
-            rankedRepertoires.push(repertoires[index - 1]);
-          }
-        });
-        
-        // Add any remaining repertoires
-        repertoires.forEach(rep => {
-          if (!rankedRepertoires.find(r => r.id === rep.id)) {
-            rankedRepertoires.push(rep);
-          }
-        });
-        
-        return rankedRepertoires;
-      }
-    } catch (error) {
-      console.error("Error ranking with Gemini:", error);
-    }
-    
-    // Fallback: return original order
-    return repertoires;
+      const bScore = queryWords.reduce((score, word) => {
+        if (b.title.toLowerCase().includes(word)) score += 3;
+        if (b.description.toLowerCase().includes(word)) score += 2;
+        if (b.keywords && (b.keywords as string[]).some((k: string) => k.toLowerCase().includes(word))) score += 1;
+        return score;
+      }, 0);
+      
+      return bScore - aScore;
+    });
   }
 
   // ULTRA-OPTIMIZED: Generate 6 repertoires in 1 request with minimal tokens
