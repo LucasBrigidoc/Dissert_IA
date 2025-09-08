@@ -610,41 +610,6 @@ export default function BibliotecaPage() {
                 </div>
               </div>
               
-              {/* Conteúdo Completo */}
-              <div className="flex-1 min-h-0 flex flex-col">
-                <h4 className="font-semibold text-dark-blue mb-3">Conteúdo Completo:</h4>
-                <div className="bg-white border border-gray-200 rounded-lg p-6 flex-1 overflow-y-auto min-h-0">
-                  {selectedFile.content ? (
-                    <div className="prose prose-sm max-w-none">
-                      {selectedFile.content.split('\\n').map((line: string, index: number) => (
-                        <div key={index} className="mb-2">
-                          {line.startsWith('**') && line.endsWith('**') ? (
-                            <h5 className="font-bold text-dark-blue text-base mt-4 mb-2">
-                              {line.replace(/\*\*/g, '')}
-                            </h5>
-                          ) : line.startsWith('•') ? (
-                            <ul className="ml-4">
-                              <li className="text-soft-gray">{line.substring(2)}</li>
-                            </ul>
-                          ) : line.trim() ? (
-                            <p className="text-gray-700 leading-relaxed">{line}</p>
-                          ) : (
-                            <div className="h-2"></div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-32 text-gray-500">
-                      <div className="text-center">
-                        <FileText size={32} className="mx-auto mb-2 text-gray-400" />
-                        <p>Conteúdo não disponível para visualização</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
               {/* Botões de Ação */}
               <div className="flex justify-between items-center pt-6 border-t border-gray-200 mt-4">
                 <Button
