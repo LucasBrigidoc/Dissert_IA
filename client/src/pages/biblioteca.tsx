@@ -7,6 +7,7 @@ import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import jsPDF from 'jspdf';
 import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 export default function BibliotecaPage() {
   const [location, setLocation] = useLocation();
@@ -46,30 +47,43 @@ export default function BibliotecaPage() {
   
   const backUrl = getBackUrl();
 
-  // Mock data para diferentes categorias de arquivos salvos
-  const bibliotecaData = {
-    repertorios: [
-      {
-        id: 1,
-        title: "Repertório sobre Meio Ambiente",
-        category: "Meio Ambiente", 
-        date: "2024-01-15",
-        size: "1.2 MB",
-        type: "Repertório",
-        description: "Dados estatísticos e citações sobre sustentabilidade",
-        content: "**Repertório Completo: Meio Ambiente e Sustentabilidade**\n\n**Dados Estatísticos:**\n• O Brasil possui 60% da Floresta Amazônica (aproximadamente 5,5 milhões de km²)\n• Desmatamento de 10.476 km² em 2022 (redução de 11,3% em relação a 2021)\n• País ocupa 4º lugar mundial em emissões de CO2\n\n**Citações Relevantes:**\n\"A natureza não faz milagres, faz revelações\" - Carlos Drummond de Andrade\n\"O meio ambiente não é propriedade de ninguém para ser destruído, mas responsabilidade de todos para ser protegido\" - ONU\n\n**Exemplos Práticos:**\n• Acordo de Paris (2015): Compromisso global de limitar aquecimento a 1,5°C\n• Lei 9.985/2000: Sistema Nacional de Unidades de Conservação\n• Código Florestal Brasileiro: Proteção de 80% da vegetação nativa na Amazônia"
-      },
-      {
-        id: 2,
-        title: "Repertório Direitos Humanos",
-        category: "Sociedade",
-        date: "2024-01-10", 
-        size: "800 KB",
-        type: "Repertório",
-        description: "Referências históricas e casos emblemáticos",
-        content: "**Repertório: Direitos Humanos - Marcos Históricos**\n\n**Documentos Fundamentais:**\n• Declaração Universal dos Direitos Humanos (1948) - ONU\n• Constituição Federal Brasileira (1988) - \"Constituição Cidadã\"\n• Convenção sobre Eliminação de Discriminação Racial (1965)\n\n**Casos Emblemáticos:**\n• Nelson Mandela e o fim do Apartheid na África do Sul\n• Malala Yousafzai: defesa da educação para meninas\n• Caso Brown vs. Board of Education (1954) - EUA\n\n**Citações Históricas:**\n\"A injustiça em qualquer lugar é uma ameaça à justiça em todos os lugares\" - Martin Luther King Jr.\n\"Ninguém nasce odiando outra pessoa pela cor de sua pele\" - Nelson Mandela\n\n**Violações Contemporâneas:**\n• Trabalho infantil: 152 milhões de crianças mundialmente\n• Feminicídio no Brasil: 1 mulher morta a cada 7 horas"
+  // Fetch saved repertoires from API
+  const { data: savedRepertoires, isLoading } = useQuery({
+    queryKey: ['/api/repertoires/saved'],
+    queryFn: async () => {
+      const response = await fetch('/api/repertoires/saved');
+      if (!response.ok) {
+        throw new Error('Failed to fetch saved repertoires');
       }
-    ],
+      return response.json();
+    }
+  });
+
+  // Transform repertoires to match biblioteca format
+  const transformRepertoireToFile = (repertoire: any) => ({
+    id: repertoire.id,
+    title: repertoire.title,
+    category: repertoire.category === 'social' ? 'Sociedade' :
+              repertoire.category === 'environment' ? 'Meio Ambiente' :
+              repertoire.category === 'technology' ? 'Tecnologia' :
+              repertoire.category === 'education' ? 'Educação' :
+              repertoire.category === 'politics' ? 'Política' :
+              repertoire.category === 'economy' ? 'Economia' :
+              repertoire.category === 'culture' ? 'Cultura' :
+              repertoire.category === 'health' ? 'Saúde' :
+              repertoire.category === 'ethics' ? 'Ética' :
+              repertoire.category === 'globalization' ? 'Globalização' :
+              repertoire.category.charAt(0).toUpperCase() + repertoire.category.slice(1),
+    date: repertoire.createdAt,
+    size: '1.0 MB', // Default size since we don't track actual file size
+    type: 'Repertório',
+    description: repertoire.description,
+    content: `**${repertoire.title}**\n\n${repertoire.description}\n\n**Categoria:** ${repertoire.category}\n**Tipo:** ${repertoire.type}\n**Ano:** ${repertoire.year || 'N/A'}\n**Rating:** ${repertoire.rating || 0}/50\n\n**Palavras-chave:** ${Array.isArray(repertoire.keywords) ? repertoire.keywords.join(', ') : 'N/A'}`
+  });
+
+  // Mock data for other categories (keeping existing structure)
+  const bibliotecaData = {
+    repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
     redacoes: [
       {
         id: 3,
@@ -266,33 +280,29 @@ export default function BibliotecaPage() {
     doc.save(fileName);
   };
 
-  // Função para deletar arquivo
-  const deleteFile = (fileId: number) => {
-    setBibliotecaState(prev => ({
-      repertorios: prev.repertorios.filter(item => item.id !== fileId),
-      redacoes: prev.redacoes.filter(item => item.id !== fileId),
-      temas: prev.temas.filter(item => item.id !== fileId),
-      estilos: prev.estilos.filter(item => item.id !== fileId),
-      newsletters: prev.newsletters.filter(item => item.id !== fileId),
-      propostas: prev.propostas.filter(item => item.id !== fileId)
-    }));
+  // Function to delete saved repertoire
+  const deleteFile = async (fileId: string) => {
+    try {
+      const response = await fetch(`/api/repertoires/${fileId}/save`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        // Refresh the page to update the list
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error deleting repertoire:', error);
+    }
   };
 
-  // Combinar todos os arquivos para busca
-  const allFiles = [
-    ...bibliotecaState.repertorios,
-    ...bibliotecaState.redacoes, 
-    ...bibliotecaState.temas,
-    ...bibliotecaState.estilos,
-    ...bibliotecaState.newsletters,
-    ...bibliotecaState.propostas
-  ];
+  // Get all saved files (only repertoires for now)
+  const allFiles = savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [];
 
-  // Filtrar arquivos baseado na busca e categoria
-  const filteredFiles = allFiles.filter(file => {
+  // Filter files based on search and category
+  const filteredFiles = allFiles.filter((file: any) => {
     const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "todos" || file.type.toLowerCase() === selectedCategory;
+                         file.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "todos" || file.type === "Repertório";
     return matchesSearch && matchesCategory;
   });
 
@@ -477,7 +487,7 @@ export default function BibliotecaPage() {
               </p>
             </LiquidGlassCard>
           ) : (
-            filteredFiles.map((file) => (
+            filteredFiles.map((file: any) => (
               <LiquidGlassCard key={file.id} className="p-6 hover:shadow-lg smooth-transition">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4 flex-1">
