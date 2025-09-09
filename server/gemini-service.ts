@@ -519,53 +519,142 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
   }
 
   private buildContextualPrompt(userMessage: string, section: string, context: any): string {
+    // Detectar o nível do usuário baseado no conteúdo existente
+    const userLevel = this.detectUserLevel(context);
+    
     const sectionInstructions = {
-      introducao: "Para a introdução, ajude a apresentar o tema de forma clara, contextualizar o problema e apresentar a tese de forma persuasiva.",
-      desenvolvimento1: "Para o primeiro parágrafo de desenvolvimento, ajude a construir um argumento sólido com exemplos concretos e conexão clara com a tese.",
-      desenvolvimento2: "Para o segundo parágrafo de desenvolvimento, ajude a desenvolver um argumento complementar que fortaleça a argumentação geral.",
-      conclusao: "Para a conclusão, ajude a criar uma síntese convincente dos argumentos e uma proposta de intervenção viável e detalhada."
+      introducao: {
+        beginner: "Para a introdução, vou te ensinar a estrutura básica: 1) Contextualização (apresentar o tema), 2) Problematização (mostrar por que é importante) e 3) Tese (sua opinião clara).",
+        intermediate: "Para a introdução, vamos aprimorar sua apresentação do tema com dados relevantes, contextualização histórica/social e uma tese mais persuasiva e bem fundamentada.",
+        advanced: "Para a introdução, vamos refinar a contextualização com abordagens mais sofisticadas, conectores mais elaborados e uma tese que dialogue melhor com a complexidade do tema."
+      },
+      desenvolvimento1: {
+        beginner: "No primeiro desenvolvimento, vou te mostrar como construir um argumento: 1) Tópico frasal (ideia principal), 2) Fundamentação (explicar a ideia), 3) Exemplificação (dados, casos, pesquisas) e 4) Conclusão do parágrafo.",
+        intermediate: "No primeiro desenvolvimento, vamos fortalecer sua argumentação com exemplos mais específicos, dados atualizados e uma melhor articulação entre as ideias para maior coesão textual.",
+        advanced: "No primeiro desenvolvimento, vamos sofisticar a argumentação com perspectivas multidisciplinares, exemplos menos óbvios e conexões mais profundas com a tese proposta."
+      },
+      desenvolvimento2: {
+        beginner: "No segundo desenvolvimento, vou te ajudar a criar um argumento diferente do primeiro, mas que também defenda sua tese. Lembre-se da mesma estrutura: tópico frasal + fundamentação + exemplos + conclusão.",
+        intermediate: "No segundo desenvolvimento, vamos construir um argumento complementar que dialogue com o primeiro, variando os tipos de exemplos e fortalecendo a linha argumentativa geral.",
+        advanced: "No segundo desenvolvimento, vamos elaborar uma perspectiva que enriqueça e complexifique a argumentação, evitando redundâncias e criando uma progressão argumentativa consistente."
+      },
+      conclusao: {
+        beginner: "Na conclusão, vou te ensinar a estrutura: 1) Retomar a tese, 2) Sintetizar os argumentos principais e 3) Propor uma solução (intervenção) com agente + ação + meio + finalidade + detalhamento.",
+        intermediate: "Na conclusão, vamos criar uma síntese mais elegante dos argumentos e desenvolver uma proposta de intervenção mais detalhada e viável, considerando diferentes agentes sociais.",
+        advanced: "Na conclusão, vamos elaborar uma síntese que demonstre a complexidade da questão e propor intervenções inovadoras e bem fundamentadas, considerando múltiplas dimensões do problema."
+      }
     };
 
-    let prompt = `Você é um especialista em redação para vestibulares e concursos brasileiros. `;
-    prompt += `${sectionInstructions[section as keyof typeof sectionInstructions]} `;
+    let prompt = `Você é um tutor de redação especializado em vestibulares brasileiros, com didática adaptada ao nível do estudante. Seja acolhedor, encorajador e prático.\n\n`;
     
+    // Instrução adaptada ao nível
+    const instruction = sectionInstructions[section as keyof typeof sectionInstructions][userLevel];
+    prompt += `${instruction}\n\n`;
+    
+    // Adicionar contexto do trabalho do estudante
     if (context.proposta) {
-      prompt += `\n\nPROPOSTA DO TEMA: "${context.proposta}"`;
+      prompt += `📝 PROPOSTA: "${context.proposta}"\n`;
     }
     
     if (context.tese) {
-      prompt += `\n\nTESE DO ESTUDANTE: "${context.tese}"`;
+      prompt += `💡 IDEIA DO TEXTO: "${context.tese}"\n`;
     }
     
-    // Add existing paragraphs for context
+    // Adicionar parágrafos existentes para contexto
     if (context.paragrafos) {
       if (context.paragrafos.introducao && section !== 'introducao') {
-        prompt += `\n\nINTRODUÇÃO JÁ ESCRITA: "${context.paragrafos.introducao}"`;
+        prompt += `📖 SUA INTRODUÇÃO: "${context.paragrafos.introducao}"\n`;
       }
       if (context.paragrafos.desenvolvimento1 && section !== 'desenvolvimento1') {
-        prompt += `\n\nPRIMEIRO ARGUMENTO: "${context.paragrafos.desenvolvimento1}"`;
+        prompt += `🎯 SEU 1º ARGUMENTO: "${context.paragrafos.desenvolvimento1}"\n`;
       }
       if (context.paragrafos.desenvolvimento2 && section !== 'desenvolvimento2') {
-        prompt += `\n\nSEGUNDO ARGUMENTO: "${context.paragrafos.desenvolvimento2}"`;
+        prompt += `🎯 SEU 2º ARGUMENTO: "${context.paragrafos.desenvolvimento2}"\n`;
       }
     }
     
-    prompt += `\n\nMENSAGEM DO ESTUDANTE: "${userMessage}"`;
-    prompt += `\n\nDê uma resposta objetiva e prática (máximo 200 palavras) com sugestões específicas para melhorar esta seção. `;
-    prompt += `Focus em: estrutura, argumentação, exemplos concretos, conectivos e coesão com o restante do texto.`;
+    prompt += `\n❓ SUA PERGUNTA: "${userMessage}"\n\n`;
+    
+    // Instruções de resposta adaptadas ao nível
+    if (userLevel === 'beginner') {
+      prompt += `Responda de forma didática e passo a passo (máximo 250 palavras):\n`;
+      prompt += `• Use linguagem simples e amigável\n`;
+      prompt += `• Dê exemplos práticos e específicos\n`;
+      prompt += `• Explique o "por quê" por trás de cada sugestão\n`;
+      prompt += `• Ofereça frases/conectivos prontos quando apropriado\n`;
+      prompt += `• Seja encorajador e mostre que é possível melhorar\n\n`;
+    } else if (userLevel === 'intermediate') {
+      prompt += `Responda de forma objetiva e prática (máximo 200 palavras):\n`;
+      prompt += `• Foque em aprimoramentos específicos\n`;
+      prompt += `• Sugira exemplos mais elaborados\n`;
+      prompt += `• Trabalhe coesão e conectivos sofisticados\n`;
+      prompt += `• Aponte caminhos para elevar o nível do texto\n\n`;
+    } else {
+      prompt += `Responda de forma refinada e analítica (máximo 180 palavras):\n`;
+      prompt += `• Foque em sofisticação argumentativa\n`;
+      prompt += `• Sugira abordagens multidisciplinares\n`;
+      prompt += `• Trabalhe nuances e complexidade\n`;
+      prompt += `• Aponte caminhos para excelência textual\n\n`;
+    }
+    
+    prompt += `Estruture sua resposta com emojis e seções claras para facilitar a leitura.`;
     
     return prompt;
   }
 
+  private detectUserLevel(context: any): 'beginner' | 'intermediate' | 'advanced' {
+    let score = 0;
+    
+    // Analisar qualidade da tese/ideia
+    if (context.tese && context.tese.length > 50) score += 1;
+    if (context.tese && context.tese.length > 100) score += 1;
+    
+    // Analisar parágrafos existentes
+    const paragraphs = context.paragrafos || {};
+    Object.values(paragraphs).forEach((paragraph: any) => {
+      if (paragraph && paragraph.length > 80) score += 1;
+      if (paragraph && paragraph.length > 150) score += 1;
+      // Verifica conectivos sofisticados
+      if (paragraph && /\b(portanto|contudo|outrossim|ademais|destarte)\b/i.test(paragraph)) score += 1;
+    });
+    
+    if (score >= 6) return 'advanced';
+    if (score >= 3) return 'intermediate';
+    return 'beginner';
+  }
+
   private getFallbackSuggestion(userMessage: string, section: string, context: any): string {
+    const userLevel = this.detectUserLevel(context);
+    
     const fallbacks = {
-      introducao: "Para uma boa introdução, comece com uma contextualização do tema, apresente dados ou estatísticas relevantes, e finalize com sua tese clara e objetiva. Lembre-se de conectar sua introdução com os argumentos que virão nos parágrafos de desenvolvimento.",
-      desenvolvimento1: "No primeiro desenvolvimento, apresente seu argumento principal com exemplos concretos. Use dados, pesquisas ou casos reais para sustentar sua ideia. Conecte claramente este argumento com sua tese apresentada na introdução.",
-      desenvolvimento2: "No segundo desenvolvimento, traga um argumento complementar que fortaleça sua posição. Varie os tipos de exemplos (históricos, atuais, científicos) para enriquecer sua argumentação. Mantenha a coesão com o parágrafo anterior.",
-      conclusao: "Na conclusão, retome sua tese e sintetize os argumentos apresentados. Propose uma intervenção específica, detalhada e viável, identificando o agente responsável, a ação, o meio/modo, a finalidade e o detalhamento."
+      introducao: {
+        beginner: "🎯 **Estrutura da Introdução**\n\n📍 **1º Passo - Contextualização:**\nComece apresentando o tema de forma geral. Ex: \"No mundo contemporâneo...\"\n\n📍 **2º Passo - Problematização:**\nMostre por que o tema é importante. Ex: \"Esse cenário evidencia...\"\n\n📍 **3º Passo - Tese:**\nApresente sua opinião clara. Ex: \"Nesse sentido, é necessário...\"\n\n💡 **Dica:** Use dados ou estatísticas para fortalecer sua contextualização!",
+        intermediate: "🎯 **Aprimorando sua Introdução**\n\n📈 **Contextualização mais rica:**\nUse dados atuais, contexto histórico ou comparações internacionais\n\n🔍 **Problematização sofisticada:**\nMostre causas e consequências do problema\n\n💭 **Tese mais persuasiva:**\nUse argumentos de autoridade ou dados para sustentar sua posição\n\n🔗 **Conectivos eficazes:** \"Diante desse cenário\", \"Nessa perspectiva\", \"Sob essa ótica\"",
+        advanced: "🎯 **Refinando sua Introdução**\n\n🌐 **Contextualização multidimensional:**\nAborde aspectos históricos, sociais, econômicos e culturais\n\n🧠 **Problematização complexa:**\nExplore paradoxos, contradições e múltiplas causas\n\n✨ **Tese sofisticada:**\nProponha soluções inovadoras com base em evidências robustas\n\n📚 **Conectivos refinados:** \"Sob essa perspectiva\", \"Nessa conjuntura\", \"À luz dessas considerações\""
+      },
+      desenvolvimento1: {
+        beginner: "🎯 **Estrutura do 1º Desenvolvimento**\n\n📌 **Tópico frasal:**\nComece com a ideia principal do parágrafo. Ex: \"Em primeiro lugar...\"\n\n📖 **Fundamentação:**\nExplique sua ideia com mais detalhes\n\n📊 **Exemplificação:**\nUse dados, pesquisas, casos históricos ou atuais\n\n🔚 **Conclusão do parágrafo:**\nAmarre a ideia conectando com sua tese\n\n💡 **Conectivos úteis:** \"Ademais\", \"Nesse sentido\", \"Por conseguinte\"",
+        intermediate: "🎯 **Fortalecendo seu 1º Argumento**\n\n🎪 **Diversifique exemplos:**\nCombine dados estatísticos + casos reais + referências culturais\n\n📚 **Fundamentação robusta:**\nCite especialistas, pesquisas acadêmicas ou organismos oficiais\n\n🔗 **Coesão textual:**\nConecte claramente com a tese da introdução\n\n💪 **Argumento convincente:**\nMostre causa-efeito, compare cenários ou apresente evidências contundentes",
+        advanced: "🎯 **Sofisticando seu 1º Argumento**\n\n🧩 **Perspectiva multidisciplinar:**\nIntegre visões sociológicas, filosóficas, econômicas\n\n🎭 **Exemplos não-óbvios:**\nUse referencias culturais elaboradas, casos internacionais, dados comparativos\n\n🌊 **Progressão argumentativa:**\nCrie uma linha de raciocínio que evolui logicamente\n\n🎨 **Sofisticação textual:**\nUse períodos mais complexos e vocabulário técnico apropriado"
+      },
+      desenvolvimento2: {
+        beginner: "🎯 **Estrutura do 2º Desenvolvimento**\n\n🔄 **Argumento diferente:**\nTraga uma nova perspectiva que também defenda sua tese\n\n📌 **Mesma estrutura:**\nTópico frasal + fundamentação + exemplos + conclusão\n\n🎯 **Tipos de argumento:**\n• Econômico, social, ambiental, cultural, histórico\n\n🔗 **Conecte com o 1º:**\nUse \"Além disso\", \"Outrossim\", \"Paralelamente\"\n\n💡 **Varie os exemplos:** Se usou dados no 1º, use casos históricos no 2º",
+        intermediate: "🎯 **Complementando sua Argumentação**\n\n🔄 **Argumento complementar:**\nAborde outra dimensão do problema (ex: se falou de causas, fale de consequências)\n\n📊 **Varie evidências:**\nAlterne entre dados nacionais/internacionais, casos históricos/contemporâneos\n\n🧭 **Linha argumentativa:**\nMantenha coerência com o conjunto da argumentação\n\n🎨 **Conectivos variados:** \"Ademais\", \"Por outro lado\", \"Simultaneamente\"",
+        advanced: "🎯 **Complexificando a Argumentação**\n\n🌐 **Perspectiva dialética:**\nExplore tensões, contradições ou múltiplas facetas do problema\n\n🎭 **Abordagem inovadora:**\nUse analogias sofisticadas, casos paradigmáticos, análises comparativas\n\n🧠 **Articulação sofisticada:**\nCrie pontes conceituais entre os argumentos\n\n✨ **Excelência textual:** Demonstre domínio pleno da modalidade culta"
+      },
+      conclusao: {
+        beginner: "🎯 **Estrutura da Conclusão**\n\n🔄 **1º Passo - Retomada:**\nLembre rapidamente sua tese principal\n\n📝 **2º Passo - Síntese:**\nResumir os argumentos mais importantes\n\n🛠️ **3º Passo - Proposta (obrigatória):**\n• **Agente:** Quem vai fazer (governo, sociedade, escola...)\n• **Ação:** O que vai fazer especificamente\n• **Meio:** Como vai fazer\n• **Finalidade:** Para que/por que\n• **Detalhamento:** Mais informações sobre como\n\n💡 **Exemplo:** \"O governo federal deve implementar (ação) políticas de conscientização (detalhamento) por meio de campanhas educativas (meio) a fim de reduzir a violência urbana (finalidade).\"",
+        intermediate: "🎯 **Aprimorando sua Conclusão**\n\n🎪 **Síntese elegante:**\nRetome argumentos de forma articulada, não apenas listando\n\n🛠️ **Proposta detalhada:**\nApresente soluções viáveis com múltiplos agentes\n\n🎯 **Especificidade:**\nEvite propostas genéricas (\"educação\" → \"campanhas nas redes sociais\")\n\n🔗 **Coesão total:**\nAmarre todos os elementos do texto de forma harmônica\n\n✨ **Impacto:** Termine com uma frase marcante que reforce sua tese",
+        advanced: "🎯 **Excelência na Conclusão**\n\n🧠 **Síntese sofisticada:**\nDemonste a complexidade da questão e sua compreensão profunda\n\n🌍 **Proposta inovadora:**\nApresente soluções criativas, com múltiplas dimensões\n\n🎭 **Articulação magistral:**\nIntegre todos os elementos textuais com maestria\n\n💫 **Fechamento impactante:**\nTermine com reflexão profunda ou perspectiva visionária\n\n🏆 **Demonstração de excelência:** Evidencie domínio completo da escrita argumentativa"
+      }
     };
     
-    return fallbacks[section as keyof typeof fallbacks] || "Continue desenvolvendo sua ideia com exemplos específicos e mantenha a coesão com sua tese principal.";
+    const sectionFallbacks = fallbacks[section as keyof typeof fallbacks];
+    if (sectionFallbacks) {
+      return sectionFallbacks[userLevel];
+    }
+    
+    return "🎯 Continue desenvolvendo sua ideia com exemplos específicos e mantenha a coesão com sua tese principal. Lembre-se de conectar todas as partes do seu texto de forma harmônica!";
   }
 }
 
