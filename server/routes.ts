@@ -464,6 +464,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // AI Chat for argumentative structure - with rate limiting
   app.post("/api/chat/argumentative", async (req, res) => {
+    // Ensure we always return JSON
+    res.setHeader('Content-Type', 'application/json');
+    
     try {
       const validatedData = chatMessageSchema.parse(req.body);
       const { message, section, context } = validatedData;
@@ -496,7 +499,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
     } catch (error) {
       console.error("AI Chat error:", error);
-      res.status(500).json({ message: "Failed to generate AI response" });
+      // Ensure we always return JSON even in error cases
+      try {
+        res.status(500).json({ 
+          message: "Failed to generate AI response",
+          error: error instanceof Error ? error.message : "Unknown error"
+        });
+      } catch (jsonError) {
+        // If JSON response fails, send a basic text response
+        res.status(500).send('{"message":"Internal server error"}');
+      }
     }
   });
 
