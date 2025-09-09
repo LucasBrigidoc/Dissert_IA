@@ -524,33 +524,43 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     
     const sectionInstructions = {
       optimization: {
-        beginner: "Vou analisar sua ideia e sugerir melhorias para torná-la mais clara, específica e argumentativa. Mantenho a essência do que você pensou, mas aprimoro a formulação.",
-        intermediate: "Vou otimizar sua ideia do texto, tornando-a mais precisa, argumentativa e bem fundamentada. Manterei sua proposta original, mas com formulação mais elaborada.",
-        advanced: "Vou refinar sua ideia do texto com maior sofisticação conceitual, precisão argumentativa e formulação mais elegante, preservando sua visão original."
+        beginner: "REFINAMENTO DE IDEIA - Vou analisar sua ideia e torná-la mais específica e argumentativa.",
+        intermediate: "OTIMIZAÇÃO DE IDEIA - Vou aprimorar sua proposta com maior precisão argumentativa.",
+        advanced: "SOFISTICAÇÃO CONCEITUAL - Vou refinar com maior complexidade e elegância argumentativa."
+      },
+      tema: {
+        beginner: "DEFINIÇÃO DE TEMA - Vou te ajudar a tornar o tema mais específico e focado.",
+        intermediate: "APRIMORAMENTO TEMÁTICO - Vamos delimitar melhor o recorte e abordagem.",
+        advanced: "REFINAMENTO TEMÁTICO - Vamos trabalhar nuances e especificidades temáticas."
+      },
+      tese: {
+        beginner: "CONSTRUÇÃO DE TESE - Vou te ensinar a criar uma tese clara.",
+        intermediate: "FORTALECIMENTO DE TESE - Vamos tornar sua tese mais persuasiva.",
+        advanced: "SOFISTICAÇÃO DA TESE - Vamos elaborar uma tese mais robusta."
       },
       introducao: {
-        beginner: "Para a introdução, vou te ensinar a estrutura básica: 1) Contextualização (apresentar o tema), 2) Problematização (mostrar por que é importante) e 3) Tese (sua opinião clara).",
-        intermediate: "Para a introdução, vamos aprimorar sua apresentação do tema com dados relevantes, contextualização histórica/social e uma tese mais persuasiva e bem fundamentada.",
-        advanced: "Para a introdução, vamos refinar a contextualização com abordagens mais sofisticadas, conectores mais elaborados e uma tese que dialogue melhor com a complexidade do tema."
+        beginner: "ESTRUTURA INTRODUÇÃO - Contextualização + Problematização + Tese.",
+        intermediate: "APRIMORAMENTO INTRODUÇÃO - Vamos melhorar com dados e contextualização rica.",
+        advanced: "SOFISTICAÇÃO INTRODUÇÃO - Vamos criar abordagem mais elaborada."
       },
       desenvolvimento1: {
-        beginner: "No primeiro desenvolvimento, vou te mostrar como construir um argumento: 1) Tópico frasal (ideia principal), 2) Fundamentação (explicar a ideia), 3) Exemplificação (dados, casos, pesquisas) e 4) Conclusão do parágrafo.",
-        intermediate: "No primeiro desenvolvimento, vamos fortalecer sua argumentação com exemplos mais específicos, dados atualizados e uma melhor articulação entre as ideias para maior coesão textual.",
-        advanced: "No primeiro desenvolvimento, vamos sofisticar a argumentação com perspectivas multidisciplinares, exemplos menos óbvios e conexões mais profundas com a tese proposta."
+        beginner: "1º ARGUMENTO - Tópico frasal + Fundamentação + Exemplos + Conclusão.",
+        intermediate: "FORTALECIMENTO 1º ARG - Vamos melhorar com exemplos específicos.",
+        advanced: "SOFISTICAÇÃO 1º ARG - Vamos usar perspectivas multidisciplinares."
       },
       desenvolvimento2: {
-        beginner: "No segundo desenvolvimento, vou te ajudar a criar um argumento diferente do primeiro, mas que também defenda sua tese. Lembre-se da mesma estrutura: tópico frasal + fundamentação + exemplos + conclusão.",
-        intermediate: "No segundo desenvolvimento, vamos construir um argumento complementar que dialogue com o primeiro, variando os tipos de exemplos e fortalecendo a linha argumentativa geral.",
-        advanced: "No segundo desenvolvimento, vamos elaborar uma perspectiva que enriqueça e complexifique a argumentação, evitando redundâncias e criando uma progressão argumentativa consistente."
+        beginner: "2º ARGUMENTO - Argumento diferente que também defende sua tese.",
+        intermediate: "COMPLEMENTO ARGUMENTATIVO - Argumento que dialogue com o primeiro.",
+        advanced: "COMPLEXIDADE ARGUMENTATIVA - Vamos explorar nuances que enriqueçam a discussão."
       },
       conclusao: {
-        beginner: "Na conclusão, vou te ensinar a estrutura: 1) Retomar a tese, 2) Sintetizar os argumentos principais e 3) Propor uma solução (intervenção) com agente + ação + meio + finalidade + detalhamento.",
-        intermediate: "Na conclusão, vamos criar uma síntese mais elegante dos argumentos e desenvolver uma proposta de intervenção mais detalhada e viável, considerando diferentes agentes sociais.",
-        advanced: "Na conclusão, vamos elaborar uma síntese que demonstre a complexidade da questão e propor intervenções inovadoras e bem fundamentadas, considerando múltiplas dimensões do problema."
+        beginner: "ESTRUTURA CONCLUSÃO - Retomada + Síntese + Proposta de Intervenção.",
+        intermediate: "APRIMORAMENTO CONCLUSÃO - Síntese elaborada e proposta detalhada.",
+        advanced: "SOFISTICAÇÃO CONCLUSÃO - Síntese sofisticada e proposta inovadora."
       }
     };
 
-    let prompt = `Você é um tutor de redação especializado em vestibulares brasileiros, com didática adaptada ao nível do estudante. Seja acolhedor, encorajador e prático.\n\n`;
+    let prompt = `Você é o Refinador de Brainstorming IA, especializado em redação argumentativa brasileira.\n\n`;
     
     // Instrução adaptada ao nível
     const instruction = sectionInstructions[section as keyof typeof sectionInstructions][userLevel];
@@ -624,7 +634,7 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
       prompt += `• Aponte caminhos para excelência textual\n\n`;
     }
     
-    prompt += `Estruture sua resposta com emojis e seções claras para facilitar a leitura.`;
+    prompt += `FORMATO DE RESPOSTA OBRIGATÓRIO:\n🎯 [NOME DA SEÇÃO]\n\n💡 ANÁLISE RÁPIDA\n[1-2 frases diretas sobre o que o usuário escreveu ou perguntou]\n\n📝 SUGESTÃO PRINCIPAL\n[Uma sugestão concreta e específica - máximo 2 frases]\n\n🔧 COMO MELHORAR\n• [Ponto prático 1 - máximo 1 linha]\n• [Ponto prático 2 - máximo 1 linha]\n• [Ponto prático 3 - máximo 1 linha]\n\n❓ PRÓXIMA ETAPA\n[Pergunta ou direcionamento para continuar - máximo 1 frase]\n\nREGRAS RÍGIDAS:\n- Máximo 5 linhas por seção\n- Linguagem direta e clara\n- Foco em ações práticas\n- Sempre termine direcionando o próximo passo`;
     
     return prompt;
   }
@@ -655,12 +665,12 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     
     const fallbacks = {
       optimization: {
-        beginner: "💡 **Como criar uma boa ideia do texto**\n\n📋 **Passo a passo:**\n\n1️⃣ **Entenda a proposta:** Leia com atenção e identifique o tema central\n\n2️⃣ **Defina sua posição:** Você é a favor, contra ou tem uma visão específica?\n\n3️⃣ **Seja específico:** Em vez de \"educação é importante\", diga \"educação digital prepara jovens para o futuro\"\n\n4️⃣ **Pense nos argumentos:** Que exemplos, dados ou fatos você usará?\n\n💭 **Exemplo prático:**\nProposta: Tecnologia na educação\nIdeia ruim: \"A tecnologia é boa para a educação\"\nIdeia boa: \"A integração de ferramentas digitais no ensino melhora o aprendizado e prepara os estudantes para o mercado de trabalho moderno\"\n\n🎯 **Dica:** Sua ideia deve responder: O QUE você defende e POR QUE é importante!",
+        beginner: "🎯 REFINAMENTO DE IDEIA\n\n💡 ANÁLISE RÁPIDA\nSua pergunta mostra que você quer criar uma boa base para sua redação.\n\n📝 SUGESTÃO PRINCIPAL\nTorne sua ideia específica: em vez de \"educação é importante\", diga \"educação digital prepara jovens para o mercado de trabalho\".\n\n🔧 COMO MELHORAR\n• Defina sua posição clara (a favor, contra, ou perspectiva específica)\n• Seja específico sobre qual aspecto do tema você vai abordar\n• Pense em que argumentos e exemplos você usará\n\n❓ PRÓXIMA ETAPA\nMe conte sobre que tema você quer escrever para eu te ajudar com ideias específicas?",
         intermediate: "🎯 **Aprimorando sua ideia do texto**\n\n📊 **Estrutura ideal:**\n\n1️⃣ **Posicionamento claro:** Sua opinião bem definida sobre o tema\n\n2️⃣ **Especificidade:** Evite generalizações, seja preciso\n\n3️⃣ **Conexão argumentativa:** Sua ideia deve anunciar que argumentos virão\n\n4️⃣ **Relevância social:** Mostre por que o tema importa para a sociedade\n\n💼 **Estratégias avançadas:**\n• Use dados ou contexto atual\n• Mencione diferentes perspectivas\n• Conecte com outros temas sociais\n• Antecipe possíveis objeções\n\n🔗 **Conectivos úteis:** \"Diante disso\", \"Nesse contexto\", \"Considerando que\"\n\n🎯 **Meta:** Sua ideia deve convencer o leitor desde o início!",
         advanced: "🧠 **Refinamento conceitual da ideia**\n\n🎨 **Sofisticação argumentativa:**\n\n1️⃣ **Multidimensionalidade:** Aborde aspectos históricos, sociais, econômicos\n\n2️⃣ **Nuances:** Evite polarizações, explore complexidades\n\n3️⃣ **Inovação:** Apresente perspectivas menos óbvias\n\n4️⃣ **Interdisciplinaridade:** Conecte diferentes áreas do conhecimento\n\n📚 **Técnicas avançadas:**\n• Paradoxos e contradições\n• Analogias elaboradas\n• Referências implícitas\n• Questionamentos filosóficos\n\n✨ **Elegância textual:** Use linguagem sofisticada sem rebuscamento\n\n🎯 **Objetivo:** Demonstrar domínio pleno e originalidade de pensamento!"
       },
       introducao: {
-        beginner: "🎯 **Estrutura da Introdução**\n\n📍 **1º Passo - Contextualização:**\nComece apresentando o tema de forma geral. Ex: \"No mundo contemporâneo...\"\n\n📍 **2º Passo - Problematização:**\nMostre por que o tema é importante. Ex: \"Esse cenário evidencia...\"\n\n📍 **3º Passo - Tese:**\nApresente sua opinião clara. Ex: \"Nesse sentido, é necessário...\"\n\n💡 **Dica:** Use dados ou estatísticas para fortalecer sua contextualização!",
+        beginner: "🎯 ESTRUTURA INTRODUÇÃO\n\n💡 ANÁLISE RÁPIDA\nVocê precisa organizar sua introdução em três partes bem definidas.\n\n📝 SUGESTÃO PRINCIPAL\nUse a estrutura: Contextualização (apresentar tema) + Problematização (mostrar importância) + Tese (sua opinião).\n\n🔧 COMO MELHORAR\n• Comece com \"No mundo contemporâneo...\" ou dados atuais\n• Explique por que o tema é um problema relevante hoje\n• Termine com sua posição clara sobre o assunto\n\n❓ PRÓXIMA ETAPA\nQuer me mostrar sua introdução atual para eu te dar sugestões específicas?",
         intermediate: "🎯 **Aprimorando sua Introdução**\n\n📈 **Contextualização mais rica:**\nUse dados atuais, contexto histórico ou comparações internacionais\n\n🔍 **Problematização sofisticada:**\nMostre causas e consequências do problema\n\n💭 **Tese mais persuasiva:**\nUse argumentos de autoridade ou dados para sustentar sua posição\n\n🔗 **Conectivos eficazes:** \"Diante desse cenário\", \"Nessa perspectiva\", \"Sob essa ótica\"",
         advanced: "🎯 **Refinando sua Introdução**\n\n🌐 **Contextualização multidimensional:**\nAborde aspectos históricos, sociais, econômicos e culturais\n\n🧠 **Problematização complexa:**\nExplore paradoxos, contradições e múltiplas causas\n\n✨ **Tese sofisticada:**\nProponha soluções inovadoras com base em evidências robustas\n\n📚 **Conectivos refinados:** \"Sob essa perspectiva\", \"Nessa conjuntura\", \"À luz dessas considerações\""
       },

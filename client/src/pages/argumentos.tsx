@@ -49,7 +49,7 @@ export default function Argumentos() {
       const welcomeMessage = {
         id: 'welcome',
         type: 'ai' as const,
-        content: '🎯 Olá! Sou sua assistente pedagógica e vou te ajudar a construir uma redação incrível passo a passo!\\n\\n📝 Vamos começar entendendo sobre o que você quer escrever. Qual é o tema ou proposta de redação que você gostaria de desenvolver?\\n\\n💡 *Dica: Você pode me contar sobre um tema do vestibular, uma questão social que te interessa, ou qualquer assunto sobre o qual gostaria de argumentar.*',
+        content: '🎯 INICIANDO BRAINSTORMING\\n\\n💡 VAMOS COMEÇAR\\nOlá! Sou o Refinador de Brainstorming IA e vou te ajudar a construir uma redação estruturada e persuasiva.\\n\\n📝 PRIMEIRA ETAPA\\nMe conte sobre o tema da sua redação. Pode ser uma proposta do vestibular, um tema social atual ou qualquer assunto que você quer argumentar.\\n\\n❓ PRÓXIMO PASSO\\nQual é o tema ou proposta que você quer desenvolver?',
         section: 'tema' as const,
         timestamp: new Date()
       };
@@ -271,7 +271,7 @@ export default function Argumentos() {
                   <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                     <Brain className="text-white" size={14} />
                   </div>
-                  <h3 className="text-lg font-semibold text-dark-blue">Assistente Pedagógica de Redação</h3>
+                  <h3 className="text-lg font-semibold text-dark-blue">Refinador de Brainstorming IA</h3>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-soft-gray">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -291,7 +291,7 @@ export default function Argumentos() {
                       {message.type === 'ai' && (
                         <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
                           <Brain size={12} />
-                          <span>Assistente Pedagógica</span>
+                          <span>Refinador IA</span>
                         </div>
                       )}
                       <div className="text-sm whitespace-pre-wrap">{message.content}</div>
@@ -307,7 +307,7 @@ export default function Argumentos() {
                     <div className="max-w-xs px-4 py-3 rounded-2xl bg-white border border-bright-blue/20 text-dark-blue mr-12">
                       <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
                         <Brain size={12} />
-                        <span>Assistente Pedagógica</span>
+                        <span>Refinador IA</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-bright-blue"></div>
@@ -325,7 +325,7 @@ export default function Argumentos() {
                   <Input
                     value={chatState.currentMessage}
                     onChange={(e) => setChatState(prev => ({ ...prev, currentMessage: e.target.value }))}
-                    placeholder="Digite sua mensagem para a assistente pedagógica..."
+                    placeholder="Digite sua mensagem para o Refinador IA..."
                     className="flex-1 border-bright-blue/20 focus:border-bright-blue"
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={chatState.isLoading}
