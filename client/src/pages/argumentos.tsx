@@ -22,22 +22,22 @@ export default function Argumentos() {
   });
   const [chatStates, setChatStates] = useState({
     introducao: { 
-      messages: [{ id: 1, type: 'ai', content: 'Vamos trabalhar na sua introdução. Como você vai apresentar e contextualizar o tema?' }], 
+      messages: [] as Array<{id: number, type: string, content: string}>, 
       currentMessage: '',
       isOpen: false
     },
     desenvolvimento1: { 
-      messages: [{ id: 1, type: 'ai', content: 'Que argumento você vai desenvolver neste parágrafo? Que exemplos podem sustentá-lo?' }], 
+      messages: [] as Array<{id: number, type: string, content: string}>, 
       currentMessage: '',
       isOpen: false
     },
     desenvolvimento2: { 
-      messages: [{ id: 1, type: 'ai', content: 'Qual será seu segundo argumento? Como ele se conecta com o primeiro?' }], 
+      messages: [] as Array<{id: number, type: string, content: string}>, 
       currentMessage: '',
       isOpen: false
     },
     conclusao: { 
-      messages: [{ id: 1, type: 'ai', content: 'Vamos criar uma conclusão impactante com proposta de intervenção. O que você propõe?' }], 
+      messages: [] as Array<{id: number, type: string, content: string}>, 
       currentMessage: '',
       isOpen: false
     }
@@ -191,13 +191,36 @@ export default function Argumentos() {
   };
 
   const toggleChat = (section: string) => {
-    setChatStates(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section as keyof typeof prev],
-        isOpen: !prev[section as keyof typeof prev].isOpen
+    setChatStates(prev => {
+      const currentChat = prev[section as keyof typeof prev];
+      const isOpening = !currentChat.isOpen;
+      
+      // Add initial welcome message when opening chat for the first time
+      let updatedMessages = currentChat.messages;
+      if (isOpening && currentChat.messages.length === 0) {
+        const welcomeMessages = {
+          introducao: 'Vamos trabalhar na sua introdução. Como você vai apresentar e contextualizar o tema?',
+          desenvolvimento1: 'Que argumento você vai desenvolver neste parágrafo? Que exemplos podem sustentá-lo?',
+          desenvolvimento2: 'Qual será seu segundo argumento? Como ele se conecta com o primeiro?',
+          conclusao: 'Vamos criar uma conclusão impactante com proposta de intervenção. O que você propõe?'
+        };
+        
+        updatedMessages = [{
+          id: Date.now(),
+          type: 'ai',
+          content: welcomeMessages[section as keyof typeof welcomeMessages]
+        }];
       }
-    }));
+      
+      return {
+        ...prev,
+        [section]: {
+          ...currentChat,
+          isOpen: isOpening,
+          messages: updatedMessages
+        }
+      };
+    });
   };
   
 
