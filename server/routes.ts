@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, pedagogicalChatSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
 import bcrypt from "bcrypt";
 
@@ -507,6 +507,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       } catch (jsonError) {
         // If JSON response fails, send a basic text response
+        res.status(500).send('{"message":"Internal server error"}');
+      }
+    }
+  });
+
+  // NOVO: Chat Pedagógico Unificado - Endpoint principal para nova experiência
+  app.post("/api/chat/pedagogical", async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    
+    try {
+      const validatedData = pedagogicalChatSchema.parse(req.body);
+      const { message, sessionId, essayContext = {}, conversationHistory = [] } = validatedData;
+      
+      // Rate limiting check (15 AI chats per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(clientIP, 15, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can make 15 pedagogical chat requests per hour.", 
+          retryAfter: 3600 
+        });
+      }
+      
+      console.log(`🎓 Pedagogical Chat request - Session: ${sessionId}, IP: ${clientIP}`);
+      
+      // Gerar resposta pedagógica usando Gemini
+      const aiResponse = await geminiService.generatePedagogicalResponse(
+        message,
+        conversationHistory,
+        essayContext
+      );
+      
+      // Atualizar histórico da conversa
+      const updatedHistory = [
+        ...conversationHistory,
+        { role: 'user' as const, content: message, timestamp: new Date().toISOString() },
+        { role: 'assistant' as const, content: aiResponse.response, timestamp: new Date().toISOString() }
+      ];
+      
+      // Atualizar contexto do ensaio se houver dados extraídos
+      let updatedEssayContext = { ...essayContext };
+      if (aiResponse.extractedData) {
+        if (aiResponse.extractedData.tema) updatedEssayContext.tema = aiResponse.extractedData.tema;
+        if (aiResponse.extractedData.tese) updatedEssayContext.tese = aiResponse.extractedData.tese;
+        if (aiResponse.extractedData.novoConteudo) {
+          if (!updatedEssayContext.estrutura) updatedEssayContext.estrutura = {};
+          updatedEssayContext.estrutura[aiResponse.extractedData.novoConteudo.secao as keyof typeof updatedEssayContext.estrutura] = 
+            aiResponse.extractedData.novoConteudo.conteudo;
+        }
+        if (aiResponse.extractedData.conectivosSugeridos) {
+          updatedEssayContext.conectivos = [
+            ...(updatedEssayContext.conectivos || []),
+            ...aiResponse.extractedData.conectivosSugeridos
+          ];
+        }
+      }
+      
+      // Salvar/atualizar conversa no banco (opcional para persistência)
+      try {
+        await storage.savePedagogicalConversation({
+          sessionId,
+          userId: "default-user", // TODO: Connect to real auth
+          conversationHistory: updatedHistory,
+          essayContext: updatedEssayContext,
+          currentStage: aiResponse.progressoAtual?.etapa || 'tema',
+          progressPercent: aiResponse.progressoAtual?.percentualCompleto || 0
+        });
+      } catch (dbError) {
+        console.log("Note: DB save optional, continuing without persistence");
+      }
+      
+      res.json({
+        response: aiResponse.response,
+        sessionId,
+        conversationHistory: updatedHistory,
+        essayContext: updatedEssayContext,
+        suggestedNextSteps: aiResponse.suggestedNextSteps,
+        extractedData: aiResponse.extractedData,
+        progressoAtual: aiResponse.progressoAtual,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error("Pedagogical Chat error:", error);
+      try {
+        res.status(500).json({ 
+          message: "Failed to generate pedagogical response",
+          error: error instanceof Error ? error.message : "Unknown error"
+        });
+      } catch (jsonError) {
         res.status(500).send('{"message":"Internal server error"}');
       }
     }
