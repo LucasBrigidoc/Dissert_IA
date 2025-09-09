@@ -197,7 +197,7 @@ export default function Argumentos() {
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Brain className="text-white" size={16} />
                 </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Chat Pedagógico - Construção de Redação</h1>
+                <h1 className="text-2xl font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
             </div>
             <div className="text-sm text-soft-gray flex items-center space-x-4">
