@@ -582,13 +582,27 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     
     // Instruções de resposta adaptadas ao nível
     if (section === 'optimization') {
-      // Instruções específicas para otimização de ideia
-      prompt += `Responda seguindo esta estrutura exata:\n\n`;
-      prompt += `1. **📝 Análise da sua ideia atual:**\n[Breve análise do que está bom e o que pode melhorar]\n\n`;
-      prompt += `2. **✨ Versão otimizada:**\n"[Aqui coloque a versão melhorada da ideia entre aspas]"\n\n`;
-      prompt += `3. **💡 Principais melhorias:**\n[Liste 2-3 pontos específicos que foram aprimorados]\n\n`;
-      prompt += `4. **🎯 Dica extra:**\n[Uma sugestão adicional para fortalecer ainda mais a ideia]\n\n`;
-      prompt += `IMPORTANTE: A versão otimizada deve estar entre aspas para facilitar a aplicação automática.`;
+      // Verificar se há conteúdo para otimizar ou se é orientação inicial
+      if (!context.tese && !context.proposta) {
+        prompt += `Responda como um professor experiente em redação dando orientações iniciais sobre como criar uma boa ideia do texto.\n`;
+        prompt += `Use uma estrutura didática com passos claros, exemplos práticos e dicas úteis.\n`;
+        prompt += `Seja encorajador e mostre que é possível aprender!\n\n`;
+      } else if (context.proposta && !context.tese) {
+        prompt += `O usuário tem a proposta "${context.proposta}" mas não sabe como formular sua ideia.\n`;
+        prompt += `Dê orientações específicas para este tema, sugerindo possíveis abordagens e perspectivas.\n`;
+        prompt += `Ofereça 2-3 exemplos de boas ideias para este tema específico.\n\n`;
+      } else if (!context.proposta && context.tese) {
+        prompt += `O usuário tem uma ideia ("${context.tese}") mas não definiu uma proposta específica.\n`;
+        prompt += `Analise a ideia e sugira como aprimorá-la, tornando-a mais específica e argumentativa.\n\n`;
+      } else {
+        // Caso normal de otimização
+        prompt += `Responda seguindo esta estrutura exata:\n\n`;
+        prompt += `1. **📝 Análise da sua ideia atual:**\n[Breve análise do que está bom e o que pode melhorar]\n\n`;
+        prompt += `2. **✨ Versão otimizada:**\n"[Aqui coloque a versão melhorada da ideia entre aspas]"\n\n`;
+        prompt += `3. **💡 Principais melhorias:**\n[Liste 2-3 pontos específicos que foram aprimorados]\n\n`;
+        prompt += `4. **🎯 Dica extra:**\n[Uma sugestão adicional para fortalecer ainda mais a ideia]\n\n`;
+        prompt += `IMPORTANTE: A versão otimizada deve estar entre aspas para facilitar a aplicação automática.`;
+      }
     } else if (userLevel === 'beginner') {
       prompt += `Responda de forma didática e passo a passo (máximo 250 palavras):\n`;
       prompt += `• Use linguagem simples e amigável\n`;
@@ -641,9 +655,9 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     
     const fallbacks = {
       optimization: {
-        beginner: "🎯 **Otimizando sua ideia**\n\n📝 **Análise:** Sua ideia tem potencial, mas pode ficar mais específica e argumentativa.\n\n✨ **Versão otimizada:**\n\"[Mantenha sua ideia principal, mas torne-a mais clara e específica ao tema proposto]\"\n\n💡 **Principais melhorias:**\n• Maior especificidade ao tema\n• Linguagem mais argumentativa\n• Conexão clara com os argumentos que virão\n\n🎯 **Dica extra:** Use dados ou exemplos para fortalecer sua posição desde a ideia inicial!",
-        intermediate: "🎯 **Aprimorando sua ideia**\n\n📝 **Análise:** Sua ideia está bem direcionada, mas pode ganhar mais precisão argumentativa.\n\n✨ **Versão otimizada:**\n\"[Versão mais elaborada e precisa da sua ideia original]\"\n\n💡 **Principais melhorias:**\n• Maior precisão conceitual\n• Argumentação mais robusta\n• Melhor articulação das ideias\n\n🎯 **Dica extra:** Considere múltiplas perspectivas para enriquecer sua argumentação.",
-        advanced: "🎯 **Refinando sua ideia**\n\n📝 **Análise:** Sua ideia demonstra maturidade conceitual, mas pode alcançar maior sofisticação.\n\n✨ **Versão otimizada:**\n\"[Versão sofisticada e conceitualmente refinada da sua ideia]\"\n\n💡 **Principais melhorias:**\n• Sofisticação conceitual\n• Nuances argumentativas\n• Elegância na formulação\n\n🎯 **Dica extra:** Explore paradoxos e complexidades inerentes ao tema para demonstrar domínio pleno."
+        beginner: "💡 **Como criar uma boa ideia do texto**\n\n📋 **Passo a passo:**\n\n1️⃣ **Entenda a proposta:** Leia com atenção e identifique o tema central\n\n2️⃣ **Defina sua posição:** Você é a favor, contra ou tem uma visão específica?\n\n3️⃣ **Seja específico:** Em vez de \"educação é importante\", diga \"educação digital prepara jovens para o futuro\"\n\n4️⃣ **Pense nos argumentos:** Que exemplos, dados ou fatos você usará?\n\n💭 **Exemplo prático:**\nProposta: Tecnologia na educação\nIdeia ruim: \"A tecnologia é boa para a educação\"\nIdeia boa: \"A integração de ferramentas digitais no ensino melhora o aprendizado e prepara os estudantes para o mercado de trabalho moderno\"\n\n🎯 **Dica:** Sua ideia deve responder: O QUE você defende e POR QUE é importante!",
+        intermediate: "🎯 **Aprimorando sua ideia do texto**\n\n📊 **Estrutura ideal:**\n\n1️⃣ **Posicionamento claro:** Sua opinião bem definida sobre o tema\n\n2️⃣ **Especificidade:** Evite generalizações, seja preciso\n\n3️⃣ **Conexão argumentativa:** Sua ideia deve anunciar que argumentos virão\n\n4️⃣ **Relevância social:** Mostre por que o tema importa para a sociedade\n\n💼 **Estratégias avançadas:**\n• Use dados ou contexto atual\n• Mencione diferentes perspectivas\n• Conecte com outros temas sociais\n• Antecipe possíveis objeções\n\n🔗 **Conectivos úteis:** \"Diante disso\", \"Nesse contexto\", \"Considerando que\"\n\n🎯 **Meta:** Sua ideia deve convencer o leitor desde o início!",
+        advanced: "🧠 **Refinamento conceitual da ideia**\n\n🎨 **Sofisticação argumentativa:**\n\n1️⃣ **Multidimensionalidade:** Aborde aspectos históricos, sociais, econômicos\n\n2️⃣ **Nuances:** Evite polarizações, explore complexidades\n\n3️⃣ **Inovação:** Apresente perspectivas menos óbvias\n\n4️⃣ **Interdisciplinaridade:** Conecte diferentes áreas do conhecimento\n\n📚 **Técnicas avançadas:**\n• Paradoxos e contradições\n• Analogias elaboradas\n• Referências implícitas\n• Questionamentos filosóficos\n\n✨ **Elegância textual:** Use linguagem sofisticada sem rebuscamento\n\n🎯 **Objetivo:** Demonstrar domínio pleno e originalidade de pensamento!"
       },
       introducao: {
         beginner: "🎯 **Estrutura da Introdução**\n\n📍 **1º Passo - Contextualização:**\nComece apresentando o tema de forma geral. Ex: \"No mundo contemporâneo...\"\n\n📍 **2º Passo - Problematização:**\nMostre por que o tema é importante. Ex: \"Esse cenário evidencia...\"\n\n📍 **3º Passo - Tese:**\nApresente sua opinião clara. Ex: \"Nesse sentido, é necessário...\"\n\n💡 **Dica:** Use dados ou estatísticas para fortalecer sua contextualização!",
