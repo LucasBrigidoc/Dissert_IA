@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
 import bcrypt from "bcrypt";
 
@@ -459,6 +459,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Check saved repertoire error:", error);
       res.status(500).json({ message: "Failed to check if repertoire is saved" });
+    }
+  });
+
+  // AI Chat for argumentative structure - with rate limiting
+  app.post("/api/chat/argumentative", async (req, res) => {
+    try {
+      const validatedData = chatMessageSchema.parse(req.body);
+      const { message, section, context } = validatedData;
+      
+      // Rate limiting check (10 AI chats per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(clientIP, 10, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can make 10 AI chat requests per hour.", 
+          retryAfter: 3600 
+        });
+      }
+      
+      console.log(`🤖 AI Chat request for section: ${section}, IP: ${clientIP}`);
+      
+      // Generate AI suggestion using Gemini
+      const aiResponse = await geminiService.generateArgumentativeSuggestion(
+        message, 
+        section, 
+        context
+      );
+      
+      res.json({
+        response: aiResponse,
+        section,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error("AI Chat error:", error);
+      res.status(500).json({ message: "Failed to generate AI response" });
     }
   });
 

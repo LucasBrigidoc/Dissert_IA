@@ -150,6 +150,21 @@ export const searchQuerySchema = z.object({
   excludeIds: z.array(z.string()).optional(),
 });
 
+export const chatMessageSchema = z.object({
+  message: z.string().min(1, "Mensagem é obrigatória"),
+  section: z.enum(["introducao", "desenvolvimento1", "desenvolvimento2", "conclusao"]),
+  context: z.object({
+    proposta: z.string().optional(),
+    tese: z.string().optional(),
+    paragrafos: z.object({
+      introducao: z.string().optional(),
+      desenvolvimento1: z.string().optional(),
+      desenvolvimento2: z.string().optional(),
+      conclusao: z.string().optional(),
+    }).optional(),
+  }),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
@@ -176,3 +191,4 @@ export type InsertSavedRepertoire = z.infer<typeof insertSavedRepertoireSchema>;
 export type SavedRepertoire = typeof savedRepertoires.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
+export type ChatMessage = z.infer<typeof chatMessageSchema>;

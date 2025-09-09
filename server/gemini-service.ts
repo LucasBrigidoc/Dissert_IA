@@ -488,6 +488,85 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
       .replace(/\s+/g, ' ')
       .trim();
   }
+
+  // AI Chat for argumentative structure - optimized for cost and relevance
+  async generateArgumentativeSuggestion(
+    userMessage: string, 
+    section: string, 
+    context: {
+      proposta?: string;
+      tese?: string;
+      paragrafos?: {
+        introducao?: string;
+        desenvolvimento1?: string;
+        desenvolvimento2?: string;
+        conclusao?: string;
+      };
+    }
+  ): Promise<string> {
+    try {
+      // Create contextual prompt based on section and user's work
+      let prompt = this.buildContextualPrompt(userMessage, section, context);
+      
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error("Error generating AI suggestion:", error);
+      // Fallback to contextual suggestions without AI
+      return this.getFallbackSuggestion(userMessage, section, context);
+    }
+  }
+
+  private buildContextualPrompt(userMessage: string, section: string, context: any): string {
+    const sectionInstructions = {
+      introducao: "Para a introdução, ajude a apresentar o tema de forma clara, contextualizar o problema e apresentar a tese de forma persuasiva.",
+      desenvolvimento1: "Para o primeiro parágrafo de desenvolvimento, ajude a construir um argumento sólido com exemplos concretos e conexão clara com a tese.",
+      desenvolvimento2: "Para o segundo parágrafo de desenvolvimento, ajude a desenvolver um argumento complementar que fortaleça a argumentação geral.",
+      conclusao: "Para a conclusão, ajude a criar uma síntese convincente dos argumentos e uma proposta de intervenção viável e detalhada."
+    };
+
+    let prompt = `Você é um especialista em redação para vestibulares e concursos brasileiros. `;
+    prompt += `${sectionInstructions[section as keyof typeof sectionInstructions]} `;
+    
+    if (context.proposta) {
+      prompt += `\n\nPROPOSTA DO TEMA: "${context.proposta}"`;
+    }
+    
+    if (context.tese) {
+      prompt += `\n\nTESE DO ESTUDANTE: "${context.tese}"`;
+    }
+    
+    // Add existing paragraphs for context
+    if (context.paragrafos) {
+      if (context.paragrafos.introducao && section !== 'introducao') {
+        prompt += `\n\nINTRODUÇÃO JÁ ESCRITA: "${context.paragrafos.introducao}"`;
+      }
+      if (context.paragrafos.desenvolvimento1 && section !== 'desenvolvimento1') {
+        prompt += `\n\nPRIMEIRO ARGUMENTO: "${context.paragrafos.desenvolvimento1}"`;
+      }
+      if (context.paragrafos.desenvolvimento2 && section !== 'desenvolvimento2') {
+        prompt += `\n\nSEGUNDO ARGUMENTO: "${context.paragrafos.desenvolvimento2}"`;
+      }
+    }
+    
+    prompt += `\n\nMENSAGEM DO ESTUDANTE: "${userMessage}"`;
+    prompt += `\n\nDê uma resposta objetiva e prática (máximo 200 palavras) com sugestões específicas para melhorar esta seção. `;
+    prompt += `Focus em: estrutura, argumentação, exemplos concretos, conectivos e coesão com o restante do texto.`;
+    
+    return prompt;
+  }
+
+  private getFallbackSuggestion(userMessage: string, section: string, context: any): string {
+    const fallbacks = {
+      introducao: "Para uma boa introdução, comece com uma contextualização do tema, apresente dados ou estatísticas relevantes, e finalize com sua tese clara e objetiva. Lembre-se de conectar sua introdução com os argumentos que virão nos parágrafos de desenvolvimento.",
+      desenvolvimento1: "No primeiro desenvolvimento, apresente seu argumento principal com exemplos concretos. Use dados, pesquisas ou casos reais para sustentar sua ideia. Conecte claramente este argumento com sua tese apresentada na introdução.",
+      desenvolvimento2: "No segundo desenvolvimento, traga um argumento complementar que fortaleça sua posição. Varie os tipos de exemplos (históricos, atuais, científicos) para enriquecer sua argumentação. Mantenha a coesão com o parágrafo anterior.",
+      conclusao: "Na conclusão, retome sua tese e sintetize os argumentos apresentados. Propose uma intervenção específica, detalhada e viável, identificando o agente responsável, a ação, o meio/modo, a finalidade e o detalhamento."
+    };
+    
+    return fallbacks[section as keyof typeof fallbacks] || "Continue desenvolvendo sua ideia com exemplos específicos e mantenha a coesão com sua tese principal.";
+  }
 }
 
 export const geminiService = new GeminiService();
