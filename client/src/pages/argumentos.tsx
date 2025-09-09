@@ -167,9 +167,18 @@ export default function Argumentos() {
     return Math.round((completed / total) * 100);
   };
 
-  // Gerar mapa mental
-  const handleGenerateMindMap = () => {
-    setShowMindMap(!showMindMap);
+  // Criar mapa mental em nova tela
+  const handleCreateMindMap = () => {
+    // Salvar dados atuais no localStorage para passar para a nova tela
+    localStorage.setItem('mindMapData', JSON.stringify({
+      tema: brainstormData.tema,
+      tese: brainstormData.tese,
+      paragrafos: brainstormData.paragrafos,
+      timestamp: new Date().toISOString()
+    }));
+    
+    // Navegar para tela do mapa mental
+    window.location.href = '/mapa-mental';
   };
 
   return (
@@ -321,127 +330,94 @@ export default function Argumentos() {
             </div>
           </LiquidGlassCard>
 
-          {/* Preview em Tempo Real - Abaixo do Chat */}
-          <div className="grid lg:grid-cols-2 gap-6">
-            
-            {/* Estrutura da Redação */}
-            <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-              <div className="flex items-center space-x-3 mb-4">
+          {/* Preview da Estrutura - Largura Total */}
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
                 <Eye className="text-bright-blue" size={20} />
-                <h3 className="text-lg font-semibold text-dark-blue">Preview da Estrutura</h3>
+                <h3 className="text-lg font-semibold text-dark-blue">Preview da Estrutura da Redação</h3>
               </div>
-              
-              <div className="space-y-4">
-                {/* Tema */}
-                <div className="bg-white/50 rounded-lg p-3 border border-bright-blue/10">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Target className={`w-4 h-4 ${brainstormData.tema ? 'text-green-500' : 'text-gray-400'}`} />
-                    <span className="text-sm font-medium text-dark-blue">Tema</span>
-                  </div>
-                  <p className="text-sm text-soft-gray">
-                    {brainstormData.tema || 'Aguardando definição do tema...'}
-                  </p>
+              <Button 
+                onClick={handleCreateMindMap}
+                className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
+                data-testid="button-create-mindmap"
+              >
+                <Map className="mr-2" size={16} />
+                Criar Mapa Mental
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Tema */}
+              <div className="bg-white/50 rounded-lg p-4 border border-bright-blue/10">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Target className={`w-5 h-5 ${brainstormData.tema ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-medium text-dark-blue">Tema</span>
                 </div>
-
-                {/* Tese */}
-                <div className="bg-white/50 rounded-lg p-3 border border-bright-blue/10">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Lightbulb className={`w-4 h-4 ${brainstormData.tese ? 'text-green-500' : 'text-gray-400'}`} />
-                    <span className="text-sm font-medium text-dark-blue">Tese Principal</span>
-                  </div>
-                  <p className="text-sm text-soft-gray">
-                    {brainstormData.tese || 'Aguardando desenvolvimento da tese...'}
-                  </p>
-                </div>
-
-                {/* Parágrafos */}
-                {Object.entries(brainstormData.paragrafos).map(([key, value], index) => (
-                  <div key={key} className="bg-white/50 rounded-lg p-3 border border-soft-gray/10">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <CheckCircle2 className={`w-4 h-4 ${value ? 'text-green-500' : 'text-gray-400'}`} />
-                      <span className="text-sm font-medium text-dark-blue">
-                        {index + 1}. {
-                          key === 'introducao' ? 'Introdução' :
-                          key === 'desenvolvimento1' ? 'Desenvolvimento I' :
-                          key === 'desenvolvimento2' ? 'Desenvolvimento II' :
-                          'Conclusão'
-                        }
-                      </span>
-                    </div>
-                    <p className="text-sm text-soft-gray">
-                      {value || `Aguardando desenvolvimento ${
-                        key === 'introducao' ? 'da introdução' :
-                        key === 'desenvolvimento1' ? 'do primeiro argumento' :
-                        key === 'desenvolvimento2' ? 'do segundo argumento' :
-                        'da conclusão'
-                      }...`}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </LiquidGlassCard>
-
-            {/* Mapa Mental */}
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <Map className="text-bright-blue" size={20} />
-                  <h3 className="text-lg font-semibold text-dark-blue">Mapa Mental</h3>
-                </div>
-                <Button 
-                  onClick={handleGenerateMindMap}
-                  variant="outline"
-                  size="sm"
-                  className="text-bright-blue border-bright-blue/40 hover:bg-bright-blue/5"
-                  data-testid="button-toggle-mindmap"
-                >
-                  {showMindMap ? 'Ocultar' : 'Visualizar'}
-                </Button>
+                <p className="text-sm text-soft-gray leading-relaxed">
+                  {brainstormData.tema || 'Aguardando definição do tema...'}
+                </p>
               </div>
 
-              {showMindMap ? (
-                <div className="space-y-4">
-                  {/* Centro - Tema */}
-                  {brainstormData.tema && (
-                    <div className="text-center">
-                      <div className="inline-block bg-gradient-to-r from-bright-blue to-dark-blue text-white px-4 py-2 rounded-full text-sm font-semibold">
-                        {brainstormData.tema}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Tese */}
-                  {brainstormData.tese && (
-                    <div className="bg-bright-blue/10 rounded-lg p-3 border border-bright-blue/20">
-                      <div className="text-xs font-semibold text-bright-blue mb-1">TESE</div>
-                      <div className="text-sm text-dark-blue">{brainstormData.tese}</div>
-                    </div>
-                  )}
-
-                  {/* Argumentos */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {Object.entries(brainstormData.paragrafos).map(([key, value]) => 
-                      value && (
-                        <div key={key} className="bg-white/50 rounded-lg p-2 border border-soft-gray/20">
-                          <div className="text-xs font-semibold text-soft-gray mb-1">
-                            {key.toUpperCase().replace('DESENVOLVIMENTO', 'ARG')}
-                          </div>
-                          <div className="text-xs text-dark-blue">{value.slice(0, 80)}...</div>
-                        </div>
-                      )
-                    )}
-                  </div>
+              {/* Tese */}
+              <div className="bg-white/50 rounded-lg p-4 border border-bright-blue/10">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Lightbulb className={`w-5 h-5 ${brainstormData.tese ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-medium text-dark-blue">Tese Principal</span>
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Map size={48} className="text-bright-blue/40 mx-auto mb-3" />
-                  <p className="text-soft-gray text-sm">
-                    Clique em "Visualizar" para ver o mapa mental das suas ideias
-                  </p>
+                <p className="text-sm text-soft-gray leading-relaxed">
+                  {brainstormData.tese || 'Aguardando desenvolvimento da tese...'}
+                </p>
+              </div>
+
+              {/* Introdução */}
+              <div className="bg-white/50 rounded-lg p-4 border border-bright-blue/10">
+                <div className="flex items-center space-x-2 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.introducao ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-medium text-dark-blue">Introdução</span>
                 </div>
-              )}
-            </LiquidGlassCard>
-          </div>
+                <p className="text-sm text-soft-gray leading-relaxed">
+                  {brainstormData.paragrafos.introducao || 'Aguardando desenvolvimento da introdução...'}
+                </p>
+              </div>
+
+              {/* Desenvolvimento I */}
+              <div className="bg-white/50 rounded-lg p-4 border border-bright-blue/10">
+                <div className="flex items-center space-x-2 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.desenvolvimento1 ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-medium text-dark-blue">Desenvolvimento I</span>
+                </div>
+                <p className="text-sm text-soft-gray leading-relaxed">
+                  {brainstormData.paragrafos.desenvolvimento1 || 'Aguardando primeiro argumento...'}
+                </p>
+              </div>
+            </div>
+            
+            {/* Segunda linha */}
+            <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 mt-4">
+              {/* Desenvolvimento II */}
+              <div className="bg-white/50 rounded-lg p-4 border border-bright-blue/10">
+                <div className="flex items-center space-x-2 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.desenvolvimento2 ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-medium text-dark-blue">Desenvolvimento II</span>
+                </div>
+                <p className="text-sm text-soft-gray leading-relaxed">
+                  {brainstormData.paragrafos.desenvolvimento2 || 'Aguardando segundo argumento...'}
+                </p>
+              </div>
+
+              {/* Conclusão */}
+              <div className="bg-white/50 rounded-lg p-4 border border-bright-blue/10">
+                <div className="flex items-center space-x-2 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.conclusao ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-medium text-dark-blue">Conclusão</span>
+                </div>
+                <p className="text-sm text-soft-gray leading-relaxed">
+                  {brainstormData.paragrafos.conclusao || 'Aguardando desenvolvimento da conclusão...'}
+                </p>
+              </div>
+            </div>
+          </LiquidGlassCard>
 
 
         </div>
