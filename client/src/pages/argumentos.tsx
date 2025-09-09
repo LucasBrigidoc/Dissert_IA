@@ -203,16 +203,26 @@ export default function Argumentos() {
 
   const ChatMini = ({ section, title }: { section: string, title: string }) => {
     const chatData = chatStates[section as keyof typeof chatStates];
+    const hasRequiredContext = brainstormData.tema.trim() && brainstormData.tese.trim();
     
     return (
       <div className="mt-4">
         <Button
-          onClick={() => toggleChat(section)}
+          onClick={() => hasRequiredContext ? toggleChat(section) : null}
           variant="outline"
-          className="w-full justify-start text-left border-bright-blue/30 hover:bg-bright-blue/10"
+          disabled={!hasRequiredContext}
+          className={`w-full justify-start text-left border-bright-blue/30 ${
+            hasRequiredContext 
+              ? 'hover:bg-bright-blue/10 cursor-pointer' 
+              : 'opacity-50 cursor-not-allowed'
+          }`}
+          title={!hasRequiredContext ? 'Preencha a proposta e tese primeiro para ativar a IA' : ''}
         >
           <MessageSquare size={14} className="mr-2" />
-          {chatData.isOpen ? 'Fechar' : 'Conversar com'} IA sobre {title}
+          {hasRequiredContext 
+            ? (chatData.isOpen ? 'Fechar' : 'Conversar com') + ' IA sobre ' + title
+            : 'IA: Preencha proposta e tese primeiro'
+          }
         </Button>
         
         {chatData.isOpen && (
