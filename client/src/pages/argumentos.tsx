@@ -85,36 +85,30 @@ export default function Argumentos() {
   };
   
   const sendMessageToSection = async (section: string) => {
-    const currentMessage = chatStates[section as keyof typeof chatStates].currentMessage;
-    if (!currentMessage.trim()) return;
+    const currentChat = chatStates[section as keyof typeof chatStates];
+    const currentMessage = currentChat.currentMessage.trim();
+    if (!currentMessage) return;
     
-    const newMessage = {
+    // Clear input immediately for better UX
+    const userMessage = {
       id: Date.now(),
       type: 'user',
       content: currentMessage
     };
     
-    setChatStates(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section as keyof typeof prev],
-        messages: [...prev[section as keyof typeof prev].messages, newMessage],
-        currentMessage: ''
-      }
-    }));
-    
-    // Show loading message
     const loadingMessage = {
       id: Date.now() + 1,
       type: 'ai',
       content: '🤔 Analisando seu texto e preparando sugestões...'
     };
     
+    // Single state update with user message, cleared input, and loading message
     setChatStates(prev => ({
       ...prev,
       [section]: {
         ...prev[section as keyof typeof prev],
-        messages: [...prev[section as keyof typeof prev].messages, loadingMessage]
+        currentMessage: '', // Clear input immediately
+        messages: [...prev[section as keyof typeof prev].messages, userMessage, loadingMessage]
       }
     }));
     
@@ -156,7 +150,9 @@ export default function Argumentos() {
         ...prev,
         [section]: {
           ...prev[section as keyof typeof prev],
-          messages: prev[section as keyof typeof prev].messages.filter(msg => msg.id !== loadingMessage.id).concat(aiResponse)
+          messages: prev[section as keyof typeof prev].messages.map(msg => 
+            msg.id === loadingMessage.id ? aiResponse : msg
+          )
         }
       }));
       
@@ -174,7 +170,9 @@ export default function Argumentos() {
         ...prev,
         [section]: {
           ...prev[section as keyof typeof prev],
-          messages: prev[section as keyof typeof prev].messages.filter(msg => msg.id !== loadingMessage.id).concat(errorMessage)
+          messages: prev[section as keyof typeof prev].messages.map(msg => 
+            msg.id === loadingMessage.id ? errorMessage : msg
+          )
         }
       }));
     }
@@ -199,10 +197,10 @@ export default function Argumentos() {
       let updatedMessages = currentChat.messages;
       if (isOpening && currentChat.messages.length === 0) {
         const welcomeMessages = {
-          introducao: 'Vamos trabalhar na sua introdução. Como você vai apresentar e contextualizar o tema?',
-          desenvolvimento1: 'Que argumento você vai desenvolver neste parágrafo? Que exemplos podem sustentá-lo?',
-          desenvolvimento2: 'Qual será seu segundo argumento? Como ele se conecta com o primeiro?',
-          conclusao: 'Vamos criar uma conclusão impactante com proposta de intervenção. O que você propõe?'
+          introducao: '👋 **Olá! Vamos trabalhar juntos na sua introdução!**\n\n🎯 Posso te ajudar com:\n• Estrutura da introdução (contextualização → problematização → tese)\n• Sugestões de dados e estatísticas\n• Conectivos e transições\n• Revisar o que você já escreveu\n\n💬 **Me conte:** que dúvida você tem sobre a introdução? Ou me mostre o que já escreveu para eu dar dicas!',
+          desenvolvimento1: '👋 **Oi! Vamos construir seu primeiro argumento juntos!**\n\n🎯 Posso te ajudar com:\n• Estrutura do parágrafo (tópico frasal → fundamentação → exemplos → conclusão)\n• Sugestões de exemplos e dados\n• Conectivos argumentativos\n• Conexão com sua tese\n\n💬 **Me conte:** qual argumento você quer desenvolver? Ou me mostre o que já escreveu para eu te dar sugestões!',
+          desenvolvimento2: '👋 **Vamos trabalhar no seu segundo argumento!**\n\n🎯 Posso te ajudar com:\n• Criar um argumento complementar ao primeiro\n• Variar tipos de exemplos (históricos, atuais, científicos)\n• Conectivos de progressão argumentativa\n• Manter coesão textual\n\n💬 **Me conte:** que perspectiva diferente você quer explorar? Ou me mostre o que já escreveu para eu dar dicas!',
+          conclusao: '👋 **Vamos criar uma conclusão impactante!**\n\n🎯 Posso te ajudar com:\n• Estrutura da conclusão (retomada → síntese → proposta)\n• Criar proposta de intervenção detalhada\n• Conectivos conclusivos\n• Amarrar todos os argumentos\n\n💬 **Me conte:** que solução você pensa para o problema? Ou me mostre o que já escreveu para eu aperfeiçoar!'
         };
         
         updatedMessages = [{
@@ -263,12 +261,14 @@ export default function Argumentos() {
             <div className="max-h-40 overflow-y-auto space-y-2 mb-3">
               {chatData.messages.map((message: any) => (
                 <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
+                  <div className={`max-w-sm px-3 py-2 rounded-lg text-sm ${
                     message.type === 'user' 
                       ? 'bg-bright-blue text-white' 
                       : 'bg-gray-100 text-dark-blue'
                   }`}>
-                    {message.content}
+                    <div className="whitespace-pre-wrap break-words">
+                      {message.content}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -279,11 +279,16 @@ export default function Argumentos() {
               <Textarea
                 value={chatData.currentMessage}
                 onChange={(e) => {
-                  updateChatMessage(section, e.target.value);
-                  // Auto-resize
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = Math.min(Math.max(40, target.scrollHeight), 128) + 'px';
+                  const newValue = e.target.value;
+                  updateChatMessage(section, newValue);
+                  
+                  // Optimized auto-resize with debouncing
+                  requestAnimationFrame(() => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    const newHeight = Math.min(Math.max(40, target.scrollHeight), 128);
+                    target.style.height = newHeight + 'px';
+                  });
                 }}
                 placeholder="Digite sua mensagem..."
                 className="flex-1 border-bright-blue/20 focus:border-bright-blue text-sm resize-none min-h-[40px] max-h-32"
