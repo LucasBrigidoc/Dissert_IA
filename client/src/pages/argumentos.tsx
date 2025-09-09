@@ -275,19 +275,34 @@ export default function Argumentos() {
             </div>
             
             {/* Input Area */}
-            <div className="flex space-x-2">
-              <Input
+            <div className="flex space-x-2 items-end">
+              <Textarea
                 value={chatData.currentMessage}
-                onChange={(e) => updateChatMessage(section, e.target.value)}
+                onChange={(e) => {
+                  updateChatMessage(section, e.target.value);
+                  // Auto-resize
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = Math.min(Math.max(40, target.scrollHeight), 128) + 'px';
+                }}
                 placeholder="Digite sua mensagem..."
-                className="flex-1 border-bright-blue/20 focus:border-bright-blue text-sm"
-                onKeyDown={(e) => e.key === 'Enter' && sendMessageToSection(section)}
+                className="flex-1 border-bright-blue/20 focus:border-bright-blue text-sm resize-none min-h-[40px] max-h-32"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessageToSection(section);
+                  }
+                }}
                 autoFocus={chatData.isOpen}
+                style={{
+                  minHeight: '40px',
+                  maxHeight: '128px',
+                }}
               />
               <Button 
                 onClick={() => sendMessageToSection(section)}
                 size="sm"
-                className="bg-gradient-to-r from-bright-blue to-dark-blue"
+                className="bg-gradient-to-r from-bright-blue to-dark-blue h-10"
               >
                 <MessageSquare size={14} />
               </Button>
