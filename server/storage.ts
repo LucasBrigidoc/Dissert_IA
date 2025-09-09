@@ -43,17 +43,6 @@ export interface IStorage {
   getUserSavedRepertoires(userId: string): Promise<Repertoire[]>;
   isRepertoireSaved(userId: string, repertoireId: string): Promise<boolean>;
   
-  // Pedagogical conversations operations
-  savePedagogicalConversation(data: {
-    sessionId: string;
-    userId: string;
-    conversationHistory: any[];
-    essayContext: any;
-    currentStage: string;
-    progressPercent: number;
-  }): Promise<any>;
-  getPedagogicalConversation(sessionId: string): Promise<any | null>;
-  getAllPedagogicalConversations(userId: string): Promise<any[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -511,51 +500,6 @@ export class MemStorage implements IStorage {
     );
   }
 
-  // NOVO: Pedagogical conversations operations
-  private pedagogicalConversations: Map<string, any> = new Map();
-
-  async savePedagogicalConversation(data: {
-    sessionId: string;
-    userId: string;
-    conversationHistory: any[];
-    essayContext: any;
-    currentStage: string;
-    progressPercent: number;
-  }): Promise<any> {
-    const existing = this.pedagogicalConversations.get(data.sessionId);
-    
-    if (existing) {
-      // Update existing conversation
-      const updated = {
-        ...existing,
-        ...data,
-        updatedAt: new Date()
-      };
-      this.pedagogicalConversations.set(data.sessionId, updated);
-      return updated;
-    } else {
-      // Create new conversation
-      const id = randomUUID();
-      const newConversation = {
-        id,
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      this.pedagogicalConversations.set(data.sessionId, newConversation);
-      return newConversation;
-    }
-  }
-
-  async getPedagogicalConversation(sessionId: string): Promise<any | null> {
-    return this.pedagogicalConversations.get(sessionId) || null;
-  }
-
-  async getAllPedagogicalConversations(userId: string): Promise<any[]> {
-    return Array.from(this.pedagogicalConversations.values())
-      .filter(conversation => conversation.userId === userId)
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-  }
 }
 
 export const storage = new MemStorage();

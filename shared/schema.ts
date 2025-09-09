@@ -71,18 +71,6 @@ export const searchCache = pgTable("search_cache", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Nova tabela para conversas pedagógicas
-export const pedagogicalConversations = pgTable("pedagogical_conversations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().default("default-user"), // TODO: Connect to auth
-  sessionId: varchar("session_id").notNull(),
-  conversationHistory: json("conversation_history").notNull().default([]),
-  essayContext: json("essay_context").notNull().default({}),
-  currentStage: varchar("current_stage", { enum: ["tema", "tese", "argumentacao", "conclusao", "revisao"] }).default("tema"),
-  progressPercent: integer("progress_percent").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
 
 // Rate limiting table to control AI usage
 export const rateLimits = pgTable("rate_limits", {
@@ -178,39 +166,6 @@ export const chatMessageSchema = z.object({
   }),
 });
 
-// Schema para o novo chat pedagógico
-export const pedagogicalChatSchema = z.object({
-  message: z.string().min(1, "Mensagem é obrigatória"),
-  sessionId: z.string().min(1, "Session ID é obrigatório"),
-  essayContext: z.object({
-    tema: z.string().optional(),
-    tese: z.string().optional(),
-    estrutura: z.object({
-      introducao: z.string().optional(),
-      desenvolvimento1: z.string().optional(),
-      desenvolvimento2: z.string().optional(),
-      conclusao: z.string().optional(),
-    }).optional(),
-    repertorios: z.array(z.object({
-      title: z.string(),
-      description: z.string(),
-      type: z.string(),
-    })).optional(),
-    conectivos: z.array(z.string()).optional(),
-    etapaAtual: z.enum(["tema", "tese", "argumentacao", "conclusao", "revisao"]).optional(),
-  }).optional(),
-  conversationHistory: z.array(z.object({
-    role: z.enum(["user", "assistant"]),
-    content: z.string(),
-    timestamp: z.string().optional(),
-  })).optional(),
-});
-
-export const insertPedagogicalConversationSchema = createInsertSchema(pedagogicalConversations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -237,9 +192,6 @@ export type RateLimit = typeof rateLimits.$inferSelect;
 export type InsertSavedRepertoire = z.infer<typeof insertSavedRepertoireSchema>;
 export type SavedRepertoire = typeof savedRepertoires.$inferSelect;
 
-export type InsertPedagogicalConversation = z.infer<typeof insertPedagogicalConversationSchema>;
-export type PedagogicalConversation = typeof pedagogicalConversations.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
-export type PedagogicalChatMessage = z.infer<typeof pedagogicalChatSchema>;

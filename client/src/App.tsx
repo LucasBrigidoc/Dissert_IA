@@ -27,7 +27,6 @@ import Simulacao from "@/pages/simulacao";
 import { Resultado } from "@/pages/resultado";
 import Biblioteca from "@/pages/biblioteca";
 import Propostas from "@/pages/propostas";
-import ChatPedagogico from "@/pages/chat-pedagogico";
 
 function Router() {
   return (
@@ -54,7 +53,6 @@ function Router() {
       <Route path="/resultado" component={Resultado} />
       <Route path="/biblioteca" component={Biblioteca} />
       <Route path="/propostas" component={Propostas} />
-      <Route path="/chat-pedagogico" component={ChatPedagogico} />
       <Route component={NotFound} />
     </Switch>
   );
