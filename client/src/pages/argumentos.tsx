@@ -241,19 +241,19 @@ export default function Argumentos() {
         
         <Button
           onClick={() => hasRequiredContext ? toggleChat(section) : null}
-          variant={hasRequiredContext ? "default" : "outline"}
+          variant="outline"
           disabled={!hasRequiredContext}
-          className={`w-full justify-start text-left transition-all duration-300 ${
+          className={`w-full justify-start text-left transition-all duration-200 ${
             hasRequiredContext 
-              ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-none shadow-lg hover:shadow-xl transform hover:scale-[1.02] animate-pulse' 
-              : 'opacity-50 cursor-not-allowed border-gray-300'
+              ? 'border-bright-blue/40 text-bright-blue hover:bg-bright-blue/5 hover:border-bright-blue/60' 
+              : 'opacity-50 cursor-not-allowed border-gray-300 text-gray-400'
           }`}
           title={!hasRequiredContext ? 'Preencha a proposta e tese primeiro para ativar a IA' : 'Clique para conversar com a IA'}
         >
-          <MessageSquare size={14} className="mr-2" />
+          <MessageSquare size={14} className={`mr-2 ${hasRequiredContext ? 'text-bright-blue' : 'text-gray-400'}`} />
           {hasRequiredContext 
-            ? (chatData.isOpen ? '🤖 Fechar Chat com IA' : '🚀 Pedir Ajuda da IA sobre ' + title)
-            : '🔒 IA: Complete proposta e tese primeiro'
+            ? (chatData.isOpen ? 'Fechar chat com IA' : 'Conversar com IA sobre ' + title)
+            : 'IA: Complete proposta e tese primeiro'
           }
         </Button>
         
