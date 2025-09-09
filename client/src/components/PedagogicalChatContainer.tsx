@@ -14,11 +14,14 @@ import {
   Clock,
   Lightbulb,
   CheckCircle2,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EssayPreview } from "./EssayPreview";
 
 interface Message {
   id: string;
@@ -62,6 +65,7 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
     etapa: 'tema',
     percentualCompleto: 0
   });
+  const [showPreview, setShowPreview] = useState(true);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -233,8 +237,20 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
               </div>
             </div>
             
-            {/* Progresso atual */}
+            {/* Progresso atual e toggle preview */}
             <div className="hidden md:flex items-center space-x-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPreview(!showPreview)}
+                className="text-soft-gray hover:text-bright-blue"
+              >
+                {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPreview ? 'Ocultar Preview' : 'Mostrar Preview'}
+              </Button>
+              
+              <Separator orientation="vertical" className="h-6" />
+              
               <div className="flex items-center space-x-2">
                 {getStageIcon(progressoAtual.etapa)}
                 <span className="text-sm font-medium text-dark-blue">
@@ -259,20 +275,33 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
                   {getStageLabel(progressoAtual.etapa)}
                 </span>
               </div>
-              <span className="text-sm text-soft-gray">
-                {progressoAtual.percentualCompleto}%
-              </span>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPreview(!showPreview)}
+                  className="text-soft-gray hover:text-bright-blue h-7 px-2"
+                >
+                  {showPreview ? <EyeOff size={14} /> : <Eye size={14} />}
+                </Button>
+                <span className="text-sm text-soft-gray">
+                  {progressoAtual.percentualCompleto}%
+                </span>
+              </div>
             </div>
             <Progress value={progressoAtual.percentualCompleto} className="h-2" />
           </div>
         </div>
       </div>
 
-      {/* Chat Container */}
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <Card className="h-[70vh] flex flex-col bg-white/80 backdrop-blur-sm border-white/20 shadow-lg">
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <div className={`grid gap-6 h-[70vh] ${showPreview ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 max-w-4xl mx-auto'}`}>
+          
+          {/* Chat Container */}
+          <Card className="h-full flex flex-col bg-white/80 backdrop-blur-sm border-white/20 shadow-lg">
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.map((message) => (
               <div 
                 key={message.id}
@@ -331,69 +360,91 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
               </div>
             )}
             
-            <div ref={messagesEndRef} />
-          </div>
+              <div ref={messagesEndRef} />
+            </div>
 
-          <Separator />
+            <Separator />
 
-          {/* Sugestões rápidas */}
-          {suggestedNextSteps.length > 0 && (
-            <div className="px-6 py-3 bg-gray-50/50">
-              <div className="flex items-center space-x-2 mb-2">
-                <Lightbulb size={14} className="text-bright-blue" />
-                <span className="text-xs font-medium text-bright-blue">Sugestões:</span>
+            {/* Sugestões rápidas */}
+            {suggestedNextSteps.length > 0 && (
+              <div className="px-6 py-3 bg-gray-50/50">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Lightbulb size={14} className="text-bright-blue" />
+                  <span className="text-xs font-medium text-bright-blue">Sugestões:</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {suggestedNextSteps.slice(0, 3).map((suggestion, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSuggestedAction(suggestion)}
+                      className="text-xs h-7 border-bright-blue/20 text-bright-blue hover:bg-bright-blue/5"
+                      disabled={sendMessageMutation.isPending}
+                    >
+                      {suggestion}
+                    </Button>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {suggestedNextSteps.slice(0, 3).map((suggestion, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleSuggestedAction(suggestion)}
-                    className="text-xs h-7 border-bright-blue/20 text-bright-blue hover:bg-bright-blue/5"
+            )}
+
+            {/* Input Area */}
+            <div className="p-6 pt-4">
+              <div className="flex space-x-3 items-end">
+                <div className="flex-1">
+                  <Textarea
+                    ref={textareaRef}
+                    value={currentMessage}
+                    onChange={handleTextareaChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Digite sua mensagem... (Enter para enviar, Shift+Enter para nova linha)"
+                    className="min-h-[44px] max-h-[120px] resize-none border-bright-blue/20 focus:border-bright-blue text-sm"
                     disabled={sendMessageMutation.isPending}
-                  >
-                    {suggestion}
-                  </Button>
-                ))}
+                    style={{ height: '44px' }}
+                  />
+                </div>
+                <Button 
+                  onClick={handleSendMessage}
+                  disabled={!currentMessage.trim() || sendMessageMutation.isPending}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue h-11 px-4"
+                  data-testid="button-send-message"
+                >
+                  <Send size={18} />
+                </Button>
+              </div>
+              
+              <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+                <span>💡 Use Shift+Enter para nova linha</span>
+                <div className="flex items-center space-x-2">
+                  <Clock size={12} />
+                  <span>Resposta em tempo real</span>
+                </div>
               </div>
             </div>
-          )}
-
-          {/* Input Area */}
-          <div className="p-6 pt-4">
-            <div className="flex space-x-3 items-end">
-              <div className="flex-1">
-                <Textarea
-                  ref={textareaRef}
-                  value={currentMessage}
-                  onChange={handleTextareaChange}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Digite sua mensagem... (Enter para enviar, Shift+Enter para nova linha)"
-                  className="min-h-[44px] max-h-[120px] resize-none border-bright-blue/20 focus:border-bright-blue text-sm"
-                  disabled={sendMessageMutation.isPending}
-                  style={{ height: '44px' }}
-                />
-              </div>
-              <Button 
-                onClick={handleSendMessage}
-                disabled={!currentMessage.trim() || sendMessageMutation.isPending}
-                className="bg-gradient-to-r from-bright-blue to-dark-blue h-11 px-4"
-                data-testid="button-send-message"
-              >
-                <Send size={18} />
-              </Button>
-            </div>
-            
-            <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
-              <span>💡 Use Shift+Enter para nova linha</span>
-              <div className="flex items-center space-x-2">
-                <Clock size={12} />
-                <span>Resposta em tempo real</span>
-              </div>
-            </div>
+          </Card>
+        
+        {/* Essay Preview */}
+        {showPreview && (
+          <EssayPreview 
+            essayContext={essayContext}
+            progressPercent={progressoAtual.percentualCompleto}
+            className="hidden lg:block"
+          />
+        )}
+        
+        </div>
+        
+        {/* Preview mobile - below chat */}
+        {showPreview && (
+          <div className="lg:hidden mt-6">
+            <EssayPreview 
+              essayContext={essayContext}
+              progressPercent={progressoAtual.percentualCompleto}
+              className="h-96"
+            />
           </div>
-        </Card>
+        )}
       </div>
     </div>
   );
