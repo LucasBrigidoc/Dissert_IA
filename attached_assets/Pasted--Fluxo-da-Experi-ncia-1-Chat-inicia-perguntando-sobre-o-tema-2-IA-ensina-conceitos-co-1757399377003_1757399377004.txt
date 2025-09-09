@@ -1,0 +1,129 @@
+**Fluxo da Experiência:**
+
+1. **Chat inicia** perguntando sobre o tema
+2. **IA ensina** conceitos conforme vai perguntando
+3. **Preview atualiza** em tempo real mostrando a estrutura
+4. **Mapa mental** se forma automaticamente
+5. **Usuário visualiza** a organização das ideias
+
+**Preview da Base mostrará:**
+
+✅ **Estrutura hierárquica** da redação sendo construída  
+✅ **Tema central** definido na conversa  
+✅ **Tese principal** formulada com ajuda da IA  
+✅ **Argumentos principais** desenvolvidos no chat  
+✅ **Conexões lógicas** entre as ideias  
+✅ **Status de cada seção** (completa/em andamento/pendente)
+
+**Mapa Mental incluirá:**
+
+🔵 **Tema no centro** como nó principal  
+🔸 **Tese conectada** ao tema  
+🔸 **Argumentos como ramos** principais  
+🔸 **Exemplos e dados** como sub-ramos  
+🔸 **Conexões visuais** mostrando relações  
+🔸 **Cores diferenciadas** por tipo de conteúdo
+
+🎯 **Pontos Detalhados que a IA vai Conversar**
+
+**1. ANÁLISE DO TEMA (Início)**
+
+- 🔍 "Vamos destrinchar esse tema juntos..."
+- 📊 "Que aspectos deste tema você conhece?"
+- 🌍 "Como isso afeta a sociedade hoje?"
+- ❓ "Qual sua opinião inicial sobre isso?"
+
+**2. CONSTRUÇÃO DA TESE**
+
+- 💭 "Vamos transformar sua opinião em uma tese forte..."
+- ⚖️ "Sua posição vai ser defendida ou criticada?"
+- 🎯 "Como deixar sua tese mais específica?"
+- 📝 "Que palavras-chave definem sua posição?"
+
+**3. CONTEXTUALIZAÇÃO**
+
+- 📚 "Vamos situar o leitor no problema..."
+- 🕰️ "Desde quando isso é questão?"
+- 🌐 "Como isso afeta diferentes grupos?"
+- 📊 "Que dados mostram a relevância?"
+
+**4. ARGUMENTAÇÃO ESTRUTURADA**
+
+**Para cada argumento:**
+
+- 🏗️ "Que tipo de argumento vamos usar?"
+    - Causa/Consequência
+    - Comparação/Contraste
+    - Exemplificação
+    - Dados/Autoridade
+- 🎪 "Qual repertório vai sustentar isso?"
+    - Livro específico + relação
+    - Filme + análise
+    - Pesquisa + dados
+    - Lei/Evento histórico
+- 🔗 "Como conectar com o próximo parágrafo?"
+    - Progressão: "Além disso", "Outrossim"
+    - Contraste: "Por outro lado", "Contudo"
+    - Conclusão: "Portanto", "Destarte"
+
+**5. REPERTÓRIOS DETALHADOS**
+
+**Para cada repertório usado:**
+
+- 📖 **Se Livro**: Autor, obra, contexto, citação relevante
+- 🎬 **Se Filme**: Diretor, ano, temática, cena específica
+- 🔬 **Se Pesquisa**: Instituição, ano, metodologia, resultado
+- ⚖️ **Se Lei/Dado**: Fonte oficial, data, contexto de aplicação
+
+**6. CONECTIVOS PEDAGÓGICOS**
+
+- 🔤 "Vamos variar os conectivos para sofisticar o texto..."
+- ➡️ **Introdução**: "Diante de", "Mediante", "Considerando"
+- ⚡ **Desenvolvimento**: "Sob essa perspectiva", "Nesse sentido"
+- 🏁 **Conclusão**: "Infere-se que", "Depreende-se que"
+
+**7. CONCLUSÃO COMPLETA**
+
+- 🔄 "Como retomar tese + argumentos em 2 linhas?"
+- 🧩 "Qual síntese une tudo que discutimos?"
+- 🛠️ **Proposta detalhada (5W1H)**:
+    - **O que?** Ação específica
+    - **Quem?** Agente responsável
+    - **Como?** Método/ferramenta
+    - **Onde?** Local de aplicação
+    - **Quando?** Prazo
+    - **Quanto?** Recursos/financiamento
+
+🎨 **Visualização no Mapa Mental**
+
+**Cores por Categoria:**
+
+- 🔵 **Tema/Tese**: Azul principal
+- 🟢 **Argumentos**: Verde (diferentes tons)
+- 🟡 **Repertórios**: Amarelo/Dourado
+- 🔴 **Conectivos**: Vermelho
+- 🟣 **Proposta**: Roxo
+
+**Ícones Especiais:**
+
+- 📚 Repertórios culturais
+- 🔬 Dados científicos
+- ⚖️ Leis e normas
+- 🏛️ Eventos históricos
+- 🔗 Conectivos
+- 💡 Ideias principais
+
+
+**Funcionalidades Especiais:**
+
+- **Preview atualiza automaticamente** conforme a conversa
+- **Botão para gerar mapa mental** completo quando tiver conteúdo suficiente
+- **Mapa exportável** para download/compartilhamento
+- **Clique nos elementos** do mapa leva para a seção no chat
+
+**Isso vai criar uma experiência pedagógica completa onde o usuário:**
+
+1. **Conversa naturalmente** com a IA
+2. **Aprende conceitos** durante a construção
+3. **Visualiza a organização** das ideias em tempo real
+4. **Tem um mapa mental** para consultar depois
