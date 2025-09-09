@@ -86,18 +86,28 @@ export default function Argumentos() {
   };
 
   const handleOptimizeIdea = async () => {
-    if (!brainstormData.tema || !brainstormData.tese) return;
-    
     setIsOptimizingIdea(true);
     
     try {
+      // Definir o tipo de mensagem baseado no conteúdo disponível
+      let message = '';
+      if (!brainstormData.tema && !brainstormData.tese) {
+        message = 'Não sei por onde começar a escrever minha ideia do texto. Como posso criar uma boa ideia para uma redação argumentativa?';
+      } else if (brainstormData.tema && !brainstormData.tese) {
+        message = `Tenho a proposta "${brainstormData.tema}" mas não sei como formular minha ideia do texto. Me ajude a criar uma ideia clara e argumentativa sobre este tema.`;
+      } else if (!brainstormData.tema && brainstormData.tese) {
+        message = `Tenho esta ideia: "${brainstormData.tese}". Como posso melhorá-la e torná-la mais específica e argumentativa?`;
+      } else {
+        message = `Analise e otimize minha ideia do texto: "${brainstormData.tese}". Sugira melhorias para torná-la mais clara, específica e argumentativa. Mantenha a essência da minha ideia, mas aprimore a formulação.`;
+      }
+
       const response = await fetch('/api/chat/argumentative', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: `Analise e otimize minha ideia do texto: "${brainstormData.tese}". Sugira melhorias para torná-la mais clara, específica e argumentativa. Mantenha a essência da minha ideia, mas aprimore a formulação.`,
+          message,
           section: 'optimization',
           context: {
             proposta: brainstormData.tema,
@@ -116,24 +126,27 @@ export default function Argumentos() {
 
       const data = await response.json();
       
-      // Mostrar a sugestão da IA e perguntar se o usuário quer aplicar
-      const shouldApply = confirm(
-        `Sugestão da IA:\n\n${data.response}\n\n` +
-        `Deseja aplicar esta otimização à sua ideia do texto?`
-      );
-      
-      if (shouldApply) {
-        // Extrair a ideia otimizada da resposta da IA
-        // A IA deve retornar uma versão melhorada da ideia
-        const optimizedText = extractOptimizedText(data.response);
-        if (optimizedText) {
-          setBrainstormData(prev => ({...prev, tese: optimizedText}));
+      // Se há uma ideia para otimizar, perguntar se quer aplicar
+      if (brainstormData.tese) {
+        const shouldApply = confirm(
+          `Sugestão da IA:\n\n${data.response}\n\n` +
+          `Deseja aplicar esta otimização à sua ideia do texto?`
+        );
+        
+        if (shouldApply) {
+          const optimizedText = extractOptimizedText(data.response);
+          if (optimizedText) {
+            setBrainstormData(prev => ({...prev, tese: optimizedText}));
+          }
         }
+      } else {
+        // Se não há ideia ainda, apenas mostrar as orientações
+        alert(`Orientações da IA:\n\n${data.response}`);
       }
       
     } catch (error: any) {
       console.error('Optimization error:', error);
-      alert(`Erro ao otimizar: ${error.message || 'Tente novamente.'}`);
+      alert(`Erro ao obter ajuda: ${error.message || 'Tente novamente.'}`);
     } finally {
       setIsOptimizingIdea(false);
     }
