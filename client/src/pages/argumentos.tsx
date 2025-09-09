@@ -392,11 +392,11 @@ export default function Argumentos() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Tese</label>
+                  <label className="block text-sm font-medium text-dark-blue mb-2">Ideia do texto</label>
                   <Textarea
                     value={brainstormData.tese}
                     onChange={(e) => setBrainstormData(prev => ({...prev, tese: e.target.value}))}
-                    placeholder="Sua posição sobre o tema..."
+                    placeholder="Descreva a ideia principal do que você planeja escrever..."
                     className="border-bright-blue/20 focus:border-bright-blue h-20"
                   />
                 </div>
@@ -485,7 +485,7 @@ export default function Argumentos() {
                     <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Tese</span>
+                    <span className="text-xs text-dark-blue">Ideia</span>
                     <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -506,7 +506,7 @@ export default function Argumentos() {
                       <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-dark-blue">Tese</span>
+                      <span className="text-xs text-dark-blue">Ideia</span>
                       <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                     </div>
                     <div className="flex items-center space-x-2">
