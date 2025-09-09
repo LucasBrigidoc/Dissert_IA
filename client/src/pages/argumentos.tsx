@@ -281,7 +281,8 @@ export default function Argumentos() {
                 onChange={(e) => updateChatMessage(section, e.target.value)}
                 placeholder="Digite sua mensagem..."
                 className="flex-1 border-bright-blue/20 focus:border-bright-blue text-sm"
-                onKeyPress={(e) => e.key === 'Enter' && sendMessageToSection(section)}
+                onKeyDown={(e) => e.key === 'Enter' && sendMessageToSection(section)}
+                autoFocus={chatData.isOpen}
               />
               <Button 
                 onClick={() => sendMessageToSection(section)}
