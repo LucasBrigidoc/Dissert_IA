@@ -4,7 +4,13 @@ DissertAI is a comprehensive SaaS educational platform designed to revolutionize
 
 # Recent Changes
 
-- **September 9, 2025**: Replit Environment Setup Completed
+- **September 9, 2025**: AI Chat Integration & Replit Environment Setup Completed
+  - **AI Chat System**: Integrated intelligent chat with IA for argumentative structure development
+    - Context-aware suggestions based on user's proposal and thesis
+    - Section-specific guidance for introduction, development paragraphs, and conclusion
+    - Rate limiting (10 AI chats per hour per IP) for cost optimization
+    - Smart fallback system for offline scenarios
+    - Real-time contextual analysis using Gemini AI
   - **Project Import**: Successfully imported GitHub project to Replit environment
   - **API Configuration**: Added GEMINI_API_KEY secret for AI-powered repertoire generation
   - **Workflow Setup**: Configured 'Start application' workflow to run on port 5000 with webview output
