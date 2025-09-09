@@ -10,6 +10,7 @@ export default function Argumentos() {
   const [location] = useLocation();
   const [backUrl, setBackUrl] = useState('/dashboard');
   const [showMindMap, setShowMindMap] = useState(false);
+  const [isOptimizingIdea, setIsOptimizingIdea] = useState(false);
   const [brainstormData, setBrainstormData] = useState({
     tema: '',
     tese: '',
@@ -82,6 +83,79 @@ export default function Argumentos() {
       return;
     }
     setShowMindMap(true);
+  };
+
+  const handleOptimizeIdea = async () => {
+    if (!brainstormData.tema || !brainstormData.tese) return;
+    
+    setIsOptimizingIdea(true);
+    
+    try {
+      const response = await fetch('/api/chat/argumentative', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `Analise e otimize minha ideia do texto: "${brainstormData.tese}". Sugira melhorias para torná-la mais clara, específica e argumentativa. Mantenha a essência da minha ideia, mas aprimore a formulação.`,
+          section: 'optimization',
+          context: {
+            proposta: brainstormData.tema,
+            tese: brainstormData.tese,
+            paragrafos: brainstormData.paragrafos
+          }
+        })
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error('Limite de consultas de IA atingido. Tente novamente em uma hora.');
+        }
+        throw new Error('Erro ao conectar com a IA');
+      }
+
+      const data = await response.json();
+      
+      // Mostrar a sugestão da IA e perguntar se o usuário quer aplicar
+      const shouldApply = confirm(
+        `Sugestão da IA:\n\n${data.response}\n\n` +
+        `Deseja aplicar esta otimização à sua ideia do texto?`
+      );
+      
+      if (shouldApply) {
+        // Extrair a ideia otimizada da resposta da IA
+        // A IA deve retornar uma versão melhorada da ideia
+        const optimizedText = extractOptimizedText(data.response);
+        if (optimizedText) {
+          setBrainstormData(prev => ({...prev, tese: optimizedText}));
+        }
+      }
+      
+    } catch (error: any) {
+      console.error('Optimization error:', error);
+      alert(`Erro ao otimizar: ${error.message || 'Tente novamente.'}`);
+    } finally {
+      setIsOptimizingIdea(false);
+    }
+  };
+
+  const extractOptimizedText = (aiResponse: string): string | null => {
+    // Tentar extrair a versão otimizada da resposta da IA
+    // Procurar por padrões como "Versão otimizada:", "Sugestão:", etc.
+    const patterns = [
+      /(?:versão otimizada|sugestão melhorada|ideia aprimorada):\s*"([^"]+)"/i,
+      /(?:recomendo|sugiro):\s*"([^"]+)"/i,
+      /"([^"]+)"/g
+    ];
+    
+    for (const pattern of patterns) {
+      const match = aiResponse.match(pattern);
+      if (match && match[1] && match[1].length > 20) {
+        return match[1].trim();
+      }
+    }
+    
+    return null;
   };
   
   const sendMessageToSection = async (section: string) => {
@@ -397,13 +471,41 @@ export default function Argumentos() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-dark-blue mb-2">Ideia do texto</label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-dark-blue">Ideia do texto</label>
+                    {brainstormData.tema && brainstormData.tese && (
+                      <Button
+                        onClick={handleOptimizeIdea}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs h-7 px-2 border-bright-blue/40 text-bright-blue hover:bg-bright-blue/5 hover:border-bright-blue/60"
+                        disabled={isOptimizingIdea}
+                      >
+                        {isOptimizingIdea ? (
+                          <>
+                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-bright-blue mr-1"></div>
+                            <span>Otimizando...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="mr-1">✨</span>
+                            <span>Otimizar com IA</span>
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
                   <Textarea
                     value={brainstormData.tese}
                     onChange={(e) => setBrainstormData(prev => ({...prev, tese: e.target.value}))}
                     placeholder="Descreva a ideia principal do que você planeja escrever..."
                     className="border-bright-blue/20 focus:border-bright-blue h-20"
                   />
+                  {brainstormData.tema && !brainstormData.tese && (
+                    <p className="text-xs text-soft-gray mt-1">
+                      💡 Escreva sua ideia inicial e clique em "Otimizar com IA" para receber sugestões de melhoria
+                    </p>
+                  )}
                 </div>
               </div>
             </LiquidGlassCard>

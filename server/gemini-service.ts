@@ -523,6 +523,11 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     const userLevel = this.detectUserLevel(context);
     
     const sectionInstructions = {
+      optimization: {
+        beginner: "Vou analisar sua ideia e sugerir melhorias para torná-la mais clara, específica e argumentativa. Mantenho a essência do que você pensou, mas aprimoro a formulação.",
+        intermediate: "Vou otimizar sua ideia do texto, tornando-a mais precisa, argumentativa e bem fundamentada. Manterei sua proposta original, mas com formulação mais elaborada.",
+        advanced: "Vou refinar sua ideia do texto com maior sofisticação conceitual, precisão argumentativa e formulação mais elegante, preservando sua visão original."
+      },
       introducao: {
         beginner: "Para a introdução, vou te ensinar a estrutura básica: 1) Contextualização (apresentar o tema), 2) Problematização (mostrar por que é importante) e 3) Tese (sua opinião clara).",
         intermediate: "Para a introdução, vamos aprimorar sua apresentação do tema com dados relevantes, contextualização histórica/social e uma tese mais persuasiva e bem fundamentada.",
@@ -576,7 +581,15 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     prompt += `\n❓ SUA PERGUNTA: "${userMessage}"\n\n`;
     
     // Instruções de resposta adaptadas ao nível
-    if (userLevel === 'beginner') {
+    if (section === 'optimization') {
+      // Instruções específicas para otimização de ideia
+      prompt += `Responda seguindo esta estrutura exata:\n\n`;
+      prompt += `1. **📝 Análise da sua ideia atual:**\n[Breve análise do que está bom e o que pode melhorar]\n\n`;
+      prompt += `2. **✨ Versão otimizada:**\n"[Aqui coloque a versão melhorada da ideia entre aspas]"\n\n`;
+      prompt += `3. **💡 Principais melhorias:**\n[Liste 2-3 pontos específicos que foram aprimorados]\n\n`;
+      prompt += `4. **🎯 Dica extra:**\n[Uma sugestão adicional para fortalecer ainda mais a ideia]\n\n`;
+      prompt += `IMPORTANTE: A versão otimizada deve estar entre aspas para facilitar a aplicação automática.`;
+    } else if (userLevel === 'beginner') {
       prompt += `Responda de forma didática e passo a passo (máximo 250 palavras):\n`;
       prompt += `• Use linguagem simples e amigável\n`;
       prompt += `• Dê exemplos práticos e específicos\n`;
@@ -627,6 +640,11 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     const userLevel = this.detectUserLevel(context);
     
     const fallbacks = {
+      optimization: {
+        beginner: "🎯 **Otimizando sua ideia**\n\n📝 **Análise:** Sua ideia tem potencial, mas pode ficar mais específica e argumentativa.\n\n✨ **Versão otimizada:**\n\"[Mantenha sua ideia principal, mas torne-a mais clara e específica ao tema proposto]\"\n\n💡 **Principais melhorias:**\n• Maior especificidade ao tema\n• Linguagem mais argumentativa\n• Conexão clara com os argumentos que virão\n\n🎯 **Dica extra:** Use dados ou exemplos para fortalecer sua posição desde a ideia inicial!",
+        intermediate: "🎯 **Aprimorando sua ideia**\n\n📝 **Análise:** Sua ideia está bem direcionada, mas pode ganhar mais precisão argumentativa.\n\n✨ **Versão otimizada:**\n\"[Versão mais elaborada e precisa da sua ideia original]\"\n\n💡 **Principais melhorias:**\n• Maior precisão conceitual\n• Argumentação mais robusta\n• Melhor articulação das ideias\n\n🎯 **Dica extra:** Considere múltiplas perspectivas para enriquecer sua argumentação.",
+        advanced: "🎯 **Refinando sua ideia**\n\n📝 **Análise:** Sua ideia demonstra maturidade conceitual, mas pode alcançar maior sofisticação.\n\n✨ **Versão otimizada:**\n\"[Versão sofisticada e conceitualmente refinada da sua ideia]\"\n\n💡 **Principais melhorias:**\n• Sofisticação conceitual\n• Nuances argumentativas\n• Elegância na formulação\n\n🎯 **Dica extra:** Explore paradoxos e complexidades inerentes ao tema para demonstrar domínio pleno."
+      },
       introducao: {
         beginner: "🎯 **Estrutura da Introdução**\n\n📍 **1º Passo - Contextualização:**\nComece apresentando o tema de forma geral. Ex: \"No mundo contemporâneo...\"\n\n📍 **2º Passo - Problematização:**\nMostre por que o tema é importante. Ex: \"Esse cenário evidencia...\"\n\n📍 **3º Passo - Tese:**\nApresente sua opinião clara. Ex: \"Nesse sentido, é necessário...\"\n\n💡 **Dica:** Use dados ou estatísticas para fortalecer sua contextualização!",
         intermediate: "🎯 **Aprimorando sua Introdução**\n\n📈 **Contextualização mais rica:**\nUse dados atuais, contexto histórico ou comparações internacionais\n\n🔍 **Problematização sofisticada:**\nMostre causas e consequências do problema\n\n💭 **Tese mais persuasiva:**\nUse argumentos de autoridade ou dados para sustentar sua posição\n\n🔗 **Conectivos eficazes:** \"Diante desse cenário\", \"Nessa perspectiva\", \"Sob essa ótica\"",
