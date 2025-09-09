@@ -230,21 +230,30 @@ export default function Argumentos() {
     
     return (
       <div className="mt-4">
+        {/* Texto explicativo sobre a funcionalidade de IA */}
+        <div className="mb-2 text-xs text-soft-gray bg-gray-50 p-2 rounded-lg border border-gray-200">
+          <span className="font-medium">💡 Assistente de IA:</span> 
+          {hasRequiredContext 
+            ? " Clique no botão abaixo para conversar com a IA e receber sugestões personalizadas para esta seção da sua redação."
+            : " Complete a proposta e tese primeiro para liberar a IA que te ajudará a desenvolver cada parágrafo."
+          }
+        </div>
+        
         <Button
           onClick={() => hasRequiredContext ? toggleChat(section) : null}
-          variant="outline"
+          variant={hasRequiredContext ? "default" : "outline"}
           disabled={!hasRequiredContext}
-          className={`w-full justify-start text-left border-bright-blue/30 ${
+          className={`w-full justify-start text-left transition-all duration-300 ${
             hasRequiredContext 
-              ? 'hover:bg-bright-blue/10 cursor-pointer' 
-              : 'opacity-50 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-none shadow-lg hover:shadow-xl transform hover:scale-[1.02] animate-pulse' 
+              : 'opacity-50 cursor-not-allowed border-gray-300'
           }`}
-          title={!hasRequiredContext ? 'Preencha a proposta e tese primeiro para ativar a IA' : ''}
+          title={!hasRequiredContext ? 'Preencha a proposta e tese primeiro para ativar a IA' : 'Clique para conversar com a IA'}
         >
           <MessageSquare size={14} className="mr-2" />
           {hasRequiredContext 
-            ? (chatData.isOpen ? 'Fechar' : 'Conversar com') + ' IA sobre ' + title
-            : 'IA: Preencha proposta e tese primeiro'
+            ? (chatData.isOpen ? '🤖 Fechar Chat com IA' : '🚀 Pedir Ajuda da IA sobre ' + title)
+            : '🔒 IA: Complete proposta e tese primeiro'
           }
         </Button>
         
