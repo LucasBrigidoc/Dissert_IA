@@ -200,15 +200,6 @@ export default function Argumentos() {
                 <h1 className="text-2xl font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
             </div>
-            <div className="text-sm text-soft-gray flex items-center space-x-4">
-              <span>Progresso: {calculateProgress()}%</span>
-              <div className="w-20 h-2 bg-gray-200 rounded-full">
-                <div 
-                  className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-300"
-                  style={{ width: `${calculateProgress()}%` }}
-                />
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -217,6 +208,37 @@ export default function Argumentos() {
       <div className="container mx-auto px-4 sm:px-6 py-4 pt-24">
         <div className="grid gap-6">
           
+          {/* Progresso da Construção - Acima do Chat */}
+          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <h4 className="font-semibold text-dark-blue">Progresso da Construção</h4>
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Tema</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Tese</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Argumentos</span>
+                    <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-dark-blue">Conclusão</span>
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-semibold text-dark-blue">{calculateProgress()}% Completo</div>
+                <div className="text-xs text-soft-gray">Continue conversando com a IA para desenvolver mais</div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+
           {/* Chat Principal - Largura Total */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="flex flex-col h-96">
@@ -421,36 +443,6 @@ export default function Argumentos() {
             </LiquidGlassCard>
           </div>
 
-          {/* Progresso e Status */}
-          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <h4 className="font-semibold text-dark-blue">Progresso da Construção</h4>
-                <div className="flex items-center space-x-6">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Tema</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Tese</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Argumentos</span>
-                    <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-dark-blue">Conclusão</span>
-                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-sm font-semibold text-dark-blue">{calculateProgress()}% Completo</div>
-                <div className="text-xs text-soft-gray">Continue conversando com a IA para desenvolver mais</div>
-              </div>
-            </div>
-          </LiquidGlassCard>
 
         </div>
       </div>
