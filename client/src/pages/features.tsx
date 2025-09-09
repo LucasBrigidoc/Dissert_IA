@@ -70,12 +70,6 @@ export default function Features() {
                 Nosso sistema é projetado para te ajudar em cada etapa do processo de escrita com funcionalidades que utilizam IA para maximizar seus resultados. Desde a geração de ideias até a revisão final tenha um professor que vai lhe ajudar a melhorar sua escrita.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-[7px] mb-[7px]">
-                <Button asChild className="bg-gradient-to-r from-bright-blue to-dark-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:from-blue-600 hover:to-blue-800 smooth-transition hover-scale inline-flex items-center gap-2" data-testid="button-chat-pedagogico">
-                  <Link href="/chat-pedagogico">
-                    <MessageCircle size={20} />
-                    Testar Chat Pedagógico
-                  </Link>
-                </Button>
                 <Button asChild variant="outline" className="border-2 border-white text-white bg-transparent px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-white hover:text-dark-blue smooth-transition hover-scale inline-flex items-center gap-2" data-testid="button-try-now">
                   <Link href="/signup">
                     <Sparkles size={20} />
