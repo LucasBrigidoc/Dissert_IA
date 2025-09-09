@@ -84,7 +84,7 @@ export default function Argumentos() {
     setShowMindMap(true);
   };
   
-  const sendMessageToSection = (section: string) => {
+  const sendMessageToSection = async (section: string) => {
     const currentMessage = chatStates[section as keyof typeof chatStates].currentMessage;
     if (!currentMessage.trim()) return;
     
@@ -103,47 +103,81 @@ export default function Argumentos() {
       }
     }));
     
-    // Simular resposta da IA contextual
-    setTimeout(() => {
-      const responses = {
-        introducao: [
-          'Ótima contextualização! Como você vai apresentar sua tese de forma clara?',
-          'Interessante abordagem! Você pode ser mais específico sobre sua posição?',
-          'Boa introdução! Como isso conecta com seus argumentos principais?'
-        ],
-        desenvolvimento1: [
-          'Excelente argumento! Que exemplos concretos podem fortalecê-lo?',
-          'Muito bom! Como você pode relacionar isso com dados ou estatísticas?',
-          'Interessante ponto! Que autoridades ou especialistas apoiam essa visão?'
-        ],
-        desenvolvimento2: [
-          'Ótimo segundo argumento! Como ele complementa o primeiro?',
-          'Perfeito! Que exemplos históricos ou atuais sustentam essa ideia?',
-          'Excelente! Como isso impacta a sociedade brasileira especificamente?'
-        ],
-        conclusao: [
-          'Boa proposta! Como garantir que seja viável e realista?',
-          'Interessante ideia! Quem seria responsável por implementar isso?',
-          'Excelente conclusão! Isso resolve o problema apresentado?'
-        ]
-      };
+    // Show loading message
+    const loadingMessage = {
+      id: Date.now() + 1,
+      type: 'ai',
+      content: '🤔 Analisando seu texto e preparando sugestões...'
+    };
+    
+    setChatStates(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section as keyof typeof prev],
+        messages: [...prev[section as keyof typeof prev].messages, loadingMessage]
+      }
+    }));
+    
+    try {
+      // Send request to AI API with context
+      const response = await fetch('/api/chat/argumentative', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: currentMessage,
+          section,
+          context: {
+            proposta: brainstormData.tema,
+            tese: brainstormData.tese,
+            paragrafos: brainstormData.paragrafos
+          }
+        })
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error('Limite de consultas de IA atingido. Tente novamente em uma hora.');
+        }
+        throw new Error('Erro ao conectar com a IA');
+      }
+
+      const data = await response.json();
       
-      const randomResponse = responses[section as keyof typeof responses][Math.floor(Math.random() * 3)];
-      
+      // Replace loading message with actual AI response
       const aiResponse = {
-        id: Date.now() + 1,
+        id: Date.now() + 2,
         type: 'ai',
-        content: randomResponse
+        content: data.response
       };
       
       setChatStates(prev => ({
         ...prev,
         [section]: {
           ...prev[section as keyof typeof prev],
-          messages: [...prev[section as keyof typeof prev].messages, aiResponse]
+          messages: prev[section as keyof typeof prev].messages.filter(msg => msg.id !== loadingMessage.id).concat(aiResponse)
         }
       }));
-    }, 1000);
+      
+    } catch (error: any) {
+      console.error('AI Chat error:', error);
+      
+      // Replace loading message with error message
+      const errorMessage = {
+        id: Date.now() + 3,
+        type: 'ai',
+        content: `❌ ${error.message || 'Erro ao gerar resposta. Tente novamente.'}`
+      };
+      
+      setChatStates(prev => ({
+        ...prev,
+        [section]: {
+          ...prev[section as keyof typeof prev],
+          messages: prev[section as keyof typeof prev].messages.filter(msg => msg.id !== loadingMessage.id).concat(errorMessage)
+        }
+      }));
+    }
   };
   
   const updateChatMessage = (section: string, message: string) => {
