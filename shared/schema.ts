@@ -152,7 +152,7 @@ export const searchQuerySchema = z.object({
 
 export const chatMessageSchema = z.object({
   message: z.string().min(1, "Mensagem é obrigatória"),
-  section: z.enum(["introducao", "desenvolvimento1", "desenvolvimento2", "conclusao"]),
+  section: z.enum(["introducao", "desenvolvimento1", "desenvolvimento2", "conclusao", "optimization"]),
   context: z.object({
     proposta: z.string().optional(),
     tese: z.string().optional(),
