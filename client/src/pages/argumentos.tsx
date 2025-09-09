@@ -167,8 +167,22 @@ export default function Argumentos() {
     return Math.round((completed / total) * 100);
   };
 
+  // Verificar se todos os pontos da redação foram preenchidos
+  const isEssayComplete = () => {
+    return brainstormData.tema.trim() !== '' &&
+           brainstormData.tese.trim() !== '' &&
+           brainstormData.paragrafos.introducao.trim() !== '' &&
+           brainstormData.paragrafos.desenvolvimento1.trim() !== '' &&
+           brainstormData.paragrafos.desenvolvimento2.trim() !== '' &&
+           brainstormData.paragrafos.conclusao.trim() !== '';
+  };
+
   // Criar mapa mental em nova tela
   const handleCreateMindMap = () => {
+    if (!isEssayComplete()) {
+      return;
+    }
+    
     // Salvar dados atuais no localStorage para passar para a nova tela
     localStorage.setItem('mindMapData', JSON.stringify({
       tema: brainstormData.tema,
@@ -339,11 +353,16 @@ export default function Argumentos() {
               </div>
               <Button 
                 onClick={handleCreateMindMap}
-                className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
+                disabled={!isEssayComplete()}
+                className={`${
+                  isEssayComplete() 
+                    ? "bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
                 data-testid="button-create-mindmap"
               >
                 <Map className="mr-2" size={16} />
-                Criar Mapa Mental
+                {isEssayComplete() ? "Criar Mapa Mental" : "Complete todos os pontos"}
               </Button>
             </div>
             
