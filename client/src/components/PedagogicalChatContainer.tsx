@@ -16,12 +16,16 @@ import {
   CheckCircle2,
   ChevronRight,
   Eye,
-  EyeOff
+  EyeOff,
+  Map,
+  Layout,
+  Columns3
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EssayPreview } from "./EssayPreview";
+import { MindMapContainer } from "./MindMapContainer";
 
 interface Message {
   id: string;
@@ -66,6 +70,8 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
     percentualCompleto: 0
   });
   const [showPreview, setShowPreview] = useState(true);
+  const [showMindMap, setShowMindMap] = useState(true);
+  const [layoutMode, setLayoutMode] = useState<'full' | 'chat-preview' | 'chat-mindmap' | 'three-column'>('three-column');
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -197,6 +203,58 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
     return labels[stage as keyof typeof labels] || stage;
   };
 
+  const handleMindMapNodeSelect = (nodeId: string, data: any) => {
+    // Quando um nó do mapa mental é clicado, adicionar sugestão ao chat
+    let suggestionText = "";
+    
+    switch (nodeId) {
+      case 'tema':
+        suggestionText = "Vamos trabalhar mais no tema da redação";
+        break;
+      case 'tese':
+        suggestionText = "Quero desenvolver melhor minha tese";
+        break;
+      case 'introducao':
+        suggestionText = "Preciso de ajuda com a introdução";
+        break;
+      case 'desenvolvimento1':
+        suggestionText = "Vamos trabalhar no primeiro argumento";
+        break;
+      case 'desenvolvimento2':
+        suggestionText = "Preciso desenvolver o segundo argumento";
+        break;
+      case 'conclusao':
+        suggestionText = "Vamos criar a conclusão com proposta de intervenção";
+        break;
+      default:
+        if (nodeId.startsWith('repertorio-')) {
+          suggestionText = `Como posso usar o repertório "${data.title}" na minha redação?`;
+        } else if (nodeId.startsWith('conectivo-')) {
+          suggestionText = `Como usar conectivos de ${data.categoria.toLowerCase()} no meu texto?`;
+        }
+    }
+    
+    if (suggestionText) {
+      setCurrentMessage(suggestionText);
+      textareaRef.current?.focus();
+    }
+  };
+
+  const getLayoutClasses = () => {
+    switch (layoutMode) {
+      case 'full':
+        return 'grid-cols-1 max-w-4xl mx-auto';
+      case 'chat-preview':
+        return 'grid-cols-1 lg:grid-cols-2 max-w-6xl mx-auto';
+      case 'chat-mindmap':
+        return 'grid-cols-1 lg:grid-cols-2 max-w-6xl mx-auto';
+      case 'three-column':
+        return 'grid-cols-1 lg:grid-cols-12 max-w-7xl mx-auto';
+      default:
+        return 'grid-cols-1 lg:grid-cols-12 max-w-7xl mx-auto';
+    }
+  };
+
   const getStageIcon = (stage: string) => {
     const icons = {
       tema: BookOpen,
@@ -237,8 +295,9 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
               </div>
             </div>
             
-            {/* Progresso atual e toggle preview */}
-            <div className="hidden md:flex items-center space-x-4">
+            {/* Controles de layout e progresso */}
+            <div className="hidden md:flex items-center space-x-2">
+              {/* Toggle Preview */}
               <Button
                 variant="outline"
                 size="sm"
@@ -246,7 +305,31 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
                 className="text-soft-gray hover:text-bright-blue"
               >
                 {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
-                {showPreview ? 'Ocultar Preview' : 'Mostrar Preview'}
+              </Button>
+              
+              {/* Toggle Mind Map */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowMindMap(!showMindMap)}
+                className="text-soft-gray hover:text-bright-blue"
+              >
+                {showMindMap ? <Map size={16} /> : <Map size={16} />}
+              </Button>
+              
+              {/* Layout Mode */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const modes: typeof layoutMode[] = ['three-column', 'chat-preview', 'chat-mindmap', 'full'];
+                  const currentIndex = modes.indexOf(layoutMode);
+                  const nextMode = modes[(currentIndex + 1) % modes.length];
+                  setLayoutMode(nextMode);
+                }}
+                className="text-soft-gray hover:text-bright-blue"
+              >
+                <Columns3 size={16} />
               </Button>
               
               <Separator orientation="vertical" className="h-6" />
@@ -257,7 +340,7 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
                   {getStageLabel(progressoAtual.etapa)}
                 </span>
               </div>
-              <div className="w-32">
+              <div className="w-24">
                 <Progress value={progressoAtual.percentualCompleto} className="h-2" />
               </div>
               <span className="text-sm text-soft-gray">
@@ -284,6 +367,14 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
                 >
                   {showPreview ? <EyeOff size={14} /> : <Eye size={14} />}
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowMindMap(!showMindMap)}
+                  className="text-soft-gray hover:text-bright-blue h-7 px-2"
+                >
+                  <Map size={14} />
+                </Button>
                 <span className="text-sm text-soft-gray">
                   {progressoAtual.percentualCompleto}%
                 </span>
@@ -295,11 +386,15 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <div className={`grid gap-6 h-[70vh] ${showPreview ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 max-w-4xl mx-auto'}`}>
+      <div className="container mx-auto px-4 py-6">
+        <div className={`grid gap-4 h-[70vh] ${getLayoutClasses()}`}>
           
           {/* Chat Container */}
-          <Card className="h-full flex flex-col bg-white/80 backdrop-blur-sm border-white/20 shadow-lg">
+          <Card className={`h-full flex flex-col bg-white/80 backdrop-blur-sm border-white/20 shadow-lg ${
+            layoutMode === 'three-column' ? 'lg:col-span-5' : 
+            layoutMode === 'chat-preview' || layoutMode === 'chat-mindmap' ? 'lg:col-span-1' : 
+            'col-span-1'
+          }`}>
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.map((message) => (
@@ -425,26 +520,47 @@ export function PedagogicalChatContainer({ onBack, initialContext = {} }: Pedago
           </Card>
         
         {/* Essay Preview */}
-        {showPreview && (
+        {showPreview && (layoutMode === 'chat-preview' || layoutMode === 'three-column') && (
           <EssayPreview 
             essayContext={essayContext}
             progressPercent={progressoAtual.percentualCompleto}
-            className="hidden lg:block"
+            className={`hidden lg:block ${
+              layoutMode === 'three-column' ? 'lg:col-span-4' : 'lg:col-span-1'
+            }`}
+          />
+        )}
+        
+        {/* Mind Map */}
+        {showMindMap && (layoutMode === 'chat-mindmap' || layoutMode === 'three-column') && (
+          <MindMapContainer 
+            essayContext={essayContext}
+            onNodeSelect={handleMindMapNodeSelect}
+            className={`hidden lg:block ${
+              layoutMode === 'three-column' ? 'lg:col-span-3' : 'lg:col-span-1'
+            }`}
           />
         )}
         
         </div>
         
-        {/* Preview mobile - below chat */}
-        {showPreview && (
-          <div className="lg:hidden mt-6">
+        {/* Mobile sections - below chat */}
+        <div className="lg:hidden space-y-4 mt-6">
+          {showPreview && (
             <EssayPreview 
               essayContext={essayContext}
               progressPercent={progressoAtual.percentualCompleto}
               className="h-96"
             />
-          </div>
-        )}
+          )}
+          
+          {showMindMap && (
+            <MindMapContainer 
+              essayContext={essayContext}
+              onNodeSelect={handleMindMapNodeSelect}
+              className="h-96"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
