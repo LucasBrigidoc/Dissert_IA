@@ -1,48 +1,80 @@
+import { useState, useEffect } from "react";
 import { PedagogicalChatContainer } from "@/components/PedagogicalChatContainer";
-import { useLocation } from "wouter";
+
+// Interface para contexto inicial da redação
+interface EssayContext {
+  tema?: string;
+  tese?: string;
+  estrutura?: {
+    introducao?: string;
+    desenvolvimento1?: string;
+    desenvolvimento2?: string;
+    conclusao?: string;
+  };
+  repertorios?: Array<{title: string, description: string, type: string}>;
+  conectivos?: Array<string>;
+  etapaAtual?: 'tema' | 'tese' | 'argumentacao' | 'conclusao' | 'revisao';
+}
 
 export default function ChatPedagogico() {
-  const [, setLocation] = useLocation();
+  const [backUrl, setBackUrl] = useState('/dashboard');
+  const [initialContext] = useState<EssayContext>({
+    etapaAtual: 'tema'
+  });
+  
+  useEffect(() => {
+    // Detectar página de origem através de múltiplas fontes
+    const detectPreviousPage = () => {
+      // 1. Verificar parâmetro 'from' na URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromParam = urlParams.get('from');
+      
+      if (fromParam === 'functionalities') {
+        return '/functionalities';
+      }
+      if (fromParam === 'dashboard') {
+        return '/dashboard';
+      }
+      if (fromParam === 'argumentos') {
+        return '/argumentos';
+      }
+      
+      // 2. Verificar o referrer do documento
+      if (document.referrer) {
+        const referrerUrl = new URL(document.referrer);
+        const referrerPath = referrerUrl.pathname;
+        
+        if (referrerPath === '/functionalities') {
+          return '/functionalities';
+        }
+        if (referrerPath === '/dashboard') {
+          return '/dashboard';
+        }
+        if (referrerPath === '/argumentos') {
+          return '/argumentos';
+        }
+      }
+      
+      // 3. Padrão
+      return '/dashboard';
+    };
+    
+    const detectedUrl = detectPreviousPage();
+    setBackUrl(detectedUrl);
+  }, []);
 
   const handleBack = () => {
-    // Detectar origem ou voltar para dashboard
-    const urlParams = new URLSearchParams(window.location.search);
-    const fromParam = urlParams.get('from');
-    
-    switch (fromParam) {
-      case 'functionalities':
-        setLocation('/functionalities');
-        break;
-      case 'dashboard':
-        setLocation('/dashboard');
-        break;
-      default:
-        // Verificar se há histórico de navegação
-        if (window.history.length > 1 && document.referrer) {
-          window.history.back();
-        } else {
-          setLocation('/dashboard');
-        }
+    if (window.history.length > 1 && document.referrer) {
+      window.history.back();
+    } else {
+      window.location.href = backUrl;
     }
-  };
-
-  // Contexto inicial opcional baseado em parâmetros da URL
-  const getInitialContext = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tema = urlParams.get('tema');
-    const tese = urlParams.get('tese');
-    
-    const context: any = {};
-    if (tema) context.tema = decodeURIComponent(tema);
-    if (tese) context.tese = decodeURIComponent(tese);
-    
-    return Object.keys(context).length > 0 ? context : undefined;
   };
 
   return (
     <PedagogicalChatContainer 
       onBack={handleBack}
-      initialContext={getInitialContext()}
+      initialContext={initialContext}
     />
   );
 }
