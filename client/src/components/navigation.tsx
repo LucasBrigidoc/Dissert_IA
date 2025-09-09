@@ -55,6 +55,9 @@ export function Navigation() {
           <Link href="/features" className={getNavLinkClasses("/features")} data-testid="link-funcionalidades">
             <span className="font-medium">Funcionalidades</span>
           </Link>
+          <Link href="/chat-pedagogico" className={getNavLinkClasses("/chat-pedagogico")} data-testid="link-chat-pedagogico">
+            <span className="font-medium">Chat Pedagógico</span>
+          </Link>
           <Link href="/pricing" className={getNavLinkClasses("/pricing")} data-testid="link-planos">
             <span className="font-medium">Planos</span>
           </Link>
@@ -105,6 +108,14 @@ export function Navigation() {
               onClick={closeMenu}
             >
               <span className="font-medium">Funcionalidades</span>
+            </Link>
+            <Link 
+              href="/chat-pedagogico" 
+              className={getMobileNavLinkClasses("/chat-pedagogico")}
+              data-testid="link-chat-pedagogico-mobile"
+              onClick={closeMenu}
+            >
+              <span className="font-medium">Chat Pedagógico</span>
             </Link>
             <Link 
               href="/pricing" 
