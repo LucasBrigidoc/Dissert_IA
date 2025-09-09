@@ -473,27 +473,25 @@ export default function Argumentos() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-dark-blue">Ideia do texto</label>
-                    {brainstormData.tema && brainstormData.tese && (
-                      <Button
-                        onClick={handleOptimizeIdea}
-                        variant="outline"
-                        size="sm"
-                        className="text-xs h-7 px-2 border-bright-blue/40 text-bright-blue hover:bg-bright-blue/5 hover:border-bright-blue/60"
-                        disabled={isOptimizingIdea}
-                      >
-                        {isOptimizingIdea ? (
-                          <>
-                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-bright-blue mr-1"></div>
-                            <span>Otimizando...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="mr-1">✨</span>
-                            <span>Otimizar com IA</span>
-                          </>
-                        )}
-                      </Button>
-                    )}
+                    <Button
+                      onClick={handleOptimizeIdea}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7 px-2 border-bright-blue/40 text-bright-blue hover:bg-bright-blue/5 hover:border-bright-blue/60"
+                      disabled={isOptimizingIdea}
+                    >
+                      {isOptimizingIdea ? (
+                        <>
+                          <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-bright-blue mr-1"></div>
+                          <span>Otimizando...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="mr-1">✨</span>
+                          <span>{brainstormData.tese ? 'Otimizar com IA' : 'Ajuda da IA'}</span>
+                        </>
+                      )}
+                    </Button>
                   </div>
                   <Textarea
                     value={brainstormData.tese}
@@ -501,11 +499,11 @@ export default function Argumentos() {
                     placeholder="Descreva a ideia principal do que você planeja escrever..."
                     className="border-bright-blue/20 focus:border-bright-blue h-20"
                   />
-                  {brainstormData.tema && !brainstormData.tese && (
-                    <p className="text-xs text-soft-gray mt-1">
-                      💡 Escreva sua ideia inicial e clique em "Otimizar com IA" para receber sugestões de melhoria
-                    </p>
-                  )}
+                  <p className="text-xs text-soft-gray mt-1">
+                    💡 {brainstormData.tese 
+                      ? 'Clique em "Otimizar com IA" para melhorar sua ideia'
+                      : 'Clique em "Ajuda da IA" para receber orientações sobre como começar'}
+                  </p>
                 </div>
               </div>
             </LiquidGlassCard>
