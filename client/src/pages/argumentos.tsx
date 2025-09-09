@@ -223,6 +223,14 @@ export default function Argumentos() {
                 <h1 className="text-2xl font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
             </div>
+            <div className="text-right">
+              <div className="text-sm text-soft-gray">
+                Desenvolva sua redação com ajuda da IA
+              </div>
+              <div className="text-xs text-soft-gray/70">
+                Chat inteligente para estruturação argumentativa
+              </div>
+            </div>
           </div>
         </div>
       </div>
