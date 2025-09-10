@@ -1,553 +1,556 @@
-import { useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Plus, FileText, Calendar, BookOpen, Target, Filter, ArrowLeft, Eye, Edit, Download, Star, Trophy, School, Building, Lightbulb } from "lucide-react";
+import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, Star, Clock, Loader2, Trophy, GraduationCap } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import type { Proposal } from "@shared/schema";
 
-export default function PropostasPage() {
-  const [, setLocation] = useLocation();
+interface SearchResult {
+  results: Proposal[];
+  count: number;
+  query?: string;
+  suggestions?: {
+    themes: string[];
+    examTypes: string[];
+  };
+}
+
+export default function Propostas() {
+  const [location] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedExamType, setSelectedExamType] = useState<string>("all");
+  const [selectedTheme, setSelectedTheme] = useState<string>("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
+  const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
+  const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+  
   const { toast } = useToast();
   
-  // Estados para criação de propostas
-  const [newProposal, setNewProposal] = useState({
-    title: "",
-    description: "",
-    context: "",
-    supportText: "",
-    category: "",
-    difficulty: ""
-  });
-
-  // Estados para busca
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("todas");
-  const [selectedSource, setSelectedSource] = useState("todas");
-  const [yearFilterType, setYearFilterType] = useState("todos");
-  const [specificYear, setSpecificYear] = useState("");
-  const [yearRangeStart, setYearRangeStart] = useState("");
-  const [yearRangeEnd, setYearRangeEnd] = useState("");
-
-  // Estado para expandir/compactar o formulário de criação
-  const [isFormExpanded, setIsFormExpanded] = useState(false);
-
-  // Mock data para propostas existentes
-  const mockProposals = [
-    {
-      id: 1,
-      title: "A importância da leitura na formação cidadã",
-      description: "Redija um texto dissertativo-argumentativo sobre o papel da leitura na formação de cidadãos críticos e conscientes.",
-      context: "No Brasil, apenas 52% da população tem o hábito de ler regularmente. Como a leitura pode contribuir para formar cidadãos mais críticos?",
-      supportText: "A leitura desenvolve o pensamento crítico, amplia o vocabulário e proporciona conhecimento cultural diversificado.",
-      category: "Educação",
-      difficulty: "Média",
-      source: "ENEM 2023",
-      year: "2023",
-      institution: "INEP",
-      tags: ["educação", "cidadania", "leitura", "crítica"]
+  // Mutation para salvar proposta na biblioteca pessoal
+  const saveProposalMutation = useMutation({
+    mutationFn: async (proposalId: string) => {
+      return apiRequest(`/api/proposals/${proposalId}/save`, {
+        method: "POST"
+      });
     },
-    {
-      id: 2,
-      title: "Tecnologia e relações humanas na era digital",
-      description: "Discuta os impactos positivos e negativos da tecnologia nas relações interpessoais contemporâneas.",
-      context: "As redes sociais conectam pessoas globalmente, mas também podem causar isolamento social. Como equilibrar tecnologia e relacionamentos?",
-      supportText: "Estudos indicam que 70% dos jovens preferem comunicação digital, mas relatam sentir-se mais sozinhos que gerações anteriores.",
-      category: "Sociedade",
-      difficulty: "Alta",
-      source: "Vestibular UNICAMP",
-      year: "2024",
-      institution: "UNICAMP",
-      tags: ["tecnologia", "relações", "digital", "sociedade"]
-    },
-    {
-      id: 3,
-      title: "Sustentabilidade urbana e qualidade de vida",
-      description: "Analise os desafios da sustentabilidade em grandes centros urbanos e proposte soluções viáveis.",
-      context: "Cidades concentram 85% da população brasileira, mas enfrentam problemas de poluição, mobilidade e gestão de resíduos.",
-      supportText: "Conceitos como cidade inteligente, mobilidade urbana sustentável e economia circular são fundamentais para o futuro urbano.",
-      category: "Meio Ambiente",
-      difficulty: "Alta",
-      source: "Concurso Público",
-      year: "2024",
-      institution: "Prefeitura SP",
-      tags: ["sustentabilidade", "urbano", "meio ambiente", "cidades"]
-    },
-    {
-      id: 4,
-      title: "O papel da juventude na transformação social",
-      description: "Redija sobre como os jovens podem ser agentes de mudança social positiva no Brasil.",
-      context: "Jovens de 16 a 29 anos representam 25% da população brasileira. Como essa geração pode contribuir para mudanças sociais?",
-      supportText: "Movimentos estudantis históricos como o de 1968 e mais recentemente os protestos de 2013 mostram o poder transformador da juventude.",
-      category: "Sociedade",
-      difficulty: "Média",
-      source: "ENEM 2022",
-      year: "2022",
-      institution: "INEP",
-      tags: ["juventude", "sociedade", "mudança", "política"]
-    }
-  ];
-
-  // Filtrar propostas
-  const filteredProposals = mockProposals.filter(proposal => {
-    const matchesSearch = proposal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         proposal.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         proposal.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesCategory = selectedCategory === "todas" || proposal.category === selectedCategory;
-    const matchesSource = selectedSource === "todas" || proposal.source.includes(selectedSource);
-    
-    let matchesYear = true;
-    if (yearFilterType === "especifico" && specificYear) {
-      matchesYear = proposal.year === specificYear;
-    } else if (yearFilterType === "intervalo" && yearRangeStart && yearRangeEnd) {
-      const proposalYear = parseInt(proposal.year);
-      const startYear = parseInt(yearRangeStart);
-      const endYear = parseInt(yearRangeEnd);
-      matchesYear = proposalYear >= startYear && proposalYear <= endYear;
-    }
-    
-    return matchesSearch && matchesCategory && matchesSource && matchesYear;
-  });
-
-  const handleCreateProposal = () => {
-    if (!newProposal.title || !newProposal.description) {
+    onSuccess: () => {
       toast({
-        title: "Campos obrigatórios",
-        description: "Por favor, preencha pelo menos o título e descrição da proposta.",
+        title: "Proposta salva!",
+        description: "A proposta foi adicionada à sua biblioteca pessoal.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a proposta. Tente novamente.",
+        variant: "destructive",
+      });
+      console.error("Error saving proposal:", error);
+    }
+  });
+  
+  // Sistema inteligente de detecção de origem
+  const getBackUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromUrl = urlParams.get('from');
+    const fromSession = sessionStorage.getItem('propostas-origin');
+    const fromPage = fromUrl || fromSession || 'dashboard';
+    
+    // Salvar a origem atual se vier da URL
+    if (fromUrl) {
+      sessionStorage.setItem('propostas-origin', fromUrl);
+    }
+    
+    // Retornar URL correta baseada na origem
+    switch (fromPage) {
+      case 'argumentos':
+        return '/argumentos';
+      case 'redacao':
+        return '/redacao';
+      case 'dashboard':
+      default:
+        return '/';
+    }
+  };
+
+  // Load initial proposals
+  const { data: initialData } = useQuery({
+    queryKey: ["/api/proposals"],
+    queryFn: async () => {
+      const result = await apiRequest("/api/proposals?limit=6");
+      return result;
+    }
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setSearchResults(initialData);
+      setIsLoadingInitial(false);
+    }
+  }, [initialData]);
+
+  // Search mutation
+  const searchMutation = useMutation({
+    mutationFn: async (query: { query: string; examType?: string; theme?: string; difficulty?: string }) => {
+      console.log("🔍 Fazendo busca com:", query);
+      const result = await apiRequest("/api/proposals/search", {
+        method: "POST",
+        body: query
+      });
+      console.log("✅ Resultado da busca:", result);
+      return result;
+    },
+    onSuccess: (data: SearchResult) => {
+      console.log("🎉 Busca bem-sucedida, atualizando resultados:", data);
+      setSearchResults(data);
+    },
+    onError: (error) => {
+      console.error("❌ Erro na busca:", error);
+    }
+  });
+
+  // Load more mutation for getting additional proposals
+  const loadMoreMutation = useMutation({
+    mutationFn: async (query: { query: string; examType?: string; theme?: string; difficulty?: string; excludeIds: string[] }) => {
+      console.log("📚 Carregando mais propostas:", query);
+      const result = await apiRequest("/api/proposals/search", {
+        method: "POST",
+        body: query
+      });
+      console.log("✅ Mais propostas carregadas:", result);
+      return result;
+    },
+    onSuccess: (data: SearchResult) => {
+      if (searchResults && data.results.length > 0) {
+        const newUniqueProposals = data.results.filter(
+          newProposal => !searchResults.results.some(existingProposal => existingProposal.id === newProposal.id)
+        );
+        
+        if (newUniqueProposals.length > 0) {
+          setSearchResults(prev => ({
+            ...prev!,
+            results: [...prev!.results, ...newUniqueProposals],
+            count: prev!.count + newUniqueProposals.length
+          }));
+        }
+      }
+    },
+    onError: (error) => {
+      console.error("❌ Erro ao carregar mais propostas:", error);
+    }
+  });
+
+  // Generate new proposals mutation
+  const generateMutation = useMutation({
+    mutationFn: async (params: { theme: string; difficulty: string; examType: string }) => {
+      console.log("🎯 Gerando novas propostas:", params);
+      const result = await apiRequest("/api/proposals/generate", {
+        method: "POST",
+        body: params
+      });
+      console.log("✅ Propostas geradas:", result);
+      return result;
+    },
+    onSuccess: (data: SearchResult) => {
+      if (searchResults && data.results.length > 0) {
+        setSearchResults(prev => ({
+          ...prev!,
+          results: [...prev!.results, ...data.results],
+          count: prev!.count + data.results.length
+        }));
+        
+        toast({
+          title: "Novas propostas geradas!",
+          description: `${data.results.length} propostas personalizadas foram criadas pela IA.`,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("❌ Erro na geração:", error);
+      toast({
+        title: "Erro na geração",
+        description: "Não foi possível gerar novas propostas. Tente novamente.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Campo vazio",
+        description: "Digite um termo para buscar propostas.",
         variant: "destructive"
       });
       return;
     }
 
-    toast({
-      title: "Proposta criada com sucesso!",
-      description: `"${newProposal.title}" foi adicionada à sua biblioteca.`,
-    });
+    const query = {
+      query: searchQuery,
+      examType: selectedExamType === "all" ? undefined : selectedExamType,
+      theme: selectedTheme === "all" ? undefined : selectedTheme,
+      difficulty: selectedDifficulty === "all" ? undefined : selectedDifficulty,
+    };
 
-    setNewProposal({
-      title: "",
-      description: "",
-      context: "",
-      supportText: "",
-      category: "",
-      difficulty: ""
-    });
+    searchMutation.mutate(query);
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch(difficulty) {
-      case "Fácil": return "bg-green-100 text-green-800 border-green-200";
-      case "Média": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "Alta": return "bg-red-100 text-red-800 border-red-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
-    }
+  const handleLoadMore = () => {
+    if (!searchResults) return;
+    
+    const excludeIds = searchResults.results.map(p => p.id);
+    const query = {
+      query: searchQuery || "",
+      examType: selectedExamType === "all" ? undefined : selectedExamType,
+      theme: selectedTheme === "all" ? undefined : selectedTheme,
+      difficulty: selectedDifficulty === "all" ? undefined : selectedDifficulty,
+      excludeIds
+    };
+
+    loadMoreMutation.mutate(query);
   };
 
-  const getSourceIcon = (source: string) => {
-    if (source.includes("ENEM")) return <Trophy className="text-yellow-600" size={16} />;
-    if (source.includes("Vestibular")) return <School className="text-blue-600" size={16} />;
-    if (source.includes("Concurso")) return <Building className="text-purple-600" size={16} />;
-    return <FileText className="text-gray-600" size={16} />;
+  const handleGenerateNew = () => {
+    const theme = selectedTheme === "all" ? "social" : selectedTheme;
+    const difficulty = selectedDifficulty === "all" ? "medio" : selectedDifficulty;
+    const examType = selectedExamType === "all" ? "enem" : selectedExamType;
+
+    generateMutation.mutate({ theme, difficulty, examType });
+  };
+
+  const getFilteredProposals = () => {
+    if (!searchResults) return [];
+    return searchResults.results;
+  };
+
+  const displayProposals = getFilteredProposals();
+  const isLoading = searchMutation.isPending || isLoadingInitial || loadMoreMutation.isPending;
+
+  // Get theme label
+  const getThemeLabel = (theme: string) => {
+    const themes = {
+      social: "Sociedade",
+      environment: "Meio Ambiente",
+      technology: "Tecnologia",
+      education: "Educação",
+      politics: "Política",
+      economy: "Economia",
+      culture: "Cultura",
+      health: "Saúde",
+      ethics: "Ética",
+      globalization: "Globalização"
+    };
+    return themes[theme as keyof typeof themes] || theme;
+  };
+
+  // Get difficulty label
+  const getDifficultyLabel = (difficulty: string) => {
+    const difficulties = {
+      facil: "Fácil",
+      medio: "Médio",
+      dificil: "Difícil",
+      "muito-dificil": "Muito Difícil"
+    };
+    return difficulties[difficulty as keyof typeof difficulties] || difficulty;
+  };
+
+  // Get exam type label
+  const getExamTypeLabel = (examType: string) => {
+    const examTypes = {
+      enem: "ENEM",
+      vestibular: "Vestibular",
+      concurso: "Concurso",
+      simulado: "Simulado",
+      custom: "Personalizado"
+    };
+    return examTypes[examType as keyof typeof examTypes] || examType;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-40">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <Button
-                onClick={() => setLocation("/functionalities")}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-                data-testid="button-back"
-              >
-                <ArrowLeft size={16} />
-                <span>Voltar</span>
-              </Button>
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                  <Lightbulb className="text-white" size={24} />
-                </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas</h1>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-600/20 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
+      
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link href={getBackUrl()}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/20"
+              data-testid="button-back"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+          </Link>
+          
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/20">
+              <FileText className="w-6 h-6 text-blue-400" />
             </div>
-            <div className="text-sm text-soft-gray">
-              Crie e explore temas para praticar
-            </div>
+            <h1 className="text-3xl font-bold text-white">Explorador de Propostas</h1>
           </div>
         </div>
-      </div>
-      <div className="container mx-auto px-6 py-8">
-        {/* Formulário de Criação */}
-        <LiquidGlassCard className="mb-8 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-create-proposal">
-            <div 
-              className="flex items-center justify-between mb-6 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setIsFormExpanded(!isFormExpanded)}
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
-                  <Plus className="text-white" size={20} />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-dark-blue">Criar Nova Proposta</h2>
-                  <p className="text-soft-gray">Elabore um tema de redação personalizado</p>
-                </div>
-              </div>
-              <div className="text-bright-blue">
-                {isFormExpanded ? "−" : "+"}
-              </div>
+
+        {/* Search Section */}
+        <LiquidGlassCard className="mb-8 p-6">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Search className="w-5 h-5 text-blue-400" />
+              <h2 className="text-xl font-semibold text-white">Buscar Propostas de Redação</h2>
             </div>
-
-            {isFormExpanded && (
-            <>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title" className="text-sm font-medium text-dark-blue">
-                    Título da Proposta *
-                  </Label>
-                  <Input
-                    id="title"
-                    placeholder="Ex: A influência das redes sociais na democracia"
-                    value={newProposal.title}
-                    onChange={(e) => setNewProposal(prev => ({ ...prev, title: e.target.value }))}
-                    className="mt-1"
-                    data-testid="input-proposal-title"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="category" className="text-sm font-medium text-dark-blue">
-                    Categoria
-                  </Label>
-                  <Select onValueChange={(value) => setNewProposal(prev => ({ ...prev, category: value }))}>
-                    <SelectTrigger className="mt-1" data-testid="select-proposal-category">
-                      <SelectValue placeholder="Selecione uma categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="educacao">Educação</SelectItem>
-                      <SelectItem value="sociedade">Sociedade</SelectItem>
-                      <SelectItem value="meio-ambiente">Meio Ambiente</SelectItem>
-                      <SelectItem value="tecnologia">Tecnologia</SelectItem>
-                      <SelectItem value="politica">Política</SelectItem>
-                      <SelectItem value="cultura">Cultura</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="difficulty" className="text-sm font-medium text-dark-blue">
-                    Dificuldade
-                  </Label>
-                  <Select onValueChange={(value) => setNewProposal(prev => ({ ...prev, difficulty: value }))}>
-                    <SelectTrigger className="mt-1" data-testid="select-proposal-difficulty">
-                      <SelectValue placeholder="Selecione a dificuldade" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="facil">Fácil</SelectItem>
-                      <SelectItem value="media">Média</SelectItem>
-                      <SelectItem value="alta">Alta</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="description" className="text-sm font-medium text-dark-blue">
-                    Descrição/Comando *
-                  </Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Redija um texto dissertativo-argumentativo sobre..."
-                    value={newProposal.description}
-                    onChange={(e) => setNewProposal(prev => ({ ...prev, description: e.target.value }))}
-                    className="mt-1 min-h-[80px]"
-                    data-testid="textarea-proposal-description"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="context" className="text-sm font-medium text-dark-blue">
-                    Contexto/Situação
-                  </Label>
-                  <Textarea
-                    id="context"
-                    placeholder="Forneça informações contextuais sobre o tema..."
-                    value={newProposal.context}
-                    onChange={(e) => setNewProposal(prev => ({ ...prev, context: e.target.value }))}
-                    className="mt-1 min-h-[60px]"
-                    data-testid="textarea-proposal-context"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <Label htmlFor="supportText" className="text-sm font-medium text-dark-blue">
-                Texto de Apoio
-              </Label>
-              <Textarea
-                id="supportText"
-                placeholder="Adicione textos, dados, estatísticas ou referências que podem ajudar na escrita..."
-                value={newProposal.supportText}
-                onChange={(e) => setNewProposal(prev => ({ ...prev, supportText: e.target.value }))}
-                className="mt-1 min-h-[100px]"
-                data-testid="textarea-proposal-support"
-              />
-            </div>
-
-            <div className="flex justify-end mt-6 pt-6 border-t border-gray-200">
-              <Button
-                onClick={handleCreateProposal}
-                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
-                data-testid="button-save-proposal"
-              >
-                <Plus size={16} className="mr-2" />
-                Criar Proposta
-              </Button>
-            </div>
-            </>
-            )}
-          </LiquidGlassCard>
-
-        {/* Filtros e Busca */}
-        <LiquidGlassCard className="mb-8 bg-white/80 border-gray-200/50" data-testid="card-search-filters">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3">
-              <Search className="text-white" size={20} />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-dark-blue">Explorar Propostas</h2>
-              <p className="text-soft-gray">Encontre temas de redação de provas e concursos</p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-4 mb-6">
-            <div className="md:col-span-2">
-              <Label htmlFor="search" className="text-sm font-medium text-dark-blue">
-                Buscar por título ou tema
-              </Label>
-              <div className="relative mt-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-soft-gray" size={16} />
+            
+            <div className="flex gap-4">
+              <div className="flex-1">
                 <Input
-                  id="search"
-                  placeholder="Ex: tecnologia, educação, meio ambiente..."
+                  placeholder="Digite o tema, palavras-chave ou tipo de exame..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                  data-testid="input-search-proposals"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                  data-testid="input-search"
                 />
               </div>
+              <Button 
+                onClick={handleSearch}
+                disabled={searchMutation.isPending}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0"
+                data-testid="button-search"
+              >
+                {searchMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+                Buscar
+              </Button>
             </div>
 
-            <div>
-              <Label htmlFor="category" className="text-sm font-medium text-dark-blue">
-                Categoria
-              </Label>
-              <Select onValueChange={setSelectedCategory} defaultValue="todas">
-                <SelectTrigger className="mt-1" data-testid="select-filter-category">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todas">Todas as categorias</SelectItem>
-                  <SelectItem value="Educação">Educação</SelectItem>
-                  <SelectItem value="Sociedade">Sociedade</SelectItem>
-                  <SelectItem value="Meio Ambiente">Meio Ambiente</SelectItem>
-                  <SelectItem value="Tecnologia">Tecnologia</SelectItem>
-                  <SelectItem value="Política">Política</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="source" className="text-sm font-medium text-dark-blue">
-                Origem
-              </Label>
-              <Select onValueChange={setSelectedSource} defaultValue="todas">
-                <SelectTrigger className="mt-1" data-testid="select-filter-source">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todas">Todas as fontes</SelectItem>
-                  <SelectItem value="ENEM">ENEM</SelectItem>
-                  <SelectItem value="Vestibular">Vestibulares</SelectItem>
-                  <SelectItem value="Concurso">Concursos Públicos</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="year-filter" className="text-sm font-medium text-dark-blue">
-                Filtro por Ano
-              </Label>
-              <div className="space-y-2 mt-1">
-                <Select onValueChange={setYearFilterType} defaultValue="todos">
-                  <SelectTrigger data-testid="select-filter-year-type">
-                    <SelectValue />
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Tipo de Exame</label>
+                <Select value={selectedExamType} onValueChange={setSelectedExamType}>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white" data-testid="select-exam-type">
+                    <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="todos">Todos os anos</SelectItem>
-                    <SelectItem value="especifico">Ano específico</SelectItem>
-                    <SelectItem value="intervalo">Intervalo de anos</SelectItem>
+                    <SelectItem value="all">Todos os tipos</SelectItem>
+                    <SelectItem value="enem">ENEM</SelectItem>
+                    <SelectItem value="vestibular">Vestibular</SelectItem>
+                    <SelectItem value="concurso">Concurso</SelectItem>
+                    <SelectItem value="simulado">Simulado</SelectItem>
                   </SelectContent>
                 </Select>
-                
-                {yearFilterType === "especifico" && (
-                  <Input
-                    type="number"
-                    placeholder="Ex: 2023"
-                    value={specificYear}
-                    onChange={(e) => setSpecificYear(e.target.value)}
-                    min="1990"
-                    max="2030"
-                    data-testid="input-specific-year"
-                  />
-                )}
-                
-                {yearFilterType === "intervalo" && (
-                  <div className="flex space-x-2">
-                    <Input
-                      type="number"
-                      placeholder="De"
-                      value={yearRangeStart}
-                      onChange={(e) => setYearRangeStart(e.target.value)}
-                      min="1990"
-                      max="2030"
-                      data-testid="input-year-start"
-                    />
-                    <Input
-                      type="number"
-                      placeholder="Até"
-                      value={yearRangeEnd}
-                      onChange={(e) => setYearRangeEnd(e.target.value)}
-                      min="1990"
-                      max="2030"
-                      data-testid="input-year-end"
-                    />
-                  </div>
-                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Tema</label>
+                <Select value={selectedTheme} onValueChange={setSelectedTheme}>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white" data-testid="select-theme">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os temas</SelectItem>
+                    <SelectItem value="social">Sociedade</SelectItem>
+                    <SelectItem value="environment">Meio Ambiente</SelectItem>
+                    <SelectItem value="technology">Tecnologia</SelectItem>
+                    <SelectItem value="education">Educação</SelectItem>
+                    <SelectItem value="politics">Política</SelectItem>
+                    <SelectItem value="economy">Economia</SelectItem>
+                    <SelectItem value="culture">Cultura</SelectItem>
+                    <SelectItem value="health">Saúde</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Dificuldade</label>
+                <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white" data-testid="select-difficulty">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas</SelectItem>
+                    <SelectItem value="facil">Fácil</SelectItem>
+                    <SelectItem value="medio">Médio</SelectItem>
+                    <SelectItem value="dificil">Difícil</SelectItem>
+                    <SelectItem value="muito-dificil">Muito Difícil</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-end">
+                <Button 
+                  onClick={handleGenerateNew}
+                  disabled={generateMutation.isPending}
+                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0"
+                  data-testid="button-generate"
+                >
+                  {generateMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 mr-2" />
+                  )}
+                  Gerar IA
+                </Button>
               </div>
             </div>
-          </div>
-
-          <div className="flex items-center justify-between text-sm text-soft-gray">
-            <p>{filteredProposals.length} proposta(s) encontrada(s)</p>
           </div>
         </LiquidGlassCard>
 
-        {/* Lista de Propostas */}
-        <div className="grid gap-6">
-          {filteredProposals.map((proposal) => (
-            <LiquidGlassCard 
-              key={proposal.id} 
-              className="bg-white/90 border-gray-200/50 hover:border-bright-blue/30 transition-all duration-200 group"
-              data-testid={`card-proposal-${proposal.id}`}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    {getSourceIcon(proposal.source)}
-                    <h3 className="text-lg font-semibold text-dark-blue group-hover:text-bright-blue transition-colors">
-                      {proposal.title}
-                    </h3>
-                  </div>
-                  <p className="text-soft-gray text-sm mb-3 leading-relaxed">
-                    {proposal.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap items-center gap-2 mb-4">
-                    <Badge variant="outline" className={getDifficultyColor(proposal.difficulty)}>
-                      {proposal.difficulty}
-                    </Badge>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-800 border-blue-200">
-                      {proposal.category}
-                    </Badge>
-                    <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
-                      {proposal.source} {proposal.year}
-                    </Badge>
-                  </div>
-
-                  {proposal.context && (
-                    <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                      <p className="text-xs font-medium text-dark-blue mb-1">Contexto:</p>
-                      <p className="text-sm text-soft-gray">{proposal.context}</p>
-                    </div>
-                  )}
-
-                  {proposal.supportText && (
-                    <div className="bg-bright-blue/5 rounded-lg p-3 mb-4">
-                      <p className="text-xs font-medium text-dark-blue mb-1">Texto de Apoio:</p>
-                      <p className="text-sm text-soft-gray">{proposal.supportText}</p>
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap gap-1">
-                    {proposal.tags.map((tag, index) => (
-                      <span key={index} className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col space-y-2 ml-4">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex items-center space-x-2 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-                    data-testid={`button-use-proposal-${proposal.id}`}
-                  >
-                    <Edit size={14} />
-                    <span>Usar</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex items-center space-x-2 text-soft-gray border-soft-gray/30 hover:bg-gray-50"
-                    data-testid={`button-view-proposal-${proposal.id}`}
-                  >
-                    <Eye size={14} />
-                    <span>Ver</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex items-center space-x-2 text-soft-gray border-soft-gray/30 hover:bg-gray-50"
-                    data-testid={`button-save-proposal-${proposal.id}`}
-                  >
-                    <Star size={14} />
-                    <span>Salvar</span>
-                  </Button>
-                </div>
-              </div>
-            </LiquidGlassCard>
-          ))}
-        </div>
-
-        {filteredProposals.length === 0 && (
-          <LiquidGlassCard className="text-center py-12 bg-gray-50/50" data-testid="card-no-results">
-            <div className="w-16 h-16 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="text-white" size={24} />
+        {/* Results */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="flex items-center gap-3 text-white/80">
+              <Loader2 className="w-6 h-6 animate-spin" />
+              <span>Buscando propostas...</span>
             </div>
-            <h3 className="text-lg font-semibold text-dark-blue mb-2">Nenhuma proposta encontrada</h3>
-            <p className="text-soft-gray mb-4">Tente ajustar os filtros ou criar uma nova proposta</p>
-            <Button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
-              data-testid="button-scroll-to-create"
+          </div>
+        ) : displayProposals.length > 0 ? (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-white">
+                {searchResults?.count || 0} propostas encontradas
+              </h3>
+              {displayProposals.length > 0 && displayProposals.length >= 10 && (
+                <Button
+                  onClick={handleLoadMore}
+                  disabled={loadMoreMutation.isPending}
+                  variant="outline"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  data-testid="button-load-more"
+                >
+                  {loadMoreMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <BookOpen className="w-4 h-4 mr-2" />
+                  )}
+                  Carregar Mais
+                </Button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {displayProposals.map((proposal) => (
+                <LiquidGlassCard 
+                  key={proposal.id} 
+                  className="p-6 hover:scale-[1.02] transition-transform cursor-pointer"
+                  data-testid={`card-proposal-${proposal.id}`}
+                >
+                  <div className="space-y-4">
+                    {/* Header */}
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-white text-lg leading-tight">
+                          {proposal.title}
+                        </h4>
+                        <div className="flex items-center gap-4 mt-2">
+                          <span className="text-sm px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                            {getExamTypeLabel(proposal.examType)}
+                          </span>
+                          <span className="text-sm px-2 py-1 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
+                            {getThemeLabel(proposal.theme)}
+                          </span>
+                          <span className="text-sm px-2 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            {getDifficultyLabel(proposal.difficulty)}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {proposal.rating && (
+                        <div className="flex items-center gap-1 text-yellow-400">
+                          <Star className="w-4 h-4 fill-current" />
+                          <span className="text-sm font-medium">{proposal.rating}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content Preview */}
+                    <div className="space-y-3">
+                      <p className="text-white/90 text-sm leading-relaxed line-clamp-3">
+                        {proposal.statement}
+                      </p>
+                      
+                      {proposal.supportingText && (
+                        <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                          <p className="text-white/80 text-xs leading-relaxed line-clamp-2">
+                            <span className="font-medium text-blue-300">Texto de apoio:</span> {proposal.supportingText}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                      <div className="flex items-center gap-4 text-xs text-white/60">
+                        {proposal.examName && (
+                          <div className="flex items-center gap-1">
+                            <GraduationCap className="w-3 h-3" />
+                            <span>{proposal.examName}</span>
+                          </div>
+                        )}
+                        {proposal.year && (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>{proposal.year}</span>
+                          </div>
+                        )}
+                        {proposal.isAiGenerated && (
+                          <div className="flex items-center gap-1 text-purple-400">
+                            <Sparkles className="w-3 h-3" />
+                            <span>IA</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <Button
+                        onClick={() => saveProposalMutation.mutate(proposal.id)}
+                        disabled={saveProposalMutation.isPending}
+                        size="sm"
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0"
+                        data-testid={`button-save-${proposal.id}`}
+                      >
+                        {saveProposalMutation.isPending ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <BookOpen className="w-3 h-3" />
+                        )}
+                        Salvar
+                      </Button>
+                    </div>
+                  </div>
+                </LiquidGlassCard>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <LiquidGlassCard className="text-center py-12">
+            <FileText className="w-16 h-16 text-white/40 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">Nenhuma proposta encontrada</h3>
+            <p className="text-white/60 mb-6">
+              Tente diferentes termos de busca ou use filtros para encontrar propostas.
+            </p>
+            <Button 
+              onClick={handleGenerateNew}
+              disabled={generateMutation.isPending}
+              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0"
+              data-testid="button-generate-empty"
             >
-              <Plus size={16} className="mr-2" />
-              Ir para Formulário
+              {generateMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Sparkles className="w-4 h-4 mr-2" />
+              )}
+              Gerar Propostas com IA
             </Button>
           </LiquidGlassCard>
         )}
