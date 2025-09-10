@@ -220,7 +220,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 py-2 sm:px-6 sm:py-4">
-          <div className="flex items-center space-x-4 sm:justify-between sm:space-x-6">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 sm:space-x-6">
               <Button
                 onClick={() => {
@@ -242,238 +242,197 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Brain className="text-white" size={14} />
                 </div>
-                <div>
-                  <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
-                  <div className="hidden sm:block">
-                    <p className="text-sm text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
-                  </div>
-                </div>
+                <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-sm text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
             </div>
           </div>
         </div>
       </div>
       {/* Main Content */}
       <div className="container mx-auto px-2 sm:px-6 py-2 pt-16 sm:pt-20">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col lg:flex-row gap-4">
           
-          {/* Progresso da Construção - Organizado e Visível */}
-          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="space-y-3">
-              {/* Header com título e porcentagem */}
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-dark-blue text-sm">Progresso da Redação</h4>
-                <div className="flex items-center space-x-2">
-                  <div className="text-sm font-bold text-dark-blue">{calculateProgress()}%</div>
-                  <div className="text-xs text-soft-gray">Completo</div>
-                </div>
-              </div>
-              
-              {/* Barra de progresso visual */}
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-bright-blue to-dark-blue h-2 rounded-full transition-all duration-300" 
-                  style={{ width: `${calculateProgress()}%` }}
-                ></div>
-              </div>
-              
-              {/* Indicadores de etapas */}
-              <div className="grid grid-cols-4 gap-2">
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Tema</span>
-                </div>
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Tese</span>
-                </div>
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Argumentos</span>
-                </div>
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Conclusão</span>
-                </div>
-              </div>
-            </div>
-          </LiquidGlassCard>
-
-          {/* Chat Principal - Altura Adaptável */}
-          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex flex-col h-[70vh] sm:h-[35rem]">
-              {/* Header do Chat - Compacto no Mobile */}
-              <div className="flex items-center justify-between pb-2 sm:pb-4 border-b border-bright-blue/20">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <Brain className="text-white" size={12} />
+          {/* Coluna Esquerda - Progresso da Construção */}
+          <div className="w-full lg:w-1/3">
+            <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 h-fit">
+              <div className="space-y-3">
+                {/* Header com título e porcentagem */}
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-dark-blue text-sm">Progresso da Redação</h4>
+                  <div className="flex items-center space-x-2">
+                    <div className="text-sm font-bold text-dark-blue">{calculateProgress()}%</div>
+                    <div className="text-xs text-soft-gray">Completo</div>
                   </div>
-                  <h3 className="text-xs font-semibold text-dark-blue">Refinador IA</h3>
                 </div>
-                <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-soft-gray">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="hidden sm:inline">Online</span>
+                
+                {/* Barra de progresso visual */}
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-bright-blue to-dark-blue h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${calculateProgress()}%` }}
+                  ></div>
+                </div>
+                
+                {/* Indicadores de etapas */}
+                <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+                  <div className="flex items-center space-x-3 p-2 bg-white/50 rounded-lg border border-bright-blue/10">
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div>
+                      <span className="text-sm font-medium text-dark-blue">Tema</span>
+                      <p className="text-xs text-soft-gray line-clamp-1">{brainstormData.tema || 'Aguardando definição...'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-white/50 rounded-lg border border-bright-blue/10">
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div>
+                      <span className="text-sm font-medium text-dark-blue">Tese</span>
+                      <p className="text-xs text-soft-gray line-clamp-1">{brainstormData.tese || 'Aguardando desenvolvimento...'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-white/50 rounded-lg border border-bright-blue/10">
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.introducao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div>
+                      <span className="text-sm font-medium text-dark-blue">Introdução</span>
+                      <p className="text-xs text-soft-gray line-clamp-1">{brainstormData.paragrafos.introducao || 'Aguardando desenvolvimento...'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-white/50 rounded-lg border border-bright-blue/10">
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.desenvolvimento1 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div>
+                      <span className="text-sm font-medium text-dark-blue">Desenvolvimento I</span>
+                      <p className="text-xs text-soft-gray line-clamp-1">{brainstormData.paragrafos.desenvolvimento1 || 'Aguardando argumento...'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-white/50 rounded-lg border border-bright-blue/10">
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.desenvolvimento2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div>
+                      <span className="text-sm font-medium text-dark-blue">Desenvolvimento II</span>
+                      <p className="text-xs text-soft-gray line-clamp-1">{brainstormData.paragrafos.desenvolvimento2 || 'Aguardando argumento...'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-white/50 rounded-lg border border-bright-blue/10">
+                    <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    <div>
+                      <span className="text-sm font-medium text-dark-blue">Conclusão</span>
+                      <p className="text-xs text-soft-gray line-clamp-1">{brainstormData.paragrafos.conclusao || 'Aguardando desenvolvimento...'}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </LiquidGlassCard>
+          </div>
 
-              {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto py-2 sm:py-4 space-y-2 sm:space-y-4" data-testid="chat-messages">
-                {chatState.messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] sm:max-w-3xl px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
-                      message.type === 'user' 
-                        ? 'bg-gradient-to-r from-bright-blue to-dark-blue text-white ml-4 sm:ml-12' 
-                        : 'bg-white border border-bright-blue/20 text-dark-blue mr-4 sm:mr-12'
-                    }`}>
-                      {message.type === 'ai' && (
+          {/* Coluna Direita - Chat Principal */}
+          <div className="w-full lg:w-2/3">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+              <div className="flex flex-col h-[70vh] lg:h-[80vh]">
+                {/* Header do Chat */}
+                <div className="flex items-center justify-between pb-2 sm:pb-4 border-b border-bright-blue/20">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                      <Brain className="text-white" size={12} />
+                    </div>
+                    <h3 className="text-sm font-semibold text-dark-blue">Refinador IA</h3>
+                  </div>
+                  <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-soft-gray">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="hidden sm:inline">Online</span>
+                  </div>
+                </div>
+
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto py-2 sm:py-4 space-y-2 sm:space-y-4" data-testid="chat-messages">
+                  {chatState.messages.map((message) => (
+                    <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[85%] sm:max-w-3xl px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
+                        message.type === 'user' 
+                          ? 'bg-gradient-to-r from-bright-blue to-dark-blue text-white ml-4 sm:ml-12' 
+                          : 'bg-white border border-bright-blue/20 text-dark-blue mr-4 sm:mr-12'
+                      }`}>
+                        {message.type === 'ai' && (
+                          <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
+                            <Brain size={12} />
+                            <span>Refinador IA</span>
+                          </div>
+                        )}
+                        <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
+                        <div className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/70' : 'text-soft-gray'}`}>
+                          {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {chatState.isLoading && (
+                    <div className="flex justify-start">
+                      <div className="max-w-xs px-4 py-3 rounded-2xl bg-white border border-bright-blue/20 text-dark-blue mr-12">
                         <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
                           <Brain size={12} />
                           <span>Refinador IA</span>
                         </div>
-                      )}
-                      <div className="text-[11px] whitespace-pre-wrap leading-relaxed">{message.content}</div>
-                      <div className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/70' : 'text-soft-gray'}`}>
-                        {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        <div className="flex items-center space-x-2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-bright-blue"></div>
+                          <span className="text-sm">Pensando...</span>
+                        </div>
                       </div>
                     </div>
+                  )}
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* Input Area */}
+                <div className="border-t border-bright-blue/20 pt-4">
+                  <div className="flex space-x-3">
+                    <Input
+                      value={chatState.currentMessage}
+                      onChange={(e) => setChatState(prev => ({ ...prev, currentMessage: e.target.value }))}
+                      placeholder="Digite sua mensagem para o Refinador IA..."
+                      className="flex-1 border-bright-blue/20 focus:border-bright-blue"
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                      disabled={chatState.isLoading}
+                      data-testid="input-chat-message"
+                    />
+                    <Button 
+                      onClick={handleSendMessage}
+                      disabled={!chatState.currentMessage.trim() || chatState.isLoading}
+                      className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
+                      data-testid="button-send-message"
+                    >
+                      <Send size={16} />
+                    </Button>
                   </div>
-                ))}
-                
-                {chatState.isLoading && (
-                  <div className="flex justify-start">
-                    <div className="max-w-xs px-4 py-3 rounded-2xl bg-white border border-bright-blue/20 text-dark-blue mr-12">
-                      <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
-                        <Brain size={12} />
-                        <span>Refinador IA</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-bright-blue"></div>
-                        <span className="text-sm">Pensando...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              {/* Input Area */}
-              <div className="border-t border-bright-blue/20 pt-4">
-                <div className="flex space-x-3">
-                  <Input
-                    value={chatState.currentMessage}
-                    onChange={(e) => setChatState(prev => ({ ...prev, currentMessage: e.target.value }))}
-                    placeholder="Digite sua mensagem para o Refinador IA..."
-                    className="flex-1 border-bright-blue/20 focus:border-bright-blue"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    disabled={chatState.isLoading}
-                    data-testid="input-chat-message"
-                  />
-                  <Button 
-                    onClick={handleSendMessage}
-                    disabled={!chatState.currentMessage.trim() || chatState.isLoading}
-                    className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
-                    data-testid="button-send-message"
-                  >
-                    <Send size={16} />
-                  </Button>
                 </div>
               </div>
-            </div>
-          </LiquidGlassCard>
-
-          {/* Preview da Estrutura - Mobile Otimizado */}
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Eye className="text-bright-blue" size={16} />
-                <h3 className="text-sm font-semibold text-dark-blue">Preview da Estrutura</h3>
-              </div>
-              <Button 
-                onClick={handleCreateMindMap}
-                disabled={!isEssayComplete()}
-                className={`text-xs sm:text-sm ${
-                  isEssayComplete() 
-                    ? "bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                } px-3 py-2`}
-                data-testid="button-create-mindmap"
-              >
-                <Map className="mr-1 sm:mr-2" size={14} />
-                {isEssayComplete() ? "Criar Mapa" : "Incomplete"}
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* Tema */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Target className={`w-4 h-4 ${brainstormData.tema ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Tema</span>
-                </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.tema || 'Aguardando definição...'}
-                </p>
-              </div>
-
-              {/* Tese */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Lightbulb className={`w-4 h-4 ${brainstormData.tese ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Tese</span>
-                </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.tese || 'Aguardando desenvolvimento...'}
-                </p>
-              </div>
-
-              {/* Introdução */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.introducao ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Introdução</span>
-                </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.introducao || 'Aguardando desenvolvimento...'}
-                </p>
-              </div>
-
-              {/* Desenvolvimento I */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.desenvolvimento1 ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Dev I</span>
-                </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.desenvolvimento1 || 'Aguardando argumento...'}
-                </p>
-              </div>
-
-              {/* Desenvolvimento II */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.desenvolvimento2 ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Dev II</span>
-                </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.desenvolvimento2 || 'Aguardando argumento...'}
-                </p>
-              </div>
-
-              {/* Conclusão */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.conclusao ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Conclusão</span>
-                </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.conclusao || 'Aguardando desenvolvimento...'}
-                </p>
-              </div>
-            </div>
-          </LiquidGlassCard>
-
+            </LiquidGlassCard>
+          </div>
 
         </div>
+        
+        {/* Preview da Estrutura - Ações Finais */}
+        <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 mt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3 sm:gap-0">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <Eye className="text-bright-blue" size={16} />
+              <h3 className="text-sm font-semibold text-dark-blue">Ações Finais</h3>
+            </div>
+            <Button 
+              onClick={handleCreateMindMap}
+              disabled={!isEssayComplete()}
+              className={`text-xs sm:text-sm ${
+                isEssayComplete() 
+                  ? "bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              } px-3 py-2`}
+              data-testid="button-create-mindmap"
+            >
+              <Map className="mr-1 sm:mr-2" size={14} />
+              {isEssayComplete() ? "Criar Mapa Mental" : "Complete a redação"}
+            </Button>
+          </div>
+        </LiquidGlassCard>
       </div>
     </div>
   );
