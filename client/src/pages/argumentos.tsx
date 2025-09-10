@@ -287,11 +287,6 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                   <span className="text-xs text-dark-blue text-center">Conclusão</span>
                 </div>
               </div>
-              
-              {/* Instrução */}
-              <div className="text-center">
-                <div className="text-xs text-soft-gray">Continue conversando com a IA para desenvolver sua redação</div>
-              </div>
             </div>
           </LiquidGlassCard>
 
