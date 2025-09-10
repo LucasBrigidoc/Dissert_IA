@@ -220,8 +220,35 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4 sm:space-x-6">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Button
+                onClick={() => {
+                  if (window.history.length > 1 && document.referrer) {
+                    window.history.back();
+                  } else {
+                    window.location.href = backUrl;
+                  }
+                }}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-1 h-8 px-2 text-xs"
+                data-testid="button-back"
+              >
+                <ArrowLeft size={14} />
+                <span>Voltar</span>
+              </Button>
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Brain className="text-white" size={14} />
+              </div>
+            </div>
+            <h1 className="text-sm font-bold text-dark-blue truncate">Refinamento do Brainstorming</h1>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center space-x-6">
               <Button
                 onClick={() => {
                   if (window.history.length > 1 && document.referrer) {
@@ -238,16 +265,14 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 <ArrowLeft size={16} />
                 <span>Voltar</span>
               </Button>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Brain className="text-white" size={14} />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Brain className="text-white" size={20} />
                 </div>
-                <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
+                <h1 className="text-2xl font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
             </div>
-            <div className="hidden sm:block">
-              <p className="text-sm text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
-            </div>
+            <p className="text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
           </div>
         </div>
       </div>
