@@ -49,7 +49,7 @@ export default function Argumentos() {
       const welcomeMessage = {
         id: 'welcome',
         type: 'ai' as const,
-        content: '🎯 INICIANDO BRAINSTORMING\\n\\n💡 VAMOS COMEÇAR\\nOlá! Sou o Refinador de Brainstorming IA e vou te ajudar a construir uma redação estruturada e persuasiva.\\n\\n📝 PRIMEIRA ETAPA\\nMe conte sobre o tema da sua redação. Pode ser uma proposta do vestibular, um tema social atual ou qualquer assunto que você quer argumentar.\\n\\n❓ PRÓXIMO PASSO\\nQual é o tema ou proposta que você quer desenvolver?',
+        content: '🎯 ARQUITETO DE ARGUMENTOS SOCRÁTICO\\n\\n✨ O QUE EU FAÇO POR VOCÊ:\\n• Desenvolvo sua tese principal de forma estruturada\\n• Construo argumentos sólidos com fundamentação\\n• Organizo parágrafos de introdução, desenvolvimento e conclusão\\n• Sugiro repertórios culturais relevantes para seu tema\\n• Refino sua linguagem argumentativa\\n\\n🏗️ COMO FUNCIONA:\\n1️⃣ Você me conta o tema da redação\\n2️⃣ Desenvolvemos juntos sua tese principal\\n3️⃣ Construímos argumentos persuasivos\\n4️⃣ Estruturamos cada parágrafo\\n5️⃣ Geramos um mapa mental completo\\n\\n📝 VAMOS COMEÇAR\\nCompartilhe comigo o tema da sua redação (proposta de vestibular, tema social, concurso público, etc.) para iniciarmos a construção dos seus argumentos!',
         section: 'tema' as const,
         timestamp: new Date()
       };
