@@ -29,7 +29,10 @@ export default function PropostasPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todas");
   const [selectedSource, setSelectedSource] = useState("todas");
-  const [selectedYear, setSelectedYear] = useState("todos");
+  const [yearFilterType, setYearFilterType] = useState("todos");
+  const [specificYear, setSpecificYear] = useState("");
+  const [yearRangeStart, setYearRangeStart] = useState("");
+  const [yearRangeEnd, setYearRangeEnd] = useState("");
 
   // Estado para expandir/compactar o formulário de criação
   const [isFormExpanded, setIsFormExpanded] = useState(false);
@@ -98,7 +101,16 @@ export default function PropostasPage() {
     
     const matchesCategory = selectedCategory === "todas" || proposal.category === selectedCategory;
     const matchesSource = selectedSource === "todas" || proposal.source.includes(selectedSource);
-    const matchesYear = selectedYear === "todos" || proposal.year === selectedYear;
+    
+    let matchesYear = true;
+    if (yearFilterType === "especifico" && specificYear) {
+      matchesYear = proposal.year === specificYear;
+    } else if (yearFilterType === "intervalo" && yearRangeStart && yearRangeEnd) {
+      const proposalYear = parseInt(proposal.year);
+      const startYear = parseInt(yearRangeStart);
+      const endYear = parseInt(yearRangeEnd);
+      matchesYear = proposalYear >= startYear && proposalYear <= endYear;
+    }
     
     return matchesSearch && matchesCategory && matchesSource && matchesYear;
   });
@@ -375,22 +387,56 @@ export default function PropostasPage() {
             </div>
 
             <div>
-              <Label htmlFor="year" className="text-sm font-medium text-dark-blue">
-                Ano
+              <Label htmlFor="year-filter" className="text-sm font-medium text-dark-blue">
+                Filtro por Ano
               </Label>
-              <Select onValueChange={setSelectedYear} defaultValue="todos">
-                <SelectTrigger className="mt-1" data-testid="select-filter-year">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todos os anos</SelectItem>
-                  <SelectItem value="2024">2024</SelectItem>
-                  <SelectItem value="2023">2023</SelectItem>
-                  <SelectItem value="2022">2022</SelectItem>
-                  <SelectItem value="2021">2021</SelectItem>
-                  <SelectItem value="2020">2020</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2 mt-1">
+                <Select onValueChange={setYearFilterType} defaultValue="todos">
+                  <SelectTrigger data-testid="select-filter-year-type">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os anos</SelectItem>
+                    <SelectItem value="especifico">Ano específico</SelectItem>
+                    <SelectItem value="intervalo">Intervalo de anos</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {yearFilterType === "especifico" && (
+                  <Input
+                    type="number"
+                    placeholder="Ex: 2023"
+                    value={specificYear}
+                    onChange={(e) => setSpecificYear(e.target.value)}
+                    min="1990"
+                    max="2030"
+                    data-testid="input-specific-year"
+                  />
+                )}
+                
+                {yearFilterType === "intervalo" && (
+                  <div className="flex space-x-2">
+                    <Input
+                      type="number"
+                      placeholder="De"
+                      value={yearRangeStart}
+                      onChange={(e) => setYearRangeStart(e.target.value)}
+                      min="1990"
+                      max="2030"
+                      data-testid="input-year-start"
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Até"
+                      value={yearRangeEnd}
+                      onChange={(e) => setYearRangeEnd(e.target.value)}
+                      min="1990"
+                      max="2030"
+                      data-testid="input-year-end"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
