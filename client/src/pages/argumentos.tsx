@@ -257,7 +257,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           
           {/* Progresso da Construção - Organizado e Visível */}
           <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Header com título e porcentagem */}
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold text-dark-blue text-sm">Progresso da Redação</h4>
@@ -277,21 +277,21 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
               
               {/* Indicadores de etapas */}
               <div className="grid grid-cols-4 gap-2">
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Tema</span>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Tema</span>
                 </div>
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Tese</span>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Tese</span>
                 </div>
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Argumentos</span>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Argumentos</span>
                 </div>
-                <div className="flex flex-col items-center space-y-1">
-                  <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-xs text-dark-blue text-center">Conclusão</span>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Conclusão</span>
                 </div>
               </div>
             </div>
@@ -299,9 +299,9 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
           {/* Chat Principal - Altura Adaptável */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex flex-col h-[70vh] sm:h-[35rem]">
+            <div className="flex flex-col h-[50vh] sm:h-[28rem]">
               {/* Header do Chat - Compacto no Mobile */}
-              <div className="flex items-center justify-between pb-2 sm:pb-4 border-b border-bright-blue/20">
+              <div className="flex items-center justify-between pb-1.5 sm:pb-3 border-b border-bright-blue/20">
                 <div className="flex items-center space-x-2 sm:space-x-3">
                   <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                     <Brain className="text-white" size={12} />
@@ -315,7 +315,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
               </div>
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto py-2 sm:py-4 space-y-2 sm:space-y-4" data-testid="chat-messages">
+              <div className="flex-1 overflow-y-auto py-1.5 sm:py-3 space-y-1.5 sm:space-y-3" data-testid="chat-messages">
                 {chatState.messages.map((message) => (
                   <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[85%] sm:max-w-3xl px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
@@ -355,7 +355,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
               </div>
 
               {/* Input Area */}
-              <div className="border-t border-bright-blue/20 pt-4">
+              <div className="border-t border-bright-blue/20 pt-3">
                 <div className="flex space-x-3">
                   <Input
                     value={chatState.currentMessage}
