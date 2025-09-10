@@ -698,6 +698,164 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     
     return "🎯 DESENVOLVIMENTO GERAL\n\n💡 ANÁLISE RÁPIDA\nVocê está no caminho certo, continue desenvolvendo suas ideias.\n\n📝 SUGESTÃO PRINCIPAL\nUse exemplos específicos e mantenha conexão clara com sua tese principal.\n\n🔧 COMO MELHORAR\n• Adicione dados ou casos concretos\n• Conecte cada ideia com sua opinião principal\n• Use conectivos para ligar as partes do texto\n\n❓ PRÓXIMA ETAPA\nEm que parte específica você quer trabalhar agora?";
   }
+
+  // ==================== PROPOSAL METHODS ====================
+
+  // Local analysis for proposal search - NO AI TOKENS USED!
+  analyzeProposalSearchLocal(query: string): {
+    keywords: string[];
+    suggestedThemes: string[];
+    suggestedExamTypes: string[];
+    normalizedQuery: string;
+  } {
+    const normalizedQuery = query.toLowerCase().trim();
+    const words = normalizedQuery.split(/\s+/).filter(w => w.length > 2);
+    
+    // Extract keywords
+    const keywords = words.slice(0, 8);
+    
+    // Proposal-specific patterns
+    const proposalPatterns = {
+      'enem': ['enem'],
+      'vestibular': ['vestibular', 'fuvest', 'unesp', 'unicamp'],
+      'concurso': ['concurso', 'público'],
+      'educação': ['education'],
+      'tecnologia': ['technology'], 
+      'meio ambiente': ['environment'],
+      'sociedade': ['social'],
+      'política': ['politics'],
+      'economia': ['economy'],
+      'cultura': ['culture'],
+      'saúde': ['health']
+    };
+    
+    let suggestedThemes: string[] = [];
+    let suggestedExamTypes: string[] = [];
+    
+    // Check for pattern matches
+    for (const [pattern, themes] of Object.entries(proposalPatterns)) {
+      if (normalizedQuery.includes(pattern) || words.some(w => pattern.includes(w))) {
+        if (['enem', 'vestibular', 'concurso'].includes(pattern)) {
+          suggestedExamTypes.push(pattern);
+        } else {
+          suggestedThemes.push(...themes);
+        }
+      }
+    }
+    
+    // Default suggestions if no matches
+    if (suggestedThemes.length === 0) {
+      suggestedThemes = ['social', 'education'];
+    }
+    if (suggestedExamTypes.length === 0) {
+      suggestedExamTypes = ['enem', 'vestibular'];
+    }
+    
+    return {
+      keywords,
+      suggestedThemes: Array.from(new Set(suggestedThemes)),
+      suggestedExamTypes: Array.from(new Set(suggestedExamTypes)),
+      normalizedQuery
+    };
+  }
+
+  // Generate proposals using AI
+  async generateProposalsBatch(userFilters: any, keywords: string[]): Promise<any[]> {
+    try {
+      const theme = userFilters.theme || 'social';
+      const difficulty = userFilters.difficulty || 'medio';
+      const examType = userFilters.examType || 'enem';
+      
+      const prompt = `Crie 3 propostas de redação para ${examType.toUpperCase()} sobre o tema "${theme}" com dificuldade "${difficulty}".
+
+Para cada proposta, forneça:
+
+1. **title**: Título curto e direto (máximo 60 caracteres)
+2. **statement**: A proposta completa com comando da redação (200-300 palavras)
+3. **supportingText**: Textos de apoio com dados, citações ou contexto (150-200 palavras)
+4. **examName**: Nome específico do exame (ex: "ENEM 2023", "FUVEST 2024")
+5. **year**: Ano da prova (2020-2024)
+6. **keywords**: 5-8 palavras-chave relacionadas
+
+Níveis de dificuldade:
+- facil: Temas cotidianos, linguagem simples
+- medio: Temas sociais relevantes, complexidade média  
+- dificil: Temas complexos, múltiplas perspectivas
+- muito-dificil: Temas abstratos, alta complexidade conceitual
+
+Temas disponíveis: social, environment, technology, education, politics, economy, culture, health, ethics, globalization
+
+Retorne APENAS um JSON válido:
+[
+  {
+    "title": "...",
+    "statement": "...",
+    "supportingText": "...",
+    "examName": "...",
+    "year": 2023,
+    "keywords": ["palavra1", "palavra2", ...]
+  }
+]`;
+
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      
+      // Extract JSON from response
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) {
+        console.log("No JSON found in response:", text);
+        return this.generateFallbackProposals(userFilters, keywords);
+      }
+      
+      const proposals = JSON.parse(jsonMatch[0]);
+      
+      return proposals.map((proposal: any) => ({
+        ...proposal,
+        theme,
+        difficulty,
+        examType,
+        isAiGenerated: true,
+        rating: Math.floor(Math.random() * 3) + 3 // 3-5 rating
+      }));
+      
+    } catch (error) {
+      console.error("Error generating proposals:", error);
+      return this.generateFallbackProposals(userFilters, keywords);
+    }
+  }
+
+  private generateFallbackProposals(userFilters: any, keywords: string[]): any[] {
+    const { theme = 'social', difficulty = 'medio', examType = 'enem' } = userFilters;
+    
+    const fallbackProposals = [
+      {
+        title: "Desafios da Educação Digital no Brasil",
+        statement: "Com a crescente digitalização da sociedade, a educação brasileira enfrenta o desafio de se adaptar às novas tecnologias. A partir da leitura dos textos motivadores e com base nos seus conhecimentos, redija um texto dissertativo-argumentativo sobre o tema 'Os desafios da implementação da educação digital no Brasil'. Apresente proposta de intervenção que respeite os direitos humanos.",
+        supportingText: "Segundo dados do IBGE, apenas 67% dos domicílios brasileiros têm acesso à internet. Durante a pandemia, essa desigualdade digital se evidenciou ainda mais, com muitos estudantes sem conseguir acompanhar as aulas remotas.",
+        examName: `${examType.toUpperCase()} 2023`,
+        year: 2023,
+        keywords: ["educação", "tecnologia", "desigualdade", "digital", "pandemia"]
+      },
+      {
+        title: "Sustentabilidade e Consumo Consciente", 
+        statement: "O consumismo excessivo tem gerado graves impactos ambientais. Com base nos textos de apoio e em seus conhecimentos, elabore um texto dissertativo-argumentativo sobre 'A importância do consumo consciente para a sustentabilidade ambiental'. Proponha medidas que promovam mudanças de comportamento na sociedade.",
+        supportingText: "Dados da ONU indicam que a humanidade consome 70% mais recursos naturais do que o planeta consegue regenerar anualmente. O Brasil produz cerca de 79 milhões de toneladas de resíduos sólidos por ano.",
+        examName: `${examType.toUpperCase()} 2024`,
+        year: 2024,
+        keywords: ["sustentabilidade", "consumo", "meio ambiente", "consciente", "recursos"]
+      }
+    ];
+    
+    return fallbackProposals.map(proposal => ({
+      ...proposal,
+      theme,
+      difficulty,
+      examType,
+      isAiGenerated: true,
+      rating: Math.floor(Math.random() * 2) + 3
+    }));
+  }
 }
 
 export const geminiService = new GeminiService();
