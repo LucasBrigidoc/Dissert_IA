@@ -272,19 +272,15 @@ export default function Propostas() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-600/20 via-transparent to-transparent" />
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
-      
-      <div className="relative z-10 container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href={getBackUrl()}>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/20"
+              className="text-soft-gray hover:text-dark-blue hover:bg-bright-blue/10"
               data-testid="button-back"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -293,10 +289,10 @@ export default function Propostas() {
           </Link>
           
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/20">
-              <FileText className="w-6 h-6 text-blue-400" />
+            <div className="p-2 rounded-lg bg-bright-blue/10">
+              <FileText className="w-6 h-6 text-bright-blue" />
             </div>
-            <h1 className="text-3xl font-bold text-white">Explorador de Propostas</h1>
+            <h1 className="text-3xl font-bold text-dark-blue">Explorador de Propostas</h1>
           </div>
         </div>
 
@@ -304,8 +300,8 @@ export default function Propostas() {
         <LiquidGlassCard className="mb-8 p-6">
           <div className="space-y-6">
             <div className="flex items-center gap-3 mb-4">
-              <Search className="w-5 h-5 text-blue-400" />
-              <h2 className="text-xl font-semibold text-white">Buscar Propostas de Redação</h2>
+              <Search className="w-5 h-5 text-bright-blue" />
+              <h2 className="text-xl font-semibold text-dark-blue">Buscar Propostas de Redação</h2>
             </div>
             
             <div className="flex gap-4">
@@ -315,7 +311,7 @@ export default function Propostas() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                  className="border-soft-gray/30 focus:border-bright-blue"
                   data-testid="input-search"
                 />
               </div>
@@ -337,9 +333,9 @@ export default function Propostas() {
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">Tipo de Exame</label>
+                <label className="block text-sm font-medium text-soft-gray mb-2">Tipo de Exame</label>
                 <Select value={selectedExamType} onValueChange={setSelectedExamType}>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white" data-testid="select-exam-type">
+                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-exam-type">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -353,9 +349,9 @@ export default function Propostas() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">Tema</label>
+                <label className="block text-sm font-medium text-soft-gray mb-2">Tema</label>
                 <Select value={selectedTheme} onValueChange={setSelectedTheme}>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white" data-testid="select-theme">
+                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-theme">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -373,9 +369,9 @@ export default function Propostas() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">Dificuldade</label>
+                <label className="block text-sm font-medium text-soft-gray mb-2">Dificuldade</label>
                 <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white" data-testid="select-difficulty">
+                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-difficulty">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -392,7 +388,7 @@ export default function Propostas() {
                 <Button 
                   onClick={handleGenerateNew}
                   disabled={generateMutation.isPending}
-                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0"
+                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0"
                   data-testid="button-generate"
                 >
                   {generateMutation.isPending ? (
@@ -410,7 +406,7 @@ export default function Propostas() {
         {/* Results */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="flex items-center gap-3 text-white/80">
+            <div className="flex items-center gap-3 text-soft-gray">
               <Loader2 className="w-6 h-6 animate-spin" />
               <span>Buscando propostas...</span>
             </div>
@@ -418,7 +414,7 @@ export default function Propostas() {
         ) : displayProposals.length > 0 ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-white">
+              <h3 className="text-xl font-semibold text-dark-blue">
                 {searchResults?.count || 0} propostas encontradas
               </h3>
               {displayProposals.length > 0 && displayProposals.length >= 10 && (
@@ -426,7 +422,7 @@ export default function Propostas() {
                   onClick={handleLoadMore}
                   disabled={loadMoreMutation.isPending}
                   variant="outline"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  className="border-bright-blue text-bright-blue hover:bg-bright-blue/5"
                   data-testid="button-load-more"
                 >
                   {loadMoreMutation.isPending ? (
@@ -450,7 +446,7 @@ export default function Propostas() {
                     {/* Header */}
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-white text-lg leading-tight">
+                        <h4 className="font-semibold text-dark-blue text-lg leading-tight">
                           {proposal.title}
                         </h4>
                         <div className="flex items-center gap-4 mt-2">
@@ -476,22 +472,22 @@ export default function Propostas() {
 
                     {/* Content Preview */}
                     <div className="space-y-3">
-                      <p className="text-white/90 text-sm leading-relaxed line-clamp-3">
+                      <p className="text-soft-gray text-sm leading-relaxed line-clamp-3">
                         {proposal.statement}
                       </p>
                       
                       {proposal.supportingText && (
-                        <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                          <p className="text-white/80 text-xs leading-relaxed line-clamp-2">
-                            <span className="font-medium text-blue-300">Texto de apoio:</span> {proposal.supportingText}
+                        <div className="bg-blue-50/50 rounded-lg p-3 border border-blue-100">
+                          <p className="text-soft-gray text-xs leading-relaxed line-clamp-2">
+                            <span className="font-medium text-bright-blue">Texto de apoio:</span> {proposal.supportingText}
                           </p>
                         </div>
                       )}
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-3 border-t border-white/10">
-                      <div className="flex items-center gap-4 text-xs text-white/60">
+                    <div className="flex items-center justify-between pt-3 border-t border-soft-gray/20">
+                      <div className="flex items-center gap-4 text-xs text-soft-gray/70">
                         {proposal.examName && (
                           <div className="flex items-center gap-1">
                             <GraduationCap className="w-3 h-3" />
@@ -534,15 +530,15 @@ export default function Propostas() {
           </div>
         ) : (
           <LiquidGlassCard className="text-center py-12">
-            <FileText className="w-16 h-16 text-white/40 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Nenhuma proposta encontrada</h3>
-            <p className="text-white/60 mb-6">
+            <FileText className="w-16 h-16 text-soft-gray/40 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-dark-blue mb-2">Nenhuma proposta encontrada</h3>
+            <p className="text-soft-gray mb-6">
               Tente diferentes termos de busca ou use filtros para encontrar propostas.
             </p>
             <Button 
               onClick={handleGenerateNew}
               disabled={generateMutation.isPending}
-              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0"
+              className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0"
               data-testid="button-generate-empty"
             >
               {generateMutation.isPending ? (
