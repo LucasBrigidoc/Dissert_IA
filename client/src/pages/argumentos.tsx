@@ -365,7 +365,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           </LiquidGlassCard>
 
           {/* Preview da Estrutura - Mobile Otimizado */}
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 sm:block hidden">
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
               <div className="flex items-center space-x-2 sm:space-x-3">
                 <Eye className="text-bright-blue" size={16} />
