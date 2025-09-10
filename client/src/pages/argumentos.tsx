@@ -277,12 +277,12 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         </div>
       </div>
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-3 pt-16 sm:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 py-3 pt-12 sm:pt-16">
         <div className="flex flex-col gap-2">
           
           {/* Chat Principal - Altura Adaptável */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex flex-col h-[50vh] sm:h-[28rem]">
+            <div className="flex flex-col h-[60vh] sm:h-[32rem]">
               {/* Header do Chat - Compacto no Mobile */}
               <div className="flex items-center justify-between pb-1.5 sm:pb-3 border-b border-bright-blue/20">
                 <div className="flex items-center space-x-2 sm:space-x-3">
