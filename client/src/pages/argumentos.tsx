@@ -255,48 +255,6 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       <div className="container mx-auto px-2 sm:px-6 py-2 pt-16 sm:pt-20">
         <div className="flex flex-col gap-2">
           
-          {/* Progresso da Construção - Organizado e Visível */}
-          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="space-y-2">
-              {/* Header com título e porcentagem */}
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-dark-blue text-sm">Progresso da Redação</h4>
-                <div className="flex items-center space-x-2">
-                  <div className="text-sm font-bold text-dark-blue">{calculateProgress()}%</div>
-                  <div className="text-xs text-soft-gray">Completo</div>
-                </div>
-              </div>
-              
-              {/* Barra de progresso visual */}
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-bright-blue to-dark-blue h-2 rounded-full transition-all duration-300" 
-                  style={{ width: `${calculateProgress()}%` }}
-                ></div>
-              </div>
-              
-              {/* Indicadores de etapas */}
-              <div className="grid grid-cols-4 gap-2">
-                <div className="flex flex-col items-center space-y-0.5">
-                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Tema</span>
-                </div>
-                <div className="flex flex-col items-center space-y-0.5">
-                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Tese</span>
-                </div>
-                <div className="flex flex-col items-center space-y-0.5">
-                  <div className={`w-2.5 h-2.5 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Argumentos</span>
-                </div>
-                <div className="flex flex-col items-center space-y-0.5">
-                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Conclusão</span>
-                </div>
-              </div>
-            </div>
-          </LiquidGlassCard>
-
           {/* Chat Principal - Altura Adaptável */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="flex flex-col h-[50vh] sm:h-[28rem]">
@@ -374,6 +332,48 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                   >
                     <Send size={16} />
                   </Button>
+                </div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+
+          {/* Progresso da Construção - Organizado e Visível */}
+          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="space-y-2">
+              {/* Header com título e porcentagem */}
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-dark-blue text-sm">Progresso da Redação</h4>
+                <div className="flex items-center space-x-2">
+                  <div className="text-sm font-bold text-dark-blue">{calculateProgress()}%</div>
+                  <div className="text-xs text-soft-gray">Completo</div>
+                </div>
+              </div>
+              
+              {/* Barra de progresso visual */}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${calculateProgress()}%` }}
+                ></div>
+              </div>
+              
+              {/* Indicadores de etapas */}
+              <div className="grid grid-cols-4 gap-2">
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Tema</span>
+                </div>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Tese</span>
+                </div>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Argumentos</span>
+                </div>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[10px] text-dark-blue text-center">Conclusão</span>
                 </div>
               </div>
             </div>
