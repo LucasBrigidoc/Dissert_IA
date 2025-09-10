@@ -236,8 +236,8 @@ export default function Argumentos() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-4 pt-24">
-        <div className="grid gap-6">
+      <div className="container mx-auto px-4 sm:px-6 py-4 pt-20">
+        <div className="grid gap-4">
           
           {/* Progresso da Construção - Acima do Chat */}
           <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-3">
