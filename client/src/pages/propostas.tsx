@@ -30,6 +30,11 @@ export default function Propostas() {
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
   
   const { toast } = useToast();
+
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Mutation para salvar proposta na biblioteca pessoal
   const saveProposalMutation = useMutation({

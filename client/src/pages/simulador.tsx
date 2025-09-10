@@ -43,6 +43,11 @@ export default function Simulador() {
   };
   
   const backUrl = getBackUrl();
+
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Estados para os campos obrigatórios
   const [examType, setExamType] = useState("");

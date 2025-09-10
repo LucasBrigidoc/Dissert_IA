@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Plus, ArrowLeft, Edit3, Trash2, Edit, BookOpen, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,11 @@ export default function Estilo() {
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   const [selectedMode, setSelectedMode] = useState<'create' | 'use' | null>(null);
   const [editingStructure, setEditingStructure] = useState<EssayStructure | null>(null);

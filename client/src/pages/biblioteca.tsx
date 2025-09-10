@@ -47,6 +47,11 @@ export default function BibliotecaPage() {
   
   const backUrl = getBackUrl();
 
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch saved repertoires from API
   const { data: savedRepertoires, isLoading } = useQuery({
     queryKey: ['/api/repertoires/saved'],

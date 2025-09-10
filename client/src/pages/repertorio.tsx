@@ -30,6 +30,11 @@ export default function Repertorio() {
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   
   const { toast } = useToast();
+
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Mutation para salvar repertório na biblioteca pessoal
   const saveRepertoireMutation = useMutation({

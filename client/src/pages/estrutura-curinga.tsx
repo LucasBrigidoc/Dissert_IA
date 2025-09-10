@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Plus, ArrowLeft, Edit3, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,11 @@ export function EstruturaCuringa() {
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Mock userId - in a real app this would come from auth context
   const userId = "mock-user-id";

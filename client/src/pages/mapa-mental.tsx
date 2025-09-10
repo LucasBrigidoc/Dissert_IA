@@ -22,6 +22,11 @@ export default function MapaMental() {
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     // Carregar dados do localStorage
     const savedData = localStorage.getItem('mindMapData');

@@ -38,6 +38,11 @@ export default function Argumentos() {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
+  // Garantir que a página sempre abra no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Scroll automático para o final do chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
