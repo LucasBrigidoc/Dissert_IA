@@ -242,7 +242,12 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Brain className="text-white" size={14} />
                 </div>
-                <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
+                <div>
+                  <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
+                  <div className="hidden sm:block">
+                    <p className="text-sm text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
