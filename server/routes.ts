@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
 import bcrypt from "bcrypt";
 
@@ -459,6 +459,211 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Check saved repertoire error:", error);
       res.status(500).json({ message: "Failed to check if repertoire is saved" });
+    }
+  });
+
+  // ===================== PROPOSAL ROUTES =====================
+
+  // Intelligent proposal search endpoint with rate limiting
+  app.post("/api/proposals/search", async (req, res) => {
+    try {
+      const validatedData = proposalSearchQuerySchema.parse(req.body);
+      const { query, examType, theme, difficulty, year, excludeIds } = validatedData;
+      
+      // Rate limiting check (30 searches per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(clientIP, 30, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can make 30 searches per hour.", 
+          retryAfter: 3600 
+        });
+      }
+      
+      console.log(`🔍 Proposal search request: "${query}", IP: ${clientIP}`);
+      
+      // Step 1: Local analysis (no AI tokens used)
+      const localAnalysis = geminiService.analyzeProposalSearchLocal(query);
+      console.log("Local analysis:", localAnalysis);
+      
+      // Step 2: Search existing proposals
+      let searchResults = await storage.searchProposals(query, {
+        examType: examType || localAnalysis.suggestedExamTypes[0],
+        theme: theme || localAnalysis.suggestedThemes[0],
+        difficulty,
+        year
+      });
+      
+      // Filter out excluded IDs
+      if (excludeIds && excludeIds.length > 0) {
+        searchResults = searchResults.filter(p => !excludeIds.includes(p.id));
+      }
+      
+      // Step 3: If limited results, generate new proposals with AI
+      if (searchResults.length < 3) {
+        try {
+          const aiProposals = await geminiService.generateProposalsBatch(
+            { examType, theme, difficulty }, 
+            localAnalysis.keywords
+          );
+          
+          // Save generated proposals to storage
+          for (const aiProposal of aiProposals) {
+            const savedProposal = await storage.createProposal(aiProposal);
+            searchResults.push(savedProposal);
+          }
+        } catch (aiError) {
+          console.error("AI proposal generation failed:", aiError);
+        }
+      }
+      
+      res.json({
+        results: searchResults.slice(0, 10),
+        count: searchResults.length,
+        query: localAnalysis.normalizedQuery,
+        suggestions: {
+          themes: localAnalysis.suggestedThemes,
+          examTypes: localAnalysis.suggestedExamTypes
+        }
+      });
+      
+    } catch (error) {
+      console.error("Proposal search error:", error);
+      res.status(400).json({ message: "Invalid search request" });
+    }
+  });
+
+  // Generate new proposals using AI
+  app.post("/api/proposals/generate", async (req, res) => {
+    try {
+      const validatedData = generateProposalSchema.parse(req.body);
+      
+      // Rate limiting check (5 generations per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(clientIP, 5, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can generate 5 proposals per hour.", 
+          retryAfter: 3600 
+        });
+      }
+      
+      console.log(`🎯 Proposal generation request: ${validatedData.theme}, IP: ${clientIP}`);
+      
+      // Generate proposals using AI
+      const aiProposals = await geminiService.generateProposalsBatch(
+        validatedData, 
+        validatedData.keywords || []
+      );
+      
+      // Save generated proposals to storage
+      const savedProposals = [];
+      for (const aiProposal of aiProposals) {
+        const savedProposal = await storage.createProposal(aiProposal);
+        savedProposals.push(savedProposal);
+      }
+      
+      res.json({
+        results: savedProposals,
+        count: savedProposals.length
+      });
+      
+    } catch (error) {
+      console.error("Proposal generation error:", error);
+      res.status(400).json({ message: "Invalid generation request" });
+    }
+  });
+
+  // Get all proposals endpoint (for browsing)
+  app.get("/api/proposals", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 20;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const proposals = await storage.getProposals(limit, offset);
+      res.json({
+        results: proposals,
+        count: proposals.length,
+        hasMore: proposals.length === limit
+      });
+    } catch (error) {
+      console.error("Get proposals error:", error);
+      res.status(500).json({ message: "Failed to get proposals" });
+    }
+  });
+
+  // Save proposal to user's personal library
+  app.post("/api/proposals/:id/save", async (req, res) => {
+    try {
+      const proposalId = req.params.id;
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const savedProposal = await storage.saveProposal(userId, proposalId);
+      res.json({
+        success: true,
+        message: "Proposta salva com sucesso",
+        savedProposal
+      });
+    } catch (error) {
+      console.error("Save proposal error:", error);
+      res.status(500).json({ message: "Failed to save proposal" });
+    }
+  });
+
+  // Remove proposal from user's personal library
+  app.delete("/api/proposals/:id/save", async (req, res) => {
+    try {
+      const proposalId = req.params.id;
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const removed = await storage.removeSavedProposal(userId, proposalId);
+      if (removed) {
+        res.json({
+          success: true,
+          message: "Proposta removida da biblioteca"
+        });
+      } else {
+        res.status(404).json({ message: "Proposta não encontrada na biblioteca" });
+      }
+    } catch (error) {
+      console.error("Remove saved proposal error:", error);
+      res.status(500).json({ message: "Failed to remove saved proposal" });
+    }
+  });
+
+  // Get user's saved proposals
+  app.get("/api/proposals/saved", async (req, res) => {
+    try {
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const savedProposals = await storage.getUserSavedProposals(userId);
+      res.json({
+        results: savedProposals,
+        count: savedProposals.length
+      });
+    } catch (error) {
+      console.error("Get saved proposals error:", error);
+      res.status(500).json({ message: "Failed to get saved proposals" });
+    }
+  });
+
+  // Check if proposal is saved by user
+  app.get("/api/proposals/:id/saved", async (req, res) => {
+    try {
+      const proposalId = req.params.id;
+      // For now, we'll use a hardcoded user ID since we don't have authentication yet
+      const userId = "default-user"; // TODO: Replace with actual user from session
+      
+      const isSaved = await storage.isProposalSaved(userId, proposalId);
+      res.json({ isSaved });
+    } catch (error) {
+      console.error("Check saved proposal error:", error);
+      res.status(500).json({ message: "Failed to check if proposal is saved" });
     }
   });
 

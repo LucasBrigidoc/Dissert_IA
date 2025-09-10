@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -43,6 +43,17 @@ export interface IStorage {
   getUserSavedRepertoires(userId: string): Promise<Repertoire[]>;
   isRepertoireSaved(userId: string, repertoireId: string): Promise<boolean>;
   
+  // Proposal operations
+  searchProposals(query: string, filters?: { examType?: string; theme?: string; difficulty?: string; year?: number }): Promise<Proposal[]>;
+  createProposal(proposal: InsertProposal): Promise<Proposal>;
+  getProposals(limit?: number, offset?: number): Promise<Proposal[]>;
+  
+  // Saved proposals operations
+  saveProposal(userId: string, proposalId: string): Promise<SavedProposal>;
+  removeSavedProposal(userId: string, proposalId: string): Promise<boolean>;
+  getUserSavedProposals(userId: string): Promise<Proposal[]>;
+  isProposalSaved(userId: string, proposalId: string): Promise<boolean>;
+  
 }
 
 export class MemStorage implements IStorage {
@@ -54,6 +65,8 @@ export class MemStorage implements IStorage {
   private searchCaches: Map<string, SearchCache>;
   private rateLimits: Map<string, RateLimit>;
   private savedRepertoires: Map<string, SavedRepertoire>;
+  private proposals: Map<string, Proposal>;
+  private savedProposals: Map<string, SavedProposal>;
 
   constructor() {
     this.users = new Map();
@@ -64,9 +77,13 @@ export class MemStorage implements IStorage {
     this.searchCaches = new Map();
     this.rateLimits = new Map();
     this.savedRepertoires = new Map();
+    this.proposals = new Map();
+    this.savedProposals = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
+    // Initialize with basic proposals
+    this.initializeProposals();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -498,6 +515,173 @@ export class MemStorage implements IStorage {
     return Array.from(this.savedRepertoires.values()).some(
       saved => saved.userId === userId && saved.repertoireId === repertoireId
     );
+  }
+
+  // Proposal operations
+  async searchProposals(query: string, filters?: { examType?: string; theme?: string; difficulty?: string; year?: number }): Promise<Proposal[]> {
+    const normalizedQuery = query.toLowerCase();
+    let proposals = Array.from(this.proposals.values());
+
+    // Filter by text search
+    if (normalizedQuery) {
+      proposals = proposals.filter(proposal =>
+        proposal.title.toLowerCase().includes(normalizedQuery) ||
+        proposal.statement.toLowerCase().includes(normalizedQuery) ||
+        (Array.isArray(proposal.keywords) && proposal.keywords.some((keyword: any) => 
+          typeof keyword === 'string' && keyword.toLowerCase().includes(normalizedQuery)
+        )) ||
+        proposal.theme.toLowerCase().includes(normalizedQuery)
+      );
+    }
+
+    // Apply filters
+    if (filters?.examType) {
+      proposals = proposals.filter(proposal => proposal.examType === filters.examType);
+    }
+    if (filters?.theme) {
+      proposals = proposals.filter(proposal => proposal.theme === filters.theme);
+    }
+    if (filters?.difficulty) {
+      proposals = proposals.filter(proposal => proposal.difficulty === filters.difficulty);
+    }
+    if (filters?.year) {
+      proposals = proposals.filter(proposal => proposal.year === filters.year);
+    }
+
+    return proposals.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  }
+
+  async createProposal(insertProposal: InsertProposal): Promise<Proposal> {
+    const id = randomUUID();
+    const proposal: Proposal = {
+      ...insertProposal,
+      year: insertProposal.year ?? null,
+      rating: insertProposal.rating ?? null,
+      supportingText: insertProposal.supportingText ?? null,
+      isAiGenerated: insertProposal.isAiGenerated ?? false,
+      usageCount: insertProposal.usageCount ?? null,
+      keywords: insertProposal.keywords ?? [],
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.proposals.set(id, proposal);
+    return proposal;
+  }
+
+  async getProposals(limit: number = 20, offset: number = 0): Promise<Proposal[]> {
+    const proposals = Array.from(this.proposals.values())
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      .slice(offset, offset + limit);
+    return proposals;
+  }
+
+  // Saved proposals operations
+  async saveProposal(userId: string, proposalId: string): Promise<SavedProposal> {
+    // Check if already saved
+    const existing = Array.from(this.savedProposals.values()).find(
+      saved => saved.userId === userId && saved.proposalId === proposalId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const id = randomUUID();
+    const savedProposal: SavedProposal = {
+      id,
+      userId,
+      proposalId,
+      createdAt: new Date()
+    };
+    
+    this.savedProposals.set(id, savedProposal);
+    return savedProposal;
+  }
+
+  async removeSavedProposal(userId: string, proposalId: string): Promise<boolean> {
+    const existing = Array.from(this.savedProposals.entries()).find(
+      ([_, saved]) => saved.userId === userId && saved.proposalId === proposalId
+    );
+    
+    if (existing) {
+      this.savedProposals.delete(existing[0]);
+      return true;
+    }
+    
+    return false;
+  }
+
+  async getUserSavedProposals(userId: string): Promise<Proposal[]> {
+    const savedIds = Array.from(this.savedProposals.values())
+      .filter(saved => saved.userId === userId)
+      .map(saved => saved.proposalId);
+    
+    const proposals = savedIds
+      .map(id => this.proposals.get(id))
+      .filter((proposal): proposal is Proposal => proposal !== undefined);
+    
+    return proposals.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  }
+
+  async isProposalSaved(userId: string, proposalId: string): Promise<boolean> {
+    return Array.from(this.savedProposals.values()).some(
+      saved => saved.userId === userId && saved.proposalId === proposalId
+    );
+  }
+
+  private initializeProposals(): void {
+    const initialProposals = [
+      {
+        title: "Desafios da Educação Digital",
+        statement: "Com a aceleração da digitalização durante a pandemia, a educação brasileira enfrenta desafios para garantir acesso equitativo às tecnologias educacionais. A partir da leitura dos textos motivadores e com base nos seus conhecimentos, redija um texto dissertativo-argumentativo sobre o tema 'Os desafios da implementação da educação digital no Brasil e suas implicações sociais'. Apresente proposta de intervenção que respeite os direitos humanos.",
+        supportingText: "Dados do IBGE mostram que 67% dos domicílios brasileiros têm acesso à internet, mas apenas 58% dos estudantes de escolas públicas conseguem estudar remotamente. A desigualdade digital evidencia-se quando 8,7 milhões de estudantes não têm acesso a computador ou tablet para atividades escolares.",
+        theme: "education",
+        difficulty: "medio",
+        examType: "enem" as const,
+        examName: "ENEM 2023",
+        year: 2023,
+        rating: 47,
+        keywords: ["educação", "tecnologia", "desigualdade", "digital", "acesso", "pandemia"]
+      },
+      {
+        title: "Sustentabilidade e Consumo Consciente",
+        statement: "O modelo de consumo da sociedade contemporânea tem gerado impactos significativos no meio ambiente. Considerando os textos de apoio e seus conhecimentos, elabore um texto dissertativo-argumentativo sobre 'A importância do consumo consciente para a sustentabilidade ambiental no século XXI'. Proponha medidas que promovam mudanças de comportamento.",
+        supportingText: "A Organização das Nações Unidas alerta que a humanidade consome anualmente 70% mais recursos naturais do que o planeta consegue regenerar. No Brasil, são produzidas cerca de 79 milhões de toneladas de resíduos sólidos por ano, dos quais apenas 13% são reciclados.",
+        theme: "environment",
+        difficulty: "medio",
+        examType: "enem" as const,
+        examName: "ENEM 2024",
+        year: 2024,
+        rating: 46,
+        keywords: ["sustentabilidade", "consumo", "meio ambiente", "recursos", "reciclagem"]
+      },
+      {
+        title: "Inclusão no Mercado de Trabalho",
+        statement: "Pessoas com deficiência enfrentam barreiras significativas para ingressar no mercado de trabalho brasileiro. Com base nos textos motivadores, redija um texto dissertativo-argumentativo sobre 'Os desafios da inclusão de pessoas com deficiência no mercado de trabalho brasileiro'. Apresente proposta de intervenção.",
+        supportingText: "Segundo dados do IBGE, apenas 28,3% das pessoas com deficiência estão no mercado de trabalho, contra 66,3% das pessoas sem deficiência. A Lei de Cotas (Lei 8.213/91) determina que empresas com mais de 100 funcionários contratem entre 2% e 5% de pessoas com deficiência.",
+        theme: "social",
+        difficulty: "dificil",
+        examType: "vestibular" as const,
+        examName: "FUVEST 2024",
+        year: 2024,
+        rating: 48,
+        keywords: ["inclusão", "deficiência", "trabalho", "acessibilidade", "lei de cotas"]
+      }
+    ];
+
+    initialProposals.forEach((prop, index) => {
+      const id = `proposal-${index + 1}`;
+      const proposal: Proposal = {
+        ...prop,
+        isAiGenerated: false,
+        usageCount: 0,
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.proposals.set(id, proposal);
+    });
   }
 
 }
