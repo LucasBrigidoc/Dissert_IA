@@ -219,7 +219,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
-        <div className="container mx-auto px-4 py-2 sm:px-6 sm:py-4">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between space-x-4">
             <div className="flex items-center space-x-4 sm:space-x-6">
               <Button
@@ -252,7 +252,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         </div>
       </div>
       {/* Main Content */}
-      <div className="container mx-auto px-2 sm:px-6 py-2 pt-16 sm:pt-20">
+      <div className="container mx-auto px-6 py-4 pt-24">
         <div className="flex flex-col gap-2">
           
           {/* Chat Principal - Altura Adaptável */}
