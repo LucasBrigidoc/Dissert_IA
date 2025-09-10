@@ -264,7 +264,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                   <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                     <Brain className="text-white" size={12} />
                   </div>
-                  <h3 className="text-xs font-semibold text-dark-blue">Refinador IA</h3>
+                  <h3 className="text-xs font-semibold text-dark-blue">Refinador Brainstorming IA</h3>
                 </div>
                 <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-soft-gray">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -284,7 +284,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                       {message.type === 'ai' && (
                         <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
                           <Brain size={12} />
-                          <span>Refinador IA</span>
+                          <span>Refinador Brainstorming IA</span>
                         </div>
                       )}
                       <div className="text-[11px] whitespace-pre-wrap leading-relaxed">{message.content}</div>
@@ -300,7 +300,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                     <div className="max-w-xs px-4 py-3 rounded-2xl bg-white border border-bright-blue/20 text-dark-blue mr-12">
                       <div className="flex items-center space-x-2 mb-2 text-xs text-bright-blue">
                         <Brain size={12} />
-                        <span>Refinador IA</span>
+                        <span>Refinador Brainstorming IA</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-bright-blue"></div>
@@ -318,7 +318,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                   <Input
                     value={chatState.currentMessage}
                     onChange={(e) => setChatState(prev => ({ ...prev, currentMessage: e.target.value }))}
-                    placeholder="Digite sua mensagem para o Refinador IA..."
+                    placeholder="Digite sua mensagem para o Refinador Brainstorming IA..."
                     className="flex-1 border-bright-blue/20 focus:border-bright-blue"
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={chatState.isLoading}
