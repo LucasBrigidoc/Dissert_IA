@@ -237,7 +237,7 @@ export default function Argumentos() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 py-4 pt-20">
-        <div className="grid gap-4">
+        <div className="grid gap-2">
           
           {/* Progresso da Construção - Acima do Chat */}
           <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-3">
@@ -272,7 +272,7 @@ export default function Argumentos() {
 
           {/* Chat Principal - Largura Total */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex flex-col h-[32rem]">
+            <div className="flex flex-col h-[28rem]">
               {/* Header do Chat */}
               <div className="flex items-center justify-between pb-4 border-b border-bright-blue/20">
                 <div className="flex items-center space-x-3">
