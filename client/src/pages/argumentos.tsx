@@ -248,36 +248,49 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       <div className="container mx-auto px-2 sm:px-6 py-2 pt-16 sm:pt-20">
         <div className="flex flex-col gap-2">
           
-          {/* Progresso da Construção - Compacto no Mobile */}
-          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-1">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-              <div className="flex items-center justify-between sm:justify-start">
-                <h4 className="font-semibold text-dark-blue text-xs">Progresso</h4>
-                <div className="text-right sm:hidden">
-                  <div className="text-xs font-semibold text-dark-blue">{calculateProgress()}%</div>
+          {/* Progresso da Construção - Organizado e Visível */}
+          <LiquidGlassCard className="bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="space-y-3">
+              {/* Header com título e porcentagem */}
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-dark-blue text-sm">Progresso da Redação</h4>
+                <div className="flex items-center space-x-2">
+                  <div className="text-sm font-bold text-dark-blue">{calculateProgress()}%</div>
+                  <div className="text-xs text-soft-gray">Completo</div>
                 </div>
               </div>
-              <div className="flex items-center justify-between sm:justify-center gap-3 sm:gap-6">
-                <div className="flex items-center space-x-1 sm:space-x-2">
-                  <span className="text-xs text-dark-blue">Tema</span>
-                  <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+              
+              {/* Barra de progresso visual */}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${calculateProgress()}%` }}
+                ></div>
+              </div>
+              
+              {/* Indicadores de etapas */}
+              <div className="grid grid-cols-4 gap-2">
+                <div className="flex flex-col items-center space-y-1">
+                  <div className={`w-3 h-3 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-xs text-dark-blue text-center">Tema</span>
                 </div>
-                <div className="flex items-center space-x-1 sm:space-x-2">
-                  <span className="text-xs text-dark-blue">Tese</span>
-                  <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                <div className="flex flex-col items-center space-y-1">
+                  <div className={`w-3 h-3 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-xs text-dark-blue text-center">Tese</span>
                 </div>
-                <div className="flex items-center space-x-1 sm:space-x-2">
-                  <span className="text-xs text-dark-blue">Args</span>
-                  <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                <div className="flex flex-col items-center space-y-1">
+                  <div className={`w-3 h-3 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-xs text-dark-blue text-center">Argumentos</span>
                 </div>
-                <div className="flex items-center space-x-1 sm:space-x-2">
-                  <span className="text-xs text-dark-blue">Concl</span>
-                  <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                <div className="flex flex-col items-center space-y-1">
+                  <div className={`w-3 h-3 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-xs text-dark-blue text-center">Conclusão</span>
                 </div>
               </div>
-              <div className="text-right hidden sm:block">
-                <div className="text-xs font-semibold text-dark-blue">{calculateProgress()}% Completo</div>
-                <div className="text-[10px] text-soft-gray">Continue conversando com a IA</div>
+              
+              {/* Instrução */}
+              <div className="text-center">
+                <div className="text-xs text-soft-gray">Continue conversando com a IA para desenvolver sua redação</div>
               </div>
             </div>
           </LiquidGlassCard>
