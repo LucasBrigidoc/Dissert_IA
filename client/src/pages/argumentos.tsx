@@ -252,7 +252,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         </div>
       </div>
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-3 pt-20 sm:pt-24">
+      <div className="container mx-auto px-4 sm:px-6 py-3 pt-16 sm:pt-20">
         <div className="flex flex-col gap-2">
           
           {/* Chat Principal - Altura Adaptável */}
