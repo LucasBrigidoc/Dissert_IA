@@ -2,7 +2,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, Star, Clock, Loader2, Trophy, GraduationCap } from "lucide-react";
+import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, Star, Clock, Loader2, Trophy, GraduationCap, Lightbulb } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -54,28 +54,9 @@ export default function Propostas() {
     }
   });
   
-  // Sistema inteligente de detecção de origem
+  // Sempre voltar para functionalities 
   const getBackUrl = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const fromUrl = urlParams.get('from');
-    const fromSession = sessionStorage.getItem('propostas-origin');
-    const fromPage = fromUrl || fromSession || 'dashboard';
-    
-    // Salvar a origem atual se vier da URL
-    if (fromUrl) {
-      sessionStorage.setItem('propostas-origin', fromUrl);
-    }
-    
-    // Retornar URL correta baseada na origem
-    switch (fromPage) {
-      case 'argumentos':
-        return '/argumentos';
-      case 'redacao':
-        return '/redacao';
-      case 'dashboard':
-      default:
-        return '/';
-    }
+    return '/functionalities';
   };
 
   // Load initial proposals
@@ -286,14 +267,16 @@ export default function Propostas() {
                 </button>
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <FileText className="text-white" size={16} />
+                <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <Lightbulb className="text-white" size={16} />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas</h1>
-                  <p className="text-sm text-soft-gray">Descubra e salve propostas de redação personalizadas</p>
                 </div>
               </div>
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-sm text-soft-gray">Ferramenta para elaborar e pesquisar temas de redação</p>
             </div>
           </div>
         </div>
