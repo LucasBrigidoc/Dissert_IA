@@ -273,28 +273,34 @@ export default function Propostas() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link href={getBackUrl()}>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-soft-gray hover:text-dark-blue hover:bg-bright-blue/10"
-              data-testid="button-back"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
-            </Button>
-          </Link>
-          
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-bright-blue/10">
-              <FileText className="w-6 h-6 text-bright-blue" />
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link href={getBackUrl()}>
+                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" 
+                  data-testid="button-back">
+                  <ArrowLeft size={14} />
+                  <span className="text-sm font-medium">Voltar</span>
+                </button>
+              </Link>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <FileText className="text-white" size={16} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas</h1>
+                  <p className="text-sm text-soft-gray">Descubra e salve propostas de redação personalizadas</p>
+                </div>
+              </div>
             </div>
-            <h1 className="text-3xl font-bold text-dark-blue">Explorador de Propostas</h1>
           </div>
         </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="pt-24 container mx-auto px-4 py-8">
 
         {/* Search Section */}
         <LiquidGlassCard className="mb-8 p-6">
