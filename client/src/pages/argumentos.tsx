@@ -219,27 +219,31 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
-        <div className="container mx-auto px-4 sm:px-6 py-2">
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => {
-                if (window.history.length > 1 && document.referrer) {
-                  window.history.back();
-                } else {
-                  window.location.href = backUrl;
-                }
-              }}
-              className="flex items-center space-x-2 px-2 py-1 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" 
-              data-testid="button-back"
-            >
-              <ArrowLeft size={14} />
-              <span className="text-sm font-medium">Voltar</span>
-            </button>
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <Brain className="text-white" size={14} />
+        <div className="container mx-auto px-4 py-2 sm:px-6 sm:py-4">
+          <div className="flex items-center space-x-4 sm:justify-between sm:space-x-6">
+            <div className="flex items-center space-x-4 sm:space-x-6">
+              <Button
+                onClick={() => {
+                  if (window.history.length > 1 && document.referrer) {
+                    window.history.back();
+                  } else {
+                    window.location.href = backUrl;
+                  }
+                }}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+                data-testid="button-back"
+              >
+                <ArrowLeft size={16} />
+                <span>Voltar</span>
+              </Button>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Brain className="text-white" size={14} />
+                </div>
+                <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
-              <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
             </div>
           </div>
         </div>
