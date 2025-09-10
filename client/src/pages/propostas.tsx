@@ -29,6 +29,7 @@ export default function PropostasPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todas");
   const [selectedSource, setSelectedSource] = useState("todas");
+  const [selectedYear, setSelectedYear] = useState("todos");
 
   // Estado para expandir/compactar o formulário de criação
   const [isFormExpanded, setIsFormExpanded] = useState(false);
@@ -97,8 +98,9 @@ export default function PropostasPage() {
     
     const matchesCategory = selectedCategory === "todas" || proposal.category === selectedCategory;
     const matchesSource = selectedSource === "todas" || proposal.source.includes(selectedSource);
+    const matchesYear = selectedYear === "todos" || proposal.year === selectedYear;
     
-    return matchesSearch && matchesCategory && matchesSource;
+    return matchesSearch && matchesCategory && matchesSource && matchesYear;
   });
 
   const handleCreateProposal = () => {
@@ -318,7 +320,7 @@ export default function PropostasPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-4 mb-6">
+          <div className="grid md:grid-cols-5 gap-4 mb-6">
             <div className="md:col-span-2">
               <Label htmlFor="search" className="text-sm font-medium text-dark-blue">
                 Buscar por título ou tema
@@ -371,14 +373,29 @@ export default function PropostasPage() {
                 </SelectContent>
               </Select>
             </div>
+
+            <div>
+              <Label htmlFor="year" className="text-sm font-medium text-dark-blue">
+                Ano
+              </Label>
+              <Select onValueChange={setSelectedYear} defaultValue="todos">
+                <SelectTrigger className="mt-1" data-testid="select-filter-year">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os anos</SelectItem>
+                  <SelectItem value="2024">2024</SelectItem>
+                  <SelectItem value="2023">2023</SelectItem>
+                  <SelectItem value="2022">2022</SelectItem>
+                  <SelectItem value="2021">2021</SelectItem>
+                  <SelectItem value="2020">2020</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="flex items-center justify-between text-sm text-soft-gray">
             <p>{filteredProposals.length} proposta(s) encontrada(s)</p>
-            <Button variant="outline" size="sm" className="flex items-center space-x-2" data-testid="button-advanced-filters">
-              <Filter size={14} />
-              <span>Filtros Avançados</span>
-            </Button>
           </div>
         </LiquidGlassCard>
 
