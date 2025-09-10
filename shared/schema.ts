@@ -90,6 +90,33 @@ export const savedRepertoires = pgTable("saved_repertoires", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Proposals table for essay topics and exam prompts
+export const proposals = pgTable("proposals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  statement: text("statement").notNull(), // The main proposal/prompt
+  supportingText: text("supporting_text"), // Supporting materials/texts
+  examType: varchar("exam_type", { enum: ["enem", "vestibular", "concurso", "simulado", "custom"] }).notNull(),
+  examName: text("exam_name"), // Name of the specific exam (e.g., "ENEM 2023", "FUVEST 2024")
+  year: integer("year"),
+  difficulty: varchar("difficulty", { enum: ["facil", "medio", "dificil", "muito-dificil"] }).notNull().default("medio"),
+  theme: varchar("theme", { enum: ["social", "environment", "technology", "education", "politics", "economy", "culture", "health", "ethics", "globalization"] }).notNull(),
+  keywords: json("keywords").notNull().default([]),
+  isAiGenerated: boolean("is_ai_generated").default(false),
+  rating: integer("rating").default(0),
+  usageCount: integer("usage_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Saved proposals for user's personal library
+export const savedProposals = pgTable("saved_proposals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  proposalId: varchar("proposal_id").notNull().references(() => proposals.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -166,6 +193,34 @@ export const chatMessageSchema = z.object({
   }),
 });
 
+export const insertProposalSchema = createInsertSchema(proposals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSavedProposalSchema = createInsertSchema(savedProposals).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const proposalSearchQuerySchema = z.object({
+  query: z.string().min(1, "Query é obrigatória"),
+  examType: z.string().optional(),
+  theme: z.string().optional(),
+  difficulty: z.string().optional(),
+  year: z.number().optional(),
+  excludeIds: z.array(z.string()).optional(),
+});
+
+export const generateProposalSchema = z.object({
+  theme: z.string().min(1, "Tema é obrigatório"),
+  difficulty: z.enum(["facil", "medio", "dificil", "muito-dificil"]),
+  examType: z.enum(["enem", "vestibular", "concurso", "simulado", "custom"]),
+  keywords: z.array(z.string()).optional(),
+  specificRequirements: z.string().optional(),
+});
+
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -195,3 +250,12 @@ export type SavedRepertoire = typeof savedRepertoires.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
+
+export type InsertProposal = z.infer<typeof insertProposalSchema>;
+export type Proposal = typeof proposals.$inferSelect;
+
+export type InsertSavedProposal = z.infer<typeof insertSavedProposalSchema>;
+export type SavedProposal = typeof savedProposals.$inferSelect;
+
+export type ProposalSearchQuery = z.infer<typeof proposalSearchQuerySchema>;
+export type GenerateProposal = z.infer<typeof generateProposalSchema>;
