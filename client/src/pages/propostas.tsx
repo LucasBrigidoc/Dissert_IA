@@ -450,13 +450,6 @@ export default function Propostas() {
                           </span>
                         </div>
                       </div>
-                      
-                      {proposal.rating && (
-                        <div className="flex items-center gap-1 text-yellow-400">
-                          <Star className="w-4 h-4 fill-current" />
-                          <span className="text-sm font-medium">{proposal.rating}</span>
-                        </div>
-                      )}
                     </div>
 
                     {/* Content Preview */}
