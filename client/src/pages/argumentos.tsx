@@ -224,14 +224,13 @@ export default function Argumentos() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm text-soft-gray">
+              <div className="text-soft-gray text-[16px]">
                 Desenvolva sua redação com ajuda da IA
               </div>
             </div>
           </div>
         </div>
       </div>
-
       {/* Main Content */}
       <div className="container mx-auto px-2 sm:px-6 py-2 pt-16 sm:pt-20">
         <div className="flex flex-col gap-2">
