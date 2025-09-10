@@ -272,7 +272,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 <h1 className="text-2xl font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
             </div>
-            <p className="text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
+            <p className="text-soft-gray">Desenvolva sua estrutura argumentativa com IA</p>
           </div>
         </div>
       </div>
