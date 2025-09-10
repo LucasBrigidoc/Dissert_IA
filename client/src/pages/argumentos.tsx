@@ -227,9 +227,6 @@ export default function Argumentos() {
               <div className="text-sm text-soft-gray">
                 Desenvolva sua redação com ajuda da IA
               </div>
-              <div className="text-xs text-soft-gray/70">
-                Chat inteligente para estruturação argumentativa
-              </div>
             </div>
           </div>
         </div>
