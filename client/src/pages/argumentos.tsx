@@ -220,7 +220,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 py-2 sm:px-6 sm:py-4">
-          <div className="flex items-center space-x-4 sm:justify-between sm:space-x-6">
+          <div className="flex items-center justify-between space-x-4">
             <div className="flex items-center space-x-4 sm:space-x-6">
               <Button
                 onClick={() => {
@@ -242,13 +242,11 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                   <Brain className="text-white" size={14} />
                 </div>
-                <div>
-                  <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
-                  <div className="hidden sm:block">
-                    <p className="text-sm text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
-                  </div>
-                </div>
+                <h1 className="text-lg font-bold text-dark-blue">Refinamento do Brainstorming</h1>
               </div>
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-sm text-soft-gray">Desenvolva sua estrutura argumentativa com assistência da IA</p>
             </div>
           </div>
         </div>
