@@ -322,7 +322,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                           <span>Refinador IA</span>
                         </div>
                       )}
-                      <div className="text-xs whitespace-pre-wrap">{message.content}</div>
+                      <div className="text-[11px] whitespace-pre-wrap leading-relaxed">{message.content}</div>
                       <div className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/70' : 'text-soft-gray'}`}>
                         {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </div>
