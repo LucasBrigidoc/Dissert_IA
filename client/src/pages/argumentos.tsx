@@ -38,14 +38,30 @@ export default function Argumentos() {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
-  // Garantir que a página sempre abra no topo
+  // Garantir que a página sempre abra no topo apenas na primeira carga
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, []); // Mantém apenas para carregamento inicial
 
-  // Scroll automático para o final do chat
+  // Scroll controlado apenas dentro da área do chat
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Só fazer scroll se há mensagens e o usuário não está fazendo scroll manual
+    if (chatState.messages.length > 0 && chatEndRef.current) {
+      const chatContainer = chatEndRef.current.parentElement;
+      if (chatContainer) {
+        // Verificar se o usuário está próximo do final do chat antes de fazer scroll automático
+        const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 100;
+        
+        // Só fazer scroll automático se o usuário já estava próximo do final
+        if (isNearBottom || chatState.messages.length === 1) {
+          chatEndRef.current.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'nearest', // Evita scroll da página toda
+            inline: 'nearest' // Evita scroll horizontal
+          });
+        }
+      }
+    }
   }, [chatState.messages]);
 
   // Inicializar conversa
@@ -372,7 +388,12 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
   };
 
   // Enviar mensagem
-  const handleSendMessage = () => {
+  const handleSendMessage = (event?: React.FormEvent) => {
+    // Prevenir comportamento padrão que pode causar scroll
+    if (event) {
+      event.preventDefault();
+    }
+
     if (!chatState.currentMessage.trim() || chatState.isLoading) return;
 
     const currentMessage = chatState.currentMessage;
@@ -588,12 +609,20 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                     onChange={(e) => setChatState(prev => ({ ...prev, currentMessage: e.target.value }))}
                     placeholder="Digite sua mensagem para o Refinador Brainstorming IA..."
                     className="flex-1 border-bright-blue/20 focus:border-bright-blue"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
                     disabled={chatState.isLoading}
                     data-testid="input-chat-message"
                   />
                   <Button 
-                    onClick={handleSendMessage}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }}
                     disabled={!chatState.currentMessage.trim() || chatState.isLoading}
                     className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
                     data-testid="button-send-message"
