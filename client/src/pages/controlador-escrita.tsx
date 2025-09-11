@@ -845,7 +845,7 @@ export default function ControladorEscrita() {
                 placeholder="O texto modificado aparecerá aqui. Você pode editar diretamente este resultado."
                 value={modifiedText}
                 onChange={(e) => setModifiedText(e.target.value)}
-                className="min-h-[120px] text-base leading-relaxed resize-none"
+                className="min-h-[200px] text-base leading-relaxed resize-none"
                 data-testid="textarea-result"
               />
             </div>
