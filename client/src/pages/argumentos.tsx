@@ -257,7 +257,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     return null;
   };
 
-  // Verificar progressão e avançar seções automaticamente
+  // Verificar progressão e avançar seções automaticamente (sem mensagens automáticas)
   const checkSectionProgression = () => {
     const currentIndex = sectionFlow.indexOf(chatState.currentSection);
     if (currentIndex === -1) return;
@@ -276,25 +276,10 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       }
     };
 
-    // Se a seção atual tem conteúdo, avançar para a próxima
+    // Se a seção atual tem conteúdo, avançar para a próxima (apenas mudança de estado)
     if (hasCurrentSectionContent() && currentIndex < sectionFlow.length - 1) {
       const nextSection = sectionFlow[currentIndex + 1];
       setChatState(prev => ({ ...prev, currentSection: nextSection }));
-      
-      // Adicionar mensagem orientativa para a próxima seção
-      setTimeout(() => {
-        const guidanceMessage = getSectionGuidanceMessage(nextSection);
-        setChatState(prev => ({
-          ...prev,
-          messages: [...prev.messages, {
-            id: `guidance_${Date.now()}`,
-            type: 'ai',
-            content: guidanceMessage,
-            section: nextSection,
-            timestamp: new Date()
-          }]
-        }));
-      }, 1000);
     }
   };
 

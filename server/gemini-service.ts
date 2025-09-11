@@ -670,6 +670,28 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     } else {
       prompt += `FORMATO DE RESPOSTA PADRÃO:\n🎯 [NOME DA SEÇÃO]\n\n💡 ANÁLISE RÁPIDA\n[1-2 frases diretas sobre o que o usuário escreveu ou perguntou]\n\n📝 SUGESTÃO PRINCIPAL\n[Uma sugestão concreta e específica - máximo 2 frases]\n\n🔧 COMO MELHORAR\n• [Ponto prático 1 - máximo 1 linha]\n• [Ponto prático 2 - máximo 1 linha]\n• [Ponto prático 3 - máximo 1 linha]\n\n❓ PRÓXIMA ETAPA\n[Pergunta ou direcionamento para continuar - máximo 1 frase]\n\nREGRAS:\n- Linguagem direta e clara\n- Foco em ações práticas\n- Sempre termine direcionando o próximo passo`;
     }
+
+    // Instruções de progressão inteligente - FUNDAMENTAL para evitar mensagens duplicadas
+    prompt += `
+
+PROGRESSÃO INTELIGENTE (MUITO IMPORTANTE):
+Analise se o usuário completou adequadamente o conceito atual:
+
+SE o usuário desenvolveu bem a seção atual (${section}):
+- Inclua no FINAL da sua resposta uma orientação natural para avançar
+- Use frases como: "Ótimo! Agora que [resumo do que foi feito], vamos para [próximo passo]"
+- Fluxo: tema → tese → introdução → desenvolvimento1 → desenvolvimento2 → conclusão
+
+SE o usuário ainda está explorando/tem dúvidas sobre a seção atual:
+- Continue no mesmo tópico, aprofunde mais
+- Use frases como: "Vamos continuar desenvolvendo este ponto" ou "Que tal explorarmos mais esta ideia"
+
+CONTEXTO ATUAL:
+- Seção atual: ${section}
+- Conteúdo existente: ${JSON.stringify(context)}
+
+IMPORTANTE: Esta é a ÚNICA fonte de orientação de progresso. NÃO haverá mensagens automáticas separadas.
+Sua resposta deve ser completa e incluir orientação de próximos passos de forma natural.`;
     
     return prompt;
   }
