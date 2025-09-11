@@ -44,33 +44,35 @@ export default function Argumentos() {
     window.scrollTo(0, 0);
   }, []); // Mantém apenas para carregamento inicial
 
-  // Scroll automático inteligente: início da mensagem da IA, final para mensagens do usuário
+  // Scroll automático APENAS na caixa de conversa: início da mensagem da IA, final para mensagens do usuário
   useEffect(() => {
-    if (chatState.messages.length > 0) {
+    if (chatState.messages.length > 0 && chatContainerRef.current) {
+      const chatContainer = chatContainerRef.current;
+      
       // Para garantir que o DOM foi totalmente renderizado antes do scroll
       requestAnimationFrame(() => {
         setTimeout(() => {
           const lastMessage = chatState.messages[chatState.messages.length - 1];
           
           if (lastMessage.type === 'ai') {
-            // Para mensagens da IA: rolar para o INÍCIO da mensagem para ler desde o começo
-            const lastAiMessageElement = chatContainerRef.current?.querySelector(`[data-message-id="${lastMessage.id}"]`);
+            // Para mensagens da IA: rolar para o INÍCIO da mensagem dentro do container
+            const lastAiMessageElement = chatContainer.querySelector(`[data-message-id="${lastMessage.id}"]`) as HTMLElement;
             if (lastAiMessageElement) {
-              lastAiMessageElement.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest'
+              // Calcular posição relativa da mensagem da IA dentro do container
+              const relativeTop = lastAiMessageElement.offsetTop - chatContainer.scrollTop;
+              
+              // Scroll manual dentro do container apenas
+              chatContainer.scrollTo({
+                top: lastAiMessageElement.offsetTop - 20, // 20px de margem superior
+                behavior: 'smooth'
               });
             }
           } else {
-            // Para mensagens do usuário: rolar para o final como antes
-            if (chatEndRef.current) {
-              chatEndRef.current.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'end',
-                inline: 'nearest'
-              });
-            }
+            // Para mensagens do usuário: rolar para o final do container
+            chatContainer.scrollTo({
+              top: chatContainer.scrollHeight,
+              behavior: 'smooth'
+            });
           }
         }, 100);
       });
