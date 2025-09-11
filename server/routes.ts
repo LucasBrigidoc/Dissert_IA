@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
+import { textModificationService } from "./text-modification-service";
 import bcrypt from "bcrypt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -714,6 +715,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // If JSON response fails, send a basic text response
         res.status(500).send('{"message":"Internal server error"}');
       }
+    }
+  });
+
+  // Text Modification API endpoint
+  app.post("/api/text-modification", async (req, res) => {
+    try {
+      // Validate input using shared schema
+      const validatedData = textModificationRequestSchema.parse(req.body);
+      const { text, type, config } = validatedData;
+      
+      // Per-type rate limiting (15 modifications per hour per IP per type)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const perTypeIdentifier = `${clientIP}_text_${type}`;
+      const rateLimitCheck = await storage.checkRateLimit(perTypeIdentifier, 15, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: `Rate limit exceeded for ${type} modifications. You can make 15 ${type} modifications per hour.`, 
+          retryAfter: 3600,
+          type: type
+        });
+      }
+      
+      console.log(`✏️ Text modification request: ${type}, IP: ${clientIP}`);
+      
+      // Process text with AI
+      const result = await textModificationService.modifyText(text, type, config || {});
+      
+      res.json({
+        ...result,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error("Text modification error:", error);
+      res.status(500).json({ 
+        message: "Failed to modify text",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get text modification cache statistics (for debugging)
+  app.get("/api/text-modification/stats", async (req, res) => {
+    try {
+      const stats = textModificationService.getCacheStats();
+      res.json({
+        ...stats,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Text modification stats error:", error);
+      res.status(500).json({ message: "Failed to get stats" });
     }
   });
 

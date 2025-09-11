@@ -221,6 +221,54 @@ export const generateProposalSchema = z.object({
   specificRequirements: z.string().optional(),
 });
 
+// Text Modification Schemas
+export const textModificationTypeSchema = z.enum([
+  "formalidade", 
+  "argumentativo", 
+  "sinonimos", 
+  "antonimos"
+]);
+
+export const wordDifficultySchema = z.enum([
+  "simples", 
+  "medio", 
+  "complexo"
+]);
+
+export const argumentTechniqueSchema = z.enum([
+  "topico-frasal",
+  "tese-antitese", 
+  "causa-consequencia",
+  "problema-solucao"
+]);
+
+export const argumentStructureSchema = z.object({
+  repertoire: z.boolean().optional(),
+  thesis: z.boolean().optional(),
+  arguments: z.boolean().optional(),
+  conclusion: z.boolean().optional(),
+});
+
+export const textModificationConfigSchema = z.object({
+  formalityLevel: z.number().min(0).max(100).optional(),
+  wordDifficulty: wordDifficultySchema.optional(),
+  argumentTechnique: argumentTechniqueSchema.optional(),
+  argumentativeLevel: z.number().min(0).max(100).optional(),
+  argumentStructure: argumentStructureSchema.optional(),
+});
+
+export const textModificationResultSchema = z.object({
+  modifiedText: z.string(),
+  modificationType: textModificationTypeSchema,
+  source: z.enum(["ai", "cache", "fallback"]),
+  tokensUsed: z.number().optional(),
+});
+
+export const textModificationRequestSchema = z.object({
+  text: z.string().min(1, "Texto é obrigatório").max(2000, "Texto muito longo. Máximo 2000 caracteres."),
+  type: textModificationTypeSchema,
+  config: textModificationConfigSchema.optional(),
+});
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -259,3 +307,12 @@ export type SavedProposal = typeof savedProposals.$inferSelect;
 
 export type ProposalSearchQuery = z.infer<typeof proposalSearchQuerySchema>;
 export type GenerateProposal = z.infer<typeof generateProposalSchema>;
+
+// Text Modification Types
+export type TextModificationType = z.infer<typeof textModificationTypeSchema>;
+export type WordDifficulty = z.infer<typeof wordDifficultySchema>;
+export type ArgumentTechnique = z.infer<typeof argumentTechniqueSchema>;
+export type ArgumentStructure = z.infer<typeof argumentStructureSchema>;
+export type TextModificationConfig = z.infer<typeof textModificationConfigSchema>;
+export type TextModificationResult = z.infer<typeof textModificationResultSchema>;
+export type TextModificationRequest = z.infer<typeof textModificationRequestSchema>;

@@ -10,6 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { 
+  TextModificationConfig, 
+  TextModificationResult, 
+  TextModificationType,
+  WordDifficulty,
+  ArgumentTechnique,
+  ArgumentStructure 
+} from "@shared/schema";
 
 export default function ControladorEscrita() {
   const [location, setLocation] = useLocation();
@@ -34,22 +42,22 @@ export default function ControladorEscrita() {
   const [argumentativeLevel, setArgumentativeLevel] = useState([50]);
   
   // Estado para o tipo de modificação atual
-  const [modificationType, setModificationType] = useState<string>("");
+  const [modificationType, setModificationType] = useState<TextModificationType | "">("");
   
   // Estados para controlar cards expandidos (permite múltiplos abertos)
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   
   // Estados para formalidade
-  const [wordDifficulty, setWordDifficulty] = useState("medio");
+  const [wordDifficulty, setWordDifficulty] = useState<WordDifficulty>("medio");
   
   // Estados para argumentação
-  const [argumentStructure, setArgumentStructure] = useState({
+  const [argumentStructure, setArgumentStructure] = useState<ArgumentStructure>({
     repertoire: false,
     thesis: false,
     arguments: false,
     conclusion: false
   });
-  const [argumentTechnique, setArgumentTechnique] = useState("topico-frasal");
+  const [argumentTechnique, setArgumentTechnique] = useState<ArgumentTechnique>("topico-frasal");
 
   // Função para alternar cards expandidos
   const toggleCard = (cardId: string) => {
@@ -79,86 +87,124 @@ export default function ControladorEscrita() {
     }
 
     setIsProcessing(true);
-    setModificationType(type);
+    setModificationType(type as TextModificationType);
     
-    // Simular processamento (na implementação real, aqui seria chamada a API)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    let processedText = originalText;
-    
-    switch (type) {
-      case 'formalidade':
-        if (formalityLevel[0] > 70) {
+    try {
+      // Build configuration based on current settings
+      const config: any = {};
+      
+      if (type === 'formalidade') {
+        config.formalityLevel = formalityLevel[0];
+        config.wordDifficulty = wordDifficulty;
+      } else if (type === 'argumentativo') {
+        config.argumentTechnique = argumentTechnique;
+        config.argumentativeLevel = argumentativeLevel[0];
+        config.argumentStructure = argumentStructure;
+      }
+      
+      console.log(`🤖 Processando texto com IA: ${type}`, config);
+      
+      // Call the AI text modification API
+      const response = await fetch('/api/text-modification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: originalText,
+          type: type,
+          config: config
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro na modificação do texto');
+      }
+      
+      const result = await response.json();
+      
+      setModifiedText(result.modifiedText);
+      
+      // Show success message with source info
+      const sourceLabel = result.source === 'ai' ? 'IA' : 
+                         result.source === 'cache' ? 'Cache' : 'Fallback';
+      
+      toast({
+        title: "Texto modificado com sucesso!",
+        description: `O texto foi reescrito usando: ${type} (${sourceLabel})`,
+      });
+      
+    } catch (error) {
+      console.error('Erro no processamento:', error);
+      
+      // Fallback to local processing if API fails
+      console.log('🔄 Usando processamento local como fallback');
+      
+      let processedText = originalText;
+      
+      switch (type) {
+        case 'formalidade':
+          if (formalityLevel[0] > 70) {
+            processedText = originalText
+              .replace(/\bvocê\b/g, "Vossa Senhoria")
+              .replace(/\btá\b/g, "está")
+              .replace(/\bpra\b/g, "para")
+              .replace(/\bfazer\b/g, "realizar")
+              .replace(/\bver\b/g, "analisar")
+              .replace(/\bcoisa\b/g, "elemento");
+          } else if (formalityLevel[0] < 30) {
+            processedText = originalText
+              .replace(/\bVossa Senhoria\b/g, "você")
+              .replace(/\bestá\b/g, "tá")
+              .replace(/\bpara\b/g, "pra")
+              .replace(/\brealizar\b/g, "fazer")
+              .replace(/\banalisar\b/g, "ver");
+          }
+          break;
+          
+        case 'argumentativo':
+          if (argumentativeLevel[0] > 70) {
+            processedText = `É fundamental compreender que ${originalText.toLowerCase()} Portanto, torna-se evidente a necessidade de uma análise mais aprofundada desta questão.`;
+          } else if (argumentativeLevel[0] < 30) {
+            processedText = `${originalText} Essa é apenas uma perspectiva possível sobre o assunto.`;
+          } else {
+            processedText = `Considerando que ${originalText.toLowerCase()}, pode-se argumentar que esta questão merece atenção especial.`;
+          }
+          break;
+          
+        case 'sinonimos':
           processedText = originalText
-            .replace(/\bvocê\b/g, "Vossa Senhoria")
-            .replace(/\btá\b/g, "está")
-            .replace(/\bpra\b/g, "para")
-            .replace(/\b(.*?)\b/g, (match) => {
-              // Simular linguagem mais formal
-              const formalMappings: { [key: string]: string } = {
-                "legal": "adequado",
-                "muito": "extremamente",
-                "coisa": "elemento",
-                "fazer": "realizar",
-                "ver": "analisar"
-              };
-              return formalMappings[match.toLowerCase()] || match;
-            });
-        } else if (formalityLevel[0] < 30) {
+            .replace(/\bbom\b/g, "excelente")
+            .replace(/\bgrande\b/g, "amplo")
+            .replace(/\bpequeno\b/g, "reduzido")
+            .replace(/\bimportante\b/g, "relevante")
+            .replace(/\bproblema\b/g, "questão")
+            .replace(/\bsolução\b/g, "resolução");
+          break;
+          
+        case 'antonimos':
           processedText = originalText
-            .replace(/\bVossa Senhoria\b/g, "você")
-            .replace(/\bestá\b/g, "tá")
-            .replace(/\bpara\b/g, "pra")
-            .replace(/\brealizar\b/g, "fazer")
-            .replace(/\banalisar\b/g, "ver");
-        }
-        break;
-        
-      case 'argumentativo':
-        if (argumentativeLevel[0] > 70) {
-          processedText = `É fundamental compreender que ${originalText.toLowerCase()} Portanto, torna-se evidente a necessidade de uma análise mais aprofundada desta questão, considerando suas implicações no contexto atual.`;
-        } else if (argumentativeLevel[0] < 30) {
-          processedText = `${originalText} Essa é apenas uma perspectiva possível sobre o assunto.`;
-        } else {
-          processedText = `Considerando que ${originalText.toLowerCase()}, pode-se argumentar que esta questão merece atenção especial.`;
-        }
-        break;
-        
-      case 'sinonimos':
-        // Simular substituição por sinônimos
-        processedText = originalText
-          .replace(/\bbom\b/g, "excelente")
-          .replace(/\bgrande\b/g, "amplo")
-          .replace(/\bpequeno\b/g, "reduzido")
-          .replace(/\bimportante\b/g, "relevante")
-          .replace(/\bproblema\b/g, "questão")
-          .replace(/\bsolução\b/g, "resolução")
-          .replace(/\bmostrar\b/g, "demonstrar")
-          .replace(/\bpensamento\b/g, "raciocínio");
-        break;
-        
-      case 'antonimos':
-        // Simular mudança de sentido com antônimos
-        processedText = originalText
-          .replace(/\bbom\b/g, "ruim")
-          .replace(/\bgrande\b/g, "pequeno")
-          .replace(/\bpequeno\b/g, "grande")
-          .replace(/\bfácil\b/g, "difícil")
-          .replace(/\bdifícil\b/g, "fácil")
-          .replace(/\bpositivo\b/g, "negativo")
-          .replace(/\bnegativo\b/g, "positivo")
-          .replace(/\bsucesso\b/g, "fracasso")
-          .replace(/\bvantagem\b/g, "desvantagem");
-        break;
+            .replace(/\bbom\b/g, "ruim")
+            .replace(/\bgrande\b/g, "pequeno")
+            .replace(/\bpequeno\b/g, "grande")
+            .replace(/\bfácil\b/g, "difícil")
+            .replace(/\bdifícil\b/g, "fácil")
+            .replace(/\bpositivo\b/g, "negativo")
+            .replace(/\bsucesso\b/g, "fracasso");
+          break;
+      }
+      
+      setModifiedText(processedText);
+      
+      toast({
+        title: "Processamento offline",
+        description: "Texto modificado usando processamento local.",
+        variant: "default",
+      });
+    } finally {
+      setIsProcessing(false);
     }
-    
-    setModifiedText(processedText);
-    setIsProcessing(false);
-    
-    toast({
-      title: "Texto modificado com sucesso!",
-      description: `O texto foi reescrito usando: ${type}`,
-    });
   };
 
   const handleCopyText = async () => {
@@ -302,7 +348,7 @@ export default function ControladorEscrita() {
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
                     Dificuldade das Palavras
                   </Label>
-                  <RadioGroup value={wordDifficulty} onValueChange={setWordDifficulty}>
+                  <RadioGroup value={wordDifficulty} onValueChange={(value) => setWordDifficulty(value as WordDifficulty)}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="simples" id="simples" />
                       <Label htmlFor="simples" className="text-xs">Simples</Label>
@@ -366,7 +412,7 @@ export default function ControladorEscrita() {
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
                     Organização do Parágrafo
                   </Label>
-                  <RadioGroup value={argumentTechnique} onValueChange={setArgumentTechnique}>
+                  <RadioGroup value={argumentTechnique} onValueChange={(value) => setArgumentTechnique(value as ArgumentTechnique)}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="topico-frasal" id="topico-frasal" />
                       <Label htmlFor="topico-frasal" className="text-xs">Tópico Frasal + Desenvolvimento</Label>

@@ -562,6 +562,7 @@ export class MemStorage implements IStorage {
       usageCount: insertProposal.usageCount ?? null,
       keywords: insertProposal.keywords ?? [],
       difficulty: insertProposal.difficulty ?? "medio",
+      examName: insertProposal.examName ?? null,
       id,
       createdAt: new Date(),
       updatedAt: new Date()
