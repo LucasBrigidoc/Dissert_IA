@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { 
   TextModificationConfig, 
   TextModificationResult, 
@@ -22,6 +23,8 @@ import type {
 export default function ControladorEscrita() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
+  const isDesktop = !isMobile;
   
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -461,11 +464,11 @@ export default function ControladorEscrita() {
         </div>
 
         {/* Controles - Ocupam toda a vertical */}
-        <div className="flex-1 grid grid-cols-4 gap-4 mb-6 items-start">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
-            onClick={() => toggleCard('formalidade')}
+            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
+            onClick={isMobile ? () => toggleCard('formalidade') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -477,16 +480,16 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Ajuste o nível formal</p>
                 </div>
               </div>
-              {expandedCards.includes('formalidade') ? (
+              {isMobile && (expandedCards.includes('formalidade') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
-              )}
+              ))}
             </div>
             
-            {expandedCards.includes('formalidade') && (
+            {(isDesktop || expandedCards.includes('formalidade')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 space-y-4"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2 mb-3">
@@ -542,8 +545,8 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
-            onClick={() => toggleCard('argumentacao')}
+            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
+            onClick={isMobile ? () => toggleCard('argumentacao') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -555,16 +558,16 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Estrutura argumentativa</p>
                 </div>
               </div>
-              {expandedCards.includes('argumentacao') ? (
+              {isMobile && (expandedCards.includes('argumentacao') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
-              )}
+              ))}
             </div>
             
-            {expandedCards.includes('argumentacao') && (
+            {(isDesktop || expandedCards.includes('argumentacao')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 space-y-4"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2 mb-3">
@@ -672,8 +675,8 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
-            onClick={() => toggleCard('sinonimos')}
+            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
+            onClick={isMobile ? () => toggleCard('sinonimos') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -685,16 +688,16 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Mantém o sentido</p>
                 </div>
               </div>
-              {expandedCards.includes('sinonimos') ? (
+              {isMobile && (expandedCards.includes('sinonimos') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
-              )}
+              ))}
             </div>
             
-            {expandedCards.includes('sinonimos') && (
+            {(isDesktop || expandedCards.includes('sinonimos')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200"
+                className="mt-4 pt-4 border-t border-gray-200 flex-1 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2 mb-3">
@@ -716,8 +719,8 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
-            onClick={() => toggleCard('antonimos')}
+            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
+            onClick={isMobile ? () => toggleCard('antonimos') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -729,16 +732,16 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Inverte o sentido</p>
                 </div>
               </div>
-              {expandedCards.includes('antonimos') ? (
+              {isMobile && (expandedCards.includes('antonimos') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
-              )}
+              ))}
             </div>
             
-            {expandedCards.includes('antonimos') && (
+            {(isDesktop || expandedCards.includes('antonimos')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200"
+                className="mt-4 pt-4 border-t border-gray-200 flex-1 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2 mb-3">
