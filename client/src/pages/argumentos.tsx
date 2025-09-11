@@ -3,7 +3,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCircle2, Clock, Users } from "lucide-react";
+import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCircle2, Clock, Users, RotateCcw } from "lucide-react";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -309,6 +309,68 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     persistContentToSection(userMessage, section);
   };
 
+  // Função para recomeçar a conversa
+  const handleRestartConversation = () => {
+    // Resetar estado do brainstorm
+    setBrainstormData({
+      tema: '',
+      tese: '',
+      paragrafos: {
+        introducao: '',
+        desenvolvimento1: '',
+        desenvolvimento2: '',
+        conclusao: ''
+      },
+      repertorios: [],
+      conectivos: []
+    });
+
+    // Resetar estado do chat para seção inicial
+    setChatState(prev => ({
+      ...prev,
+      currentSection: 'tema',
+      currentMessage: '',
+      isLoading: false,
+      messages: []
+    }));
+
+    // Adicionar mensagem de boas-vindas novamente
+    setTimeout(() => {
+      const welcomeMessage = {
+        id: 'welcome_restart',
+        type: 'ai' as const,
+        content: `🎯 REFINAMENTO DO BRAINSTORMING
+
+✨ DESENVOLVA SUA REDAÇÃO COM AJUDA DA IA
+Chat inteligente para estruturação argumentativa
+
+💡 O QUE EU FAÇO POR VOCÊ:
+• Desenvolvo sua tese principal de forma estruturada
+• Construo argumentos sólidos com fundamentação
+• Organizo parágrafos de introdução, desenvolvimento e conclusão
+• Sugiro repertórios culturais relevantes para seu tema
+• Refino sua linguagem argumentativa
+
+🏗️ COMO FUNCIONA:
+1️⃣ Você me conta o tema da redação
+2️⃣ Desenvolvemos juntos sua tese principal
+3️⃣ Construímos argumentos persuasivos
+4️⃣ Estruturamos cada parágrafo
+5️⃣ Geramos um mapa mental completo
+
+📝 VAMOS COMEÇAR
+Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social, concurso público, etc.) para iniciarmos a construção dos seus argumentos!`,
+        section: 'tema' as const,
+        timestamp: new Date()
+      };
+      
+      setChatState(prev => ({
+        ...prev,
+        messages: [welcomeMessage]
+      }));
+    }, 100);
+  };
+
   // Enviar mensagem
   const handleSendMessage = () => {
     if (!chatState.currentMessage.trim() || chatState.isLoading) return;
@@ -466,10 +528,16 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                   </div>
                   <h3 className="text-xs font-semibold text-dark-blue">Refinador Brainstorming IA</h3>
                 </div>
-                <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-soft-gray">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="hidden sm:inline">Online</span>
-                </div>
+                <Button
+                  onClick={handleRestartConversation}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-1 sm:space-x-2 text-xs border-bright-blue/20 text-bright-blue hover:bg-bright-blue/10"
+                  data-testid="button-restart-conversation"
+                >
+                  <RotateCcw size={12} />
+                  <span className="hidden sm:inline">Nova Conversa</span>
+                </Button>
               </div>
 
               {/* Messages Area */}
