@@ -333,22 +333,35 @@ export default function Repertorio() {
   const handleLoadMore = () => {
     if (loadMoreMutation.isPending) return;
     
-    const existingIds = searchResults?.results.map(r => r.id) || [];
+    // Get existing IDs from current displayed repertoires (works for both search and initial)
+    const existingIds = displayRepertoires.map(r => r.id);
     
-    // Use searchQuery if available, otherwise use type-based search
-    const baseQuery = searchQuery.trim() || (selectedType !== "all" ? 
-      (typeLabels[selectedType] || selectedType) : "");
+    // Check if there's an active search (searchQuery or specific type selected)
+    const hasActiveSearch = searchQuery.trim() || selectedType !== "all";
     
-    if (!baseQuery) return;
+    let query;
     
-    const query = {
-      query: baseQuery,
-      type: selectedType !== "all" ? selectedType : undefined,
-      category: selectedCategory !== "all" ? selectedCategory : undefined,
-      popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
-      excludeIds: existingIds.length > 0 ? existingIds : []
-    };
+    if (hasActiveSearch) {
+      // Behavior with active search: load more results related to the search
+      const baseQuery = searchQuery.trim() || (selectedType !== "all" ? 
+        (typeLabels[selectedType] || selectedType) : "");
+      
+      query = {
+        query: baseQuery,
+        type: selectedType !== "all" ? selectedType : undefined,
+        category: selectedCategory !== "all" ? selectedCategory : undefined,
+        popularity: selectedPopularity !== "all" ? selectedPopularity : undefined,
+        excludeIds: existingIds.length > 0 ? existingIds : []
+      };
+    } else {
+      // Behavior without active search: load more general varied repertoires from cache/AI
+      query = {
+        query: "repertórios educacionais variados para redação",
+        excludeIds: existingIds.length > 0 ? existingIds : []
+      };
+    }
     
+    console.log(hasActiveSearch ? "🔍 Carregando mais resultados da busca" : "📚 Carregando repertórios variados", query);
     loadMoreMutation.mutate(query);
   };
 
@@ -706,7 +719,7 @@ export default function Repertorio() {
           )}
 
           {/* Load More - Mobile Optimized */}
-          {searchResults && displayRepertoires.length > 0 && (
+          {displayRepertoires.length > 0 && (
             <div className="flex justify-center pt-2">
               <Button 
                 variant="outline" 
