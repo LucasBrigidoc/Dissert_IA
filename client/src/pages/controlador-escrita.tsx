@@ -36,7 +36,6 @@ export default function ControladorEscrita() {
   const [originalText, setOriginalText] = useState("");
   const [modifiedText, setModifiedText] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isApplyingAll, setIsApplyingAll] = useState(false);
   
   // Estados para os controles
   const [formalityLevel, setFormalityLevel] = useState([50]);
@@ -205,102 +204,6 @@ export default function ControladorEscrita() {
       });
     } finally {
       setIsProcessing(false);
-    }
-  };
-
-  const applyAllModifications = async () => {
-    if (!originalText.trim()) {
-      toast({
-        title: "Texto necessário",
-        description: "Digite um texto para poder aplicar as modificações.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Verificar se algum card está expandido
-    if (expandedCards.size === 0) {
-      toast({
-        title: "Configurações necessárias",
-        description: "Expanda ao menos um controlador para configurar as modificações.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsApplyingAll(true);
-    let currentText = originalText;
-    const appliedTypes = [];
-    
-    try {
-      // Aplicar modificações sequencialmente baseado nos cards expandidos
-      for (const cardType of expandedCards) {
-        let modificationType: string;
-        let config: any = {};
-        
-        switch (cardType) {
-          case 'formalidade':
-            modificationType = 'formalidade';
-            config = {
-              formalityLevel: formalityLevel[0],
-              wordDifficulty: wordDifficulty
-            };
-            break;
-          case 'argumentacao':
-            modificationType = 'argumentativo';
-            config = {
-              argumentTechnique: argumentTechnique,
-              argumentativeLevel: argumentativeLevel[0],
-              argumentStructure: argumentStructure
-            };
-            break;
-          case 'sinonimos':
-            modificationType = 'sinonimos';
-            break;
-          case 'antonimos':
-            modificationType = 'antonimos';
-            break;
-          default:
-            continue;
-        }
-        
-        // Chamar a API para cada modificação
-        const response = await fetch('/api/text-modification', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: currentText,
-            type: modificationType,
-            config: config
-          }),
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          currentText = result.modifiedText;
-          appliedTypes.push(modificationType);
-        }
-      }
-      
-      setModifiedText(currentText);
-      setModificationType("" as TextModificationType);
-      
-      toast({
-        title: "Modificações aplicadas!",
-        description: `Aplicadas com sucesso: ${appliedTypes.join(', ')}`,
-      });
-      
-    } catch (error) {
-      console.error('Erro ao aplicar modificações:', error);
-      toast({
-        title: "Erro nas modificações",
-        description: "Algumas modificações falharam. Tente aplicar individualmente.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsApplyingAll(false);
     }
   };
 
@@ -707,29 +610,6 @@ export default function ControladorEscrita() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Botão Aplicar Todas as Modificações */}
-        <div className="mb-6 flex justify-center">
-          <Button
-            onClick={applyAllModifications}
-            disabled={isApplyingAll || isProcessing || !originalText.trim() || expandedCards.size === 0}
-            size="lg"
-            className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-            data-testid="button-apply-all"
-          >
-            {isApplyingAll ? (
-              <>
-                <RefreshCw className="mr-3 h-5 w-5 animate-spin" />
-                Aplicando Modificações...
-              </>
-            ) : (
-              <>
-                <Sliders className="mr-3 h-5 w-5" />
-                Aplicar Modificações
-              </>
-            )}
-          </Button>
         </div>
 
         {/* Área de Resultado */}
