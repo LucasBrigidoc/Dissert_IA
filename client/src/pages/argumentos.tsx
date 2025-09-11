@@ -691,91 +691,91 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
           {/* Preview da Estrutura - Mobile Otimizado */}
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Eye className="text-bright-blue" size={16} />
-                <h3 className="text-sm font-semibold text-dark-blue">Preview da Estrutura</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+              <div className="flex items-center space-x-3">
+                <Eye className="text-bright-blue" size={20} />
+                <h3 className="text-base font-semibold text-dark-blue">Preview da Estrutura</h3>
               </div>
               <Button 
                 onClick={handleCreateMindMap}
                 disabled={!isEssayComplete()}
-                className={`text-xs sm:text-sm ${
+                className={`text-sm ${
                   isEssayComplete() 
                     ? "bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                } px-3 py-2`}
+                } px-4 py-2.5`}
                 data-testid="button-create-mindmap"
               >
-                <Map className="mr-1 sm:mr-2" size={14} />
-                {isEssayComplete() ? "Criar Mapa" : "Incomplete"}
+                <Map className="mr-2" size={16} />
+                {isEssayComplete() ? "Criar Mapa Mental" : "Aguardando Conclusão"}
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Tema */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Target className={`w-4 h-4 ${brainstormData.tema ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Tema</span>
+              <div className="bg-white/60 rounded-xl p-4 border border-bright-blue/20 min-h-[120px] flex flex-col">
+                <div className="flex items-center space-x-3 mb-3">
+                  <Target className={`w-5 h-5 ${brainstormData.tema ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-semibold text-dark-blue">Tema</span>
                 </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.tema || 'Aguardando definição...'}
-                </p>
+                <div className="text-xs text-soft-gray leading-relaxed flex-1 overflow-hidden">
+                  {brainstormData.tema || 'Aguardando definição do tema da redação...'}
+                </div>
               </div>
 
               {/* Tese */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Lightbulb className={`w-4 h-4 ${brainstormData.tese ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Tese</span>
+              <div className="bg-white/60 rounded-xl p-4 border border-bright-blue/20 min-h-[120px] flex flex-col">
+                <div className="flex items-center space-x-3 mb-3">
+                  <Lightbulb className={`w-5 h-5 ${brainstormData.tese ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-semibold text-dark-blue">Tese</span>
                 </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.tese || 'Aguardando desenvolvimento...'}
-                </p>
+                <div className="text-xs text-soft-gray leading-relaxed flex-1 overflow-hidden">
+                  {brainstormData.tese || 'Aguardando desenvolvimento da tese principal...'}
+                </div>
               </div>
 
               {/* Introdução */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.introducao ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Introdução</span>
+              <div className="bg-white/60 rounded-xl p-4 border border-bright-blue/20 min-h-[120px] flex flex-col">
+                <div className="flex items-center space-x-3 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.introducao ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-semibold text-dark-blue">Introdução</span>
                 </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.introducao || 'Aguardando desenvolvimento...'}
-                </p>
+                <div className="text-xs text-soft-gray leading-relaxed flex-1 overflow-hidden">
+                  {brainstormData.paragrafos.introducao || 'Aguardando desenvolvimento da introdução...'}
+                </div>
               </div>
 
               {/* Desenvolvimento I */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.desenvolvimento1 ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Dev I</span>
+              <div className="bg-white/60 rounded-xl p-4 border border-bright-blue/20 min-h-[120px] flex flex-col">
+                <div className="flex items-center space-x-3 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.desenvolvimento1 ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-semibold text-dark-blue">Desenvolvimento I</span>
                 </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.desenvolvimento1 || 'Aguardando argumento...'}
-                </p>
+                <div className="text-xs text-soft-gray leading-relaxed flex-1 overflow-hidden">
+                  {brainstormData.paragrafos.desenvolvimento1 || 'Aguardando primeiro argumento...'}
+                </div>
               </div>
 
               {/* Desenvolvimento II */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.desenvolvimento2 ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Dev II</span>
+              <div className="bg-white/60 rounded-xl p-4 border border-bright-blue/20 min-h-[120px] flex flex-col">
+                <div className="flex items-center space-x-3 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.desenvolvimento2 ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-semibold text-dark-blue">Desenvolvimento II</span>
                 </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.desenvolvimento2 || 'Aguardando argumento...'}
-                </p>
+                <div className="text-xs text-soft-gray leading-relaxed flex-1 overflow-hidden">
+                  {brainstormData.paragrafos.desenvolvimento2 || 'Aguardando segundo argumento...'}
+                </div>
               </div>
 
               {/* Conclusão */}
-              <div className="bg-white/50 rounded-lg p-2 border border-bright-blue/10">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle2 className={`w-4 h-4 ${brainstormData.paragrafos.conclusao ? 'text-green-500' : 'text-gray-400'}`} />
-                  <span className="text-xs font-medium text-dark-blue">Conclusão</span>
+              <div className="bg-white/60 rounded-xl p-4 border border-bright-blue/20 min-h-[120px] flex flex-col">
+                <div className="flex items-center space-x-3 mb-3">
+                  <CheckCircle2 className={`w-5 h-5 ${brainstormData.paragrafos.conclusao ? 'text-green-500' : 'text-gray-400'}`} />
+                  <span className="text-sm font-semibold text-dark-blue">Conclusão</span>
                 </div>
-                <p className="text-[10px] text-soft-gray leading-relaxed line-clamp-2">
-                  {brainstormData.paragrafos.conclusao || 'Aguardando desenvolvimento...'}
-                </p>
+                <div className="text-xs text-soft-gray leading-relaxed flex-1 overflow-hidden">
+                  {brainstormData.paragrafos.conclusao || 'Aguardando desenvolvimento da conclusão...'}
+                </div>
               </div>
             </div>
           </LiquidGlassCard>
