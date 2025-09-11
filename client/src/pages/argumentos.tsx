@@ -44,31 +44,19 @@ export default function Argumentos() {
     window.scrollTo(0, 0);
   }, []); // Mantém apenas para carregamento inicial
 
-  // Scroll automático APENAS dentro da área do chat - sem afetar a página
+  // Scroll automático sempre que uma nova mensagem for enviada (usuário ou IA)
   useEffect(() => {
-    if (chatState.messages.length > 0 && chatEndRef.current && chatContainerRef.current) {
-      const chatContainer = chatContainerRef.current;
-      
+    if (chatState.messages.length > 0 && chatEndRef.current) {
       // Para garantir que o DOM foi totalmente renderizado antes do scroll
       requestAnimationFrame(() => {
         setTimeout(() => {
-          if (chatContainer && chatEndRef.current) {
-            // Verificar se o usuário está próximo do final (não scrollou manualmente para cima)
-            const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 80;
-            
-            // Fazer scroll automático apenas quando:
-            // 1. São as primeiras mensagens (boas-vindas + primeira interação)
-            // 2. O usuário está próximo do final (não fez scroll manual para cima)
-            const shouldScroll = chatState.messages.length <= 2 || isNearBottom;
-            
-            if (shouldScroll) {
-              // Usar scrollIntoView no elemento âncora para maior confiabilidade
-              chatEndRef.current.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'end',
-                inline: 'nearest'
-              });
-            }
+          if (chatEndRef.current) {
+            // Sempre rolar para baixo quando qualquer mensagem for enviada
+            chatEndRef.current.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'end',
+              inline: 'nearest'
+            });
           }
         }, 100);
       });
