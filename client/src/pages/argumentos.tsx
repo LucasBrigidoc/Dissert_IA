@@ -139,22 +139,192 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     }
   });
 
+  // Sequência lógica das seções para progressão automática
+  const sectionFlow = ['tema', 'tese', 'introducao', 'desenvolvimento1', 'desenvolvimento2', 'conclusao', 'finalizacao'] as const;
+
   // Atualizar brainstorm baseado na conversa
   const updateBrainstormFromChat = (aiResponse: string, section: string) => {
-    // Lógica para extrair e atualizar dados estruturais baseado na conversa
-    // Por enquanto, mantém estrutura básica
+    // Sempre tentar persistir algum conteúdo útil da conversa
+    persistContentToSection(aiResponse, section);
+    
+    // Verificar se é hora de avançar para a próxima seção
+    checkSectionProgression();
+  };
+
+  // Função para persistir conteúdo na seção atual com fallback robusto
+  const persistContentToSection = (content: string, section: string) => {
+    // Limpar e preparar o conteúdo
+    const cleanContent = content.trim();
+    if (!cleanContent || cleanContent.length < 10) return;
+
+    // Extrair conteúdo relevante de forma mais robusta
+    const relevantContent = extractRelevantContent(cleanContent, section);
+    
+    if (relevantContent) {
+      setBrainstormData(prev => {
+        const updated = { ...prev };
+        
+        switch (section) {
+          case 'tema':
+            if (!updated.tema && relevantContent.length > 15) {
+              updated.tema = relevantContent;
+            }
+            break;
+          case 'tese':
+            if (!updated.tese && relevantContent.length > 20) {
+              updated.tese = relevantContent;
+            }
+            break;
+          case 'introducao':
+            if (!updated.paragrafos.introducao && relevantContent.length > 30) {
+              updated.paragrafos = { ...updated.paragrafos, introducao: relevantContent };
+            }
+            break;
+          case 'desenvolvimento1':
+            if (!updated.paragrafos.desenvolvimento1 && relevantContent.length > 30) {
+              updated.paragrafos = { ...updated.paragrafos, desenvolvimento1: relevantContent };
+            }
+            break;
+          case 'desenvolvimento2':
+            if (!updated.paragrafos.desenvolvimento2 && relevantContent.length > 30) {
+              updated.paragrafos = { ...updated.paragrafos, desenvolvimento2: relevantContent };
+            }
+            break;
+          case 'conclusao':
+            if (!updated.paragrafos.conclusao && relevantContent.length > 30) {
+              updated.paragrafos = { ...updated.paragrafos, conclusao: relevantContent };
+            }
+            break;
+        }
+        
+        return updated;
+      });
+    }
+  };
+
+  // Extrair conteúdo relevante com múltiplas estratégias
+  const extractRelevantContent = (content: string, section: string): string | null => {
+    // 1. Tentar extrair citações ou sugestões diretas
+    const quotedContent = content.match(/"([^"]{20,300})"/g);
+    if (quotedContent && quotedContent.length > 0) {
+      const bestQuote = quotedContent[0].replace(/"/g, '').trim();
+      if (bestQuote.length > 15) return bestQuote;
+    }
+
+    // 2. Buscar por padrões específicos da seção
+    const sectionPatterns = {
+      tema: [/tema[:\s]*([^.\n]{15,150})/i, /proposta[:\s]*([^.\n]{15,150})/i],
+      tese: [/tese[:\s]*([^.\n]{20,200})/i, /posicionamento[:\s]*([^.\n]{20,200})/i, /defendo que[:\s]*([^.\n]{20,200})/i],
+      introducao: [/introdução[:\s]*([^.\n]{30,300})/i, /contextualização[:\s]*([^.\n]{30,300})/i],
+      desenvolvimento1: [/primeiro[:\s]*([^.\n]{30,300})/i, /argumento[:\s]*([^.\n]{30,300})/i],
+      desenvolvimento2: [/segundo[:\s]*([^.\n]{30,300})/i, /outro argumento[:\s]*([^.\n]{30,300})/i],
+      conclusao: [/conclusão[:\s]*([^.\n]{30,300})/i, /fechamento[:\s]*([^.\n]{30,300})/i]
+    };
+
+    const patterns = sectionPatterns[section as keyof typeof sectionPatterns] || [];
+    for (const pattern of patterns) {
+      const match = content.match(pattern);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+
+    // 3. Fallback: pegar a primeira frase significativa
+    const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 20);
+    if (sentences.length > 0) {
+      const firstSentence = sentences[0].trim();
+      if (firstSentence.length > 15 && firstSentence.length < 300) {
+        return firstSentence;
+      }
+    }
+
+    return null;
+  };
+
+  // Verificar progressão e avançar seções automaticamente
+  const checkSectionProgression = () => {
+    const currentIndex = sectionFlow.indexOf(chatState.currentSection);
+    if (currentIndex === -1) return;
+
+    // Verificar se a seção atual tem conteúdo suficiente
+    const hasCurrentSectionContent = () => {
+      switch (chatState.currentSection) {
+        case 'tema': return !!brainstormData.tema;
+        case 'tese': return !!brainstormData.tese;
+        case 'introducao': return !!brainstormData.paragrafos.introducao;
+        case 'desenvolvimento1': return !!brainstormData.paragrafos.desenvolvimento1;
+        case 'desenvolvimento2': return !!brainstormData.paragrafos.desenvolvimento2;
+        case 'conclusao': return !!brainstormData.paragrafos.conclusao;
+        case 'finalizacao': return true; // Sempre considera finalizada
+        default: return false;
+      }
+    };
+
+    // Se a seção atual tem conteúdo, avançar para a próxima
+    if (hasCurrentSectionContent() && currentIndex < sectionFlow.length - 1) {
+      const nextSection = sectionFlow[currentIndex + 1];
+      setChatState(prev => ({ ...prev, currentSection: nextSection }));
+      
+      // Adicionar mensagem orientativa para a próxima seção
+      setTimeout(() => {
+        const guidanceMessage = getSectionGuidanceMessage(nextSection);
+        setChatState(prev => ({
+          ...prev,
+          messages: [...prev.messages, {
+            id: `guidance_${Date.now()}`,
+            type: 'ai',
+            content: guidanceMessage,
+            section: nextSection,
+            timestamp: new Date()
+          }]
+        }));
+      }, 1000);
+    }
+  };
+
+  // Mensagens de orientação para cada seção
+  const getSectionGuidanceMessage = (section: string): string => {
+    const messages = {
+      tema: `🎯 DESENVOLVIMENTO DO TEMA\n\nÓtimo! Agora vamos trabalhar no tema da sua redação.\n\n💡 O QUE PRECISO SABER:\nMe conte qual é o tema ou proposta que você quer desenvolver. Pode ser de vestibular, concurso, ou um tema livre.\n\n✍️ EXEMPLO:\n"Quero escrever sobre os desafios da educação digital no Brasil"`,
+      
+      tese: `🎯 DEFINIÇÃO DA TESE\n\nPerfeito! Agora vamos definir sua tese (sua opinião sobre o tema).\n\n💡 O QUE PRECISO SABER:\nQual é sua posição sobre o tema? O que você defende?\n\n✍️ EXEMPLO:\n"Defendo que a educação digital é essencial mas precisa de investimento público"`,
+      
+      introducao: `🎯 ESTRUTURAÇÃO DA INTRODUÇÃO\n\nExcelente! Agora vamos construir sua introdução.\n\n💡 O QUE PRECISO SABER:\nVamos criar um parágrafo que apresente o tema, mostre sua importância e termine com sua tese.\n\n✍️ ESTRUTURA:\nContextualização + Problematização + Tese`,
+      
+      desenvolvimento1: `🎯 PRIMEIRO ARGUMENTO\n\nÓtimo! Agora vamos desenvolver seu primeiro argumento.\n\n💡 O QUE PRECISO SABER:\nQual é o primeiro argumento que você quer usar para defender sua tese?\n\n✍️ DICA:\nPense em dados, exemplos, ou causas que justifiquem sua opinião.`,
+      
+      desenvolvimento2: `🎯 SEGUNDO ARGUMENTO\n\nPerfeito! Agora vamos ao segundo argumento.\n\n💡 O QUE PRECISO SABER:\nQual é outro argumento diferente do primeiro que você quer usar?\n\n✍️ DICA:\nPode ser uma consequência, comparação, ou outra perspectiva do problema.`,
+      
+      conclusao: `🎯 CONCLUSÃO\n\nQuase lá! Agora vamos fechar sua redação.\n\n💡 O QUE PRECISO SABER:\nComo você quer concluir? Quer propor soluções ou fazer uma síntese?\n\n✍️ ESTRUTURA:\nRetomada da tese + Síntese dos argumentos + Proposta/Reflexão final`,
+      
+      finalizacao: `🎯 FINALIZAÇÃO\n\n🎉 PARABÉNS! Você completou todas as seções da sua redação!\n\n✅ SUA ESTRUTURA ESTÁ PRONTA:\n• Tema definido\n• Tese estabelecida\n• Introdução estruturada\n• Argumentos desenvolvidos\n• Conclusão elaborada\n\n🗺️ PRÓXIMO PASSO:\nAgora você pode criar o mapa mental para visualizar sua estrutura completa!`
+    };
+
+    return messages[section as keyof typeof messages] || 'Vamos continuar desenvolvendo sua redação!';
+  };
+
+  // Também processar mensagens do usuário
+  const processUserMessage = (userMessage: string, section: string) => {
+    // Persistir o conteúdo da mensagem do usuário na seção atual
+    persistContentToSection(userMessage, section);
   };
 
   // Enviar mensagem
   const handleSendMessage = () => {
     if (!chatState.currentMessage.trim() || chatState.isLoading) return;
 
+    const currentMessage = chatState.currentMessage;
+    const currentSection = chatState.currentSection;
+
+    // Processar mensagem do usuário para extração de dados
+    processUserMessage(currentMessage, currentSection);
+
     // Adicionar mensagem do usuário
     const userMessage = {
       id: Date.now().toString() + '_user',
       type: 'user' as const,
-      content: chatState.currentMessage,
-      section: chatState.currentSection,
+      content: currentMessage,
+      section: currentSection,
       timestamp: new Date()
     };
 
@@ -167,8 +337,8 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
     // Enviar para IA
     sendMessageMutation.mutate({
-      message: chatState.currentMessage,
-      section: chatState.currentSection,
+      message: currentMessage,
+      section: currentSection,
       context: {
         proposta: brainstormData.tema,
         tese: brainstormData.tese,
