@@ -457,7 +457,7 @@ export default function ControladorEscrita() {
                 placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
-                className="min-h-[120px] text-base leading-relaxed resize-none"
+                className="min-h-[200px] text-base leading-relaxed resize-none"
               />
             </div>
           </LiquidGlassCard>
