@@ -539,7 +539,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         <div className="flex flex-col gap-2">
           
           {/* Chat Principal - Altura Adaptável */}
-          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 min-h-[320px] sm:min-h-0 py-8 sm:py-6">
             <div className="flex flex-col h-[60vh] sm:h-[32rem]">
               {/* Header do Chat - Compacto no Mobile */}
               <div className="flex items-center justify-between pb-1.5 sm:pb-3 border-b border-bright-blue/20">
