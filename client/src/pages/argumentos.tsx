@@ -44,19 +44,33 @@ export default function Argumentos() {
     window.scrollTo(0, 0);
   }, []); // Mantém apenas para carregamento inicial
 
-  // Scroll automático sempre que uma nova mensagem for enviada (usuário ou IA)
+  // Scroll automático inteligente: início da mensagem da IA, final para mensagens do usuário
   useEffect(() => {
-    if (chatState.messages.length > 0 && chatEndRef.current) {
+    if (chatState.messages.length > 0) {
       // Para garantir que o DOM foi totalmente renderizado antes do scroll
       requestAnimationFrame(() => {
         setTimeout(() => {
-          if (chatEndRef.current) {
-            // Sempre rolar para baixo quando qualquer mensagem for enviada
-            chatEndRef.current.scrollIntoView({ 
-              behavior: 'smooth',
-              block: 'end',
-              inline: 'nearest'
-            });
+          const lastMessage = chatState.messages[chatState.messages.length - 1];
+          
+          if (lastMessage.type === 'ai') {
+            // Para mensagens da IA: rolar para o INÍCIO da mensagem para ler desde o começo
+            const lastAiMessageElement = chatContainerRef.current?.querySelector(`[data-message-id="${lastMessage.id}"]`);
+            if (lastAiMessageElement) {
+              lastAiMessageElement.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+              });
+            }
+          } else {
+            // Para mensagens do usuário: rolar para o final como antes
+            if (chatEndRef.current) {
+              chatEndRef.current.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest'
+              });
+            }
           }
         }, 100);
       });
@@ -553,7 +567,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 style={{ scrollBehavior: 'smooth' }}
               >
                 {chatState.messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`} data-message-id={message.id}>
                     <div className={`max-w-[85%] sm:max-w-3xl px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
                       message.type === 'user' 
                         ? 'bg-gradient-to-r from-bright-blue to-dark-blue text-white ml-4 sm:ml-12' 
