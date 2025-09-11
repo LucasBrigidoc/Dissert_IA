@@ -761,7 +761,7 @@ export default function ControladorEscrita() {
 
         {/* Central Action Button */}
         <div className="flex justify-center py-4">
-          <LiquidGlassCard className="px-8 py-4">
+          <LiquidGlassCard className="px-8 py-4 w-full">
             <div className="flex items-center gap-4">
               <div className="text-center">
                 <p className="text-sm text-soft-gray mb-2">
