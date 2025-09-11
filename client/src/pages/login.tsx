@@ -72,7 +72,7 @@ export default function Login() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Checkbox id="remember" data-testid="checkbox-remember" />
-                    <Label htmlFor="remember" className="text-soft-gray italic">Remember Me</Label>
+                    <Label htmlFor="remember" className="text-soft-gray italic">Lembrar de mim</Label>
                   </div>
                   <a href="#" className="text-soft-gray italic hover:text-bright-blue smooth-transition" data-testid="link-forgot-password">
                     Esqueceu a senha?
@@ -89,7 +89,7 @@ export default function Login() {
               </form>
               
               <div className="mt-8 text-center">
-                <span className="text-soft-gray">or </span>
+                <span className="text-soft-gray">ou </span>
                 <Link href="/signup" className="text-bright-blue font-semibold hover:underline" data-testid="link-signup">
                   Criar Conta
                 </Link>
