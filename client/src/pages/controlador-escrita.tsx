@@ -45,7 +45,10 @@ export default function ControladorEscrita() {
   const [modificationType, setModificationType] = useState<TextModificationType | "">("");
   
   // Estados para controlar cards expandidos (permite múltiplos abertos)
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [expandedCards, setExpandedCards] = useState<string[]>([]);
+  
+  // Estados para modificações ativas
+  const [activeModifications, setActiveModifications] = useState<Set<string>>(new Set());
   
   // Estados para formalidade
   const [wordDifficulty, setWordDifficulty] = useState<WordDifficulty>("medio");
@@ -62,14 +65,169 @@ export default function ControladorEscrita() {
   // Função para alternar cards expandidos
   const toggleCard = (cardId: string) => {
     setExpandedCards(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId);
+      if (prev.includes(cardId)) {
+        return prev.filter(id => id !== cardId);
       } else {
-        newSet.add(cardId);
+        return [...prev, cardId];
+      }
+    });
+  };
+
+  // Função para alternar modificações ativas
+  const toggleModification = (modificationType: string) => {
+    setActiveModifications(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(modificationType)) {
+        newSet.delete(modificationType);
+      } else {
+        newSet.add(modificationType);
       }
       return newSet;
     });
+  };
+
+  // Função para aplicar uma modificação local como fallback
+  const applyLocalModification = (text: string, type: string): string => {
+    switch (type) {
+      case 'formalidade':
+        if (formalityLevel[0] > 70) {
+          return text
+            .replace(/\bvocê\b/g, "Vossa Senhoria")
+            .replace(/\btá\b/g, "está")
+            .replace(/\bpra\b/g, "para")
+            .replace(/\bfazer\b/g, "realizar")
+            .replace(/\bver\b/g, "analisar")
+            .replace(/\bcoisa\b/g, "elemento");
+        } else if (formalityLevel[0] < 30) {
+          return text
+            .replace(/\bVossa Senhoria\b/g, "você")
+            .replace(/\bestá\b/g, "tá")
+            .replace(/\bpara\b/g, "pra")
+            .replace(/\brealizar\b/g, "fazer")
+            .replace(/\banalisar\b/g, "ver");
+        }
+        return text;
+        
+      case 'argumentativo':
+        if (argumentativeLevel[0] > 70) {
+          return `É fundamental compreender que ${text.toLowerCase()} Portanto, torna-se evidente a necessidade de uma análise mais aprofundada desta questão.`;
+        } else if (argumentativeLevel[0] < 30) {
+          return `${text} Essa é apenas uma perspectiva possível sobre o assunto.`;
+        } else {
+          return `Considerando que ${text.toLowerCase()}, pode-se argumentar que esta questão merece atenção especial.`;
+        }
+        
+      case 'sinonimos':
+        return text
+          .replace(/\bbom\b/g, "excelente")
+          .replace(/\bgrande\b/g, "amplo")
+          .replace(/\bpequeno\b/g, "reduzido")
+          .replace(/\bimportante\b/g, "relevante")
+          .replace(/\bproblema\b/g, "questão")
+          .replace(/\bsolução\b/g, "resolução");
+          
+      case 'antonimos':
+        return text
+          .replace(/\bbom\b/g, "ruim")
+          .replace(/\bgrande\b/g, "pequeno")
+          .replace(/\bpequeno\b/g, "grande")
+          .replace(/\bfácil\b/g, "difícil")
+          .replace(/\bdifícil\b/g, "fácil")
+          .replace(/\bpositivo\b/g, "negativo")
+          .replace(/\bsucesso\b/g, "fracasso");
+          
+      default:
+        return text;
+    }
+  };
+
+  // Função para aplicar todas as modificações selecionadas
+  const applyAllModifications = async () => {
+    if (!originalText.trim()) {
+      toast({
+        title: "Texto necessário",
+        description: "Digite um texto para poder modificá-lo.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (activeModifications.size === 0) {
+      toast({
+        title: "Nenhuma modificação selecionada",
+        description: "Selecione pelo menos uma modificação para aplicar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    
+    let processedText = originalText;
+    const appliedModifications: string[] = [];
+    
+    try {
+      // Apply each selected modification in sequence
+      for (const modificationType of Array.from(activeModifications)) {
+        const config: any = {};
+        
+        if (modificationType === 'formalidade') {
+          config.formalityLevel = formalityLevel[0];
+          config.wordDifficulty = wordDifficulty;
+        } else if (modificationType === 'argumentativo') {
+          config.argumentTechnique = argumentTechnique;
+          config.argumentativeLevel = argumentativeLevel[0];
+          config.argumentStructure = argumentStructure;
+        }
+        
+        try {
+          // Try AI processing first
+          const response = await fetch('/api/text-modification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              text: processedText,
+              type: modificationType,
+              config: config
+            }),
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            processedText = result.modifiedText;
+            appliedModifications.push(`${modificationType} (IA)`);
+          } else {
+            // Fallback to local processing
+            processedText = applyLocalModification(processedText, modificationType);
+            appliedModifications.push(`${modificationType} (Local)`);
+          }
+        } catch (error) {
+          // Fallback to local processing
+          processedText = applyLocalModification(processedText, modificationType);
+          appliedModifications.push(`${modificationType} (Local)`);
+        }
+      }
+      
+      setModifiedText(processedText);
+      setModificationType(appliedModifications.length > 0 ? appliedModifications.join(', ') as TextModificationType : "");
+      
+      toast({
+        title: "Modificações aplicadas com sucesso!",
+        description: `Aplicadas: ${appliedModifications.join(', ')}`,
+      });
+      
+    } catch (error) {
+      console.error('Erro no processamento:', error);
+      toast({
+        title: "Erro no processamento",
+        description: "Não foi possível aplicar as modificações. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleBack = () => {
@@ -252,6 +410,7 @@ export default function ControladorEscrita() {
   const resetTexts = () => {
     setModifiedText("");
     setModificationType("");
+    setActiveModifications(new Set());
   };
 
   return (
@@ -305,7 +464,7 @@ export default function ControladorEscrita() {
         <div className="flex-1 grid grid-cols-4 gap-4 mb-6 items-start">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.has('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
             onClick={() => toggleCard('formalidade')}
           >
             <div className="flex items-center justify-between">
@@ -318,15 +477,29 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Ajuste o nível formal</p>
                 </div>
               </div>
-              {expandedCards.has('formalidade') ? (
+              {expandedCards.includes('formalidade') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCards.has('formalidade') && (
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+            {expandedCards.includes('formalidade') && (
+              <div 
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Checkbox 
+                    id="formalidade-active" 
+                    checked={activeModifications.has('formalidade')}
+                    onCheckedChange={() => toggleModification('formalidade')}
+                  />
+                  <Label htmlFor="formalidade-active" className="text-sm font-medium text-dark-blue">
+                    Incluir ajuste de formalidade
+                  </Label>
+                </div>
+                
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
                     Nível: {formalityLevel[0]}%
@@ -363,30 +536,13 @@ export default function ControladorEscrita() {
                     </div>
                   </RadioGroup>
                 </div>
-                
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    simulateTextProcessing('formalidade');
-                  }}
-                  disabled={isProcessing}
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue text-white"
-                >
-                  {isProcessing ? (
-                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
-                  ) : (
-                    <Edit3 className="mr-2 h-3 w-3" />
-                  )}
-                  Aplicar Formalidade
-                </Button>
               </div>
             )}
           </div>
 
           {/* Card de Argumentação */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.has('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 cursor-pointer ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
             onClick={() => toggleCard('argumentacao')}
           >
             <div className="flex items-center justify-between">
@@ -399,15 +555,29 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Estrutura argumentativa</p>
                 </div>
               </div>
-              {expandedCards.has('argumentacao') ? (
+              {expandedCards.includes('argumentacao') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCards.has('argumentacao') && (
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+            {expandedCards.includes('argumentacao') && (
+              <div 
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Checkbox 
+                    id="argumentativo-active" 
+                    checked={activeModifications.has('argumentativo')}
+                    onCheckedChange={() => toggleModification('argumentativo')}
+                  />
+                  <Label htmlFor="argumentativo-active" className="text-sm font-medium text-dark-blue">
+                    Incluir organização dissertativa
+                  </Label>
+                </div>
+                
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
                     Organização do Parágrafo
@@ -496,30 +666,13 @@ export default function ControladorEscrita() {
                     <span>Persuasivo</span>
                   </div>
                 </div>
-                
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    simulateTextProcessing('argumentativo');
-                  }}
-                  disabled={isProcessing}
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-dark-blue to-soft-gray text-white"
-                >
-                  {isProcessing ? (
-                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
-                  ) : (
-                    <Target className="mr-2 h-3 w-3" />
-                  )}
-                  Organizar Parágrafo
-                </Button>
               </div>
             )}
           </div>
 
           {/* Card de Sinônimos */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCards.has('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 cursor-pointer ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
             onClick={() => toggleCard('sinonimos')}
           >
             <div className="flex items-center justify-between">
@@ -532,41 +685,38 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Mantém o sentido</p>
                 </div>
               </div>
-              {expandedCards.has('sinonimos') ? (
+              {expandedCards.includes('sinonimos') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCards.has('sinonimos') && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
+            {expandedCards.includes('sinonimos') && (
+              <div 
+                className="mt-4 pt-4 border-t border-gray-200"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Checkbox 
+                    id="sinonimos-active" 
+                    checked={activeModifications.has('sinonimos')}
+                    onCheckedChange={() => toggleModification('sinonimos')}
+                  />
+                  <Label htmlFor="sinonimos-active" className="text-sm font-medium text-dark-blue">
+                    Incluir substituição por sinônimos
+                  </Label>
+                </div>
                 <p className="text-xs text-soft-gray mb-4">
                   Substitui palavras por sinônimos para enriquecer o vocabulário.
                 </p>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    simulateTextProcessing('sinonimos');
-                  }}
-                  disabled={isProcessing}
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
-                >
-                  {isProcessing ? (
-                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
-                  ) : (
-                    <RefreshCw className="mr-2 h-3 w-3" />
-                  )}
-                  Aplicar Sinônimos
-                </Button>
               </div>
             )}
           </div>
 
           {/* Card de Antônimos */}
           <div 
-            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCards.has('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
+            className={`min-h-[200px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 cursor-pointer ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
             onClick={() => toggleCard('antonimos')}
           >
             <div className="flex items-center justify-between">
@@ -579,37 +729,69 @@ export default function ControladorEscrita() {
                   <p className="text-xs text-soft-gray">Inverte o sentido</p>
                 </div>
               </div>
-              {expandedCards.has('antonimos') ? (
+              {expandedCards.includes('antonimos') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               )}
             </div>
             
-            {expandedCards.has('antonimos') && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
+            {expandedCards.includes('antonimos') && (
+              <div 
+                className="mt-4 pt-4 border-t border-gray-200"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Checkbox 
+                    id="antonimos-active" 
+                    checked={activeModifications.has('antonimos')}
+                    onCheckedChange={() => toggleModification('antonimos')}
+                  />
+                  <Label htmlFor="antonimos-active" className="text-sm font-medium text-dark-blue">
+                    Incluir substituição por antônimos
+                  </Label>
+                </div>
                 <p className="text-xs text-soft-gray mb-4">
                   Substitui palavras por antônimos para explorar o argumento oposto.
                 </p>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    simulateTextProcessing('antonimos');
-                  }}
-                  disabled={isProcessing}
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
-                >
-                  {isProcessing ? (
-                    <RefreshCw className="mr-2 h-3 w-3 animate-spin" />
-                  ) : (
-                    <Shuffle className="mr-2 h-3 w-3" />
-                  )}
-                  Aplicar Antônimos
-                </Button>
               </div>
             )}
           </div>
+        </div>
+
+        {/* Central Action Button */}
+        <div className="flex justify-center py-4">
+          <LiquidGlassCard className="px-8 py-4">
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <p className="text-sm text-soft-gray mb-2">
+                  {activeModifications.size === 0 
+                    ? "Selecione as modificações desejadas nos cards acima" 
+                    : `${activeModifications.size} modificação${activeModifications.size > 1 ? 'ões' : ''} selecionada${activeModifications.size > 1 ? 's' : ''}`
+                  }
+                </p>
+                <Button
+                  onClick={applyAllModifications}
+                  disabled={isProcessing || activeModifications.size === 0}
+                  size="lg"
+                  className="bg-gradient-to-r from-bright-blue via-dark-blue to-soft-gray text-white font-semibold px-8 py-3"
+                  data-testid="button-apply-all"
+                >
+                  {isProcessing ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      Processando...
+                    </>
+                  ) : (
+                    <>
+                      <Edit3 className="mr-2 h-4 w-4" />
+                      Aplicar Todas as Modificações
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </LiquidGlassCard>
         </div>
 
         {/* Área de Resultado */}
