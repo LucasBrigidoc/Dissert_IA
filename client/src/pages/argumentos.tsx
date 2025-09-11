@@ -44,24 +44,34 @@ export default function Argumentos() {
     window.scrollTo(0, 0);
   }, []); // Mantém apenas para carregamento inicial
 
-  // Scroll controlado APENAS dentro da área do chat - sem afetar a página
+  // Scroll automático APENAS dentro da área do chat - sem afetar a página
   useEffect(() => {
-    if (chatState.messages.length > 0 && chatContainerRef.current) {
+    if (chatState.messages.length > 0 && chatEndRef.current && chatContainerRef.current) {
       const chatContainer = chatContainerRef.current;
       
-      // Verificar se o usuário está próximo do final do chat antes de fazer scroll automático
-      const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 100;
-      
-      // Só fazer scroll automático se o usuário já estava próximo do final ou for a primeira mensagem
-      if (isNearBottom || chatState.messages.length === 1) {
-        // Usar setTimeout para garantir que o DOM foi atualizado
+      // Para garantir que o DOM foi totalmente renderizado antes do scroll
+      requestAnimationFrame(() => {
         setTimeout(() => {
-          chatContainer.scrollTo({
-            top: chatContainer.scrollHeight,
-            behavior: 'smooth'
-          });
+          if (chatContainer && chatEndRef.current) {
+            // Verificar se o usuário está próximo do final (não scrollou manualmente para cima)
+            const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 80;
+            
+            // Fazer scroll automático apenas quando:
+            // 1. São as primeiras mensagens (boas-vindas + primeira interação)
+            // 2. O usuário está próximo do final (não fez scroll manual para cima)
+            const shouldScroll = chatState.messages.length <= 2 || isNearBottom;
+            
+            if (shouldScroll) {
+              // Usar scrollIntoView no elemento âncora para maior confiabilidade
+              chatEndRef.current.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest'
+              });
+            }
+          }
         }, 100);
-      }
+      });
     }
   }, [chatState.messages]);
 
@@ -550,8 +560,9 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
               {/* Messages Area */}
               <div 
                 ref={chatContainerRef}
-                className="flex-1 overflow-y-auto py-1.5 sm:py-3 space-y-1.5 sm:space-y-3" 
+                className="flex-1 overflow-y-auto py-1.5 sm:py-3 space-y-1.5 sm:space-y-3 scroll-smooth overscroll-contain" 
                 data-testid="chat-messages"
+                style={{ scrollBehavior: 'smooth' }}
               >
                 {chatState.messages.map((message) => (
                   <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
