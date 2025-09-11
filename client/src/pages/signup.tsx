@@ -37,7 +37,7 @@ export default function Signup() {
           <div className="flex flex-col lg:flex-row">
             {/* Signup Form */}
             <div className="w-full lg:w-1/2 p-12">
-              <h2 className="text-4xl font-bold text-bright-blue mb-8" data-testid="text-signup-title">Sign up</h2>
+              <h2 className="text-4xl font-bold text-bright-blue mb-8" data-testid="text-signup-title">Cadastro</h2>
               
               <form onSubmit={handleSignup} className="space-y-6" data-testid="form-signup">
                 <div>
@@ -154,9 +154,9 @@ export default function Signup() {
               </form>
               
               <div className="mt-8 text-center">
-                <span className="text-soft-gray">or </span>
+                <span className="text-soft-gray">ou </span>
                 <Link href="/login" className="text-bright-blue font-semibold hover:underline" data-testid="link-login">
-                  Log in
+                  Entrar
                 </Link>
               </div>
             </div>
