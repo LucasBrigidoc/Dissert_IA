@@ -796,7 +796,7 @@ export default function ControladorEscrita() {
 
         {/* Área de Resultado */}
         <div>
-          <LiquidGlassCard>
+          <LiquidGlassCard className="min-h-[400px] sm:min-h-0 py-8 sm:py-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
