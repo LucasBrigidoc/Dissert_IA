@@ -522,6 +522,9 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     // Detectar o nível do usuário baseado no conteúdo existente
     const userLevel = this.detectUserLevel(context);
     
+    // Detectar se o usuário está com dúvidas específicas que precisam de exemplos
+    const needsExamples = this.detectNeedsExamples(userMessage);
+    
     const sectionInstructions = {
       optimization: {
         beginner: "REFINAMENTO DE IDEIA - Vou analisar sua ideia e torná-la mais específica e argumentativa.",
@@ -529,14 +532,14 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
         advanced: "SOFISTICAÇÃO CONCEITUAL - Vou refinar com maior complexidade e elegância argumentativa."
       },
       tema: {
-        beginner: "DEFINIÇÃO DE TEMA - Vou te ajudar a tornar o tema mais específico e focado.",
-        intermediate: "APRIMORAMENTO TEMÁTICO - Vamos delimitar melhor o recorte e abordagem.",
-        advanced: "REFINAMENTO TEMÁTICO - Vamos trabalhar nuances e especificidades temáticas."
+        beginner: "DESENVOLVIMENTO DE TEMA - Vou te ajudar a entender e desenvolver o tema da sua redação de forma clara e focada.",
+        intermediate: "APRIMORAMENTO TEMÁTICO - Vamos delimitar melhor o recorte e abordagem do tema.",
+        advanced: "REFINAMENTO TEMÁTICO - Vamos trabalhar nuances e especificidades temáticas com maior profundidade."
       },
       tese: {
-        beginner: "CONSTRUÇÃO DE TESE - Vou te ensinar a criar uma tese clara.",
-        intermediate: "FORTALECIMENTO DE TESE - Vamos tornar sua tese mais persuasiva.",
-        advanced: "SOFISTICAÇÃO DA TESE - Vamos elaborar uma tese mais robusta."
+        beginner: "CONSTRUÇÃO DE TESE - Vou te ensinar a criar uma tese clara e bem fundamentada.",
+        intermediate: "FORTALECIMENTO DE TESE - Vamos tornar sua tese mais persuasiva e robusta.",
+        advanced: "SOFISTICAÇÃO DA TESE - Vamos elaborar uma tese mais complexa e sofisticada."
       },
       introducao: {
         beginner: "ESTRUTURA INTRODUÇÃO - Contextualização + Problematização + Tese.",
@@ -557,6 +560,11 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
         beginner: "ESTRUTURA CONCLUSÃO - Retomada + Síntese + Proposta de Intervenção.",
         intermediate: "APRIMORAMENTO CONCLUSÃO - Síntese elaborada e proposta detalhada.",
         advanced: "SOFISTICAÇÃO CONCLUSÃO - Síntese sofisticada e proposta inovadora."
+      },
+      finalizacao: {
+        beginner: "FINALIZAÇÃO - Vamos organizar e revisar todo o seu trabalho.",
+        intermediate: "CONCLUSÃO DO PROCESSO - Vamos finalizar com excelência.",
+        advanced: "APERFEIÇOAMENTO FINAL - Vamos dar os toques finais para excelência."
       }
     };
 
@@ -590,6 +598,16 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     
     prompt += `\n❓ SUA PERGUNTA: "${userMessage}"\n\n`;
     
+    // Instruções especiais para quando o usuário precisa de exemplos
+    if (needsExamples) {
+      prompt += `🎯 INSTRUÇÃO ESPECIAL: O usuário demonstrou dúvida específica e precisa de exemplos práticos.\n`;
+      prompt += `OBRIGATÓRIO fornecer:\n`;
+      prompt += `• 3-5 exemplos concretos e específicos\n`;
+      prompt += `• Explicação de como cada exemplo se aplica\n`;
+      prompt += `• Orientação pedagógica passo a passo\n`;
+      prompt += `• Linguagem encorajadora e didática\n\n`;
+    }
+    
     // Instruções de resposta adaptadas ao nível
     if (section === 'optimization') {
       // Verificar se há conteúdo para otimizar ou se é orientação inicial
@@ -614,29 +632,77 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
         prompt += `IMPORTANTE: A versão otimizada deve estar entre aspas para facilitar a aplicação automática.`;
       }
     } else if (userLevel === 'beginner') {
-      prompt += `Responda de forma didática e passo a passo (máximo 250 palavras):\n`;
-      prompt += `• Use linguagem simples e amigável\n`;
-      prompt += `• Dê exemplos práticos e específicos\n`;
-      prompt += `• Explique o "por quê" por trás de cada sugestão\n`;
+      prompt += `Responda de forma didática, conversacional e encorajadora:\n`;
+      prompt += `• Use linguagem simples e amigável como um professor paciente\n`;
+      prompt += `• Dê exemplos práticos e específicos (pelo menos 3 quando necessário)\n`;
+      prompt += `• Explique o "por quê" por trás de cada sugestão pedagogicamente\n`;
       prompt += `• Ofereça frases/conectivos prontos quando apropriado\n`;
-      prompt += `• Seja encorajador e mostre que é possível melhorar\n\n`;
+      prompt += `• Seja encorajador e mostre que é possível melhorar\n`;
+      prompt += `• Quando o usuário demonstrar dúvida, liste exemplos concretos e explique como usar cada um\n\n`;
     } else if (userLevel === 'intermediate') {
-      prompt += `Responda de forma objetiva e prática (máximo 200 palavras):\n`;
-      prompt += `• Foque em aprimoramentos específicos\n`;
-      prompt += `• Sugira exemplos mais elaborados\n`;
+      prompt += `Responda de forma objetiva, prática e educativa:\n`;
+      prompt += `• Foque em aprimoramentos específicos com justificativas\n`;
+      prompt += `• Sugira exemplos mais elaborados e variados\n`;
       prompt += `• Trabalhe coesão e conectivos sofisticados\n`;
-      prompt += `• Aponte caminhos para elevar o nível do texto\n\n`;
+      prompt += `• Aponte caminhos para elevar o nível do texto\n`;
+      prompt += `• Forneça exemplos concretos quando solicitado\n\n`;
     } else {
-      prompt += `Responda de forma refinada e analítica (máximo 180 palavras):\n`;
-      prompt += `• Foque em sofisticação argumentativa\n`;
+      prompt += `Responda de forma refinada, analítica e pedagógica:\n`;
+      prompt += `• Foque em sofisticação argumentativa com fundamentação\n`;
       prompt += `• Sugira abordagens multidisciplinares\n`;
       prompt += `• Trabalhe nuances e complexidade\n`;
-      prompt += `• Aponte caminhos para excelência textual\n\n`;
+      prompt += `• Aponte caminhos para excelência textual\n`;
+      prompt += `• Ofereça exemplos sofisticados e bem fundamentados\n\n`;
     }
     
-    prompt += `FORMATO DE RESPOSTA OBRIGATÓRIO:\n🎯 [NOME DA SEÇÃO]\n\n💡 ANÁLISE RÁPIDA\n[1-2 frases diretas sobre o que o usuário escreveu ou perguntou]\n\n📝 SUGESTÃO PRINCIPAL\n[Uma sugestão concreta e específica - máximo 2 frases]\n\n🔧 COMO MELHORAR\n• [Ponto prático 1 - máximo 1 linha]\n• [Ponto prático 2 - máximo 1 linha]\n• [Ponto prático 3 - máximo 1 linha]\n\n❓ PRÓXIMA ETAPA\n[Pergunta ou direcionamento para continuar - máximo 1 frase]\n\nREGRAS RÍGIDAS:\n- Máximo 5 linhas por seção\n- Linguagem direta e clara\n- Foco em ações práticas\n- Sempre termine direcionando o próximo passo`;
+    // Formato de resposta adaptado ao contexto
+    if (needsExamples) {
+      prompt += `FORMATO DE RESPOSTA PARA DÚVIDAS (use este formato quando o usuário precisar de exemplos):\n\n`;
+      prompt += `🎯 [NOME DA SEÇÃO]\n\n`;
+      prompt += `Entendo sua dúvida! Vou te ajudar com exemplos práticos.\n\n`;
+      prompt += `📚 EXEMPLOS ESPECÍFICOS:\n`;
+      prompt += `1. **[Nome do exemplo]** - [Explicação de como usar na redação]\n`;
+      prompt += `2. **[Nome do exemplo]** - [Explicação de como usar na redação]\n`;
+      prompt += `3. **[Nome do exemplo]** - [Explicação de como usar na redação]\n\n`;
+      prompt += `💡 DICA PRÁTICA:\n[Como aplicar esses exemplos especificamente no tema/contexto do usuário]\n\n`;
+      prompt += `🔧 PRÓXIMOS PASSOS:\n[Orientação clara do que fazer a seguir]\n\n`;
+      prompt += `IMPORTANTE: Seja conversacional, pedagógico e forneça exemplos detalhados e práticos.`;
+    } else {
+      prompt += `FORMATO DE RESPOSTA PADRÃO:\n🎯 [NOME DA SEÇÃO]\n\n💡 ANÁLISE RÁPIDA\n[1-2 frases diretas sobre o que o usuário escreveu ou perguntou]\n\n📝 SUGESTÃO PRINCIPAL\n[Uma sugestão concreta e específica - máximo 2 frases]\n\n🔧 COMO MELHORAR\n• [Ponto prático 1 - máximo 1 linha]\n• [Ponto prático 2 - máximo 1 linha]\n• [Ponto prático 3 - máximo 1 linha]\n\n❓ PRÓXIMA ETAPA\n[Pergunta ou direcionamento para continuar - máximo 1 frase]\n\nREGRAS:\n- Linguagem direta e clara\n- Foco em ações práticas\n- Sempre termine direcionando o próximo passo`;
+    }
     
     return prompt;
+  }
+
+  private detectNeedsExamples(userMessage: string): boolean {
+    const needsExamplesPatterns = [
+      'não sei',
+      'não conheço',
+      'não lembro',
+      'que política',
+      'qual política',
+      'que lei',
+      'qual lei',
+      'que exemplo',
+      'qual exemplo',
+      'como usar',
+      'não entendo',
+      'me ajuda',
+      'me dê exemplo',
+      'preciso de exemplo',
+      'não faço ideia',
+      'nunca ouvi',
+      'não tenho conhecimento',
+      'pode me dar',
+      'você pode sugerir',
+      'quais são',
+      'me ensina',
+      'explica',
+      'como funciona'
+    ];
+    
+    const messageLower = userMessage.toLowerCase();
+    return needsExamplesPatterns.some(pattern => messageLower.includes(pattern));
   }
 
   private detectUserLevel(context: any): 'beginner' | 'intermediate' | 'advanced' {
@@ -662,15 +728,36 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
 
   private getFallbackSuggestion(userMessage: string, section: string, context: any): string {
     const userLevel = this.detectUserLevel(context);
+    const needsExamples = this.detectNeedsExamples(userMessage);
+    
+    // Detectar se precisa de exemplos de políticas públicas específicamente
+    const needsPolicyExamples = userMessage.toLowerCase().includes('política') || 
+                               userMessage.toLowerCase().includes('lei') ||
+                               userMessage.toLowerCase().includes('governo');
+    
+    if (needsExamples && needsPolicyExamples) {
+      return `🎯 EXEMPLOS DE POLÍTICAS PÚBLICAS\n\nEntendo sua dúvida! Vou te ajudar com exemplos práticos de políticas públicas que você pode usar na redação.\n\n📚 EXEMPLOS ESPECÍFICOS:\n\n1. **Lei Maria da Penha (2006)** - Política de proteção à mulher contra violência doméstica. Use em temas sobre direitos humanos, igualdade de gênero e segurança pública.\n\n2. **Programa Mais Médicos (2013)** - Política de interiorização da medicina. Ideal para temas sobre saúde pública, desigualdades regionais e acesso a serviços básicos.\n\n3. **Lei de Cotas (2012)** - Política de ações afirmativas no ensino superior. Excelente para temas sobre educação, inclusão social e redução de desigualdades.\n\n4. **Auxílio Emergencial (2020)** - Política de transferência de renda durante a pandemia. Use em temas sobre proteção social, desemprego e crises econômicas.\n\n5. **Lei Geral de Proteção de Dados - LGPD (2020)** - Política de proteção da privacidade digital. Perfeita para temas sobre tecnologia, privacidade e direitos digitais.\n\n💡 DICA PRÁTICA:\nSempre explique: o que é a política, quando foi criada, qual problema resolve e como se conecta com seu argumento. Exemplo: \"A Lei Maria da Penha, de 2006, demonstra como políticas específicas podem combater problemas sociais estruturais.\"\n\n🔧 PRÓXIMOS PASSOS:\nEscolha 1-2 dessas políticas que se relacionam com seu tema e me conte qual você quer usar para eu te ajudar a desenvolver o argumento completo!`;
+    }
     
     const fallbacks = {
       optimization: {
-        beginner: "🎯 REFINAMENTO DE IDEIA\n\n💡 ANÁLISE RÁPIDA\nSua pergunta mostra que você quer criar uma boa base para sua redação.\n\n📝 SUGESTÃO PRINCIPAL\nTorne sua ideia específica: em vez de \"educação é importante\", diga \"educação digital prepara jovens para o mercado de trabalho\".\n\n🔧 COMO MELHORAR\n• Defina sua posição clara (a favor, contra, ou perspectiva específica)\n• Seja específico sobre qual aspecto do tema você vai abordar\n• Pense em que argumentos e exemplos você usará\n\n❓ PRÓXIMA ETAPA\nMe conte sobre que tema você quer escrever para eu te ajudar com ideias específicas?",
+        beginner: needsExamples ? 
+          `🎯 REFINAMENTO DE IDEIA\n\nEntendo sua dúvida! Vou te ajudar com exemplos práticos.\n\n📚 EXEMPLOS DE BOAS IDEIAS:\n1. **Específica**: \"Educação digital nas escolas públicas reduz desigualdades sociais\" (em vez de \"educação é importante\")\n2. **Posicionada**: \"Redes sociais prejudicam a saúde mental dos jovens\" (opinião clara)\n3. **Focada**: \"Políticas de cotas universitárias promovem inclusão social\" (recorte definido)\n\n💡 DICA PRÁTICA:\nUma boa ideia tem 3 elementos: tema específico + sua opinião + justificativa. Exemplo: \"A inteligência artificial (tema) deve ser regulamentada (opinião) para proteger empregos humanos (justificativa)\".\n\n🔧 PRÓXIMOS PASSOS:\nMe conte seu tema para eu te ajudar a criar uma ideia específica e bem posicionada!` :
+          "🎯 REFINAMENTO DE IDEIA\n\n💡 ANÁLISE RÁPIDA\nSua pergunta mostra que você quer criar uma boa base para sua redação.\n\n📝 SUGESTÃO PRINCIPAL\nTorne sua ideia específica: em vez de \"educação é importante\", diga \"educação digital prepara jovens para o mercado de trabalho\".\n\n🔧 COMO MELHORAR\n• Defina sua posição clara (a favor, contra, ou perspectiva específica)\n• Seja específico sobre qual aspecto do tema você vai abordar\n• Pense em que argumentos e exemplos você usará\n\n❓ PRÓXIMA ETAPA\nMe conte sobre que tema você quer escrever para eu te ajudar com ideias específicas?",
         intermediate: "🎯 **Aprimorando sua ideia do texto**\n\n📊 **Estrutura ideal:**\n\n1️⃣ **Posicionamento claro:** Sua opinião bem definida sobre o tema\n\n2️⃣ **Especificidade:** Evite generalizações, seja preciso\n\n3️⃣ **Conexão argumentativa:** Sua ideia deve anunciar que argumentos virão\n\n4️⃣ **Relevância social:** Mostre por que o tema importa para a sociedade\n\n💼 **Estratégias avançadas:**\n• Use dados ou contexto atual\n• Mencione diferentes perspectivas\n• Conecte com outros temas sociais\n• Antecipe possíveis objeções\n\n🔗 **Conectivos úteis:** \"Diante disso\", \"Nesse contexto\", \"Considerando que\"\n\n🎯 **Meta:** Sua ideia deve convencer o leitor desde o início!",
         advanced: "🧠 **Refinamento conceitual da ideia**\n\n🎨 **Sofisticação argumentativa:**\n\n1️⃣ **Multidimensionalidade:** Aborde aspectos históricos, sociais, econômicos\n\n2️⃣ **Nuances:** Evite polarizações, explore complexidades\n\n3️⃣ **Inovação:** Apresente perspectivas menos óbvias\n\n4️⃣ **Interdisciplinaridade:** Conecte diferentes áreas do conhecimento\n\n📚 **Técnicas avançadas:**\n• Paradoxos e contradições\n• Analogias elaboradas\n• Referências implícitas\n• Questionamentos filosóficos\n\n✨ **Elegância textual:** Use linguagem sofisticada sem rebuscamento\n\n🎯 **Objetivo:** Demonstrar domínio pleno e originalidade de pensamento!"
       },
+      tema: {
+        beginner: needsExamples ? 
+          `🎯 DESENVOLVIMENTO DE TEMA\n\nEntendo sua dúvida! Vou te ajudar com exemplos de como desenvolver temas.\n\n📚 EXEMPLOS DE TEMAS BEM DESENVOLVIDOS:\n\n1. **\"Desafios da educação digital no Brasil\"** - Específico, atual e relevante. Permite discutir inclusão, tecnologia e políticas públicas.\n\n2. **\"Impactos das redes sociais na saúde mental dos jovens\"** - Recorte claro, problema atual e com dados disponíveis.\n\n3. **\"Sustentabilidade urbana e qualidade de vida\"** - Conecta meio ambiente e sociedade, muito atual.\n\n💡 DICA PRÁTICA:\nTransforme temas amplos em específicos: \"Educação\" → \"Educação digital nas escolas públicas\". \"Meio ambiente\" → \"Reciclagem em centros urbanos\".\n\n🔧 PRÓXIMOS PASSOS:\nMe conte que tema você quer desenvolver para eu te ajudar a torná-lo mais específico e focado!` :
+          "🎯 DESENVOLVIMENTO DE TEMA\n\n💡 ANÁLISE RÁPIDA\nVocê quer desenvolver um tema de forma clara e focada.\n\n📝 SUGESTÃO PRINCIPAL\nTorne o tema específico e atual. Em vez de \"educação\", use \"educação digital\" ou \"ensino técnico\".\n\n🔧 COMO MELHORAR\n• Delimite o recorte (que aspecto específico?)\n• Conecte com a atualidade (por que é relevante hoje?)\n• Pense nos argumentos que você vai usar\n\n❓ PRÓXIMA ETAPA\nQual tema você quer trabalhar para eu te ajudar a especificar melhor?",
+        intermediate: "🎯 **Aprimorando Desenvolvimento Temático**\n\n📊 **Estratégias avançadas:**\n• Delimite recortes específicos e atuais\n• Conecte com dados e tendências contemporâneas\n• Articule diferentes perspectivas sobre o tema\n• Antecipe contrapontos e nuances\n\n🔗 **Conectivos temáticos:** \"Nesse contexto\", \"Diante desse cenário\", \"Considerando essa realidade\"",
+        advanced: "🎯 **Refinamento Temático Sofisticado**\n\n🌐 **Abordagem multidimensional:**\n• Explore paradoxos e complexidades temáticas\n• Integre perspectivas históricas, sociais e culturais\n• Articule diferentes campos do conhecimento\n• Demonstre domínio conceitual e originalidade\n\n✨ **Elegância argumentativa:** Apresente recortes inovadores e análises profundas"
+      },
       introducao: {
-        beginner: "🎯 ESTRUTURA INTRODUÇÃO\n\n💡 ANÁLISE RÁPIDA\nVocê precisa organizar sua introdução em três partes bem definidas.\n\n📝 SUGESTÃO PRINCIPAL\nUse a estrutura: Contextualização (apresentar tema) + Problematização (mostrar importância) + Tese (sua opinião).\n\n🔧 COMO MELHORAR\n• Comece com \"No mundo contemporâneo...\" ou dados atuais\n• Explique por que o tema é um problema relevante hoje\n• Termine com sua posição clara sobre o assunto\n\n❓ PRÓXIMA ETAPA\nQuer me mostrar sua introdução atual para eu te dar sugestões específicas?",
+        beginner: needsExamples ?
+          `🎯 ESTRUTURA INTRODUÇÃO\n\nEntendo sua dúvida! Vou te ajudar com exemplos práticos de como estruturar.\n\n📚 EXEMPLOS DE REPERTÓRIOS PARA INTRODUÇÃO:\n\n1. **Dados do IBGE ou IPEA** - \"Segundo o IBGE, 30% dos brasileiros não têm acesso à internet...\"\n2. **Contexto histórico** - \"Desde a Revolução Industrial, a tecnologia transforma o trabalho...\"\n3. **Citação de especialista** - \"Como afirma o sociólogo Zygmunt Bauman...\"\n4. **Comparação internacional** - \"Enquanto países nórdicos investem 7% do PIB em educação...\"\n\n💡 DICA PRÁTICA:\nEstrutura: Contextualização (dados/contexto) + Problematização (por que é importante?) + Tese (sua opinião).\n\n🔧 PRÓXIMOS PASSOS:\nEscolha um tipo de repertório e me conte seu tema para eu te ajudar a construir a introdução!` :
+          "🎯 ESTRUTURA INTRODUÇÃO\n\n💡 ANÁLISE RÁPIDA\nVocê precisa organizar sua introdução em três partes bem definidas.\n\n📝 SUGESTÃO PRINCIPAL\nUse a estrutura: Contextualização (apresentar tema) + Problematização (mostrar importância) + Tese (sua opinião).\n\n🔧 COMO MELHORAR\n• Comece com \"No mundo contemporâneo...\" ou dados atuais\n• Explique por que o tema é um problema relevante hoje\n• Termine com sua posição clara sobre o assunto\n\n❓ PRÓXIMA ETAPA\nQuer me mostrar sua introdução atual para eu te dar sugestões específicas?",
         intermediate: "🎯 **Aprimorando sua Introdução**\n\n📈 **Contextualização mais rica:**\nUse dados atuais, contexto histórico ou comparações internacionais\n\n🔍 **Problematização sofisticada:**\nMostre causas e consequências do problema\n\n💭 **Tese mais persuasiva:**\nUse argumentos de autoridade ou dados para sustentar sua posição\n\n🔗 **Conectivos eficazes:** \"Diante desse cenário\", \"Nessa perspectiva\", \"Sob essa ótica\"",
         advanced: "🎯 **Refinando sua Introdução**\n\n🌐 **Contextualização multidimensional:**\nAborde aspectos históricos, sociais, econômicos e culturais\n\n🧠 **Problematização complexa:**\nExplore paradoxos, contradições e múltiplas causas\n\n✨ **Tese sofisticada:**\nProponha soluções inovadoras com base em evidências robustas\n\n📚 **Conectivos refinados:** \"Sob essa perspectiva\", \"Nessa conjuntura\", \"À luz dessas considerações\""
       },
