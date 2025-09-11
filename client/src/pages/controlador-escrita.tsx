@@ -762,34 +762,32 @@ export default function ControladorEscrita() {
         {/* Central Action Button */}
         <div className="flex justify-center py-4">
           <LiquidGlassCard className="px-8 py-4 w-full">
-            <div className="flex items-center gap-4">
-              <div className="text-center">
-                <p className="text-sm text-soft-gray mb-2">
-                  {activeModifications.size === 0 
-                    ? "Selecione as modificações desejadas nos cards acima" 
-                    : `${activeModifications.size} modificação${activeModifications.size > 1 ? 'ões' : ''} selecionada${activeModifications.size > 1 ? 's' : ''}`
-                  }
-                </p>
-                <Button
-                  onClick={applyAllModifications}
-                  disabled={isProcessing || activeModifications.size === 0}
-                  size="lg"
-                  className="bg-gradient-to-r from-bright-blue via-dark-blue to-soft-gray text-white font-semibold px-8 py-3"
-                  data-testid="button-apply-all"
-                >
-                  {isProcessing ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Processando...
-                    </>
-                  ) : (
-                    <>
-                      <Edit3 className="mr-2 h-4 w-4" />
-                      Aplicar Todas as Modificações
-                    </>
-                  )}
-                </Button>
-              </div>
+            <div className="w-full text-center">
+              <p className="text-sm text-soft-gray mb-4">
+                {activeModifications.size === 0 
+                  ? "Selecione as modificações desejadas nos cards acima" 
+                  : `${activeModifications.size} modificação${activeModifications.size > 1 ? 'ões' : ''} selecionada${activeModifications.size > 1 ? 's' : ''}`
+                }
+              </p>
+              <Button
+                onClick={applyAllModifications}
+                disabled={isProcessing || activeModifications.size === 0}
+                size="lg"
+                className="bg-dark-blue hover:bg-dark-blue/90 text-white font-semibold px-12 py-4 w-full max-w-md mx-auto"
+                data-testid="button-apply-all"
+              >
+                {isProcessing ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Processando...
+                  </>
+                ) : (
+                  <>
+                    <Edit3 className="mr-2 h-4 w-4" />
+                    Aplicar Todas as Modificações
+                  </>
+                )}
+              </Button>
             </div>
           </LiquidGlassCard>
         </div>
