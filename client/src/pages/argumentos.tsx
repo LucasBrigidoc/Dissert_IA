@@ -659,23 +659,31 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 ></div>
               </div>
               
-              {/* Indicadores de etapas */}
-              <div className="grid grid-cols-4 gap-2">
+              {/* Indicadores de etapas detalhadas */}
+              <div className="grid grid-cols-6 gap-1.5">
                 <div className="flex flex-col items-center space-y-0.5">
                   <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tema ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Tema</span>
+                  <span className="text-[9px] text-dark-blue text-center">Tema</span>
                 </div>
                 <div className="flex flex-col items-center space-y-0.5">
                   <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.tese ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Tese</span>
+                  <span className="text-[9px] text-dark-blue text-center">Tese</span>
                 </div>
                 <div className="flex flex-col items-center space-y-0.5">
-                  <div className={`w-2.5 h-2.5 rounded-full ${Object.values(brainstormData.paragrafos).filter(p => p.trim()).length >= 3 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Argumentos</span>
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.introducao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[9px] text-dark-blue text-center">Introdução</span>
+                </div>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.desenvolvimento1 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[9px] text-dark-blue text-center">Desenv. 1</span>
+                </div>
+                <div className="flex flex-col items-center space-y-0.5">
+                  <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.desenvolvimento2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <span className="text-[9px] text-dark-blue text-center">Desenv. 2</span>
                 </div>
                 <div className="flex flex-col items-center space-y-0.5">
                   <div className={`w-2.5 h-2.5 rounded-full ${brainstormData.paragrafos.conclusao ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <span className="text-[10px] text-dark-blue text-center">Conclusão</span>
+                  <span className="text-[9px] text-dark-blue text-center">Conclusão</span>
                 </div>
               </div>
             </div>
