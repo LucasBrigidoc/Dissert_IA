@@ -479,7 +479,7 @@ export default function ControladorEscrita() {
                 placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
-                className="min-h-[240px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
+                className="min-h-[280px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
                 data-testid="textarea-original"
               />
             </div>
@@ -490,7 +490,7 @@ export default function ControladorEscrita() {
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[120px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
             onClick={isMobile ? () => toggleCard('formalidade') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -568,7 +568,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`min-h-[120px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
             onClick={isMobile ? () => toggleCard('argumentacao') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -698,7 +698,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`min-h-[120px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
             onClick={isMobile ? () => toggleCard('sinonimos') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -742,7 +742,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`min-h-[120px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
             onClick={isMobile ? () => toggleCard('antonimos') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -873,7 +873,7 @@ export default function ControladorEscrita() {
                 placeholder="O texto modificado aparecerá aqui. Você pode editar diretamente este resultado."
                 value={modifiedText}
                 onChange={(e) => setModifiedText(e.target.value)}
-                className="min-h-[240px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
+                className="min-h-[280px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
                 data-testid="textarea-result"
               />
             </div>
