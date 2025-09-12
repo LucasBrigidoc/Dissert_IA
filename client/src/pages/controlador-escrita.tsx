@@ -420,14 +420,36 @@ export default function ControladorEscrita() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <Button
+              onClick={handleBack}
+              variant="outline"
+              size="sm"
+              className="flex items-center space-x-1 h-8 px-2 text-xs"
+              data-testid="button-back"
+            >
+              <ArrowLeft size={14} />
+              <span>Voltar</span>
+            </Button>
+            <div className="flex items-center space-x-2 min-w-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center flex-shrink-0">
+                <Edit3 className="text-white" size={14} />
+              </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Controlador de Escrita</h1>
+            </div>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Button
                 onClick={handleBack}
                 variant="outline"
                 size="sm"
                 className="flex items-center space-x-2"
+                data-testid="button-back"
               >
                 <ArrowLeft size={16} />
                 <span>Voltar</span>
@@ -444,12 +466,12 @@ export default function ControladorEscrita() {
         </div>
       </div>
       {/* Content */}
-      <div className="container mx-auto px-6 py-8 pt-24 h-[calc(100vh-200px)] flex flex-col">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-16 sm:pt-24 min-h-[calc(100vh-200px)] flex flex-col">
         {/* Área de Texto Original */}
-        <div className="mb-6">
-          <LiquidGlassCard>
+        <div className="mb-4 sm:mb-6">
+          <LiquidGlassCard className="p-4 sm:p-6">
             <div>
-              <Label htmlFor="original-text" className="text-lg font-semibold text-dark-blue mb-3 block">
+              <Label htmlFor="original-text" className="text-sm sm:text-lg font-semibold text-dark-blue mb-2 sm:mb-3 block">
                 Texto Original
               </Label>
               <Textarea
@@ -457,26 +479,27 @@ export default function ControladorEscrita() {
                 placeholder="Digite aqui o parágrafo que você deseja modificar. Você pode escrever sobre qualquer tema e aplicar diferentes estilos e modificações..."
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
-                className="min-h-[200px] text-base leading-relaxed resize-none"
+                className="min-h-[180px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
+                data-testid="textarea-original"
               />
             </div>
           </LiquidGlassCard>
         </div>
 
-        {/* Controles - Ocupam toda a vertical */}
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 md:items-stretch">
+        {/* Controles - Mobile Otimizado */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`min-h-[180px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
             onClick={isMobile ? () => toggleCard('formalidade') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <FileText className="text-white" size={16} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+                  <FileText className="text-white" size={14} />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-dark-blue">Formalidade</h3>
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Formalidade</h3>
                   <p className="text-xs text-soft-gray">Ajuste o nível formal</p>
                 </div>
               </div>
@@ -545,16 +568,16 @@ export default function ControladorEscrita() {
 
           {/* Card de Argumentação */}
           <div 
-            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
+            className={`min-h-[180px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
             onClick={isMobile ? () => toggleCard('argumentacao') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                  <Target className="text-white" size={16} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center flex-shrink-0">
+                  <Target className="text-white" size={14} />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-dark-blue">Organização Dissertativa</h3>
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Organização Dissertativa</h3>
                   <p className="text-xs text-soft-gray">Estrutura argumentativa</p>
                 </div>
               </div>
@@ -675,16 +698,16 @@ export default function ControladorEscrita() {
 
           {/* Card de Sinônimos */}
           <div 
-            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
+            className={`min-h-[180px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
             onClick={isMobile ? () => toggleCard('sinonimos') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                  <RefreshCw className="text-white" size={16} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <RefreshCw className="text-white" size={14} />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-dark-blue">Sinônimos</h3>
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Sinônimos</h3>
                   <p className="text-xs text-soft-gray">Mantém o sentido</p>
                 </div>
               </div>
@@ -719,16 +742,16 @@ export default function ControladorEscrita() {
 
           {/* Card de Antônimos */}
           <div 
-            className={`min-h-[200px] md:h-[420px] rounded-2xl p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
+            className={`min-h-[180px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
             onClick={isMobile ? () => toggleCard('antonimos') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                  <Shuffle className="text-white" size={16} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Shuffle className="text-white" size={14} />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-dark-blue">Antônimos</h3>
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Antônimos</h3>
                   <p className="text-xs text-soft-gray">Inverte o sentido</p>
                 </div>
               </div>
@@ -762,11 +785,11 @@ export default function ControladorEscrita() {
           </div>
         </div>
 
-        {/* Central Action Button */}
-        <div className="flex justify-center py-4">
-          <LiquidGlassCard className="px-8 py-4 w-full">
+        {/* Central Action Button - Mobile Optimized */}
+        <div className="flex justify-center py-3 sm:py-4">
+          <LiquidGlassCard className="px-4 sm:px-8 py-3 sm:py-4 w-full">
             <div className="w-full text-center">
-              <p className="text-sm text-soft-gray mb-4">
+              <p className="text-xs sm:text-sm text-soft-gray mb-3 sm:mb-4">
                 {activeModifications.size === 0 
                   ? "Selecione as modificações desejadas nos cards acima" 
                   : `${activeModifications.size} modificação${activeModifications.size > 1 ? 'ões' : ''} selecionada${activeModifications.size > 1 ? 's' : ''}`
@@ -776,18 +799,20 @@ export default function ControladorEscrita() {
                 onClick={applyAllModifications}
                 disabled={isProcessing || activeModifications.size === 0}
                 size="lg"
-                className="bg-dark-blue hover:bg-dark-blue/90 text-white font-semibold px-12 py-4 w-full max-w-md mx-auto"
+                className="bg-dark-blue hover:bg-dark-blue/90 text-white font-semibold px-6 sm:px-12 py-3 sm:py-4 w-full max-w-md mx-auto text-sm sm:text-base"
                 data-testid="button-apply-all"
               >
                 {isProcessing ? (
                   <>
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    Processando...
+                    <RefreshCw className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                    <span className="sm:hidden">Processando...</span>
+                    <span className="hidden sm:inline">Processando...</span>
                   </>
                 ) : (
                   <>
-                    <Edit3 className="mr-2 h-4 w-4" />
-                    Aplicar Todas as Modificações
+                    <Edit3 className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="sm:hidden">Aplicar Modificações</span>
+                    <span className="hidden sm:inline">Aplicar Todas as Modificações</span>
                   </>
                 )}
               </Button>
@@ -795,12 +820,12 @@ export default function ControladorEscrita() {
           </LiquidGlassCard>
         </div>
 
-        {/* Área de Resultado */}
+        {/* Área de Resultado - Mobile Optimized */}
         <div>
-          <LiquidGlassCard className="min-h-[400px] sm:min-h-0 py-8 sm:py-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+          <LiquidGlassCard className="min-h-[300px] sm:min-h-0 py-4 sm:py-6 p-4 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                <Label className="text-sm sm:text-lg font-semibold text-dark-blue flex items-center gap-2">
                   Resultado
                   {modificationType && (
                     <Badge variant="secondary" className="text-xs">
@@ -808,36 +833,39 @@ export default function ControladorEscrita() {
                     </Badge>
                   )}
                 </Label>
-                <div className="flex gap-2">
+                <div className="flex gap-2 sm:gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleCopyText}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
                     data-testid="button-copy"
                   >
-                    <Copy className="h-4 w-4" />
-                    Copiar
+                    <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Copiar</span>
+                    <span className="sm:hidden">Copiar</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleSaveToLibrary}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
                     data-testid="button-save"
                   >
-                    <Save className="h-4 w-4" />
-                    Salvar
+                    <Save className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Salvar</span>
+                    <span className="sm:hidden">Salvar</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={resetTexts}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
                     data-testid="button-clear"
                   >
-                    <RotateCcw className="h-4 w-4" />
-                    Limpar
+                    <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Limpar</span>
+                    <span className="sm:hidden">Limpar</span>
                   </Button>
                 </div>
               </div>
@@ -845,7 +873,7 @@ export default function ControladorEscrita() {
                 placeholder="O texto modificado aparecerá aqui. Você pode editar diretamente este resultado."
                 value={modifiedText}
                 onChange={(e) => setModifiedText(e.target.value)}
-                className="min-h-[200px] text-base leading-relaxed resize-none"
+                className="min-h-[180px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
                 data-testid="textarea-result"
               />
             </div>
