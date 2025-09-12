@@ -445,22 +445,22 @@ export default function Repertorio() {
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Link href={backUrl} data-testid="button-back">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center space-x-1 h-8 px-2 text-xs"
-                >
-                  <ArrowLeft size={14} />
-                  <span>Voltar</span>
-                </Button>
-              </Link>
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+            <Link href={backUrl} data-testid="button-back">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-1 h-8 px-2 text-xs"
+              >
+                <ArrowLeft size={14} />
+                <span>Voltar</span>
+              </Button>
+            </Link>
+            <div className="flex items-center space-x-2 min-w-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
                 <Search className="text-white" size={14} />
               </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Repertório</h1>
             </div>
-            <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Repertório</h1>
           </div>
           
           {/* Desktop Layout */}
