@@ -480,28 +480,28 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Button
-                onClick={() => {
-                  if (window.history.length > 1 && document.referrer) {
-                    window.history.back();
-                  } else {
-                    window.location.href = backUrl;
-                  }
-                }}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-1 h-8 px-2 text-xs"
-                data-testid="button-back"
-              >
-                <ArrowLeft size={14} />
-                <span>Voltar</span>
-              </Button>
+            <Button
+              onClick={() => {
+                if (window.history.length > 1 && document.referrer) {
+                  window.history.back();
+                } else {
+                  window.location.href = backUrl;
+                }
+              }}
+              variant="outline"
+              size="sm"
+              className="flex items-center space-x-1 h-8 px-2 text-xs"
+              data-testid="button-back"
+            >
+              <ArrowLeft size={14} />
+              <span>Voltar</span>
+            </Button>
+            <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                 <Brain className="text-white" size={14} />
               </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Refinamento do Brainstorming</h1>
             </div>
-            <h1 className="text-sm font-bold text-dark-blue truncate">Refinamento do Brainstorming</h1>
           </div>
           
           {/* Desktop Layout */}
