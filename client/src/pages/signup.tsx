@@ -36,7 +36,7 @@ export default function Signup() {
         <LiquidGlassCard className="rounded-3xl overflow-hidden p-0">
           <div className="flex flex-col lg:flex-row">
             {/* Signup Form */}
-            <div className="w-full lg:w-1/2 p-12">
+            <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12">
               <h2 className="text-4xl font-bold text-bright-blue mb-8" data-testid="text-signup-title">Cadastro</h2>
               
               <form onSubmit={handleSignup} className="space-y-6" data-testid="form-signup">
@@ -68,7 +68,7 @@ export default function Signup() {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="password" className="block text-bright-blue font-medium mb-2">Senha</Label>
                     <div className="relative">
@@ -117,7 +117,7 @@ export default function Signup() {
                   </div>
                 </div>
                 
-                <div className="flex space-x-4">
+                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
                   <Button
                     type="button"
                     onClick={() => setUserType("vestibulano")}
@@ -162,13 +162,18 @@ export default function Signup() {
             </div>
             
             {/* Illustration */}
-            <div className="w-full lg:w-1/2 gradient-bg p-12 flex items-center justify-center relative">
+            <div className="w-full lg:w-1/2 gradient-bg p-6 sm:p-8 lg:p-12 flex items-center justify-center relative">
               <div className="text-center">
-                <h2 className="text-6xl font-bold mb-4 font-playfair flex items-center justify-center gap-3" style={{color: '#5087ff'}}>
-                  <Sparkles size={52} style={{color: '#ffffff'}} />
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4 font-playfair flex items-center justify-center gap-2 sm:gap-3" style={{color: '#5087ff'}}>
+                  <Sparkles size={28} className="sm:w-8 sm:h-8 lg:w-[52px] lg:h-[52px]" style={{color: '#ffffff'}} />
                   DISSERT<span style={{color: '#ffffff'}}>AI</span>
                 </h2>
-                <HeroCharacter variant="ai" size="md" />
+                <div className="block lg:hidden">
+                  <HeroCharacter variant="ai" size="sm" />
+                </div>
+                <div className="hidden lg:block">
+                  <HeroCharacter variant="ai" size="md" />
+                </div>
               </div>
             </div>
           </div>
