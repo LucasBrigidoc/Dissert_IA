@@ -28,6 +28,7 @@ export default function Propostas() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+  const [hasShownInitialCacheResults, setHasShownInitialCacheResults] = useState(false);
   
   const { toast } = useToast();
 
@@ -206,7 +207,25 @@ export default function Propostas() {
     const difficulty = selectedDifficulty === "all" ? "medio" : selectedDifficulty;
     const examType = selectedExamType === "all" ? "enem" : selectedExamType;
 
-    generateMutation.mutate({ theme, difficulty, examType });
+    // Se ainda não mostrou resultados do cache, mostrar primeiro do cache
+    if (!hasShownInitialCacheResults) {
+      // Buscar do cache primeiro (sistema já retorna do cache quando disponível)
+      const cacheQuery = {
+        query: `tema ${theme}`, // usar o tema como query para buscar no cache
+        examType: examType === "enem" ? undefined : examType,
+        theme: theme === "social" ? undefined : theme,
+        difficulty: difficulty === "medio" ? undefined : difficulty,
+      };
+      
+      // Fazer busca que retorna do cache primeiro
+      searchMutation.mutate(cacheQuery);
+      
+      // Marcar que já mostrou cache após iniciar a busca
+      setHasShownInitialCacheResults(true);
+    } else {
+      // Se já mostrou cache, gerar novas propostas com IA
+      generateMutation.mutate({ theme, difficulty, examType });
+    }
   };
 
   const getFilteredProposals = () => {
@@ -381,16 +400,16 @@ export default function Propostas() {
               <div className="flex items-end">
                 <Button 
                   onClick={handleGenerateNew}
-                  disabled={generateMutation.isPending}
+                  disabled={generateMutation.isPending || searchMutation.isPending}
                   className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0"
                   data-testid="button-generate"
                 >
-                  {generateMutation.isPending ? (
+                  {(generateMutation.isPending || searchMutation.isPending) ? (
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                   ) : (
                     <Sparkles className="w-4 h-4 mr-2" />
                   )}
-                  Gerar IA
+                  {hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}
                 </Button>
               </div>
             </div>
@@ -524,16 +543,16 @@ export default function Propostas() {
             </p>
             <Button 
               onClick={handleGenerateNew}
-              disabled={generateMutation.isPending}
+              disabled={generateMutation.isPending || searchMutation.isPending}
               className="bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0"
               data-testid="button-generate-empty"
             >
-              {generateMutation.isPending ? (
+              {(generateMutation.isPending || searchMutation.isPending) ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               ) : (
                 <Sparkles className="w-4 h-4 mr-2" />
               )}
-              Gerar Propostas com IA
+              {hasShownInitialCacheResults ? "Gerar Mais Opções" : "Gerar Propostas com IA"}
             </Button>
           </LiquidGlassCard>
         )}
