@@ -985,7 +985,7 @@ export default function Dashboard() {
           </LiquidGlassCard>
 
           {/* Simulator Time Card */}
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20" data-testid="card-simulator-time">
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-2 px-6" data-testid="card-simulator-time">
             <div className="flex items-center mb-3 md:mb-4">
               <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
                 <Clock className="text-white" size={14} />
