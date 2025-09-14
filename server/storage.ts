@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -54,6 +54,14 @@ export interface IStorage {
   getUserSavedProposals(userId: string): Promise<Proposal[]>;
   isProposalSaved(userId: string, proposalId: string): Promise<boolean>;
   
+  // Simulation operations
+  createSimulation(simulation: InsertSimulation): Promise<Simulation>;
+  updateSimulation(id: string, simulation: Partial<Simulation>): Promise<Simulation>;
+  getSimulation(id: string): Promise<Simulation | undefined>;
+  getSimulations(userId?: string, sessionId?: string, limit?: number, offset?: number): Promise<Simulation[]>;
+  getUserSimulations(userId: string): Promise<Simulation[]>;
+  getSessionSimulations(sessionId: string): Promise<Simulation[]>;
+  
 }
 
 export class MemStorage implements IStorage {
@@ -67,6 +75,7 @@ export class MemStorage implements IStorage {
   private savedRepertoires: Map<string, SavedRepertoire>;
   private proposals: Map<string, Proposal>;
   private savedProposals: Map<string, SavedProposal>;
+  private simulations: Map<string, Simulation>;
 
   constructor() {
     this.users = new Map();
@@ -79,6 +88,7 @@ export class MemStorage implements IStorage {
     this.savedRepertoires = new Map();
     this.proposals = new Map();
     this.savedProposals = new Map();
+    this.simulations = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -684,6 +694,80 @@ export class MemStorage implements IStorage {
       };
       this.proposals.set(id, proposal);
     });
+  }
+
+  // Simulation operations
+  async createSimulation(insertSimulation: InsertSimulation): Promise<Simulation> {
+    const id = randomUUID();
+    const simulation: Simulation = {
+      ...insertSimulation,
+      userId: insertSimulation.userId ?? null,
+      customTheme: insertSimulation.customTheme ?? null,
+      timeLimit: insertSimulation.timeLimit ?? null,
+      timeTaken: insertSimulation.timeTaken ?? null,
+      score: insertSimulation.score ?? null,
+      progress: insertSimulation.progress ?? null,
+      isCompleted: insertSimulation.isCompleted ?? false,
+      proposalUsed: insertSimulation.proposalUsed ?? null,
+      sessionId: insertSimulation.sessionId ?? null,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.simulations.set(id, simulation);
+    return simulation;
+  }
+
+  async updateSimulation(id: string, updateData: Partial<Simulation>): Promise<Simulation> {
+    const existing = this.simulations.get(id);
+    if (!existing) {
+      throw new Error("Simulation not found");
+    }
+
+    const updated: Simulation = {
+      ...existing,
+      ...updateData,
+      updatedAt: new Date()
+    };
+
+    this.simulations.set(id, updated);
+    return updated;
+  }
+
+  async getSimulation(id: string): Promise<Simulation | undefined> {
+    return this.simulations.get(id);
+  }
+
+  async getSimulations(userId?: string, sessionId?: string, limit: number = 20, offset: number = 0): Promise<Simulation[]> {
+    let simulations = Array.from(this.simulations.values());
+
+    // Filter by userId if provided
+    if (userId) {
+      simulations = simulations.filter(sim => sim.userId === userId);
+    }
+
+    // Filter by sessionId if provided
+    if (sessionId) {
+      simulations = simulations.filter(sim => sim.sessionId === sessionId);
+    }
+
+    // Sort by creation date (newest first)
+    simulations = simulations.sort((a, b) => {
+      const aTime = a.createdAt?.getTime() ?? 0;
+      const bTime = b.createdAt?.getTime() ?? 0;
+      return bTime - aTime;
+    });
+
+    // Apply pagination
+    return simulations.slice(offset, offset + limit);
+  }
+
+  async getUserSimulations(userId: string): Promise<Simulation[]> {
+    return this.getSimulations(userId, undefined, 100, 0);
+  }
+
+  async getSessionSimulations(sessionId: string): Promise<Simulation[]> {
+    return this.getSimulations(undefined, sessionId, 100, 0);
   }
 
 }

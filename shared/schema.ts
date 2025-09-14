@@ -117,6 +117,25 @@ export const savedProposals = pgTable("saved_proposals", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Simulations table for tracking completed simulations
+export const simulations = pgTable("simulations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Optional user ID for logged users
+  title: text("title").notNull(),
+  examType: varchar("exam_type", { enum: ["enem", "vestibular", "concurso", "simulado", "custom"] }).notNull(),
+  theme: text("theme").notNull(),
+  customTheme: text("custom_theme"),
+  timeLimit: integer("time_limit"), // In minutes
+  timeTaken: integer("time_taken"), // In minutes, actual time taken
+  score: integer("score"),
+  progress: integer("progress"), // Percentage 0-100
+  isCompleted: boolean("is_completed").default(false),
+  proposalUsed: text("proposal_used"), // The essay proposal/prompt used
+  sessionId: text("session_id"), // For anonymous tracking
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -202,6 +221,12 @@ export const insertProposalSchema = createInsertSchema(proposals).omit({
 export const insertSavedProposalSchema = createInsertSchema(savedProposals).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertSimulationSchema = createInsertSchema(simulations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const proposalSearchQuerySchema = z.object({
@@ -304,6 +329,9 @@ export type Proposal = typeof proposals.$inferSelect;
 
 export type InsertSavedProposal = z.infer<typeof insertSavedProposalSchema>;
 export type SavedProposal = typeof savedProposals.$inferSelect;
+
+export type InsertSimulation = z.infer<typeof insertSimulationSchema>;
+export type Simulation = typeof simulations.$inferSelect;
 
 export type ProposalSearchQuery = z.infer<typeof proposalSearchQuerySchema>;
 export type GenerateProposal = z.infer<typeof generateProposalSchema>;

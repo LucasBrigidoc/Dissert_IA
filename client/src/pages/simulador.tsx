@@ -6,8 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle } from "lucide-react";
+import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Simulador() {
   const [location] = useLocation();
@@ -59,8 +62,105 @@ export default function Simulador() {
   const [customTheme, setCustomTheme] = useState("");
   const [textProposal, setTextProposal] = useState("");
   
+  // Estados para propostas geradas com IA
+  const [generatedProposals, setGeneratedProposals] = useState<any[]>([]);
+  const [showAllSimulations, setShowAllSimulations] = useState(false);
+  
   // Verificar se todos os campos obrigatórios estão preenchidos
   const isFormComplete = examType && timeLimit && theme && timerDisplay;
+  
+  const { toast } = useToast();
+  
+  // Mutação para gerar propostas com IA
+  const generateProposalsMutation = useMutation({
+    mutationFn: async () => {
+      const themeToUse = theme === 'custom' ? customTheme : theme;
+      const selectedTheme = theme === 'random' ? 'social' : themeToUse;
+      
+      return apiRequest('/api/proposals/generate', {
+        method: 'POST',
+        body: {
+          theme: selectedTheme,
+          difficulty: 'medio',
+          examType: examType || 'enem',
+          keywords: themeToUse ? [themeToUse] : []
+        }
+      });
+    },
+    onSuccess: (data) => {
+      setGeneratedProposals(data.results);
+      toast({
+        title: "Propostas geradas com sucesso!",
+        description: `${data.results.length} propostas foram criadas com IA para sua simulação.`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao gerar propostas",
+        description: "Não foi possível gerar propostas no momento. Tente novamente.",
+        variant: "destructive",
+      });
+      console.error('Erro ao gerar propostas:', error);
+    }
+  });
+
+  // Função para copiar proposta para o campo de texto
+  const copyProposalToField = (proposal: any) => {
+    const fullText = `${proposal.title}\n\n${proposal.statement}\n\n${proposal.supportingText || ''}`;
+    setTextProposal(fullText);
+    toast({
+      title: "Proposta copiada!",
+      description: "A proposta foi copiada para o campo de texto.",
+    });
+  };
+
+  // Buscar simulações da API usando React Query
+  const { data: simulationsData, isLoading: isLoadingSimulations } = useQuery({
+    queryKey: ['/api/simulations'],
+    staleTime: 60000, // Cache por 1 minuto
+  });
+
+  // Mutation para criar uma nova simulação
+  const createSimulationMutation = useMutation({
+    mutationFn: (simulationData: any) => apiRequest('/api/simulations', {
+      method: 'POST',
+      body: simulationData
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/simulations'] });
+    },
+  });
+
+  // Mutation para atualizar simulação existente
+  const updateSimulationMutation = useMutation({
+    mutationFn: ({ id, ...updateData }: { id: string; [key: string]: any }) => 
+      apiRequest(`/api/simulations/${id}`, {
+        method: 'PUT',
+        body: updateData
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/simulations'] });
+    },
+  });
+
+  const allSimulations = simulationsData?.results || [];
+  const simulationsToShow = showAllSimulations ? allSimulations : allSimulations.slice(0, 2);
+
+  // Função para formatar data
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit', 
+      year: 'numeric'
+    });
+  };
+
+  // Função para formatar tempo
+  const formatTime = (minutes: number | null) => {
+    if (!minutes) return '--';
+    return `${minutes}min`;
+  };
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -232,30 +332,106 @@ export default function Simulador() {
                 data-testid="textarea-text-proposal"
               />
             </div>
-            
-            
+
+            {/* IA Proposal Generation */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <label className="block text-sm font-medium text-dark-blue">Gerar Propostas com IA</label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateProposalsMutation.mutate()}
+                  disabled={!theme || !examType || generateProposalsMutation.isPending}
+                  className="flex items-center space-x-2"
+                  data-testid="button-generate-proposals"
+                >
+                  <Sparkles className={`w-4 h-4 ${generateProposalsMutation.isPending ? 'animate-spin' : ''}`} />
+                  <span>{generateProposalsMutation.isPending ? 'Gerando...' : 'Gerar com IA'}</span>
+                </Button>
+              </div>
+              
+              {generatedProposals.length > 0 && (
+                <div className="space-y-3">
+                  <div className="text-sm text-soft-gray mb-2">
+                    {generatedProposals.length} propostas geradas com textos de apoio completos:
+                  </div>
+                  {generatedProposals.map((proposal, index) => (
+                    <div key={index} className="p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20">
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-semibold text-dark-blue text-sm">{proposal.title}</h4>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyProposalToField(proposal)}
+                          className="text-bright-blue hover:text-dark-blue flex items-center space-x-1"
+                          data-testid={`button-copy-proposal-${index}`}
+                        >
+                          <Copy className="w-3 h-3" />
+                          <span className="text-xs">Usar</span>
+                        </Button>
+                      </div>
+                      <p className="text-xs text-soft-gray mb-2 leading-relaxed">{proposal.statement}</p>
+                      {proposal.supportingText && (
+                        <div className="text-xs text-dark-blue/80 bg-white/50 p-2 rounded border-l-2 border-bright-blue/30">
+                          <strong>Texto de apoio:</strong> {proposal.supportingText}
+                        </div>
+                      )}
+                      <div className="flex items-center space-x-3 mt-2 text-xs text-soft-gray">
+                        <span>Dificuldade: {proposal.difficulty}</span>
+                        <span>Tema: {proposal.theme}</span>
+                        <span>Tipo: {proposal.examType?.toUpperCase()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             
             <Button 
-              onClick={() => {
+              onClick={async () => {
                 if (isFormComplete) {
-                  // Salvar todas as configurações escolhidas
-                  const simulationConfig = {
-                    examType,
-                    timeLimit: parseInt(timeLimit === "no-limit" ? "0" : timeLimit),
-                    theme,
-                    timerDisplay,
-                    customTheme,
-                    textProposal
-                  };
-                  
-                  // Salvar configurações no sessionStorage
-                  sessionStorage.setItem('simulation-config', JSON.stringify(simulationConfig));
-                  
-                  // Garantir que a origem está salva antes de navegar
-                  const urlParams = new URLSearchParams(window.location.search);
-                  const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
-                  sessionStorage.setItem('simulador-origin', currentFrom);
-                  setLocation('/simulacao');
+                  try {
+                    // Criar simulação no backend primeiro
+                    const newSimulation = await createSimulationMutation.mutateAsync({
+                      title: `${examType} - ${theme === 'custom' ? customTheme : theme}`,
+                      examType,
+                      theme: theme === 'custom' ? customTheme : theme,
+                      timeLimit: parseInt(timeLimit === "no-limit" ? "0" : timeLimit),
+                      textProposal,
+                      progress: 0,
+                      isCompleted: false,
+                      sessionId: `sim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+                    });
+
+                    // Salvar todas as configurações escolhidas
+                    const simulationConfig = {
+                      simulationId: newSimulation.simulation.id,
+                      examType,
+                      timeLimit: parseInt(timeLimit === "no-limit" ? "0" : timeLimit),
+                      theme,
+                      timerDisplay,
+                      customTheme,
+                      textProposal
+                    };
+                    
+                    // Salvar configurações no sessionStorage
+                    sessionStorage.setItem('simulation-config', JSON.stringify(simulationConfig));
+                    
+                    // Garantir que a origem está salva antes de navegar
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const currentFrom = urlParams.get('from') || sessionStorage.getItem('simulador-origin') || 'dashboard';
+                    sessionStorage.setItem('simulador-origin', currentFrom);
+                    setLocation('/simulacao');
+                  } catch (error) {
+                    console.error('Erro ao criar simulação:', error);
+                    toast({
+                      title: "Erro",
+                      description: "Não foi possível iniciar a simulação. Tente novamente.",
+                      variant: "destructive",
+                    });
+                  }
                 }
               }}
               disabled={!isFormComplete}
@@ -303,51 +479,89 @@ export default function Simulador() {
             </div>
           </LiquidGlassCard>
 
-          {/* Recent Simulations */}
+          {/* Complete Simulations History */}
           <LiquidGlassCard className="bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                <FileText className="text-white" size={16} />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                  <FileText className="text-white" size={16} />
+                </div>
+                <h3 className="text-xl font-semibold text-dark-blue">
+                  {showAllSimulations ? 'Histórico Completo' : 'Simulações Recentes'}
+                </h3>
               </div>
-              <h3 className="text-xl font-semibold text-dark-blue">Simulações Recentes</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAllSimulations(!showAllSimulations)}
+                className="flex items-center space-x-2"
+                data-testid="button-toggle-history"
+              >
+                <Calendar className="w-4 h-4" />
+                <span>{showAllSimulations ? 'Ver Recentes' : 'Ver Todas'}</span>
+              </Button>
             </div>
             
             <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-dark-blue">ENEM - Tecnologia na Educação</h4>
-                  <div className="flex items-center space-x-1">
-                    <Award className="text-bright-blue" size={16} />
-                    <span className="text-bright-blue font-semibold">850</span>
+              {isLoadingSimulations ? (
+                <div className="text-center py-8">
+                  <div className="text-soft-gray">Carregando histórico de simulações...</div>
+                </div>
+              ) : simulationsToShow.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-soft-gray">Nenhuma simulação realizada ainda</div>
+                  <div className="text-xs text-soft-gray mt-1">
+                    Complete sua primeira simulação para ver o histórico aqui
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm text-soft-gray mb-2">
-                  <span>Realizado em 23/08/2024</span>
-                  <span>Tempo: 58min</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Progress value={85} className="flex-1 h-2" />
-                  <span className="text-xs text-bright-blue font-medium">85%</span>
-                </div>
-              </div>
+              ) : (
+                simulationsToShow.map((simulation: any, index: number) => (
+                  <div key={simulation.id} className={`p-4 rounded-lg border ${
+                    index % 2 === 0 
+                      ? 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                      : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-dark-blue">{simulation.title}</h4>
+                      <div className="flex items-center space-x-1">
+                        <Award className={index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"} size={16} />
+                        <span className={`font-semibold ${index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"}`}>
+                          {simulation.score || '--'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-soft-gray mb-2">
+                      <span>Realizado em {formatDate(simulation.createdAt)}</span>
+                      <span>Tempo: {formatTime(simulation.timeTaken)}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Progress value={simulation.progress || 0} className="flex-1 h-2" />
+                      <span className={`text-xs font-medium ${index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"}`}>
+                        {simulation.progress || 0}%
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center space-x-2 text-xs text-soft-gray">
+                      <span className="capitalize">{simulation.examType}</span>
+                      <span>•</span>
+                      <span>{simulation.theme}</span>
+                      {simulation.isCompleted && (
+                        <>
+                          <span>•</span>
+                          <span className="text-green-600">✓ Concluída</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
               
-              <div className="p-4 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg border border-dark-blue/20">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-dark-blue">Vestibular - Meio Ambiente</h4>
-                  <div className="flex items-center space-x-1">
-                    <Award className="text-dark-blue" size={16} />
-                    <span className="text-dark-blue font-semibold">920</span>
+              {!isLoadingSimulations && showAllSimulations && allSimulations.length > 6 && (
+                <div className="text-center pt-4">
+                  <div className="text-sm text-soft-gray">
+                    Total de {allSimulations.length} simulações realizadas
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm text-soft-gray mb-2">
-                  <span>Realizado em 20/08/2024</span>
-                  <span>Tempo: 75min</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Progress value={92} className="flex-1 h-2" />
-                  <span className="text-xs text-dark-blue font-medium">92%</span>
-                </div>
-              </div>
+              )}
             </div>
           </LiquidGlassCard>
         </div>

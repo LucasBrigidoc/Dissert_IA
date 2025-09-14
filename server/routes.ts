@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
 import { textModificationService } from "./text-modification-service";
 import bcrypt from "bcrypt";
@@ -768,6 +768,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Text modification stats error:", error);
       res.status(500).json({ message: "Failed to get stats" });
+    }
+  });
+
+  // ===================== SIMULATION ROUTES =====================
+
+  // Create a new simulation
+  app.post("/api/simulations", async (req, res) => {
+    try {
+      const validatedData = insertSimulationSchema.parse(req.body);
+      
+      // Generate a session ID if not provided (for anonymous users)
+      const sessionId = validatedData.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      const simulation = await storage.createSimulation({
+        ...validatedData,
+        sessionId
+      });
+      
+      res.status(201).json({
+        success: true,
+        simulation
+      });
+    } catch (error) {
+      console.error("Create simulation error:", error);
+      res.status(400).json({ message: "Invalid simulation data" });
+    }
+  });
+
+  // Get simulations (with optional filtering)
+  app.get("/api/simulations", async (req, res) => {
+    try {
+      const userId = req.query.userId as string;
+      const sessionId = req.query.sessionId as string;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const simulations = await storage.getSimulations(userId, sessionId, limit, offset);
+      
+      res.json({
+        results: simulations,
+        count: simulations.length,
+        hasMore: simulations.length === limit
+      });
+    } catch (error) {
+      console.error("Get simulations error:", error);
+      res.status(500).json({ message: "Failed to get simulations" });
+    }
+  });
+
+  // Update a simulation (for completing, scoring, etc.)
+  app.put("/api/simulations/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = insertSimulationSchema.partial().parse(req.body);
+      const updateData = validatedData;
+      
+      const simulation = await storage.updateSimulation(id, updateData);
+      
+      res.json({
+        success: true,
+        simulation
+      });
+    } catch (error) {
+      console.error("Update simulation error:", error);
+      if (error instanceof Error && error.message === "Simulation not found") {
+        res.status(404).json({ message: "Simulation not found" });
+      } else {
+        res.status(500).json({ message: "Failed to update simulation" });
+      }
+    }
+  });
+
+  // Get a specific simulation
+  app.get("/api/simulations/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const simulation = await storage.getSimulation(id);
+      
+      if (!simulation) {
+        return res.status(404).json({ message: "Simulation not found" });
+      }
+      
+      res.json(simulation);
+    } catch (error) {
+      console.error("Get simulation error:", error);
+      res.status(500).json({ message: "Failed to get simulation" });
     }
   });
 
