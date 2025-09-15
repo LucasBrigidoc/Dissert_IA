@@ -281,25 +281,49 @@ export default function Propostas() {
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href={getBackUrl()}>
-                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200 border border-soft-gray/20 hover:border-bright-blue/30" 
-                  data-testid="button-back">
-                  <ArrowLeft size={14} />
-                  <span className="text-sm font-medium">Voltar</span>
-                </button>
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <Link href={getBackUrl()} data-testid="button-back">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-1 h-8 px-2 text-xs"
+              >
+                <ArrowLeft size={14} />
+                <span>Voltar</span>
+              </Button>
+            </Link>
+            <div className="flex items-center space-x-2 min-w-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+                <Lightbulb className="text-white" size={14} />
+              </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Propostas</h1>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <Link href={getBackUrl()} data-testid="button-back">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Voltar</span>
+                </Button>
               </Link>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                  <Lightbulb className="text-white" size={16} />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Lightbulb className="text-white" size={20} />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-dark-blue">Explorador de Propostas</h1>
                 </div>
               </div>
             </div>
-            <div className="hidden sm:block">
+            <div>
               <p className="text-sm text-soft-gray">Ferramenta para elaborar e pesquisar temas de redação</p>
             </div>
           </div>
