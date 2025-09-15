@@ -292,9 +292,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // OPTIMIZED: Generate 6 repertoires in 1 AI request (instead of multiple)
+      // Filter out excluded IDs first
+      if (excludeIds.length > 0) {
+        results = results.filter(rep => !excludeIds.includes(rep.id));
+      }
+      
+      // OPTIMIZED: Generate 6 repertoires in 1 AI request (especially important for "load more" requests)
       if (results.length < 4) {
-        console.log(`🚀 OPTIMIZED: Generating batch of repertoires for: "${query}" (current: ${results.length})`);
+        console.log(`🚀 OPTIMIZED: Generating batch of repertoires for: "${query}" (current: ${results.length}, excluded: ${excludeIds.length})`);
         
         // Single optimized AI call that generates 6 repertoires
         const generatedRepertoires = await geminiService.generateRepertoiresBatch(query, filters, 6);
@@ -317,11 +322,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.error("Error saving generated repertoire:", error);
           }
         }
-      }
-      
-      // Filter out excluded IDs
-      if (excludeIds.length > 0) {
-        results = results.filter(rep => !excludeIds.includes(rep.id));
       }
       
       // Local ranking instead of AI (simple keyword matching)
