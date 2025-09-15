@@ -11,7 +11,15 @@ import {
   Clock,
   FileText,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Brain,
+  Star,
+  TrendingUp,
+  Target,
+  Award,
+  BookOpen,
+  Lightbulb,
+  X
 } from 'lucide-react';
 import {
   Dialog,
@@ -19,6 +27,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SimulacaoPage() {
   const [, setLocation] = useLocation();
@@ -77,6 +88,8 @@ export default function SimulacaoPage() {
   const [timerUpdateCounter, setTimerUpdateCounter] = useState(0);
   const [displayedTime, setDisplayedTime] = useState(config.timeLimit * 60);
   const [showTimeDetails, setShowTimeDetails] = useState(false);
+  const [showCorrectionResult, setShowCorrectionResult] = useState(false);
+  const [correctionData, setCorrectionData] = useState<any>(null);
   
   // Checkpoint system
   const [checkpoints, setCheckpoints] = useState([
@@ -291,10 +304,48 @@ export default function SimulacaoPage() {
     setShowFinishDialog(true);
   };
 
+  const { toast } = useToast();
+  
+  // Correction mutation
+  const correctEssayMutation = useMutation({
+    mutationFn: async () => {
+      if (!essayText.trim()) {
+        throw new Error('Por favor, escreva sua redação antes de corrigi-la.');
+      }
+      
+      if (essayText.trim().length < 100) {
+        throw new Error('Sua redação deve ter pelo menos 100 caracteres para ser corrigida.');
+      }
+      
+      return apiRequest('/api/essays/correct', {
+        method: 'POST',
+        body: {
+          essayText: essayText.trim(),
+          topic: topic.title,
+          examType: config.examType
+        }
+      });
+    },
+    onSuccess: (data) => {
+      setCorrectionData(data.correction);
+      setShowCorrectionResult(true);
+      setIsActive(false); // Pause the timer when showing results
+      toast({
+        title: "Redação corrigida com sucesso!",
+        description: `Sua nota foi ${data.correction.totalScore}/1000. Confira o feedback detalhado.`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro na correção",
+        description: error.message || "Não foi possível corrigir a redação. Tente novamente.",
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleSave = () => {
-    // Navigate to results page with essay data
-    setIsActive(false);
-    setLocation('/resultado');
+    correctEssayMutation.mutate();
   };
 
   const confirmFinish = () => {
@@ -504,12 +555,13 @@ export default function SimulacaoPage() {
                     <div className="flex flex-col space-y-2">
                       <Button 
                         onClick={handleSave}
+                        disabled={!essayText.trim() || correctEssayMutation.isPending}
                         variant="outline"
-                        className="w-full border-blue-500 text-blue-600 hover:bg-blue-50 px-2 py-1 text-xs"
+                        className="w-full border-blue-500 text-blue-600 hover:bg-blue-50 px-2 py-1 text-xs disabled:opacity-50"
                         data-testid="button-save-draft"
                       >
-                        <CheckCircle className="mr-1" size={10} />
-                        Corrigir Redação
+                        <Brain className="mr-1" size={10} />
+                        {correctEssayMutation.isPending ? 'Corrigindo...' : 'Corrigir com IA'}
                       </Button>
                       
                       <Button 
@@ -712,6 +764,137 @@ export default function SimulacaoPage() {
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Essay Correction Results Dialog */}
+      <Dialog open={showCorrectionResult} onOpenChange={setShowCorrectionResult}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="dialog-correction-result">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-2xl font-bold text-dark-blue flex items-center">
+                <Award className="mr-3 text-yellow-600" size={24} />
+                Resultado da Correção
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowCorrectionResult(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          {correctionData && (
+            <div className="space-y-6">
+              {/* Overall Score */}
+              <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+                <div className="text-4xl font-bold text-blue-600 mb-2">{correctionData.totalScore}</div>
+                <div className="text-lg text-gray-600 mb-3">/ 1000 pontos</div>
+                <div className="text-sm text-gray-700 leading-relaxed">{correctionData.overallFeedback}</div>
+              </div>
+
+              {/* Competencies Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {correctionData.competencies?.map((comp: any, index: number) => (
+                  <div key={index} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-dark-blue text-sm">{comp.name}</h4>
+                      <div className="text-lg font-bold text-blue-600">{comp.score}/{comp.maxScore}</div>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                      <div 
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${(comp.score / comp.maxScore) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-2">{comp.criteria}</p>
+                    <p className="text-xs text-gray-700 leading-relaxed">{comp.feedback}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Strengths and Improvements */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center mb-3">
+                    <Star className="text-green-600 mr-2" size={18} />
+                    <h4 className="font-semibold text-green-800">Pontos Fortes</h4>
+                  </div>
+                  <ul className="space-y-2">
+                    {correctionData.strengths?.map((strength: string, index: number) => (
+                      <li key={index} className="text-sm text-green-700 flex items-start">
+                        <CheckCircle className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={14} />
+                        {strength}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <div className="flex items-center mb-3">
+                    <TrendingUp className="text-amber-600 mr-2" size={18} />
+                    <h4 className="font-semibold text-amber-800">Pontos de Melhoria</h4>
+                  </div>
+                  <ul className="space-y-2">
+                    {correctionData.improvements?.map((improvement: string, index: number) => (
+                      <li key={index} className="text-sm text-amber-700 flex items-start">
+                        <Target className="text-amber-500 mr-2 mt-0.5 flex-shrink-0" size={14} />
+                        {improvement}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Detailed Analysis */}
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center mb-3">
+                  <BookOpen className="text-blue-600 mr-2" size={18} />
+                  <h4 className="font-semibold text-blue-800">Análise Detalhada</h4>
+                </div>
+                <p className="text-sm text-blue-700 leading-relaxed">{correctionData.detailedAnalysis}</p>
+              </div>
+
+              {/* Recommendation */}
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="flex items-center mb-3">
+                  <Lightbulb className="text-purple-600 mr-2" size={18} />
+                  <h4 className="font-semibold text-purple-800">Recomendação do Professor</h4>
+                </div>
+                <p className="text-sm text-purple-700 leading-relaxed">{correctionData.recommendation}</p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button 
+                  onClick={() => {
+                    setShowCorrectionResult(false);
+                    setIsActive(true); // Resume timer to continue writing
+                  }}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  data-testid="button-continue-writing"
+                >
+                  <FileText className="mr-2" size={16} />
+                  Continuar Escrevendo
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setShowCorrectionResult(false);
+                    setLocation('/resultado');
+                  }}
+                  variant="outline"
+                  className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
+                  data-testid="button-view-results"
+                >
+                  <Award className="mr-2" size={16} />
+                  Ver Histórico
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 

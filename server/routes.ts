@@ -771,6 +771,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ESSAY CORRECTION ROUTES =====================
+
+  // Essay correction endpoint with AI
+  app.post("/api/essays/correct", async (req, res) => {
+    try {
+      const { essayText, topic, examType } = req.body;
+      
+      if (!essayText || !topic) {
+        return res.status(400).json({ message: "Essay text and topic are required" });
+      }
+      
+      if (essayText.trim().length < 100) {
+        return res.status(400).json({ message: "Essay too short for correction (minimum 100 characters)" });
+      }
+      
+      // Rate limiting check (3 corrections per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(`correction_${clientIP}`, 3, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can correct 3 essays per hour.", 
+          retryAfter: 3600 
+        });
+      }
+      
+      console.log(`📝 Essay correction request, ${essayText.length} characters, IP: ${clientIP}`);
+      
+      // Correct essay using Gemini AI
+      const correction = await geminiService.correctEssay(
+        essayText, 
+        topic, 
+        examType || 'ENEM'
+      );
+      
+      res.json({
+        success: true,
+        correction,
+        message: "Essay corrected successfully"
+      });
+      
+    } catch (error) {
+      console.error("Essay correction error:", error);
+      res.status(500).json({ message: "Failed to correct essay. Please try again." });
+    }
+  });
+
   // ===================== SIMULATION ROUTES =====================
 
   // Create a new simulation
