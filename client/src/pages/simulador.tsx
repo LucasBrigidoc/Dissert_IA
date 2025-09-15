@@ -335,21 +335,24 @@ export default function Simulador() {
 
             {/* IA Proposal Generation */}
             <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <label className="block text-sm font-medium text-dark-blue">Gerar Propostas com IA</label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => generateProposalsMutation.mutate()}
-                  disabled={!theme || !examType || generateProposalsMutation.isPending}
-                  className="flex items-center space-x-2"
-                  data-testid="button-generate-proposals"
-                >
-                  <Sparkles className={`w-4 h-4 ${generateProposalsMutation.isPending ? 'animate-spin' : ''}`} />
-                  <span>{generateProposalsMutation.isPending ? 'Gerando...' : 'Gerar com IA'}</span>
-                </Button>
-              </div>
+              <label className="block text-sm font-medium text-dark-blue mb-3">Gerar Propostas com IA</label>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => generateProposalsMutation.mutate()}
+                disabled={!theme || !examType || generateProposalsMutation.isPending}
+                className="w-full flex items-center justify-center space-x-2 py-3"
+                data-testid="button-generate-proposals"
+              >
+                <Sparkles className={`w-4 h-4 ${generateProposalsMutation.isPending ? 'animate-spin' : ''}`} />
+                <span>
+                  {generateProposalsMutation.isPending 
+                    ? 'Gerando propostas...' 
+                    : generatedProposals.length > 0 
+                      ? 'Gerar Novas Propostas (substitui as atuais)' 
+                      : 'Gerar Propostas com IA'}
+                </span>
+              </Button>
               
               {generatedProposals.length > 0 && (
                 <div className="space-y-3">
