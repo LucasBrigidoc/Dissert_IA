@@ -10,7 +10,7 @@ export function LiquidGlassCard({ children, className, dark = false }: LiquidGla
   return (
     <div 
       className={cn(
-        "rounded-2xl p-6",
+        "rounded-2xl px-6 py-3",
         dark ? "liquid-glass-dark" : "liquid-glass",
         className
       )}
