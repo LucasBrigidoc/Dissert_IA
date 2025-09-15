@@ -75,6 +75,8 @@ export default function SimulacaoPage() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [lastSave, setLastSave] = useState(Date.now());
   const [timerUpdateCounter, setTimerUpdateCounter] = useState(0);
+  const [displayedTime, setDisplayedTime] = useState(config.timeLimit * 60);
+  const [showTimeDetails, setShowTimeDetails] = useState(false);
   
   // Checkpoint system
   const [checkpoints, setCheckpoints] = useState([
@@ -201,6 +203,25 @@ export default function SimulacaoPage() {
     };
   }, [isActive, isPaused, timeLeft]);
   
+  // Update displayed time based on timer display configuration
+  useEffect(() => {
+    if (config.timerDisplay === 'always') {
+      setDisplayedTime(timeLeft);
+    } else {
+      const intervalMap: Record<string, number> = {
+        '5min': 300,
+        '10min': 600,
+        '15min': 900,
+        '30min': 1800
+      };
+      const updateInterval = intervalMap[config.timerDisplay] || 300;
+      
+      if (Math.floor(timerUpdateCounter / updateInterval) !== Math.floor((timerUpdateCounter - 1) / updateInterval)) {
+        setDisplayedTime(timeLeft);
+      }
+    }
+  }, [timeLeft, timerUpdateCounter, config.timerDisplay]);
+  
   // Auto-save effect
   useEffect(() => {
     if (config.autoSave && isActive && essayText.trim().length > 0) {
@@ -256,6 +277,7 @@ export default function SimulacaoPage() {
     setIsActive(true);
     setIsPaused(false);
     setLastCheckpointTime(0);
+    setDisplayedTime(timeLeft);
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
@@ -318,18 +340,16 @@ export default function SimulacaoPage() {
     return 'text-red-600';
   };
   
-  // Check if timer should be visible based on config
-  const shouldShowTimer = () => {
-    if (config.timerDisplay === 'always') return true;
-    if (config.timerDisplay === 'hidden') return false;
-    
-    const updateInterval = {
-      '1min': 60,
-      '5min': 300,
-      '10min': 600
-    }[config.timerDisplay] || 60;
-    
-    return Math.floor(timerUpdateCounter / updateInterval) !== Math.floor((timerUpdateCounter - 1) / updateInterval);
+  // Get timer status text based on update frequency
+  const getTimerStatusText = () => {
+    const statusMap = {
+      'always': 'Tempo atualizado em tempo real',
+      '5min': 'Próxima atualização em 5 minutos',
+      '10min': 'Próxima atualização em 10 minutos', 
+      '15min': 'Próxima atualização em 15 minutos',
+      '30min': 'Próxima atualização em 30 minutos'
+    };
+    return statusMap[config.timerDisplay as keyof typeof statusMap] || 'Tempo controlado';
   };
   
   // Get font size based on config
@@ -435,19 +455,24 @@ export default function SimulacaoPage() {
             </div>
             
             <div className="text-center space-y-4">
-              {shouldShowTimer() && config.timerDisplay !== 'hidden' && (
-                <div className="text-center">
-                  <div className="text-3xl font-mono font-bold mb-1 text-gray-800">
-                    {formatTime(timeLeft)}
-                  </div>
-                  <div className="text-sm text-gray-600">Tempo Restante</div>
-                  {config.timerDisplay !== 'always' && (
-                    <div className="text-xs text-gray-500 mt-1">
-                      {config.timerDisplay === '1min' ? 'Atualiza a cada minuto' : config.timerDisplay === '5min' ? 'Atualiza a cada 5 min' : 'Atualiza a cada 10 min'}
-                    </div>
-                  )}
+              <div className="text-center">
+                <div className={`text-3xl font-mono font-bold mb-1 transition-all duration-500 ${
+                  isActive && !isPaused ? 'text-green-600' : 
+                  isPaused ? 'text-yellow-600' : 
+                  'text-gray-600'
+                }`}>
+                  {formatTime(displayedTime)}
                 </div>
-              )}
+                <div className="text-sm text-gray-600">Tempo Restante</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {getTimerStatusText()}
+                </div>
+                {isPaused && (
+                  <div className="text-xs text-yellow-600 mt-1 font-medium">
+                    ⏸️ PAUSADO
+                  </div>
+                )}
+              </div>
               
               {/* Control Buttons */}
               <div className="space-y-2">
@@ -504,34 +529,48 @@ export default function SimulacaoPage() {
 
           {/* Time Summary - Right */}
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-6 h-6 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                <Clock className="text-white" size={12} />
+            <div 
+              className="flex items-center justify-between mb-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+              onClick={() => setShowTimeDetails(!showTimeDetails)}
+              data-testid="toggle-time-details"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-6 h-6 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <Clock className="text-white" size={12} />
+                </div>
+                <h4 className="font-medium text-dark-blue">Resumo de Tempos</h4>
               </div>
-              <h4 className="font-medium text-dark-blue">Resumo de Tempos</h4>
+              <div className="text-gray-400">
+                {showTimeDetails ? '−' : '+'}
+              </div>
             </div>
             
-            <div className="space-y-2">
-              {checkpoints.map((checkpoint) => (
-                <div key={checkpoint.id} className="flex justify-between items-center">
-                  <span className="text-sm text-soft-gray">{checkpoint.name}</span>
-                  <span className={`text-sm font-medium ${checkpoint.completed ? 'text-green-600' : 'text-gray-400'}`}>
-                    {checkpoint.completed && checkpoint.timeSpent > 0 
-                      ? formatTime(checkpoint.timeSpent)
-                      : '--:--'
-                    }
-                  </span>
-                </div>
-              ))}
-              <div className="pt-2 border-t border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-dark-blue">Tempo Total</span>
-                  <span className="text-sm font-bold text-dark-blue">
-                    {formatTime(config.timeLimit * 60 - timeLeft)}
-                  </span>
-                </div>
+            {/* Always show total time */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
+                <span className="text-sm font-medium text-dark-blue">Tempo Total Usado</span>
+                <span className="text-lg font-bold text-blue-600">
+                  {formatTime(config.timeLimit * 60 - timeLeft)}
+                </span>
               </div>
             </div>
+            
+            {/* Collapsible details */}
+            {showTimeDetails && (
+              <div className="space-y-2 border-t border-gray-200 pt-4">
+                {checkpoints.map((checkpoint) => (
+                  <div key={checkpoint.id} className="flex justify-between items-center p-2 hover:bg-gray-50 rounded transition-colors">
+                    <span className="text-sm text-soft-gray">{checkpoint.name}</span>
+                    <span className={`text-sm font-medium ${checkpoint.completed ? 'text-green-600' : 'text-gray-400'}`}>
+                      {checkpoint.completed && checkpoint.timeSpent > 0 
+                        ? formatTime(checkpoint.timeSpent)
+                        : '--:--'
+                      }
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </LiquidGlassCard>
         </div>
       </div>
