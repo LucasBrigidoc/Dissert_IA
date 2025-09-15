@@ -98,7 +98,7 @@ export default function Simulador() {
       setSelectedProposal(null); // Limpar seleção anterior
       toast({
         title: "Propostas geradas com sucesso!",
-        description: `${data.results.length} propostas foram criadas com IA para sua simulação.`,
+        description: `2 propostas foram criadas com IA para sua simulação.`,
       });
     },
     onError: (error) => {
@@ -400,7 +400,7 @@ export default function Simulador() {
                         : 'border-bright-blue/20'
                     }`}>
                       <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-semibold text-dark-blue text-sm">{proposal.title}</h4>
+                        <h4 className="font-bold text-dark-blue text-base">{proposal.title}</h4>
                         <Button
                           type="button"
                           variant="ghost"
@@ -413,10 +413,11 @@ export default function Simulador() {
                           <span className="text-xs">Usar</span>
                         </Button>
                       </div>
-                      <p className="text-xs text-soft-gray mb-2 leading-relaxed">{proposal.statement}</p>
+                      <p className="text-sm text-soft-gray mb-3 leading-relaxed font-medium">{proposal.statement}</p>
                       {proposal.supportingText && (
-                        <div className="text-xs text-dark-blue/80 bg-white/50 p-2 rounded border-l-2 border-bright-blue/30">
-                          <strong>Texto de apoio:</strong> {proposal.supportingText}
+                        <div className="text-sm text-dark-blue/90 bg-white/60 p-3 rounded-lg border border-bright-blue/20 leading-relaxed">
+                          <strong className="text-bright-blue">Texto de apoio:</strong><br/>
+                          {proposal.supportingText}
                         </div>
                       )}
                       <div className="flex items-center space-x-3 mt-2 text-xs text-soft-gray">
