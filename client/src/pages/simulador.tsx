@@ -419,9 +419,9 @@ export default function Simulador() {
               {generatedProposals.length > 0 && (
                 <div className="space-y-3">
                   <div className="text-sm text-soft-gray mb-2">
-                    {generatedProposals.length} propostas geradas com textos de apoio completos:
+                    2 propostas geradas com textos de apoio completos:
                   </div>
-                  {generatedProposals.map((proposal, index) => (
+                  {generatedProposals.slice(0, 2).map((proposal, index) => (
                     <div key={index} className="p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20">
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-semibold text-dark-blue text-sm">{proposal.title}</h4>
