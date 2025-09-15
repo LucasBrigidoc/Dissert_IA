@@ -65,6 +65,9 @@ export default function Simulador() {
   // Estado para controlar visibilidade da seção avançada
   const [showTextProposal, setShowTextProposal] = useState(false);
   
+  // Estado para rastrear a proposta selecionada
+  const [selectedProposal, setSelectedProposal] = useState<number | null>(null);
+  
   // Estados para propostas geradas com IA
   const [generatedProposals, setGeneratedProposals] = useState<any[]>([]);
   const [showAllSimulations, setShowAllSimulations] = useState(false);
@@ -92,6 +95,7 @@ export default function Simulador() {
     },
     onSuccess: (data) => {
       setGeneratedProposals(data.results);
+      setSelectedProposal(null); // Limpar seleção anterior
       toast({
         title: "Propostas geradas com sucesso!",
         description: `${data.results.length} propostas foram criadas com IA para sua simulação.`,
@@ -108,12 +112,13 @@ export default function Simulador() {
   });
 
   // Função para copiar proposta para o campo de texto
-  const copyProposalToField = (proposal: any) => {
+  const copyProposalToField = (proposal: any, index: number) => {
     const fullText = `${proposal.title}\n\n${proposal.statement}\n\n${proposal.supportingText || ''}`;
     setTextProposal(fullText);
+    setSelectedProposal(index);
     toast({
-      title: "Proposta copiada!",
-      description: "A proposta foi copiada para o campo de texto.",
+      title: "Proposta selecionada!",
+      description: "A proposta foi copiada para o campo de texto e está selecionada.",
     });
   };
 
@@ -350,7 +355,10 @@ export default function Simulador() {
                 <div className="mt-3">
                   <Textarea 
                     value={textProposal}
-                    onChange={(e) => setTextProposal(e.target.value)}
+                    onChange={(e) => {
+                      setTextProposal(e.target.value);
+                      setSelectedProposal(null); // Limpar seleção quando escrever proposta manual
+                    }}
                     placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
                     className="border-bright-blue/20 min-h-[100px]"
                     data-testid="textarea-text-proposal"
@@ -386,14 +394,18 @@ export default function Simulador() {
                     2 propostas geradas com textos de apoio completos:
                   </div>
                   {generatedProposals.slice(0, 2).map((proposal, index) => (
-                    <div key={index} className="p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20">
+                    <div key={index} className={`p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border ${
+                      selectedProposal === index 
+                        ? 'border-bright-blue border-2' 
+                        : 'border-bright-blue/20'
+                    }`}>
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-semibold text-dark-blue text-sm">{proposal.title}</h4>
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => copyProposalToField(proposal)}
+                          onClick={() => copyProposalToField(proposal, index)}
                           className="text-bright-blue hover:text-dark-blue flex items-center space-x-1"
                           data-testid={`button-copy-proposal-${index}`}
                         >
