@@ -60,11 +60,9 @@ export default function Simulador() {
   const [difficulty, setDifficulty] = useState("");
   
   // Estados para campos opcionais
-  const [customTheme, setCustomTheme] = useState("");
   const [textProposal, setTextProposal] = useState("");
   
-  // Estados para controlar visibilidade das seções avançadas
-  const [showCustomTheme, setShowCustomTheme] = useState(false);
+  // Estado para controlar visibilidade da seção avançada
   const [showTextProposal, setShowTextProposal] = useState(false);
   
   // Estados para propostas geradas com IA
@@ -80,8 +78,7 @@ export default function Simulador() {
   // Mutação para gerar propostas com IA
   const generateProposalsMutation = useMutation({
     mutationFn: async () => {
-      const themeToUse = theme === 'custom' ? customTheme : theme;
-      const selectedTheme = theme === 'random' ? 'social' : themeToUse;
+      const selectedTheme = theme === 'random' ? 'social' : theme;
       
       return apiRequest('/api/proposals/generate', {
         method: 'POST',
@@ -89,7 +86,7 @@ export default function Simulador() {
           theme: selectedTheme,
           difficulty: 'medio',
           examType: examType || 'enem',
-          keywords: themeToUse ? [themeToUse] : []
+          keywords: selectedTheme ? [selectedTheme] : []
         }
       });
     },
@@ -332,67 +329,34 @@ export default function Simulador() {
               </Select>
             </div>
             
-            {/* Seções Avançadas Colapsáveis */}
-            <div className="space-y-4 mb-6">
-              {/* Tema Personalizado */}
-              <div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setShowCustomTheme(!showCustomTheme)}
-                  className="w-full justify-between p-3 h-auto text-left bg-soft-gray/5 hover:bg-soft-gray/10 border border-soft-gray/20"
-                  data-testid="button-toggle-custom-theme"
-                >
-                  <span className="text-sm font-medium text-dark-blue">Tema Personalizado (opcional)</span>
-                  {showCustomTheme ? (
-                    <ChevronDown className="w-4 h-4 text-soft-gray" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 text-soft-gray" />
-                  )}
-                </Button>
-                
-                {showCustomTheme && (
-                  <div className="mt-3">
-                    <Input 
-                      value={customTheme}
-                      onChange={(e) => setCustomTheme(e.target.value)}
-                      placeholder="Digite seu tema específico aqui..."
-                      className="border-bright-blue/20"
-                      data-testid="input-custom-theme"
-                    />
-                  </div>
+            {/* Seção Avançada - Proposta Personalizada */}
+            <div className="mb-6">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setShowTextProposal(!showTextProposal)}
+                className="w-full justify-between p-3 h-auto text-left bg-soft-gray/5 hover:bg-soft-gray/10 border border-soft-gray/20"
+                data-testid="button-toggle-text-proposal"
+              >
+                <span className="text-sm font-medium text-dark-blue">Proposta de Texto Personalizada (opcional)</span>
+                {showTextProposal ? (
+                  <ChevronDown className="w-4 h-4 text-soft-gray" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-soft-gray" />
                 )}
-              </div>
-
-              {/* Proposta Personalizada */}
-              <div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setShowTextProposal(!showTextProposal)}
-                  className="w-full justify-between p-3 h-auto text-left bg-soft-gray/5 hover:bg-soft-gray/10 border border-soft-gray/20"
-                  data-testid="button-toggle-text-proposal"
-                >
-                  <span className="text-sm font-medium text-dark-blue">Proposta de Texto Personalizada (opcional)</span>
-                  {showTextProposal ? (
-                    <ChevronDown className="w-4 h-4 text-soft-gray" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 text-soft-gray" />
-                  )}
-                </Button>
-                
-                {showTextProposal && (
-                  <div className="mt-3">
-                    <Textarea 
-                      value={textProposal}
-                      onChange={(e) => setTextProposal(e.target.value)}
-                      placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
-                      className="border-bright-blue/20 min-h-[100px]"
-                      data-testid="textarea-text-proposal"
-                    />
-                  </div>
-                )}
-              </div>
+              </Button>
+              
+              {showTextProposal && (
+                <div className="mt-3">
+                  <Textarea 
+                    value={textProposal}
+                    onChange={(e) => setTextProposal(e.target.value)}
+                    placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
+                    className="border-bright-blue/20 min-h-[100px]"
+                    data-testid="textarea-text-proposal"
+                  />
+                </div>
+              )}
             </div>
 
             {/* IA Proposal Generation */}
@@ -460,9 +424,9 @@ export default function Simulador() {
                   try {
                     // Criar simulação no backend primeiro
                     const newSimulation = await createSimulationMutation.mutateAsync({
-                      title: `${examType} - ${theme === 'custom' ? customTheme : theme}`,
+                      title: `${examType} - ${theme}`,
                       examType,
-                      theme: theme === 'custom' ? customTheme : theme,
+                      theme: theme,
                       timeLimit: parseInt(timeLimit === "no-limit" ? "0" : timeLimit),
                       textProposal,
                       progress: 0,
@@ -477,7 +441,6 @@ export default function Simulador() {
                       timeLimit: parseInt(timeLimit === "no-limit" ? "0" : timeLimit),
                       theme,
                       timerDisplay,
-                      customTheme,
                       textProposal
                     };
                     
