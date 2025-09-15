@@ -394,35 +394,44 @@ export default function Simulador() {
                     2 propostas geradas com textos de apoio completos:
                   </div>
                   {generatedProposals.slice(0, 2).map((proposal, index) => (
-                    <div key={index} className={`p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border ${
+                    <div key={index} className={`p-5 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border ${
                       selectedProposal === index 
                         ? 'border-bright-blue border-2' 
                         : 'border-bright-blue/20'
                     }`}>
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-bold text-dark-blue text-base">{proposal.title}</h4>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="text-xs font-semibold text-bright-blue mb-1">PROPOSTA DE REDAÇÃO</div>
+                          <h4 className="font-bold text-dark-blue text-lg mb-2">{proposal.title}</h4>
+                          <p className="text-xs text-soft-gray font-medium leading-tight">{proposal.statement}</p>
+                        </div>
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
                           onClick={() => copyProposalToField(proposal, index)}
-                          className="text-bright-blue hover:text-dark-blue flex items-center space-x-1"
+                          className="text-bright-blue hover:text-dark-blue flex items-center space-x-1 ml-3"
                           data-testid={`button-copy-proposal-${index}`}
                         >
                           <Copy className="w-3 h-3" />
                           <span className="text-xs">Usar</span>
                         </Button>
                       </div>
-                      <p className="text-sm text-soft-gray mb-3 leading-relaxed font-medium">{proposal.statement}</p>
+                      
                       {proposal.supportingText && (
-                        <div className="text-sm text-dark-blue/90 bg-white/60 p-3 rounded-lg border border-bright-blue/20 leading-relaxed">
-                          <strong className="text-bright-blue">Texto de apoio:</strong><br/>
-                          {proposal.supportingText}
+                        <div className="mt-4 p-4 bg-white/80 rounded-lg border border-bright-blue/30">
+                          <div className="text-xs font-bold text-dark-blue mb-2 uppercase tracking-wide">Textos de Apoio</div>
+                          <div className="text-sm text-dark-blue leading-relaxed font-normal">
+                            {proposal.supportingText}
+                          </div>
                         </div>
                       )}
-                      <div className="flex items-center space-x-3 mt-2 text-xs text-soft-gray">
-                        <span>Dificuldade: {proposal.difficulty}</span>
+                      
+                      <div className="flex items-center space-x-4 mt-3 pt-3 border-t border-bright-blue/20 text-xs text-soft-gray">
+                        <span className="font-medium">Dificuldade: {proposal.difficulty}</span>
+                        <span>•</span>
                         <span>Tema: {proposal.theme}</span>
+                        <span>•</span>
                         <span>Tipo: {proposal.examType?.toUpperCase()}</span>
                       </div>
                     </div>
