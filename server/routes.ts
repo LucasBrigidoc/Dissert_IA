@@ -274,27 +274,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
         popularity: popularity || undefined
       };
       
-      // First search with explicit filters  
-      results = await storage.searchRepertoires(normalizedQuery, filters);
+      // Check if this is a generic "load more" request (no specific search)
+      const isGenericLoadMore = excludeIds.length > 0 && (
+        query.trim() === "" || 
+        query === "repertórios educacionais variados para redação" ||
+        normalizedQuery === "repertorios educacionais variados para redacao"
+      );
       
-      // Try with suggested filters if no results
-      if (results.length === 0 && !type) {
-        for (const suggestedType of analysis.suggestedTypes) {
-          results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
-          if (results.length > 0) break;
+      if (isGenericLoadMore) {
+        console.log(`📚 Busca genérica "Carregar Mais": mostrando repertórios do banco (excluindo ${excludeIds.length} já exibidos)`);
+        
+        // Get ALL existing repertoires from database, excluding already shown ones
+        results = await storage.getRepertoires(1000); // Get up to 1000 repertoires (effectively all)
+        results = results.filter(rep => !excludeIds.includes(rep.id));
+        
+        console.log(`📊 Encontrados ${results.length} repertórios disponíveis no banco após filtrar IDs já exibidos`);
+        
+        // Apply other filters if specified
+        if (filters.type) {
+          results = results.filter(rep => rep.type === filters.type);
+        }
+        if (filters.category) {
+          results = results.filter(rep => rep.category === filters.category);
+        }
+        if (filters.popularity) {
+          results = results.filter(rep => rep.popularity === filters.popularity);
         }
         
-        if (results.length === 0) {
-          for (const suggestedCategory of analysis.suggestedCategories) {
-            results = await storage.searchRepertoires(normalizedQuery, { category: suggestedCategory });
+        console.log(`📋 Após aplicar filtros: ${results.length} repertórios disponíveis`);
+      } else {
+        // Normal search with query - existing logic
+        results = await storage.searchRepertoires(normalizedQuery, filters);
+        
+        // Try with suggested filters if no results
+        if (results.length === 0 && !type) {
+          for (const suggestedType of analysis.suggestedTypes) {
+            results = await storage.searchRepertoires(normalizedQuery, { type: suggestedType });
             if (results.length > 0) break;
           }
+          
+          if (results.length === 0) {
+            for (const suggestedCategory of analysis.suggestedCategories) {
+              results = await storage.searchRepertoires(normalizedQuery, { category: suggestedCategory });
+              if (results.length > 0) break;
+            }
+          }
         }
-      }
-      
-      // Filter out excluded IDs first
-      if (excludeIds.length > 0) {
-        results = results.filter(rep => !excludeIds.includes(rep.id));
+        
+        // Filter out excluded IDs first
+        if (excludeIds.length > 0) {
+          results = results.filter(rep => !excludeIds.includes(rep.id));
+        }
       }
       
       // OPTIMIZED: Generate 6 repertoires in 1 AI request (especially important for "load more" requests)
