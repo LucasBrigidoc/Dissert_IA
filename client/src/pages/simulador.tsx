@@ -72,7 +72,8 @@ export default function Simulador() {
   const [showAllSimulations, setShowAllSimulations] = useState(false);
   
   // Verificar se todos os campos obrigatórios estão preenchidos
-  const isFormComplete = examType && timeLimit && theme && timerDisplay;
+  // Incluindo a obrigatoriedade de ter uma proposta (personalizada ou selecionada)
+  const isFormComplete = examType && timeLimit && theme && timerDisplay && textProposal.trim();
   
   const { toast } = useToast();
   
