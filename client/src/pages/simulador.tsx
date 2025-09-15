@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar } from "lucide-react";
+import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -57,10 +57,15 @@ export default function Simulador() {
   const [timeLimit, setTimeLimit] = useState("");
   const [theme, setTheme] = useState("");
   const [timerDisplay, setTimerDisplay] = useState("");
+  const [difficulty, setDifficulty] = useState("");
   
   // Estados para campos opcionais
   const [customTheme, setCustomTheme] = useState("");
   const [textProposal, setTextProposal] = useState("");
+  
+  // Estados para controlar visibilidade das seções avançadas
+  const [showCustomTheme, setShowCustomTheme] = useState(false);
+  const [showTextProposal, setShowTextProposal] = useState(false);
   
   // Estados para propostas geradas com IA
   const [generatedProposals, setGeneratedProposals] = useState<any[]>([]);
@@ -143,7 +148,7 @@ export default function Simulador() {
     },
   });
 
-  const allSimulations = simulationsData?.results || [];
+  const allSimulations = Array.isArray(simulationsData) ? simulationsData : [];
   const simulationsToShow = showAllSimulations ? allSimulations : allSimulations.slice(0, 2);
 
   // Função para formatar data
@@ -295,42 +300,98 @@ export default function Simulador() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-dark-blue mb-2">Exibição do Timer</label>
-                <Select onValueChange={setTimerDisplay} data-testid="select-timer-display">
+                <label className="block text-sm font-medium text-dark-blue mb-2">Dificuldade</label>
+                <Select onValueChange={setDifficulty} data-testid="select-difficulty">
                   <SelectTrigger className="border-bright-blue/20">
-                    <SelectValue placeholder="Como mostrar o tempo" />
+                    <SelectValue placeholder="Selecione a dificuldade" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="always">Sempre visível</SelectItem>
-                    <SelectItem value="5min">Atualizar a cada 5 minutos</SelectItem>
-                    <SelectItem value="10min">Atualizar a cada 10 minutos</SelectItem>
-                    <SelectItem value="15min">Atualizar a cada 15 minutos</SelectItem>
-                    <SelectItem value="30min">Atualizar a cada 30 minutos</SelectItem>
+                    <SelectItem value="facil">Fácil</SelectItem>
+                    <SelectItem value="medio">Médio</SelectItem>
+                    <SelectItem value="dificil">Difícil</SelectItem>
+                    <SelectItem value="muito-dificil">Muito Difícil</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             
             <div className="mb-6">
-              <label className="block text-sm font-medium text-dark-blue mb-2">Tema Personalizado (opcional)</label>
-              <Input 
-                value={customTheme}
-                onChange={(e) => setCustomTheme(e.target.value)}
-                placeholder="Digite seu tema específico aqui..."
-                className="border-bright-blue/20"
-                data-testid="input-custom-theme"
-              />
+              <label className="block text-sm font-medium text-dark-blue mb-2">Exibição do Timer</label>
+              <Select onValueChange={setTimerDisplay} data-testid="select-timer-display">
+                <SelectTrigger className="border-bright-blue/20">
+                  <SelectValue placeholder="Como mostrar o tempo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="always">Sempre visível</SelectItem>
+                  <SelectItem value="5min">Atualizar a cada 5 minutos</SelectItem>
+                  <SelectItem value="10min">Atualizar a cada 10 minutos</SelectItem>
+                  <SelectItem value="15min">Atualizar a cada 15 minutos</SelectItem>
+                  <SelectItem value="30min">Atualizar a cada 30 minutos</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-dark-blue mb-2">Proposta de Texto (opcional)</label>
-              <Textarea 
-                value={textProposal}
-                onChange={(e) => setTextProposal(e.target.value)}
-                placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
-                className="border-bright-blue/20 min-h-[100px]"
-                data-testid="textarea-text-proposal"
-              />
+            {/* Seções Avançadas Colapsáveis */}
+            <div className="space-y-4 mb-6">
+              {/* Tema Personalizado */}
+              <div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setShowCustomTheme(!showCustomTheme)}
+                  className="w-full justify-between p-3 h-auto text-left bg-soft-gray/5 hover:bg-soft-gray/10 border border-soft-gray/20"
+                  data-testid="button-toggle-custom-theme"
+                >
+                  <span className="text-sm font-medium text-dark-blue">Tema Personalizado (opcional)</span>
+                  {showCustomTheme ? (
+                    <ChevronDown className="w-4 h-4 text-soft-gray" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-soft-gray" />
+                  )}
+                </Button>
+                
+                {showCustomTheme && (
+                  <div className="mt-3">
+                    <Input 
+                      value={customTheme}
+                      onChange={(e) => setCustomTheme(e.target.value)}
+                      placeholder="Digite seu tema específico aqui..."
+                      className="border-bright-blue/20"
+                      data-testid="input-custom-theme"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Proposta Personalizada */}
+              <div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setShowTextProposal(!showTextProposal)}
+                  className="w-full justify-between p-3 h-auto text-left bg-soft-gray/5 hover:bg-soft-gray/10 border border-soft-gray/20"
+                  data-testid="button-toggle-text-proposal"
+                >
+                  <span className="text-sm font-medium text-dark-blue">Proposta de Texto Personalizada (opcional)</span>
+                  {showTextProposal ? (
+                    <ChevronDown className="w-4 h-4 text-soft-gray" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-soft-gray" />
+                  )}
+                </Button>
+                
+                {showTextProposal && (
+                  <div className="mt-3">
+                    <Textarea 
+                      value={textProposal}
+                      onChange={(e) => setTextProposal(e.target.value)}
+                      placeholder="Cole aqui uma proposta específica de redação que você gostaria de usar..."
+                      className="border-bright-blue/20 min-h-[100px]"
+                      data-testid="textarea-text-proposal"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* IA Proposal Generation */}
