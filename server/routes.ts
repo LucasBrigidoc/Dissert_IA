@@ -725,7 +725,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (conversationId) {
         conversation = await storage.getConversation(conversationId);
         if (!conversation) {
-          throw new Error(`Conversation ${conversationId} not found`);
+          // If conversation not found, create a new one instead of throwing error
+          console.log(`⚠️ Conversation ${conversationId} not found, creating new conversation`);
+          conversation = await storage.createConversation({
+            userId: null, // TODO: Add user authentication
+            sessionId: clientIP, // Use IP as session identifier for now
+            messages: [],
+            currentSection: section,
+            brainstormData: context || {}
+          });
         }
       } else {
         // Create new conversation
