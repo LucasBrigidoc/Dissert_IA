@@ -164,11 +164,53 @@ Generate ${batchSize} relevant repertoires as JSON:
       const result = await this.model.generateContent(prompt);
       const response = result.response.text();
       
-      // Parse JSON array directly
-      const cleanedResponse = response.replace(/```json|```/g, '').trim();
-      const repertoires = JSON.parse(cleanedResponse);
+      // Enhanced JSON parsing with multiple fallback strategies
+      let repertoires: any[] = [];
       
-      return Array.isArray(repertoires) ? repertoires : repertoires.repertoires || [];
+      try {
+        // Strategy 1: Clean and parse directly
+        let cleanedResponse = response.replace(/```json|```/g, '').trim();
+        
+        // Strategy 2: Extract JSON array using regex if direct parsing fails
+        if (!cleanedResponse.startsWith('[')) {
+          const jsonMatch = cleanedResponse.match(/\[[\s\S]*\]/);
+          if (jsonMatch) {
+            cleanedResponse = jsonMatch[0];
+          }
+        }
+        
+        // Strategy 3: Additional cleaning for common malformed patterns
+        cleanedResponse = cleanedResponse
+          .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+          .replace(/([{,]\s*)(\w+):/g, '$1"$2":') // Quote unquoted property names
+          .replace(/:\s*'([^']*)'/g, ': "$1"') // Replace single quotes with double quotes
+          .replace(/\n|\r/g, ' ') // Replace newlines with spaces
+          .replace(/\s+/g, ' '); // Normalize whitespace
+        
+        repertoires = JSON.parse(cleanedResponse);
+        
+        // Validate the parsed result
+        if (!Array.isArray(repertoires)) {
+          repertoires = (repertoires as any)?.repertoires || [];
+        }
+        
+        // Filter out invalid objects
+        repertoires = repertoires.filter(rep => 
+          rep && 
+          typeof rep === 'object' && 
+          rep.title && 
+          rep.description
+        );
+        
+        console.log(`✅ Successfully parsed ${repertoires.length} repertoires from AI`);
+        
+      } catch (parseError: any) {
+        console.log("JSON parsing failed, using fallback:", parseError?.message || parseError);
+        throw parseError;
+      }
+      
+      return repertoires.length > 0 ? repertoires : this.generateFallbackRepertoires(query, analysis, userFilters);
+      
     } catch (error) {
       console.error("Error generating batch repertoires:", error);
       return this.generateFallbackRepertoires(query, analysis, userFilters);
