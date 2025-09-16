@@ -1064,6 +1064,107 @@ Retorne APENAS um JSON válido:
     }));
   }
 
+  // Generate essay with AI based on custom structure and proposal
+  async generateEssayFromStructure(
+    structureName: string,
+    sections: any[],
+    topic: string,
+    additionalInstructions?: string
+  ): Promise<string> {
+    try {
+      // Build structured prompt based on the custom structure
+      const sectionsPrompt = sections.map((section, index) => 
+        `${index + 1}. **${section.title}**: ${section.description}`
+      ).join('\n');
+
+      const prompt = `
+Gere uma redação completa e bem estruturada seguindo esta estrutura personalizada:
+
+**TEMA DA REDAÇÃO:** "${topic}"
+
+**ESTRUTURA A SEGUIR:**
+${sectionsPrompt}
+
+**INSTRUÇÕES ESPECÍFICAS:**
+${additionalInstructions ? additionalInstructions : 'Redação argumentativa de alto nível para vestibular'}
+
+**DIRETRIZES PARA GERAÇÃO:**
+- Siga EXATAMENTE a estrutura fornecida, respeitando a ordem e função de cada seção
+- Cada seção deve ter entre 150-250 palavras aproximadamente
+- Use linguagem formal e argumentação sólida
+- Inclua dados, exemplos e referências quando apropriado
+- Mantenha coesão e coerência entre as seções
+- Para cada seção, implemente as orientações específicas fornecidas na descrição
+- O texto final deve ser uma redação fluida e bem conectada
+
+**FORMATO DE RESPOSTA:**
+Retorne apenas o texto da redação, sem títulos de seções ou formatação markdown. Cada parágrafo deve fluir naturalmente para o próximo.
+
+**EXEMPLO DE ESTRUTURA DO TEXTO:**
+[Parágrafo 1 - correspondente à primeira seção]
+
+[Parágrafo 2 - correspondente à segunda seção]
+
+[...]
+
+[Parágrafo final - correspondente à última seção]
+`;
+
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      const essayText = response.text();
+
+      // Clean up the response to ensure it's just the essay text
+      return essayText.trim();
+
+    } catch (error) {
+      console.error("Error generating essay from structure:", error);
+      // Fallback: generate a basic essay structure
+      return this.generateFallbackEssay(structureName, sections, topic, additionalInstructions);
+    }
+  }
+
+  // Fallback essay generation when AI is unavailable
+  private generateFallbackEssay(
+    structureName: string,
+    sections: any[],
+    topic: string,
+    additionalInstructions?: string
+  ): string {
+    let essay = '';
+    
+    sections.forEach((section, index) => {
+      const sectionTitle = section.title || `Seção ${index + 1}`;
+      
+      // Generate basic content based on section position and description
+      switch (index) {
+        case 0: // First section (usually introduction)
+          essay += `A questão sobre "${topic}" tem se tornado cada vez mais relevante em nossa sociedade contemporânea. `;
+          essay += `${section.description} `;
+          essay += `Este tema desperta debates importantes e merece uma análise cuidadosa dos seus múltiplos aspectos e implicações sociais.\n\n`;
+          break;
+        
+        case sections.length - 1: // Last section (usually conclusion)
+          essay += `Em síntese, a análise sobre "${topic}" revela a complexidade e relevância desta questão. `;
+          essay += `${section.description} `;
+          essay += `É fundamental que a sociedade e as instituições responsáveis implementem medidas efetivas para abordar adequadamente esta temática, promovendo o bem-estar social e o desenvolvimento sustentável.\n\n`;
+          break;
+        
+        default: // Middle sections (development)
+          essay += `No que se refere a ${topic.toLowerCase()}, é fundamental considerarmos os aspectos abordados nesta seção. `;
+          essay += `${section.description} `;
+          essay += `Os dados atuais demonstram a importância desta perspectiva para uma compreensão mais ampla e fundamentada do tema em questão.\n\n`;
+          break;
+      }
+    });
+    
+    if (additionalInstructions?.trim()) {
+      essay += `\n[Observações: Instruções consideradas - ${additionalInstructions}]`;
+    }
+    
+    return essay.trim();
+  }
+
   // Essay correction using professional ENEM criteria
   async correctEssay(essayText: string, topic: string, examType: string = 'ENEM'): Promise<{
     totalScore: number;
