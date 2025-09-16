@@ -136,6 +136,22 @@ export const simulations = pgTable("simulations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Conversations table for AI chat memory and context
+export const conversations = pgTable("conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Optional user ID for logged users
+  sessionId: text("session_id"), // For anonymous tracking
+  messages: json("messages").notNull().default([]), // Array of chat messages
+  summary: text("summary"), // Conversation summary for context
+  currentSection: varchar("current_section", { 
+    enum: ["tema", "tese", "introducao", "desenvolvimento1", "desenvolvimento2", "conclusao", "finalizacao", "optimization"] 
+  }).default("tema"),
+  brainstormData: json("brainstorm_data"), // Current brainstorm state
+  lastMessageAt: timestamp("last_message_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -197,7 +213,18 @@ export const searchQuerySchema = z.object({
   excludeIds: z.array(z.string()).optional(),
 });
 
+// Individual message schema for storage in conversation
+export const conversationMessageSchema = z.object({
+  id: z.string(),
+  type: z.enum(["user", "ai"]),
+  content: z.string(),
+  section: z.enum(["tema", "tese", "introducao", "desenvolvimento1", "desenvolvimento2", "conclusao", "finalizacao", "optimization"]).optional(),
+  timestamp: z.date(),
+});
+
 export const chatMessageSchema = z.object({
+  conversationId: z.string().optional(), // Optional for first message
+  messageId: z.string().optional(), // For deduplication
   message: z.string().min(1, "Mensagem é obrigatória"),
   section: z.enum(["tema", "tese", "introducao", "desenvolvimento1", "desenvolvimento2", "conclusao", "finalizacao", "optimization"]),
   context: z.object({
@@ -209,7 +236,7 @@ export const chatMessageSchema = z.object({
       desenvolvimento2: z.string().optional(),
       conclusao: z.string().optional(),
     }).optional(),
-  }),
+  }).optional(),
 });
 
 export const insertProposalSchema = createInsertSchema(proposals).omit({
@@ -227,6 +254,13 @@ export const insertSimulationSchema = createInsertSchema(simulations).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertConversationSchema = createInsertSchema(conversations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastMessageAt: true,
 });
 
 export const proposalSearchQuerySchema = z.object({
@@ -332,6 +366,11 @@ export type SavedProposal = typeof savedProposals.$inferSelect;
 
 export type InsertSimulation = z.infer<typeof insertSimulationSchema>;
 export type Simulation = typeof simulations.$inferSelect;
+
+export type InsertConversation = z.infer<typeof insertConversationSchema>;
+export type Conversation = typeof conversations.$inferSelect;
+
+export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
 
 export type ProposalSearchQuery = z.infer<typeof proposalSearchQuerySchema>;
 export type GenerateProposal = z.infer<typeof generateProposalSchema>;
