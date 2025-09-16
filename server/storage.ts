@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -62,6 +62,14 @@ export interface IStorage {
   getUserSimulations(userId: string): Promise<Simulation[]>;
   getSessionSimulations(sessionId: string): Promise<Simulation[]>;
   
+  // Conversation operations
+  createConversation(conversation: InsertConversation): Promise<Conversation>;
+  getConversation(id: string): Promise<Conversation | undefined>;
+  appendMessage(conversationId: string, message: ConversationMessage): Promise<Conversation>;
+  updateConversationSummary(conversationId: string, summary: string): Promise<Conversation>;
+  updateConversationData(conversationId: string, brainstormData: any, currentSection: string): Promise<Conversation>;
+  getRecentConversations(userId?: string, sessionId?: string, limit?: number): Promise<Conversation[]>;
+  
 }
 
 export class MemStorage implements IStorage {
@@ -76,6 +84,7 @@ export class MemStorage implements IStorage {
   private proposals: Map<string, Proposal>;
   private savedProposals: Map<string, SavedProposal>;
   private simulations: Map<string, Simulation>;
+  private conversations: Map<string, Conversation>;
 
   constructor() {
     this.users = new Map();
@@ -89,6 +98,7 @@ export class MemStorage implements IStorage {
     this.proposals = new Map();
     this.savedProposals = new Map();
     this.simulations = new Map();
+    this.conversations = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -768,6 +778,105 @@ export class MemStorage implements IStorage {
 
   async getSessionSimulations(sessionId: string): Promise<Simulation[]> {
     return this.getSimulations(undefined, sessionId, 100, 0);
+  }
+
+  // Conversation operations
+  async createConversation(conversation: InsertConversation): Promise<Conversation> {
+    const id = randomUUID();
+    const now = new Date();
+    const newConversation: Conversation = {
+      id,
+      userId: conversation.userId || null,
+      sessionId: conversation.sessionId || null,
+      messages: conversation.messages || [],
+      summary: conversation.summary || null,
+      currentSection: conversation.currentSection || "tema",
+      brainstormData: conversation.brainstormData || null,
+      lastMessageAt: now,
+      createdAt: now,
+      updatedAt: now,
+    };
+    
+    this.conversations.set(id, newConversation);
+    return newConversation;
+  }
+
+  async getConversation(id: string): Promise<Conversation | undefined> {
+    return this.conversations.get(id);
+  }
+
+  async appendMessage(conversationId: string, message: ConversationMessage): Promise<Conversation> {
+    const conversation = this.conversations.get(conversationId);
+    if (!conversation) {
+      throw new Error(`Conversation with id ${conversationId} not found`);
+    }
+
+    const messages = Array.isArray(conversation.messages) ? conversation.messages : [];
+    const updatedConversation: Conversation = {
+      ...conversation,
+      messages: [...messages, message],
+      lastMessageAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    this.conversations.set(conversationId, updatedConversation);
+    return updatedConversation;
+  }
+
+  async updateConversationSummary(conversationId: string, summary: string): Promise<Conversation> {
+    const conversation = this.conversations.get(conversationId);
+    if (!conversation) {
+      throw new Error(`Conversation with id ${conversationId} not found`);
+    }
+
+    const updatedConversation: Conversation = {
+      ...conversation,
+      summary,
+      updatedAt: new Date(),
+    };
+
+    this.conversations.set(conversationId, updatedConversation);
+    return updatedConversation;
+  }
+
+  async updateConversationData(conversationId: string, brainstormData: any, currentSection: string): Promise<Conversation> {
+    const conversation = this.conversations.get(conversationId);
+    if (!conversation) {
+      throw new Error(`Conversation with id ${conversationId} not found`);
+    }
+
+    const updatedConversation: Conversation = {
+      ...conversation,
+      brainstormData,
+      currentSection: currentSection as any,
+      updatedAt: new Date(),
+    };
+
+    this.conversations.set(conversationId, updatedConversation);
+    return updatedConversation;
+  }
+
+  async getRecentConversations(userId?: string, sessionId?: string, limit: number = 10): Promise<Conversation[]> {
+    let conversations = Array.from(this.conversations.values());
+
+    // Filter by userId if provided
+    if (userId) {
+      conversations = conversations.filter(conv => conv.userId === userId);
+    }
+
+    // Filter by sessionId if provided
+    if (sessionId) {
+      conversations = conversations.filter(conv => conv.sessionId === sessionId);
+    }
+
+    // Sort by last message date (newest first)
+    conversations = conversations.sort((a, b) => {
+      const aTime = a.lastMessageAt?.getTime() ?? 0;
+      const bTime = b.lastMessageAt?.getTime() ?? 0;
+      return bTime - aTime;
+    });
+
+    return conversations.slice(0, limit);
   }
 
 }
