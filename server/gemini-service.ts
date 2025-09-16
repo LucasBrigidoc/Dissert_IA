@@ -148,14 +148,28 @@ export class GeminiService {
     
     const prompt = `Query: "${query}"
 ${typeInstruction}
-Generate ${batchSize} relevant repertoires as JSON:
+🚫 NUNCA USE TÍTULOS GENÉRICOS COMO:
+- "Livros de educação financeira" ❌ 
+- "Filmes sobre tecnologia" ❌
+- "Pesquisas sobre meio ambiente" ❌
+- "Notícias sobre violência" ❌
+
+✅ USE SEMPRE TÍTULOS ESPECÍFICOS:
+- "Pai Rico, Pai Pobre" de Robert Kiyosaki ✅
+- "Black Mirror: San Junipero" ✅
+- "Pesquisa Datafolha sobre renda familiar 2024" ✅
+- "Lei 12.288/2010 - Estatuto da Igualdade Racial" ✅
+
+REGRA OBRIGATÓRIA: CADA title DEVE SER UM NOME PRÓPRIO de obra/pessoa/lei/evento real e específico.
+
+Generate ${batchSize} SPECIFIC repertoires as JSON (TODOS os títulos devem ser nomes próprios específicos):
 [{
-  "title": "Title",
-  "description": "Detailed description explaining what this repertoire is, how to use it effectively in essays, which themes it supports, and specific argumentative angles it provides. Include practical usage tips and contexts where it's most powerful (200-300 characters)", 
+  "title": "NOME ESPECÍFICO E REAL da obra/filme/livro/lei/pessoa/evento (ex: 'O Cortiço', 'Constituição de 1988', 'Steve Jobs')",
+  "description": "Explique o que é especificamente esta obra/pessoa/evento e como usar em redações. Seja específico sobre o conteúdo, não genérico (200-300 chars)", 
   "type": "${allowedTypes}",
   "category": "${userFilters.category || 'social|environment|technology|education|politics'}",
   "popularity": "${userFilters.popularity || 'very-popular|popular|moderate'}",
-  "year": "year",
+  "year": "ano real específico",
   "rating": 35-49,
   "keywords": ["k1","k2","k3","k4"]
 }]`;
