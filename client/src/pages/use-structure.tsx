@@ -10,6 +10,7 @@ import { StructurePreview } from "@/components/structure-preview";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import type { EssayStructure, Section } from "@shared/schema";
 
 interface UseStructureProps {
@@ -131,24 +132,52 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
     setIsGenerating(true);
     
     try {
-      // Simular processamento
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const essay = generateEssayContent(structureToUse, essayTopic, additionalInstructions);
-      setGeneratedEssay(essay);
-      setUsedStructure(structureToUse);
-      setShowResult(true);
-      
-      toast({
-        title: "Redação gerada com sucesso!",
-        description: "Sua redação foi criada seguindo a estrutura selecionada.",
+      // Generate essay using AI
+      const response = await apiRequest("/api/essays/generate", {
+        method: "POST",
+        body: JSON.stringify({
+          structureName: structureToUse.name,
+          sections: Array.isArray(structureToUse.sections) ? structureToUse.sections : [],
+          topic: essayTopic.trim(),
+          additionalInstructions: additionalInstructions.trim() || undefined
+        }),
       });
-    } catch (error) {
-      toast({
-        title: "Erro na geração",
-        description: "Ocorreu um erro ao gerar a redação. Tente novamente.",
-        variant: "destructive",
-      });
+
+      if (response.success) {
+        setGeneratedEssay(response.essay);
+        setUsedStructure(structureToUse);
+        setShowResult(true);
+        
+        toast({
+          title: "Redação gerada com sucesso!",
+          description: "Sua redação foi criada com IA seguindo a estrutura selecionada.",
+        });
+      } else {
+        throw new Error(response.message || "Failed to generate essay");
+      }
+    } catch (error: any) {
+      console.error("Essay generation error:", error);
+      
+      // Check for rate limiting
+      if (error.message?.includes("Rate limit")) {
+        toast({
+          title: "Limite de uso atingido",
+          description: "Você pode gerar 3 redações por hora. Tente novamente mais tarde.",
+          variant: "destructive",
+        });
+      } else {
+        // Fallback to local generation if AI fails
+        const fallbackEssay = generateEssayContent(structureToUse, essayTopic, additionalInstructions);
+        setGeneratedEssay(fallbackEssay);
+        setUsedStructure(structureToUse);
+        setShowResult(true);
+        
+        toast({
+          title: "Redação gerada (modo offline)",
+          description: "A IA está indisponível. Redação gerada com estrutura básica.",
+          variant: "default",
+        });
+      }
     } finally {
       setIsGenerating(false);
     }

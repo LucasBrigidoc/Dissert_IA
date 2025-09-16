@@ -129,38 +129,66 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
     setIsGenerating(true);
     
     try {
-      // Simular geração de redação com base na estrutura
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      let essay = `**${essayTopic}**\n\n`;
-      
-      sections.forEach((section, index) => {
-        essay += `**${section.title}**\n\n`;
-        essay += `${section.description}\n\n`;
+      // Generate essay using AI
+      const response = await apiRequest("/api/essays/generate", {
+        method: "POST",
+        body: JSON.stringify({
+          structureName: name || 'Nova Estrutura',
+          sections: sections,
+          topic: essayTopic.trim(),
+          additionalInstructions: additionalInstructions.trim() || undefined
+        }),
+      });
+
+      if (response.success) {
+        setGeneratedEssay(response.essay);
+        setUsedStructure(currentStructure);
+        setShowResult(true);
         
-        // Adicionar conteúdo fictício baseado na descrição
-        const sampleContent = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.`;
-        essay += `${sampleContent}\n\n`;
+        toast({
+          title: "Redação gerada com sucesso!",
+          description: "Sua redação foi criada com IA seguindo a estrutura personalizada.",
+        });
+      } else {
+        throw new Error(response.message || "Failed to generate essay");
+      }
+    } catch (error: any) {
+      console.error("Essay generation error:", error);
+      
+      // Check for rate limiting
+      if (error.message?.includes("Rate limit")) {
+        toast({
+          title: "Limite de uso atingido",
+          description: "Você pode gerar 3 redações por hora. Tente novamente mais tarde.",
+          variant: "destructive",
+        });
+      } else {
+        // Fallback to local generation if AI fails
+        let fallbackEssay = `**${essayTopic}**\n\n`;
         
-        if (index < sections.length - 1) {
-          essay += '---\n\n';
-        }
-      });
-      
-      setGeneratedEssay(essay);
-      setUsedStructure(currentStructure);
-      setShowResult(true);
-      
-      toast({
-        title: "Redação gerada com sucesso!",
-        description: "Sua redação foi criada seguindo a estrutura personalizada.",
-      });
-    } catch (error) {
-      toast({
-        title: "Erro na geração",
-        description: "Ocorreu um erro ao gerar a redação. Tente novamente.",
-        variant: "destructive",
-      });
+        sections.forEach((section, index) => {
+          fallbackEssay += `**${section.title}**\n\n`;
+          fallbackEssay += `${section.description}\n\n`;
+          
+          // Adicionar conteúdo básico baseado na descrição
+          const sampleContent = `Este parágrafo desenvolve a seção "${section.title}" conforme descrito: ${section.description}. O conteúdo foi gerado automaticamente devido à indisponibilidade da IA.`;
+          fallbackEssay += `${sampleContent}\n\n`;
+          
+          if (index < sections.length - 1) {
+            fallbackEssay += '---\n\n';
+          }
+        });
+        
+        setGeneratedEssay(fallbackEssay);
+        setUsedStructure(currentStructure);
+        setShowResult(true);
+        
+        toast({
+          title: "Redação gerada (modo offline)",
+          description: "A IA está indisponível. Redação gerada com estrutura básica.",
+          variant: "default",
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
