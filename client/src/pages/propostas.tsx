@@ -294,7 +294,7 @@ export default function Propostas() {
               </Button>
             </Link>
             <div className="flex items-center space-x-2 min-w-0">
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center flex-shrink-0">
                 <Lightbulb className="text-white" size={14} />
               </div>
               <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Propostas</h1>
@@ -315,7 +315,7 @@ export default function Propostas() {
                 </Button>
               </Link>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
                   <Lightbulb className="text-white" size={20} />
                 </div>
                 <div>
