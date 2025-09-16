@@ -209,6 +209,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ESSAY GENERATION ROUTES =====================
+
+  // Generate essay using custom structure
+  app.post("/api/essays/generate", async (req, res) => {
+    try {
+      const { structureName, sections, topic, additionalInstructions } = req.body;
+      
+      if (!sections || !Array.isArray(sections) || sections.length === 0) {
+        return res.status(400).json({ message: "Structure sections are required" });
+      }
+      
+      if (!topic || !topic.trim()) {
+        return res.status(400).json({ message: "Essay topic is required" });
+      }
+
+      // Rate limiting check (3 essay generations per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 3, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can generate 3 essays per hour.", 
+          retryAfter: 3600 
+        });
+      }
+      
+      console.log(`📝 Essay generation request: ${structureName || 'Custom Structure'}, topic: ${topic.substring(0, 50)}..., IP: ${clientIP}`);
+      
+      // Generate essay using Gemini AI
+      const generatedEssay = await geminiService.generateEssayFromStructure(
+        structureName || 'Custom Structure',
+        sections,
+        topic.trim(),
+        additionalInstructions?.trim()
+      );
+      
+      res.json({
+        success: true,
+        essay: generatedEssay,
+        structureName: structureName || 'Custom Structure',
+        topic: topic.trim(),
+        additionalInstructions: additionalInstructions?.trim() || null,
+        message: "Essay generated successfully"
+      });
+      
+    } catch (error) {
+      console.error("Essay generation error:", error);
+      res.status(500).json({ message: "Failed to generate essay. Please try again." });
+    }
+  });
+
+  // ===================== REPERTOIRE ROUTES =====================
+
   // Intelligent repertoire search endpoint with rate limiting
   app.post("/api/repertoires/search", async (req, res) => {
     try {
