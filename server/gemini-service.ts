@@ -144,35 +144,65 @@ export class GeminiService {
     
     const allowedTypes = userFilters.type && userFilters.type !== 'all' 
       ? userFilters.type 
-      : 'books|laws|movies|research|documentaries|news|data|events';
+      : 'books';
     
+    const allowedCategory = userFilters.category || 'education';
+    const allowedPopularity = userFilters.popularity || 'popular';
+
+    // Generate few-shot examples based on query context
+    const getFewShotExamples = (query: string) => {
+      if (query.toLowerCase().includes('educação financeira')) {
+        return `[
+  {
+    "title": "Pai Rico, Pai Pobre",
+    "description": "Livro de Robert Kiyosaki que contrasta mentalidades sobre dinheiro. Ideal para argumentar sobre educação financeira desde cedo, mostrando diferenças entre ativos e passivos. Use para defender que jovens devem aprender sobre investimentos.",
+    "type": "books",
+    "category": "education",
+    "popularity": "very-popular",
+    "year": "1997",
+    "rating": 45,
+    "keywords": ["educação financeira", "kiyosaki", "investimentos", "dinheiro"]
+  },
+  {
+    "title": "O Homem Mais Rico da Babilônia",
+    "description": "George Clason ensina princípios financeiros através de parábolas antigas. Perfeito para fundamentar argumentos sobre poupança e planejamento financeiro. Use para mostrar que conceitos financeiros são universais e atemporais.",
+    "type": "books", 
+    "category": "education",
+    "popularity": "popular",
+    "year": "1926",
+    "rating": 42,
+    "keywords": ["finanças", "poupança", "babilônia", "clason"]
+  }
+]`;
+      }
+      return `[
+  {
+    "title": "Dom Casmurro",
+    "description": "Romance de Machado de Assis sobre ciúme e narrativa não-confiável. Use para discutir temas como relacionamentos, desconfiança e sociedade do século XIX. Ideal para argumentos sobre psicologia humana.",
+    "type": "books",
+    "category": "social", 
+    "popularity": "very-popular",
+    "year": "1899",
+    "rating": 48,
+    "keywords": ["machado de assis", "ciúme", "capitu", "literatura brasileira"]
+  }
+]`;
+    };
+
     const prompt = `Query: "${query}"
 ${typeInstruction}
-🚫 NUNCA USE TÍTULOS GENÉRICOS COMO:
-- "Livros de educação financeira" ❌ 
-- "Filmes sobre tecnologia" ❌
-- "Pesquisas sobre meio ambiente" ❌
-- "Notícias sobre violência" ❌
 
-✅ USE SEMPRE TÍTULOS ESPECÍFICOS:
-- "Pai Rico, Pai Pobre" de Robert Kiyosaki ✅
-- "Black Mirror: San Junipero" ✅
-- "Pesquisa Datafolha sobre renda familiar 2024" ✅
-- "Lei 12.288/2010 - Estatuto da Igualdade Racial" ✅
+REGRA ABSOLUTA: Retorne apenas obras/pessoas/leis ESPECÍFICAS e REAIS, nunca categorias.
 
-REGRA OBRIGATÓRIA: CADA title DEVE SER UM NOME PRÓPRIO de obra/pessoa/lei/evento real e específico.
+EXEMPLOS CORRETOS baseados em "${query}":
+${getFewShotExamples(query)}
 
-Generate ${batchSize} SPECIFIC repertoires as JSON (TODOS os títulos devem ser nomes próprios específicos):
-[{
-  "title": "NOME ESPECÍFICO E REAL da obra/filme/livro/lei/pessoa/evento (ex: 'O Cortiço', 'Constituição de 1988', 'Steve Jobs')",
-  "description": "Explique o que é especificamente esta obra/pessoa/evento e como usar em redações. Seja específico sobre o conteúdo, não genérico (200-300 chars)", 
-  "type": "${allowedTypes}",
-  "category": "${userFilters.category || 'social|environment|technology|education|politics'}",
-  "popularity": "${userFilters.popularity || 'very-popular|popular|moderate'}",
-  "year": "ano real específico",
-  "rating": 35-49,
-  "keywords": ["k1","k2","k3","k4"]
-}]`;
+Se você não conseguir gerar títulos específicos reais, retorne array vazio [].
+
+Gere ${batchSize} repertórios específicos similares ao exemplo:
+// Tipos possíveis: books, laws, movies, research, documentaries, news, data, events  
+// Categorias: social, environment, technology, education, politics
+// Popularidade: very-popular, popular, moderate`;
 
     try {
       const result = await this.model.generateContent(prompt);
@@ -215,6 +245,47 @@ Generate ${batchSize} SPECIFIC repertoires as JSON (TODOS os títulos devem ser 
           rep.title && 
           rep.description
         );
+
+        // Filter out generic titles - enforce specificity
+        const beforeFilter = repertoires.length;
+        repertoires = repertoires.filter(rep => {
+          const rawTitle = String(rep.title).trim();
+          const titleLower = rawTitle.toLowerCase();
+          
+          // Reject generic category patterns (using lowercase for regex)
+          const genericPatterns = [
+            /^(livros?|filmes?|artigos?|notícias?|pesquisas?|dados?|eventos?|leis?)\s+(sobre|de|da|do)/i,
+            /^(obras?|trabalhos?|estudos?|documentários?)\s+(sobre|de|da|do)/i,
+            /(sobre|de|da|do)\s+(educação|tecnologia|meio ambiente|violência|política)$/i,
+            /para\s+(jovens|estudantes|crianças)$/i
+          ];
+          
+          const isGeneric = genericPatterns.some(pattern => pattern.test(titleLower));
+          if (isGeneric) {
+            console.log(`🚫 Filtered generic title: "${rep.title}"`);
+            return false;
+          }
+          
+          // Require proper noun heuristics (using original casing for capitalization check)
+          const words = rawTitle.split(/\s+/);
+          const stopWords = new Set(['de', 'da', 'do', 'das', 'dos', 'em', 'na', 'no', 'por', 'com']);
+          const capitalizedWords = words.filter((word: string) => 
+            word.length > 2 && 
+            /^[A-ZÀÁÂÃÄÇÉÊËÍÎÏÑÓÔÕÖÙÚÛÜ]/.test(word) &&
+            !stopWords.has(word.toLowerCase())
+          );
+          
+          if (capitalizedWords.length === 0) {
+            console.log(`🚫 Filtered non-proper noun title: "${rep.title}"`);
+            return false;
+          }
+          
+          return true;
+        });
+        
+        if (beforeFilter > repertoires.length) {
+          console.log(`🔍 Filtered ${beforeFilter - repertoires.length} generic titles, keeping ${repertoires.length} specific ones`);
+        }
         
         console.log(`✅ Successfully parsed ${repertoires.length} repertoires from AI`);
         
