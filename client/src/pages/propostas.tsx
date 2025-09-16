@@ -331,31 +331,31 @@ export default function Propostas() {
       </div>
       
       {/* Main Content */}
-      <div className="pt-24 container mx-auto px-4 py-8">
+      <div className="pt-16 sm:pt-24 container mx-auto px-4 py-4 sm:py-8">
 
         {/* Search Section */}
-        <LiquidGlassCard className="mb-8 p-6">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-4">
-              <Search className="w-5 h-5 text-bright-blue" />
-              <h2 className="text-xl font-semibold text-dark-blue">Buscar Propostas de Redação</h2>
+        <LiquidGlassCard className="mb-6 sm:mb-8 p-4 sm:p-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-bright-blue" />
+              <h2 className="text-lg sm:text-xl font-semibold text-dark-blue">Buscar Propostas de Redação</h2>
             </div>
             
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-1">
                 <Input
                   placeholder="Digite o tema, palavras-chave ou tipo de exame..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="border-soft-gray/30 focus:border-bright-blue"
+                  className="border-soft-gray/30 focus:border-bright-blue h-10 sm:h-auto"
                   data-testid="input-search"
                 />
               </div>
               <Button 
                 onClick={handleSearch}
                 disabled={searchMutation.isPending}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 h-10 sm:h-auto"
                 data-testid="button-search"
               >
                 {searchMutation.isPending ? (
@@ -363,14 +363,14 @@ export default function Propostas() {
                 ) : (
                   <Search className="w-4 h-4" />
                 )}
-                Buscar
+                <span className="sm:inline">Buscar</span>
               </Button>
             </div>
 
             {/* Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-soft-gray mb-2">Tipo de Exame</label>
+                <label className="block text-xs sm:text-sm font-medium text-soft-gray mb-1.5 sm:mb-2">Tipo de Exame</label>
                 <Select value={selectedExamType} onValueChange={setSelectedExamType}>
                   <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-exam-type">
                     <SelectValue placeholder="Selecione" />
@@ -386,7 +386,7 @@ export default function Propostas() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-soft-gray mb-2">Tema</label>
+                <label className="block text-xs sm:text-sm font-medium text-soft-gray mb-1.5 sm:mb-2">Tema</label>
                 <Select value={selectedTheme} onValueChange={setSelectedTheme}>
                   <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-theme">
                     <SelectValue placeholder="Selecione" />
@@ -406,7 +406,7 @@ export default function Propostas() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-soft-gray mb-2">Dificuldade</label>
+                <label className="block text-xs sm:text-sm font-medium text-soft-gray mb-1.5 sm:mb-2">Dificuldade</label>
                 <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                   <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-difficulty">
                     <SelectValue placeholder="Selecione" />
@@ -421,19 +421,19 @@ export default function Propostas() {
                 </Select>
               </div>
 
-              <div className="flex items-end">
+              <div className="flex items-end sm:col-span-2 md:col-span-1">
                 <Button 
                   onClick={handleGenerateNew}
                   disabled={generateMutation.isPending || searchMutation.isPending}
-                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0"
+                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0 h-9 sm:h-auto text-sm"
                   data-testid="button-generate"
                 >
                   {(generateMutation.isPending || searchMutation.isPending) ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    <Loader2 className="w-4 h-4 animate-spin mr-1.5 sm:mr-2" />
                   ) : (
-                    <Sparkles className="w-4 h-4 mr-2" />
+                    <Sparkles className="w-4 h-4 mr-1.5 sm:mr-2" />
                   )}
-                  {hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}
+                  <span className="text-xs sm:text-sm">{hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}</span>
                 </Button>
               </div>
             </div>
