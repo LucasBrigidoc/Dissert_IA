@@ -263,40 +263,151 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     }
   };
 
-  // Extrair conteúdo relevante com múltiplas estratégias
+  // Extrair conteúdo relevante com estratégias inteligentes melhoradas
   const extractRelevantContent = (content: string, section: string): string | null => {
-    // 1. Tentar extrair citações ou sugestões diretas
-    const quotedContent = content.match(/"([^"]{20,300})"/g);
-    if (quotedContent && quotedContent.length > 0) {
-      const bestQuote = quotedContent[0].replace(/"/g, '').trim();
-      if (bestQuote.length > 15) return bestQuote;
-    }
+    // Limpar o conteúdo de caracteres especiais e formatação desnecessária
+    const cleanContent = content
+      .replace(/[🎯✨💡🏗️📝🔍⭐]/g, '') // Remove emojis comuns
+      .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1') // Remove markdown bold
+      .replace(/_{1,2}([^_]+)_{1,2}/g, '$1') // Remove markdown italic
+      .replace(/\n+/g, ' ') // Replace line breaks with spaces
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim();
 
-    // 2. Buscar por padrões específicos da seção
-    const sectionPatterns = {
-      tema: [/tema[:\s]*([^.\n]{15,150})/i, /proposta[:\s]*([^.\n]{15,150})/i],
-      tese: [/tese[:\s]*([^.\n]{20,200})/i, /posicionamento[:\s]*([^.\n]{20,200})/i, /defendo que[:\s]*([^.\n]{20,200})/i],
-      introducao: [/introdução[:\s]*([^.\n]{30,300})/i, /contextualização[:\s]*([^.\n]{30,300})/i],
-      desenvolvimento1: [/primeiro[:\s]*([^.\n]{30,300})/i, /argumento[:\s]*([^.\n]{30,300})/i],
-      desenvolvimento2: [/segundo[:\s]*([^.\n]{30,300})/i, /outro argumento[:\s]*([^.\n]{30,300})/i],
-      conclusao: [/conclusão[:\s]*([^.\n]{30,300})/i, /fechamento[:\s]*([^.\n]{30,300})/i]
+    // 1. Estratégia prioritária: Buscar por palavras-chave específicas da seção com contexto
+    const contextPatterns = {
+      tema: [
+        /(?:tema|assunto|proposta|questão)(?:[:\s-]+)([^.!?\n]{15,200})/gi,
+        /(?:sobre|acerca de|a respeito de|tratando de)\s+([^.!?\n]{15,200})/gi,
+        /(?:o tema é|trata-se de|refere-se a)\s+([^.!?\n]{15,200})/gi
+      ],
+      tese: [
+        /(?:tese|posicionamento|defendo que|acredito que|penso que|argumento que)[\s:,]+([^.!?\n]{20,300})/gi,
+        /(?:minha visão é|considero que|entendo que|sustento que)[\s:,]+([^.!?\n]{20,300})/gi,
+        /(?:a posição é|o ponto de vista|a perspectiva)[\s:,]+([^.!?\n]{20,300})/gi
+      ],
+      introducao: [
+        /(?:introdução|início|abertura|contextualização)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:para começar|inicialmente|em primeiro lugar|primeiramente)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:o contexto|a situação|o cenário)[\s:,]+([^.!?\n]{30,300})/gi
+      ],
+      desenvolvimento1: [
+        /(?:primeiro argumento|primeira razão|argumento inicial)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:em primeiro lugar|primeiramente)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:o argumento que|a razão pela qual|evidência de que)[\s:,]+([^.!?\n]{30,300})/gi
+      ],
+      desenvolvimento2: [
+        /(?:segundo argumento|segunda razão|outro argumento|próximo argumento)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:em segundo lugar|além disso|adicionalmente)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:outra evidência|outro exemplo|mais um ponto)[\s:,]+([^.!?\n]{30,300})/gi
+      ],
+      conclusao: [
+        /(?:conclusão|fechamento|finalização|síntese)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:para concluir|em conclusão|finalizando|por fim)[\s:,]+([^.!?\n]{30,300})/gi,
+        /(?:portanto|assim|dessa forma|em suma)[\s:,]+([^.!?\n]{30,300})/gi
+      ]
     };
 
-    const patterns = sectionPatterns[section as keyof typeof sectionPatterns] || [];
+    const patterns = contextPatterns[section as keyof typeof contextPatterns] || [];
     for (const pattern of patterns) {
-      const match = content.match(pattern);
-      if (match && match[1]) {
-        return match[1].trim();
+      const matches = Array.from(cleanContent.matchAll(pattern));
+      for (const match of matches) {
+        const extracted = match[1]?.trim();
+        if (extracted && extracted.length >= 15 && extracted.length <= 400) {
+          return extracted;
+        }
       }
     }
 
-    // 3. Fallback: pegar a primeira frase significativa
-    const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 20);
-    if (sentences.length > 0) {
-      const firstSentence = sentences[0].trim();
-      if (firstSentence.length > 15 && firstSentence.length < 300) {
-        return firstSentence;
+    // 2. Estratégia: Buscar por citações diretas (após tentar padrões específicos da seção)
+    const quotedPatterns = [
+      /"([^"]{15,400})"/g,  // Aspas duplas
+      /'([^']{15,400})'/g,  // Aspas simples
+      /[""]([^""]{15,400})[""]|["]([^"]{15,400})["]|[']([^']{15,400})[']/g,  // Aspas curvas
+    ];
+    
+    for (const pattern of quotedPatterns) {
+      const matches = Array.from(cleanContent.matchAll(pattern));
+      if (matches.length > 0) {
+        const bestMatch = matches
+          .map(match => (match[1] || match[2] || match[3])?.trim())
+          .filter(text => text && text.length >= 15 && text.length <= 400)
+          .sort((a, b) => b.length - a.length)[0]; // Pega o mais longo
+        
+        if (bestMatch) return bestMatch;
       }
+    }
+
+    // 3. Estratégia: Análise de relevância semântica (buscar frases mais significativas)
+    const sentences = cleanContent
+      .split(/[.!?;]+/)
+      .map(s => s.trim())
+      .filter(s => s.length >= 15 && s.length <= 400);
+
+    if (sentences.length > 0) {
+      // Critérios de relevância baseados no contexto da seção
+      const relevanceScoring = (sentence: string, sectionType: string): number => {
+        let score = 0;
+        
+        // Pontuação base pelo tamanho (favorece frases medianas)
+        if (sentence.length >= 30 && sentence.length <= 200) score += 10;
+        else if (sentence.length >= 15 && sentence.length <= 300) score += 5;
+        
+        // Palavras-chave específicas da seção
+        const keywords = {
+          tema: ['tema', 'assunto', 'questão', 'problema', 'proposta', 'tópico'],
+          tese: ['defendo', 'acredito', 'considero', 'penso', 'sustento', 'posição', 'visão'],
+          introducao: ['contexto', 'situação', 'cenário', 'background', 'história', 'origem'],
+          desenvolvimento1: ['primeiro', 'inicial', 'primeiramente', 'argumento', 'razão', 'evidência'],
+          desenvolvimento2: ['segundo', 'outro', 'além', 'também', 'adicionalmente', 'próximo'],
+          conclusao: ['conclusão', 'portanto', 'assim', 'fim', 'síntese', 'resumindo']
+        };
+        
+        const sectionKeywords = keywords[sectionType as keyof typeof keywords] || [];
+        const lowerSentence = sentence.toLowerCase();
+        
+        sectionKeywords.forEach(keyword => {
+          if (lowerSentence.includes(keyword)) score += 5;
+        });
+        
+        // Penalizar perguntas (menos úteis para extração)
+        if (sentence.includes('?')) score -= 3;
+        
+        // Penalizar frases muito genéricas
+        const genericPhrases = ['vamos', 'agora', 'então', 'bom', 'bem', 'ok', 'certo'];
+        genericPhrases.forEach(phrase => {
+          if (lowerSentence.includes(phrase)) score -= 2;
+        });
+        
+        return score;
+      };
+
+      // Encontrar a frase com maior pontuação de relevância
+      const scoredSentences = sentences
+        .map(sentence => ({
+          text: sentence,
+          score: relevanceScoring(sentence, section)
+        }))
+        .sort((a, b) => b.score - a.score);
+
+      if (scoredSentences.length > 0 && scoredSentences[0].score > 0) {
+        return scoredSentences[0].text;
+      }
+    }
+
+    // 4. Fallback final: pegar a frase mais longa que não seja muito genérica
+    const meaningfulSentences = sentences.filter(s => {
+      const lower = s.toLowerCase();
+      return !lower.includes('vamos') && 
+             !lower.includes('agora vou') && 
+             !lower.includes('agora eu') &&
+             s.length >= 20;
+    });
+
+    if (meaningfulSentences.length > 0) {
+      // Retorna a frase mais longa e significativa
+      return meaningfulSentences
+        .sort((a, b) => b.length - a.length)[0];
     }
 
     return null;
