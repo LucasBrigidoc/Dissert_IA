@@ -223,7 +223,7 @@ export const conversationMessageSchema = z.object({
 });
 
 export const chatMessageSchema = z.object({
-  conversationId: z.string().optional(), // Optional for first message
+  conversationId: z.string().nullish(), // Optional for first message, can be null or undefined
   messageId: z.string().optional(), // For deduplication
   message: z.string().min(1, "Mensagem é obrigatória"),
   section: z.enum(["tema", "tese", "introducao", "desenvolvimento1", "desenvolvimento2", "conclusao", "finalizacao", "optimization"]),
