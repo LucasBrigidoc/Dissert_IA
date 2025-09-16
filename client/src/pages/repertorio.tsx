@@ -6,7 +6,7 @@ import { ArrowLeft, Search, BookOpen, Globe, Users, TrendingUp, Star, Clock, Loa
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Repertoire } from "@shared/schema";
 
@@ -103,6 +103,10 @@ export default function Repertorio() {
     onSuccess: (data: SearchResult) => {
       console.log("🎉 Busca bem-sucedida, atualizando resultados:", data);
       setSearchResults(data);
+      // Invalidate cache to ensure new AI-generated repertoires are available in the main list
+      if (data.source === "ai") {
+        queryClient.invalidateQueries({ queryKey: ["/api/repertoires"] });
+      }
     },
     onError: (error) => {
       console.error("❌ Erro na busca:", error);
@@ -132,6 +136,10 @@ export default function Repertorio() {
           results: [...searchResults.results, ...newResults],
           count: searchResults.count + newResults.length
         });
+      }
+      // Invalidate cache when new AI-generated repertoires are loaded
+      if (data.source === "ai") {
+        queryClient.invalidateQueries({ queryKey: ["/api/repertoires"] });
       }
     },
     onError: (error) => {
