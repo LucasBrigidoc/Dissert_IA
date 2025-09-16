@@ -27,8 +27,9 @@ export default function Argumentos() {
     conectivos: [] as Array<{tipo: string, conectivo: string, uso: string}>
   });
 
-  // Estado do chat principal unificado
+  // Estado do chat principal unificado com conversationId
   const [chatState, setChatState] = useState({
+    conversationId: null as string | null,
     messages: [] as Array<{id: string, type: 'user' | 'ai', content: string, section?: string, timestamp: Date}>,
     currentMessage: '',
     isLoading: false,
@@ -79,8 +80,21 @@ export default function Argumentos() {
     }
   }, [chatState.messages]);
 
-  // Inicializar conversa
+  // Inicializar conversa com persistência
   useEffect(() => {
+    // Tentar carregar conversationId do localStorage
+    const savedConversationId = localStorage.getItem('argumentos-conversation-id');
+    
+    if (savedConversationId && chatState.messages.length === 0) {
+      // TODO: Implementar carregamento do histórico da conversa
+      // Por enquanto, apenas restaurar o ID e inicializar com mensagem de boas-vindas
+      setChatState(prev => ({
+        ...prev,
+        conversationId: savedConversationId
+      }));
+    }
+    
+    // Inicializar com mensagem de boas-vindas se não houver mensagens
     if (chatState.messages.length === 0) {
       const welcomeMessage = {
         id: 'welcome',
@@ -136,13 +150,30 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
   // Mutation para enviar mensagem para a IA
   const sendMessageMutation = useMutation({
-    mutationFn: async (data: {message: string, section: string, context: any}) => {
+    mutationFn: async (data: {conversationId?: string | null, messageId: string, message: string, section: string, context: any}) => {
       return apiRequest('/api/chat/argumentative', {
         method: 'POST',
         body: data
       });
     },
     onSuccess: (data) => {
+      // Salvar conversationId se recebido
+      if (data.conversationId) {
+        localStorage.setItem('argumentos-conversation-id', data.conversationId);
+        
+        // Atualizar estado com conversationId se não tivermos
+        setChatState(prev => ({
+          ...prev,
+          conversationId: prev.conversationId || data.conversationId,
+          isLoading: false
+        }));
+      } else {
+        setChatState(prev => ({
+          ...prev,
+          isLoading: false
+        }));
+      }
+      
       // Adicionar resposta da IA ao chat
       const aiMessage = {
         id: Date.now().toString() + '_ai',
@@ -154,8 +185,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       
       setChatState(prev => ({
         ...prev,
-        messages: [...prev.messages, aiMessage],
-        isLoading: false
+        messages: [...prev.messages, aiMessage]
       }));
 
       // Atualizar dados conforme a conversa progride
@@ -341,14 +371,18 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       conectivos: []
     });
 
-    // Resetar estado do chat para seção inicial
+    // Resetar estado do chat para seção inicial e limpar conversationId
     setChatState(prev => ({
       ...prev,
+      conversationId: null,
       currentSection: 'tema',
       currentMessage: '',
       isLoading: false,
       messages: []
     }));
+
+    // Remover conversationId do localStorage para garantir nova conversa
+    localStorage.removeItem('argumentos-conversation-id');
 
     // Adicionar mensagem de boas-vindas novamente
     setTimeout(() => {
@@ -403,8 +437,9 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     processUserMessage(currentMessage, currentSection);
 
     // Adicionar mensagem do usuário
+    const messageId = Date.now().toString() + '_user';
     const userMessage = {
-      id: Date.now().toString() + '_user',
+      id: messageId,
       type: 'user' as const,
       content: currentMessage,
       section: currentSection,
@@ -418,8 +453,10 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       isLoading: true
     }));
 
-    // Enviar para IA
+    // Enviar para IA com conversationId e messageId
     sendMessageMutation.mutate({
+      conversationId: chatState.conversationId,
+      messageId: messageId,
       message: currentMessage,
       section: currentSection,
       context: {
