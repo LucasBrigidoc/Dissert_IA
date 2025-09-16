@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { z } from "zod";
 import { storage } from "./storage";
 import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
@@ -214,24 +215,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate essay using custom structure
   app.post("/api/essays/generate", async (req, res) => {
     try {
-      const { structureName, sections, topic, additionalInstructions } = req.body;
+      // Validate request body with Zod
+      const validationResult = z.object({
+        structureName: z.string().trim().optional(),
+        sections: z.array(z.object({
+          title: z.string().trim().min(1),
+          description: z.string().trim().min(1),
+          guidelines: z.string().trim().min(1).optional()
+        })).min(1),
+        topic: z.string().trim().min(1),
+        additionalInstructions: z.string().trim().optional()
+      }).safeParse(req.body);
       
-      if (!sections || !Array.isArray(sections) || sections.length === 0) {
-        return res.status(400).json({ message: "Structure sections are required" });
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request data", 
+          errors: validationResult.error.errors 
+        });
       }
       
-      if (!topic || !topic.trim()) {
-        return res.status(400).json({ message: "Essay topic is required" });
-      }
+      const { structureName, sections, topic, additionalInstructions } = validationResult.data;
 
       // Rate limiting check (3 essay generations per hour per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
       const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 3, 60);
       
       if (!rateLimitCheck.allowed) {
+        res.set('Retry-After', '3600');
         return res.status(429).json({ 
           message: "Rate limit exceeded. You can generate 3 essays per hour.", 
-          retryAfter: 3600 
+          retryAfter: 3600,
+          rateLimitType: "essay_generation"
         });
       }
       

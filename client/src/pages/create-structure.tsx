@@ -155,8 +155,8 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
     } catch (error: any) {
       console.error("Essay generation error:", error);
       
-      // Check for rate limiting
-      if (error.message?.includes("Rate limit")) {
+      // Check for rate limiting (HTTP 429 status)
+      if (error.status === 429) {
         toast({
           title: "Limite de uso atingido",
           description: "Você pode gerar 3 redações por hora. Tente novamente mais tarde.",
@@ -183,9 +183,13 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         setUsedStructure(currentStructure);
         setShowResult(true);
         
+        const errorMessage = error.status >= 400 && error.status < 500 
+          ? "Erro na solicitação. Verifique os dados informados." 
+          : "A IA está indisponível. Redação gerada com estrutura básica.";
+        
         toast({
           title: "Redação gerada (modo offline)",
-          description: "A IA está indisponível. Redação gerada com estrutura básica.",
+          description: errorMessage,
           variant: "default",
         });
       }
