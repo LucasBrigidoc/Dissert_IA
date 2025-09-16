@@ -4,6 +4,17 @@ DissertAI is a comprehensive SaaS educational platform designed to revolutionize
 
 # Recent Changes
 
+- **September 16, 2025**: AI Essay Generation Integration for "Estrutura Coringa" Feature Completed
+  - **AI Essay Generation**: Implemented complete AI-powered essay generation using custom user-defined structures
+    - Added `generateEssayFromStructure` function to GeminiService for structure-based essay generation
+    - Created `/api/essays/generate` endpoint with robust Zod validation and rate limiting (3 essays per hour)
+    - Enhanced UseStructure and CreateStructure pages to use real AI instead of mock content
+    - Implemented intelligent fallback system for offline scenarios with local content generation
+    - Added proper error handling using HTTP status codes instead of string matching
+    - Included rate limiting with standardized Retry-After headers for production readiness
+  - **Data Validation**: Enhanced backend validation with proper Zod schemas preventing whitespace-only inputs
+  - **User Experience**: Added contextual toasts for success, rate limiting, and offline fallback scenarios
+  - **Cost Control**: Maintained existing rate limiting strategy to ensure R$30/month maximum user cost alignment
 - **September 9, 2025**: AI Chat Integration & Replit Environment Setup Completed
   - **AI Chat System**: Integrated intelligent chat with IA for argumentative structure development
     - Context-aware suggestions based on user's proposal and thesis
