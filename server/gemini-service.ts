@@ -518,6 +518,62 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     }
   }
 
+  // Context-aware AI Chat with conversation memory
+  async generateWithContext(
+    summary: string | null,
+    recentMessages: any[],
+    section: string,
+    context: any
+  ): Promise<string> {
+    try {
+      // Build conversation context
+      let conversationContext = '';
+      
+      // Add summary if available
+      if (summary) {
+        conversationContext += `CONTEXTO DA CONVERSA:\n${summary}\n\n`;
+      }
+      
+      // Add recent messages for immediate context
+      if (recentMessages && recentMessages.length > 0) {
+        conversationContext += 'MENSAGENS RECENTES:\n';
+        recentMessages.slice(-6).forEach((msg, index) => {
+          if (msg && msg.content) {
+            const role = msg.type === 'user' ? 'ESTUDANTE' : 'PROFESSOR';
+            conversationContext += `${role}: ${msg.content}\n`;
+          }
+        });
+        conversationContext += '\n';
+      }
+      
+      // Get the current user message from the last message
+      const currentMessage = recentMessages && recentMessages.length > 0 
+        ? recentMessages[recentMessages.length - 1]?.content || ''
+        : '';
+      
+      // Build enhanced contextual prompt with conversation memory
+      const basePrompt = this.buildContextualPrompt(currentMessage, section, context);
+      
+      // Combine conversation context with base prompt
+      const enhancedPrompt = conversationContext 
+        ? `${conversationContext}INSTRUÇÃO ATUAL:\n${basePrompt}
+
+IMPORTANTE: Use o contexto da conversa anterior para manter continuidade e referências. Se o estudante se referir a algo mencionado antes, reconheça e construa sobre essa informação.`
+        : basePrompt;
+      
+      const result = await this.model.generateContent(enhancedPrompt);
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error("Error generating AI response with context:", error);
+      // Fallback to standard suggestion without context
+      const currentMessage = recentMessages && recentMessages.length > 0 
+        ? recentMessages[recentMessages.length - 1]?.content || ''
+        : '';
+      return this.getFallbackSuggestion(currentMessage, section, context);
+    }
+  }
+
   private buildContextualPrompt(userMessage: string, section: string, context: any): string {
     // Detectar o nível do usuário baseado no conteúdo existente
     const userLevel = this.detectUserLevel(context);

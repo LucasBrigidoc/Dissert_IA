@@ -698,14 +698,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Chat for argumentative structure - with rate limiting
+  // AI Chat for argumentative structure - with conversation context and rate limiting
   app.post("/api/chat/argumentative", async (req, res) => {
     // Ensure we always return JSON
     res.setHeader('Content-Type', 'application/json');
     
     try {
       const validatedData = chatMessageSchema.parse(req.body);
-      const { message, section, context } = validatedData;
+      const { conversationId, messageId, message, section, context } = validatedData;
       
       // Rate limiting check (10 AI chats per hour per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
@@ -720,14 +720,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🤖 AI Chat request for section: ${section}, IP: ${clientIP}`);
       
-      // Generate AI suggestion using Gemini
-      const aiResponse = await geminiService.generateArgumentativeSuggestion(
-        message, 
-        section, 
-        context
+      // Get or create conversation
+      let conversation;
+      if (conversationId) {
+        conversation = await storage.getConversation(conversationId);
+        if (!conversation) {
+          throw new Error(`Conversation ${conversationId} not found`);
+        }
+      } else {
+        // Create new conversation
+        conversation = await storage.createConversation({
+          userId: null, // TODO: Add user authentication
+          sessionId: clientIP, // Use IP as session identifier for now
+          messages: [],
+          currentSection: section,
+          brainstormData: context || {}
+        });
+      }
+      
+      // Add user message to conversation (check for duplicate messageId)
+      const existingMessages = Array.isArray(conversation.messages) ? conversation.messages : [];
+      const isDuplicate = messageId && existingMessages.some((msg: any) => msg.id === messageId);
+      
+      if (!isDuplicate) {
+        const userMessage = {
+          id: messageId || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          type: 'user' as const,
+          content: message,
+          section,
+          timestamp: new Date()
+        };
+        
+        conversation = await storage.appendMessage(conversation.id, userMessage);
+      }
+      
+      // Build conversation context for AI (last 12 messages + summary)
+      const messages = Array.isArray(conversation.messages) ? conversation.messages : [];
+      const recentMessages = messages.slice(-12);
+      
+      // Generate AI response with conversation context
+      const aiResponse = await geminiService.generateWithContext(
+        conversation.summary,
+        recentMessages,
+        section,
+        context || {}
       );
       
+      // Add AI response to conversation
+      const aiMessage = {
+        id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        type: 'ai' as const,
+        content: aiResponse,
+        section,
+        timestamp: new Date()
+      };
+      
+      conversation = await storage.appendMessage(conversation.id, aiMessage);
+      
+      // Update brainstorm data and section if provided
+      if (context) {
+        conversation = await storage.updateConversationData(
+          conversation.id, 
+          context, 
+          section
+        );
+      }
+      
+      // Generate summary periodically (every 6 messages)
+      const messageCount = Array.isArray(conversation.messages) ? conversation.messages.length : 0;
+      if (messageCount > 0 && messageCount % 6 === 0) {
+        // TODO: Implement summary generation
+        // const summary = await geminiService.generateSummary(conversation.messages);
+        // await storage.updateConversationSummary(conversation.id, summary);
+      }
+      
       res.json({
+        conversationId: conversation.id,
         response: aiResponse,
         section,
         timestamp: new Date().toISOString()
