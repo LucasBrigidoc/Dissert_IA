@@ -314,6 +314,9 @@ export default function ControladorEscrita() {
         description: `Aplicadas: ${appliedModifications.join(', ')}`,
       });
       
+      // Limpar todas as modificações selecionadas após aplicar
+      setActiveModifications(new Set());
+      
     } catch (error) {
       console.error('Erro no processamento:', error);
       toast({

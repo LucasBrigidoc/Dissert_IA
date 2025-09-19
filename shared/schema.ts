@@ -308,12 +308,42 @@ export const argumentStructureSchema = z.object({
   conclusion: z.boolean().optional(),
 });
 
+export const structureTypeSchema = z.enum([
+  // Estruturas causais
+  "tese-argumento",
+  "problema-causa",
+  "topico-consequencia",
+  "causa-observacao",
+  "efeito-analise",
+  "fator-impacto",
+  "origem-desenvolvimento",
+  // Estruturas comparativas
+  "comparacao-paralela",
+  "forma-similar",
+  "condicional-se",
+  "medida-proporcional",
+  "enquanto-outro",
+  "tanto-quanto",
+  "diferente-de",
+  "semelhanca-de",
+  // Estruturas de oposição
+  "embora-oposicao",
+  "apesar-concessao",
+  "conforme-evidencia",
+  "exemplo-confirmacao",
+  "no-entanto",
+  "contudo",
+  "por-sua-vez",
+  "entretanto"
+]);
+
 export const textModificationConfigSchema = z.object({
   formalityLevel: z.number().min(0).max(100).optional(),
   wordDifficulty: wordDifficultySchema.optional(),
   argumentTechnique: argumentTechniqueSchema.optional(),
   argumentativeLevel: z.number().min(0).max(100).optional(),
   argumentStructure: argumentStructureSchema.optional(),
+  structureType: structureTypeSchema.optional(),
 });
 
 export const textModificationResultSchema = z.object({

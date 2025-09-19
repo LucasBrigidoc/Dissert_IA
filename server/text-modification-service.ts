@@ -104,6 +104,147 @@ Responda apenas com o texto reescrito.`;
 
 Responda apenas com o texto com sentido invertido.`;
 
+      case 'estrutura-causal':
+        const tipoEstruturaCausal = config.structureType || 'tese-argumento';
+        let instrucoesCausal = '';
+        
+        switch (tipoEstruturaCausal) {
+          case 'tese-argumento':
+            instrucoesCausal = 'Organize como: Tese principal → Argumento de apoio → Repertório que comprova';
+            break;
+          case 'problema-causa':
+            instrucoesCausal = 'Estruture como: Problema identificado → Causa raiz → Dados/evidências que fundamentam';
+            break;
+          case 'topico-consequencia':
+            instrucoesCausal = 'Desenvolva como: Tópico central → Consequência direta → Repertório que exemplifica';
+            break;
+          case 'causa-observacao':
+            instrucoesCausal = 'Organize como: Causa identificada → Observação crítica → Repertório contextual';
+            break;
+          case 'efeito-analise':
+            instrucoesCausal = 'Estruture como: Efeito observado → Análise aprofundada → Solução proposta';
+            break;
+          case 'fator-impacto':
+            instrucoesCausal = 'Desenvolva como: Fator determinante → Impacto gerado → Contexto histórico/social';
+            break;
+          case 'origem-desenvolvimento':
+            instrucoesCausal = 'Organize como: Origem do fenômeno → Desenvolvimento atual → Resultado/projeção';
+            break;
+          default:
+            instrucoesCausal = 'Organize estabelecendo relações claras de causa e consequência';
+        }
+        
+        return `Reescreva este texto aplicando uma estrutura causal sólida e acadêmica. Use conectivos causais apropriados (devido a, em virtude de, por causa de, consequentemente, portanto, assim sendo) para estabelecer relações lógicas claras.
+
+"${text}"
+
+${instrucoesCausal}
+
+Requisitos:
+- Use linguagem dissertativa e formal
+- Conecte ideias com conectivos causais precisos  
+- Mantenha coesão e coerência argumentativa
+- Desenvolva cada etapa de forma substancial
+
+Responda apenas com o texto reestruturado seguindo a estrutura causal indicada.`;
+
+      case 'estrutura-comparativa':
+        const tipoComparativa = config.structureType || 'comparacao-paralela';
+        let instrucoesComparativa = '';
+        
+        switch (tipoComparativa) {
+          case 'comparacao-paralela':
+            instrucoesComparativa = 'Use "assim como... também" para criar paralelos convincentes';
+            break;
+          case 'forma-similar':
+            instrucoesComparativa = 'Empregue "da mesma forma que..." para estabelecer similaridades';
+            break;
+          case 'condicional-se':
+            instrucoesComparativa = 'Estruture com "se... então" criando relações condicionais lógicas';
+            break;
+          case 'medida-proporcional':
+            instrucoesComparativa = 'Use "na medida em que..." para mostrar proporcionalidade';
+            break;
+          case 'enquanto-outro':
+            instrucoesComparativa = 'Empregue "enquanto... por outro lado" para contrastar perspectivas';
+            break;
+          case 'tanto-quanto':
+            instrucoesComparativa = 'Use "tanto quanto..." para equiparar importâncias ou intensidades';
+            break;
+          case 'diferente-de':
+            instrucoesComparativa = 'Empregue "diferentemente de..." para destacar contrastes significativos';
+            break;
+          case 'semelhanca-de':
+            instrucoesComparativa = 'Use "à semelhança de..." para criar analogias esclarecedoras';
+            break;
+          default:
+            instrucoesComparativa = 'Estabeleça comparações e analogias claras';
+        }
+        
+        return `Reescreva este texto criando uma estrutura comparativa rica e persuasiva. Use conectivos comparativos variados para estabelecer relações analógicas que fortaleçam a argumentação.
+
+"${text}"
+
+Instrução específica: ${instrucoesComparativa}
+
+Requisitos:
+- Desenvolva analogias esclarecedoras e pertinentes
+- Use conectivos comparativos precisos e variados
+- Mantenha equilíbrio entre os elementos comparados
+- Fortaleça a argumentação através das comparações
+- Use linguagem dissertativa e sofisticada
+
+Responda apenas com o texto reestruturado seguindo a estrutura comparativa indicada.`;
+
+      case 'estrutura-oposicao':
+        const tipoOposicao = config.structureType || 'embora-oposicao';
+        let instrucoesOposicao = '';
+        
+        switch (tipoOposicao) {
+          case 'embora-oposicao':
+            instrucoesOposicao = 'Use "embora..." para apresentar concessão seguida de contraargumento forte';
+            break;
+          case 'apesar-concessao':
+            instrucoesOposicao = 'Empregue "apesar de..." para reconhecer objeções e depois refutá-las';
+            break;
+          case 'conforme-evidencia':
+            instrucoesOposicao = 'Use "conforme demonstra..." para apresentar evidências que comprovam o ponto';
+            break;
+          case 'exemplo-confirmacao':
+            instrucoesOposicao = 'Empregue "exemplificado por..." para dar exemplos concretos que confirmam a tese';
+            break;
+          case 'no-entanto':
+            instrucoesOposicao = 'Use "no entanto..." para criar contraste e apresentar a perspectiva central';
+            break;
+          case 'contudo':
+            instrucoesOposicao = 'Empregue "contudo..." para introduzir adversidade e depois superá-la argumentativamente';
+            break;
+          case 'por-sua-vez':
+            instrucoesOposicao = 'Use "por sua vez..." para apresentar alternativa ou complemento à ideia inicial';
+            break;
+          case 'entretanto':
+            instrucoesOposicao = 'Empregue "entretanto..." para introduzir ressalva importante e depois desenvolver';
+            break;
+          default:
+            instrucoesOposicao = 'Crie estrutura de concessão e oposição equilibrada';
+        }
+        
+        return `Reescreva este texto criando uma estrutura de oposição sofisticada que demonstre maturidade argumentativa. Reconheça perspectivas contrárias de forma respeitosa antes de apresentar seu posicionamento fundamentado.
+
+"${text}"
+
+Instrução específica: ${instrucoesOposicao}
+
+Requisitos:
+- Apresente concessões ou contrapontos de forma equilibrada
+- Use conectivos adversativos e concessivos apropriados
+- Desenvolva argumentação madura e reflexiva
+- Demonstre conhecimento de múltiplas perspectivas
+- Fortaleça sua tese através do reconhecimento de limitações
+- Mantenha tom acadêmico e respeitoso
+
+Responda apenas com o texto reestruturado seguindo a estrutura de oposição indicada.`;
+
       default:
         throw new Error(`Tipo de modificação não suportado: ${type}`);
     }
