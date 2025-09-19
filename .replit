@@ -15,10 +15,6 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 38427
-externalPort = 3000
-
-[[ports]]
 localPort = 43271
 externalPort = 3002
 
@@ -46,7 +42,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
+args = "export GEMINI_API_KEY=\"AIzaSyDi4JqFjFfI-w1AgTvMdXnNL27xbu9_9tI\" && npm run dev"
 waitForPort = 5000
 
 [agent]
