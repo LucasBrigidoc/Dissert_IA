@@ -634,7 +634,7 @@ export default function ControladorEscrita() {
                   >
                     <span className="flex items-center gap-2">
                       <HelpCircle className="h-3 w-3" />
-                      Como usar a Reescrita?
+                      Como usar
                     </span>
                     {helpSections.formalidade ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                   </Button>
@@ -726,7 +726,7 @@ export default function ControladorEscrita() {
                   >
                     <span className="flex items-center gap-2">
                       <HelpCircle className="h-3 w-3" />
-                      Como usar Estruturas Causais?
+                      Como usar
                     </span>
                     {helpSections['estrutura-causal'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                   </Button>
@@ -818,7 +818,7 @@ export default function ControladorEscrita() {
                   >
                     <span className="flex items-center gap-2">
                       <HelpCircle className="h-3 w-3" />
-                      Como usar Estruturas Comparativas?
+                      Como usar
                     </span>
                     {helpSections['estrutura-comparativa'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                   </Button>
@@ -910,7 +910,7 @@ export default function ControladorEscrita() {
                   >
                     <span className="flex items-center gap-2">
                       <HelpCircle className="h-3 w-3" />
-                      Como usar Estruturas de Oposição?
+                      Como usar
                     </span>
                     {helpSections['estrutura-oposicao'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                   </Button>
