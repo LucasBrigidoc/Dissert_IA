@@ -40,7 +40,6 @@ export default function ControladorEscrita() {
   
   // Estados para os controles
   const [formalityLevel, setFormalityLevel] = useState([50]);
-  const [argumentativeLevel, setArgumentativeLevel] = useState([50]);
   
   // Estado para o tipo de modificação atual
   const [modificationType, setModificationType] = useState<TextModificationType | "">("");
@@ -87,23 +86,33 @@ export default function ControladorEscrita() {
   const applyLocalModification = (text: string, type: string): string => {
     switch (type) {
       case 'formalidade':
-        if (formalityLevel[0] > 70) {
-          return text
-            .replace(/\bvocê\b/g, "Vossa Senhoria")
-            .replace(/\btá\b/g, "está")
-            .replace(/\bpra\b/g, "para")
-            .replace(/\bfazer\b/g, "realizar")
-            .replace(/\bver\b/g, "analisar")
-            .replace(/\bcoisa\b/g, "elemento");
-        } else if (formalityLevel[0] < 30) {
-          return text
-            .replace(/\bVossa Senhoria\b/g, "você")
-            .replace(/\bestá\b/g, "tá")
-            .replace(/\bpara\b/g, "pra")
-            .replace(/\brealizar\b/g, "fazer")
-            .replace(/\banalisar\b/g, "ver");
+        if (meaningPreservation === 'change') {
+          // Mudança de sentido: inverte a perspectiva
+          const changedText = text.replace(/\bimportante\b/g, "secundário")
+            .replace(/\bpositivo\b/g, "negativo")
+            .replace(/\bbom\b/g, "problemático")
+            .replace(/\bnecessário\b/g, "dispensável");
+          return formalityLevel[0] > 70 ? changedText.replace(/\bvocê\b/g, "Vossa Senhoria") : changedText;
+        } else {
+          // Preserva sentido: apenas ajusta formalidade
+          if (formalityLevel[0] > 70) {
+            return text
+              .replace(/\bvocê\b/g, "Vossa Senhoria")
+              .replace(/\btá\b/g, "está")
+              .replace(/\bpra\b/g, "para")
+              .replace(/\bfazer\b/g, "realizar")
+              .replace(/\bver\b/g, "analisar")
+              .replace(/\bcoisa\b/g, "elemento");
+          } else if (formalityLevel[0] < 30) {
+            return text
+              .replace(/\bVossa Senhoria\b/g, "você")
+              .replace(/\bestá\b/g, "tá")
+              .replace(/\bpara\b/g, "pra")
+              .replace(/\brealizar\b/g, "fazer")
+              .replace(/\banalisar\b/g, "ver");
+          }
+          return text;
         }
-        return text;
         
       case 'estrutura-causal':
         return `${text} devido a questões fundamentais, uma vez que os dados demonstram a necessidade de análise aprofundada.`;
@@ -235,6 +244,7 @@ export default function ControladorEscrita() {
       if (type === 'formalidade') {
         config.formalityLevel = formalityLevel[0];
         config.wordDifficulty = wordDifficulty;
+        config.meaningPreservation = meaningPreservation;
       } else if (type.includes('estrutura-')) {
         config.structureType = structureType;
         config.selectedStructure = selectedStructure;
@@ -281,57 +291,8 @@ export default function ControladorEscrita() {
       
       let processedText = originalText;
       
-      switch (type) {
-        case 'formalidade':
-          if (formalityLevel[0] > 70) {
-            processedText = originalText
-              .replace(/\bvocê\b/g, "Vossa Senhoria")
-              .replace(/\btá\b/g, "está")
-              .replace(/\bpra\b/g, "para")
-              .replace(/\bfazer\b/g, "realizar")
-              .replace(/\bver\b/g, "analisar")
-              .replace(/\bcoisa\b/g, "elemento");
-          } else if (formalityLevel[0] < 30) {
-            processedText = originalText
-              .replace(/\bVossa Senhoria\b/g, "você")
-              .replace(/\bestá\b/g, "tá")
-              .replace(/\bpara\b/g, "pra")
-              .replace(/\brealizar\b/g, "fazer")
-              .replace(/\banalisar\b/g, "ver");
-          }
-          break;
-          
-        case 'argumentativo':
-          if (argumentativeLevel[0] > 70) {
-            processedText = `É fundamental compreender que ${originalText.toLowerCase()} Portanto, torna-se evidente a necessidade de uma análise mais aprofundada desta questão.`;
-          } else if (argumentativeLevel[0] < 30) {
-            processedText = `${originalText} Essa é apenas uma perspectiva possível sobre o assunto.`;
-          } else {
-            processedText = `Considerando que ${originalText.toLowerCase()}, pode-se argumentar que esta questão merece atenção especial.`;
-          }
-          break;
-          
-        case 'sinonimos':
-          processedText = originalText
-            .replace(/\bbom\b/g, "excelente")
-            .replace(/\bgrande\b/g, "amplo")
-            .replace(/\bpequeno\b/g, "reduzido")
-            .replace(/\bimportante\b/g, "relevante")
-            .replace(/\bproblema\b/g, "questão")
-            .replace(/\bsolução\b/g, "resolução");
-          break;
-          
-        case 'antonimos':
-          processedText = originalText
-            .replace(/\bbom\b/g, "ruim")
-            .replace(/\bgrande\b/g, "pequeno")
-            .replace(/\bpequeno\b/g, "grande")
-            .replace(/\bfácil\b/g, "difícil")
-            .replace(/\bdifícil\b/g, "fácil")
-            .replace(/\bpositivo\b/g, "negativo")
-            .replace(/\bsucesso\b/g, "fracasso");
-          break;
-      }
+      // Use the same local modification logic as in applyLocalModification
+      processedText = applyLocalModification(originalText, type);
       
       setModifiedText(processedText);
       
