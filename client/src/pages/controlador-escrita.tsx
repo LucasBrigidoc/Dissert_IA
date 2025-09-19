@@ -534,17 +534,17 @@ export default function ControladorEscrita() {
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-sky-50/50 to-sky-100/50 border-sky-200 hover:border-sky-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-sky-200' : ''}`}
+            className={`min-h-[100px] md:h-[480px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-sky-50/50 to-sky-100/50 border-sky-200 hover:border-sky-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-sky-200' : ''}`}
             onClick={isMobile ? () => toggleCard('formalidade') : undefined}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between h-12">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-sky-500 to-sky-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <FileText className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Reescrita</h3>
-                  <p className="text-xs text-soft-gray">Ajuste o nível e sentido</p>
+                  <h3 className="text-xs font-semibold text-dark-blue leading-tight">Reescrita</h3>
+                  <p className="text-xs text-soft-gray leading-tight">Ajuste o nível e sentido</p>
                 </div>
               </div>
               {isMobile && (expandedCards.includes('formalidade') ? (
@@ -664,17 +664,17 @@ export default function ControladorEscrita() {
 
           {/* Card de Estruturas Causais */}
           <div 
-            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-emerald-50/50 to-emerald-100/50 border-emerald-200 hover:border-emerald-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-causal') ? 'ring-2 ring-emerald-200' : ''}`}
+            className={`min-h-[100px] md:h-[480px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-emerald-50/50 to-emerald-100/50 border-emerald-200 hover:border-emerald-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-causal') ? 'ring-2 ring-emerald-200' : ''}`}
             onClick={isMobile ? () => toggleCard('estrutura-causal') : undefined}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between h-12">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Target className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Estruturas Causais</h3>
-                  <p className="text-xs text-soft-gray">Causa e consequência</p>
+                  <h3 className="text-xs font-semibold text-dark-blue leading-tight">Estruturas Causais</h3>
+                  <p className="text-xs text-soft-gray leading-tight">Causa e consequência</p>
                 </div>
               </div>
               {isMobile && (expandedCards.includes('estrutura-causal') ? (
@@ -777,17 +777,17 @@ export default function ControladorEscrita() {
 
           {/* Card de Estruturas Comparativas */}
           <div 
-            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-purple-50/50 to-purple-100/50 border-purple-200 hover:border-purple-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-comparativa') ? 'ring-2 ring-purple-200' : ''}`}
+            className={`min-h-[100px] md:h-[480px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-purple-50/50 to-purple-100/50 border-purple-200 hover:border-purple-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-comparativa') ? 'ring-2 ring-purple-200' : ''}`}
             onClick={isMobile ? () => toggleCard('estrutura-comparativa') : undefined}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between h-12">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Shuffle className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Estruturas Comparativas</h3>
-                  <p className="text-xs text-soft-gray">Comparações e condições</p>
+                  <h3 className="text-xs font-semibold text-dark-blue leading-tight">Estruturas Comparativas</h3>
+                  <p className="text-xs text-soft-gray leading-tight">Comparações e condições</p>
                 </div>
               </div>
               {isMobile && (expandedCards.includes('estrutura-comparativa') ? (
@@ -894,17 +894,17 @@ export default function ControladorEscrita() {
 
           {/* Card de Estruturas de Oposição */}
           <div 
-            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-amber-50/50 to-amber-100/50 border-amber-200 hover:border-amber-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-oposicao') ? 'ring-2 ring-amber-200' : ''}`}
+            className={`min-h-[100px] md:h-[480px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-amber-50/50 to-amber-100/50 border-amber-200 hover:border-amber-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-oposicao') ? 'ring-2 ring-amber-200' : ''}`}
             onClick={isMobile ? () => toggleCard('estrutura-oposicao') : undefined}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between h-12">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <BookOpen className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Estruturas de Oposição</h3>
-                  <p className="text-xs text-soft-gray">Concessão e explicação</p>
+                  <h3 className="text-xs font-semibold text-dark-blue leading-tight">Estruturas de Oposição</h3>
+                  <p className="text-xs text-soft-gray leading-tight">Concessão e explicação</p>
                 </div>
               </div>
               {isMobile && (expandedCards.includes('estrutura-oposicao') ? (
