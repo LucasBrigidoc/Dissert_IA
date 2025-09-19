@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target } from "lucide-react";
+import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target, HelpCircle, Lightbulb, Search, ExternalLink } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -57,6 +59,103 @@ export default function ControladorEscrita() {
   // Estados para estruturas dissertativas
   const [selectedStructure, setSelectedStructure] = useState<string>("causal");
   const [structureType, setStructureType] = useState<string>("tese-argumento");
+  
+  // Estados para integração com repertório
+  const [suggestedRepertoires, setSuggestedRepertoires] = useState<any[]>([]);
+  const [isLoadingRepertoires, setIsLoadingRepertoires] = useState(false);
+  
+  // Estados para feedback e ajuda
+  const [feedbackText, setFeedbackText] = useState<string>("");
+  const [helpSections, setHelpSections] = useState<{ [key: string]: boolean }>({});
+  
+  // Função para alternar seções de ajuda
+  const toggleHelpSection = (cardId: string) => {
+    setHelpSections(prev => ({
+      ...prev,
+      [cardId]: !prev[cardId]
+    }));
+  };
+  
+  // Função para buscar repertórios relevantes
+  const fetchRelevantRepertoires = async (text: string, modifications: string[]) => {
+    if (!text.trim() || modifications.length === 0) {
+      setSuggestedRepertoires([]);
+      return;
+    }
+    
+    setIsLoadingRepertoires(true);
+    try {
+      // Extrair palavras-chave do texto para busca
+      const keywords = text.toLowerCase()
+        .split(/\s+/)
+        .filter(word => word.length > 3)
+        .slice(0, 5)
+        .join(' ');
+      
+      // Determinar categoria baseada nas modificações aplicadas
+      let category = 'education';
+      if (modifications.includes('estrutura-causal')) {
+        category = 'social';
+      } else if (modifications.includes('estrutura-comparativa')) {
+        category = 'technology';
+      }
+      
+      const response = await fetch('/api/repertoires/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: keywords,
+          category,
+          popularity: 'popular',
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestedRepertoires(data.results.slice(0, 3)); // Limitar a 3 sugestões
+      }
+    } catch (error) {
+      console.error('Erro ao buscar repertórios:', error);
+    } finally {
+      setIsLoadingRepertoires(false);
+    }
+  };
+  
+  // Função para gerar feedback educativo
+  const generateFeedback = (modifications: string[], textLength: number) => {
+    const feedbacks = [];
+    
+    if (modifications.includes('formalidade')) {
+      const levelText = formalityLevel[0] > 70 ? 'alta formalidade' : formalityLevel[0] < 30 ? 'baixa formalidade' : 'formalidade equilibrada';
+      feedbacks.push(`✅ Ajustado para ${levelText} ${meaningPreservation === 'preserve' ? 'preservando' : 'alterando'} o sentido original`);
+    }
+    
+    if (modifications.includes('estrutura-causal')) {
+      feedbacks.push(`🎯 Aplicada estrutura causal: ${structureType.replace('-', ' → ')} para fortalecer a argumentação`);
+    }
+    
+    if (modifications.includes('estrutura-comparativa')) {
+      feedbacks.push(`🔄 Adicionados conectivos comparativos para estabelecer relações entre ideias`);
+    }
+    
+    if (modifications.includes('estrutura-oposicao')) {
+      feedbacks.push(`⚖️ Incorporada estrutura de oposição para apresentar contrapontos equilibrados`);
+    }
+    
+    if (textLength > 0) {
+      feedbacks.push(`📊 Texto processado: ${textLength} caracteres ${textLength > 500 ? '(extenso, ideal para desenvolvimento)' : '(conciso, bom para introdução)'}`);
+    }
+    
+    if (feedbacks.length > 0) {
+      return feedbacks.join('\n\n');
+    } else if (modifications.length > 0) {
+      return '🔧 Modificações selecionadas: ' + modifications.join(', ') + '\n\n💡 Execute as modificações para ver análises detalhadas das melhorias aplicadas ao seu texto.';
+    } else {
+      return 'Selecione e aplique modificações para ver melhorias detalhadas do seu texto.';
+    }
+  };
 
   // Função para alternar cards expandidos
   const toggleCard = (cardId: string) => {
@@ -202,6 +301,13 @@ export default function ControladorEscrita() {
       
       setModifiedText(processedText);
       setModificationType(appliedModifications.length > 0 ? appliedModifications.join(', ') as TextModificationType : "");
+      
+      // Gerar feedback educativo
+      const activeMods = Array.from(activeModifications);
+      setFeedbackText(generateFeedback(activeMods, processedText.length));
+      
+      // Buscar repertórios relevantes
+      await fetchRelevantRepertoires(originalText, activeMods);
       
       toast({
         title: "Modificações aplicadas com sucesso!",
@@ -516,6 +622,33 @@ export default function ControladorEscrita() {
                     </div>
                   </RadioGroup>
                 </div>
+                
+                {/* Seção de Ajuda */}
+                <div className="mt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleHelpSection('formalidade')}
+                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-blue-50"
+                    data-testid="button-help-formalidade"
+                  >
+                    <span className="flex items-center gap-2">
+                      <HelpCircle className="h-3 w-3" />
+                      Como usar a Reescrita?
+                    </span>
+                    {helpSections.formalidade ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  </Button>
+                  
+                  <Collapsible open={helpSections.formalidade}>
+                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-gray-50 rounded-b-lg">
+                      <div className="space-y-2">
+                        <p><strong>💡 Como usar:</strong> Selecione o nível de formalidade desejado e escolha se quer preservar ou alterar o sentido.</p>
+                        <p><strong>📝 Exemplo:</strong> "É importante estudar" → "É fundamental compreender" (preserva) ou "É dispensável estudar" (altera)</p>
+                        <p><strong>🎯 Ideal para:</strong> Ajustar o registro linguístico e adaptar o texto ao contexto acadêmico ou coloquial.</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
               </div>
             )}
           </div>
@@ -580,6 +713,33 @@ export default function ControladorEscrita() {
                       <Label htmlFor="causa-observacao" className="text-xs">Causa → Observação → Repertório</Label>
                     </div>
                   </RadioGroup>
+                </div>
+                
+                {/* Seção de Ajuda - Estruturas Causais */}
+                <div className="mt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleHelpSection('estrutura-causal')}
+                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-emerald-50"
+                    data-testid="button-help-causal"
+                  >
+                    <span className="flex items-center gap-2">
+                      <HelpCircle className="h-3 w-3" />
+                      Como usar Estruturas Causais?
+                    </span>
+                    {helpSections['estrutura-causal'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  </Button>
+                  
+                  <Collapsible open={helpSections['estrutura-causal']}>
+                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-emerald-50 rounded-b-lg">
+                      <div className="space-y-2">
+                        <p><strong>🎯 Como usar:</strong> Estabeleça relações de causa e efeito no seu texto usando conectivos causais.</p>
+                        <p><strong>📝 Exemplo:</strong> "A desigualdade social" → "A desigualdade social ocorre devido às políticas públicas insuficientes"</p>
+                        <p><strong>🏆 Ideal para:</strong> Problemas sociais, questões ambientais, análises econômicas e temas que envolvem consequências.</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </div>
               </div>
             )}
@@ -646,6 +806,33 @@ export default function ControladorEscrita() {
                     </div>
                   </RadioGroup>
                 </div>
+                
+                {/* Seção de Ajuda - Estruturas Comparativas */}
+                <div className="mt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleHelpSection('estrutura-comparativa')}
+                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-purple-50"
+                    data-testid="button-help-comparativa"
+                  >
+                    <span className="flex items-center gap-2">
+                      <HelpCircle className="h-3 w-3" />
+                      Como usar Estruturas Comparativas?
+                    </span>
+                    {helpSections['estrutura-comparativa'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  </Button>
+                  
+                  <Collapsible open={helpSections['estrutura-comparativa']}>
+                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-purple-50 rounded-b-lg">
+                      <div className="space-y-2">
+                        <p><strong>🔄 Como usar:</strong> Crie comparações e analogias para fortalecer seus argumentos com conectivos comparativos.</p>
+                        <p><strong>📝 Exemplo:</strong> "A educação é fundamental" → "Assim como a água é vital para plantas, a educação é fundamental"</p>
+                        <p><strong>🏆 Ideal para:</strong> Estabelecer paralelos, criar analogias, comparar situações e reforçar argumentos com exemplos similares.</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
               </div>
             )}
           </div>
@@ -710,6 +897,33 @@ export default function ControladorEscrita() {
                       <Label htmlFor="exemplo-confirmacao" className="text-xs">Exemplificado por...</Label>
                     </div>
                   </RadioGroup>
+                </div>
+                
+                {/* Seção de Ajuda - Estruturas de Oposição */}
+                <div className="mt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleHelpSection('estrutura-oposicao')}
+                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-amber-50"
+                    data-testid="button-help-oposicao"
+                  >
+                    <span className="flex items-center gap-2">
+                      <HelpCircle className="h-3 w-3" />
+                      Como usar Estruturas de Oposição?
+                    </span>
+                    {helpSections['estrutura-oposicao'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  </Button>
+                  
+                  <Collapsible open={helpSections['estrutura-oposicao']}>
+                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-amber-50 rounded-b-lg">
+                      <div className="space-y-2">
+                        <p><strong>⚖️ Como usar:</strong> Apresente contrapontos e concessões para criar argumentações mais equilibradas e convincentes.</p>
+                        <p><strong>📝 Exemplo:</strong> "A tecnologia é benéfica" → "Embora a tecnologia traga riscos, seus benefícios superam as desvantagens"</p>
+                        <p><strong>🏆 Ideal para:</strong> Temas polêmicos, debates equilibrados, reconhecer limitações e apresentar visões mais maduras.</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </div>
               </div>
             )}
@@ -810,6 +1024,86 @@ export default function ControladorEscrita() {
             </div>
           </LiquidGlassCard>
         </div>
+
+        {/* Área de Feedback Educativo */}
+        {(modifiedText.trim() || feedbackText || suggestedRepertoires.length > 0 || activeModifications.size > 0) && (
+          <div className="mb-4 sm:mb-6">
+            <LiquidGlassCard className="p-4 sm:p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Lightbulb className="text-white" size={16} />
+                  </div>
+                  <h3 className="text-sm sm:text-lg font-semibold text-dark-blue">
+                    Análise Pedagógica
+                  </h3>
+                </div>
+                
+                {feedbackText && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="text-sm text-dark-blue leading-relaxed whitespace-pre-line">
+                      {feedbackText}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Repertórios Sugeridos */}
+                {suggestedRepertoires.length > 0 && (
+                  <div>
+                    <Separator className="my-4" />
+                    <div className="flex items-center gap-2 mb-3">
+                      <BookOpen className="h-4 w-4 text-dark-blue" />
+                      <h4 className="text-sm font-semibold text-dark-blue">
+                        Repertórios Sugeridos para seu Texto
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {suggestedRepertoires.map((repertoire, index) => (
+                        <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h5 className="text-sm font-medium text-dark-blue truncate">
+                                {repertoire.title}
+                              </h5>
+                              <p className="text-xs text-soft-gray mt-1 line-clamp-2">
+                                {repertoire.description}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {repertoire.type}
+                                </Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {repertoire.category}
+                                </Badge>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 text-dark-blue hover:text-bright-blue"
+                              onClick={() => window.open(`/biblioteca?search=${encodeURIComponent(repertoire.title)}`, '_blank')}
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {isLoadingRepertoires && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="flex items-center gap-2 text-soft-gray">
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      <span className="text-sm">Buscando repertórios relevantes...</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </LiquidGlassCard>
+          </div>
+        )}
       </div>
     </div>
   );
