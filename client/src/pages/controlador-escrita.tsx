@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, Sliders, ThumbsUp, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target } from "lucide-react";
+import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -15,9 +15,7 @@ import type {
   TextModificationConfig, 
   TextModificationResult, 
   TextModificationType,
-  WordDifficulty,
-  ArgumentTechnique,
-  ArgumentStructure 
+  WordDifficulty
 } from "@shared/schema";
 
 export default function ControladorEscrita() {
@@ -55,15 +53,11 @@ export default function ControladorEscrita() {
   
   // Estados para formalidade
   const [wordDifficulty, setWordDifficulty] = useState<WordDifficulty>("medio");
+  const [meaningPreservation, setMeaningPreservation] = useState<"preserve" | "change">("preserve");
   
-  // Estados para argumentação
-  const [argumentStructure, setArgumentStructure] = useState<ArgumentStructure>({
-    repertoire: false,
-    thesis: false,
-    arguments: false,
-    conclusion: false
-  });
-  const [argumentTechnique, setArgumentTechnique] = useState<ArgumentTechnique>("topico-frasal");
+  // Estados para estruturas dissertativas
+  const [selectedStructure, setSelectedStructure] = useState<string>("causal");
+  const [structureType, setStructureType] = useState<string>("tese-argumento");
 
   // Função para alternar cards expandidos
   const toggleCard = (cardId: string) => {
@@ -111,33 +105,17 @@ export default function ControladorEscrita() {
         }
         return text;
         
-      case 'argumentativo':
-        if (argumentativeLevel[0] > 70) {
-          return `É fundamental compreender que ${text.toLowerCase()} Portanto, torna-se evidente a necessidade de uma análise mais aprofundada desta questão.`;
-        } else if (argumentativeLevel[0] < 30) {
-          return `${text} Essa é apenas uma perspectiva possível sobre o assunto.`;
-        } else {
-          return `Considerando que ${text.toLowerCase()}, pode-se argumentar que esta questão merece atenção especial.`;
-        }
+      case 'estrutura-causal':
+        return `${text} devido a questões fundamentais, uma vez que os dados demonstram a necessidade de análise aprofundada.`;
         
-      case 'sinonimos':
-        return text
-          .replace(/\bbom\b/g, "excelente")
-          .replace(/\bgrande\b/g, "amplo")
-          .replace(/\bpequeno\b/g, "reduzido")
-          .replace(/\bimportante\b/g, "relevante")
-          .replace(/\bproblema\b/g, "questão")
-          .replace(/\bsolução\b/g, "resolução");
-          
-      case 'antonimos':
-        return text
-          .replace(/\bbom\b/g, "ruim")
-          .replace(/\bgrande\b/g, "pequeno")
-          .replace(/\bpequeno\b/g, "grande")
-          .replace(/\bfácil\b/g, "difícil")
-          .replace(/\bdifícil\b/g, "fácil")
-          .replace(/\bpositivo\b/g, "negativo")
-          .replace(/\bsucesso\b/g, "fracasso");
+      case 'estrutura-comparativa':
+        return `Assim como observamos em situações similares, também ${text.toLowerCase()}, estabelecendo um paralelo importante.`;
+        
+      case 'estrutura-condicional':
+        return `Se considerarmos que ${text.toLowerCase()}, então podemos concluir que esta análise é fundamental.`;
+        
+      case 'estrutura-oposicao':
+        return `Embora existam perspectivas contrárias, ${text.toLowerCase()}, evidenciando a complexidade da questão.`;
           
       default:
         return text;
@@ -177,10 +155,10 @@ export default function ControladorEscrita() {
         if (modificationType === 'formalidade') {
           config.formalityLevel = formalityLevel[0];
           config.wordDifficulty = wordDifficulty;
-        } else if (modificationType === 'argumentativo') {
-          config.argumentTechnique = argumentTechnique;
-          config.argumentativeLevel = argumentativeLevel[0];
-          config.argumentStructure = argumentStructure;
+          config.meaningPreservation = meaningPreservation;
+        } else if (modificationType.includes('estrutura-')) {
+          config.structureType = structureType;
+          config.selectedStructure = selectedStructure;
         }
         
         try {
@@ -257,10 +235,9 @@ export default function ControladorEscrita() {
       if (type === 'formalidade') {
         config.formalityLevel = formalityLevel[0];
         config.wordDifficulty = wordDifficulty;
-      } else if (type === 'argumentativo') {
-        config.argumentTechnique = argumentTechnique;
-        config.argumentativeLevel = argumentativeLevel[0];
-        config.argumentStructure = argumentStructure;
+      } else if (type.includes('estrutura-')) {
+        config.structureType = structureType;
+        config.selectedStructure = selectedStructure;
       }
       
       console.log(`🤖 Processando texto com IA: ${type}`, config);
@@ -499,8 +476,8 @@ export default function ControladorEscrita() {
                   <FileText className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Formalidade</h3>
-                  <p className="text-xs text-soft-gray">Ajuste o nível formal</p>
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Reescrita</h3>
+                  <p className="text-xs text-soft-gray">Ajuste o nível e sentido</p>
                 </div>
               </div>
               {isMobile && (expandedCards.includes('formalidade') ? (
@@ -522,13 +499,29 @@ export default function ControladorEscrita() {
                     onCheckedChange={() => toggleModification('formalidade')}
                   />
                   <Label htmlFor="formalidade-active" className="text-sm font-medium text-dark-blue">
-                    Incluir ajuste de formalidade
+                    Incluir reescrita
                   </Label>
                 </div>
                 
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Nível: {formalityLevel[0]}%
+                    Preservação do Sentido
+                  </Label>
+                  <RadioGroup value={meaningPreservation} onValueChange={(value) => setMeaningPreservation(value as "preserve" | "change")}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="preserve" id="preserve" />
+                      <Label htmlFor="preserve" className="text-xs">Reescrever sem mudar o sentido</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="change" id="change" />
+                      <Label htmlFor="change" className="text-xs">Reescrever mudando o sentido</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Nível de Formalidade: {formalityLevel[0]}%
                   </Label>
                   <Slider
                     value={formalityLevel}
@@ -545,7 +538,7 @@ export default function ControladorEscrita() {
                 
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Dificuldade das Palavras
+                    Complexidade das Palavras
                   </Label>
                   <RadioGroup value={wordDifficulty} onValueChange={(value) => setWordDifficulty(value as WordDifficulty)}>
                     <div className="flex items-center space-x-2">
@@ -566,220 +559,197 @@ export default function ControladorEscrita() {
             )}
           </div>
 
-          {/* Card de Argumentação */}
+          {/* Card de Estruturas Causais */}
           <div 
-            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-dark-blue/5 to-soft-gray/5 border-dark-blue/20 hover:border-dark-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('argumentacao') ? 'ring-2 ring-dark-blue/20' : ''}`}
-            onClick={isMobile ? () => toggleCard('argumentacao') : undefined}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-emerald-50/50 to-emerald-100/50 border-emerald-200 hover:border-emerald-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-causal') ? 'ring-2 ring-emerald-200' : ''}`}
+            onClick={isMobile ? () => toggleCard('estrutura-causal') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Target className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Organização Dissertativa</h3>
-                  <p className="text-xs text-soft-gray">Estrutura argumentativa</p>
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Estruturas Causais</h3>
+                  <p className="text-xs text-soft-gray">Causa e consequência</p>
                 </div>
               </div>
-              {isMobile && (expandedCards.includes('argumentacao') ? (
+              {isMobile && (expandedCards.includes('estrutura-causal') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               ))}
             </div>
             
-            {(isDesktop || expandedCards.includes('argumentacao')) && (
+            {(isDesktop || expandedCards.includes('estrutura-causal')) && (
               <div 
                 className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox 
-                    id="argumentativo-active" 
-                    checked={activeModifications.has('argumentativo')}
-                    onCheckedChange={() => toggleModification('argumentativo')}
+                    id="estrutura-causal-active" 
+                    checked={activeModifications.has('estrutura-causal')}
+                    onCheckedChange={() => toggleModification('estrutura-causal')}
                   />
-                  <Label htmlFor="argumentativo-active" className="text-sm font-medium text-dark-blue">
-                    Incluir organização dissertativa
+                  <Label htmlFor="estrutura-causal-active" className="text-sm font-medium text-dark-blue">
+                    Aplicar estrutura causal
                   </Label>
                 </div>
                 
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Organização do Parágrafo
+                    Tipo de Estrutura
                   </Label>
-                  <RadioGroup value={argumentTechnique} onValueChange={(value) => setArgumentTechnique(value as ArgumentTechnique)}>
+                  <RadioGroup value={structureType} onValueChange={setStructureType}>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="topico-frasal" id="topico-frasal" />
-                      <Label htmlFor="topico-frasal" className="text-xs">Tópico Frasal + Desenvolvimento</Label>
+                      <RadioGroupItem value="tese-argumento" id="tese-argumento" />
+                      <Label htmlFor="tese-argumento" className="text-xs">Tese → Argumento → Repertório</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="tese-antitese" id="tese-antitese" />
-                      <Label htmlFor="tese-antitese" className="text-xs">Tese → Antítese → Síntese</Label>
+                      <RadioGroupItem value="problema-causa" id="problema-causa" />
+                      <Label htmlFor="problema-causa" className="text-xs">Problema → Causa → Dados</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="causa-consequencia" id="causa-consequencia" />
-                      <Label htmlFor="causa-consequencia" className="text-xs">Causa → Consequência</Label>
+                      <RadioGroupItem value="topico-consequencia" id="topico-consequencia" />
+                      <Label htmlFor="topico-consequencia" className="text-xs">Tópico → Consequência → Repertório</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="problema-solucao" id="problema-solucao" />
-                      <Label htmlFor="problema-solucao" className="text-xs">Problema → Solução</Label>
+                      <RadioGroupItem value="causa-observacao" id="causa-observacao" />
+                      <Label htmlFor="causa-observacao" className="text-xs">Causa → Observação → Repertório</Label>
                     </div>
                   </RadioGroup>
                 </div>
-                
-                <div>
-                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Elementos do Parágrafo
-                  </Label>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="repertoire" 
-                        checked={argumentStructure.repertoire}
-                        onCheckedChange={(checked) => 
-                          setArgumentStructure(prev => ({...prev, repertoire: !!checked}))
-                        }
-                      />
-                      <Label htmlFor="repertoire" className="text-xs">Inserir Repertório Legitimador</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="thesis" 
-                        checked={argumentStructure.thesis}
-                        onCheckedChange={(checked) => 
-                          setArgumentStructure(prev => ({...prev, thesis: !!checked}))
-                        }
-                      />
-                      <Label htmlFor="thesis" className="text-xs">Conectar com a Tese</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="arguments" 
-                        checked={argumentStructure.arguments}
-                        onCheckedChange={(checked) => 
-                          setArgumentStructure(prev => ({...prev, arguments: !!checked}))
-                        }
-                      />
-                      <Label htmlFor="arguments" className="text-xs">Desenvolver Argumentação</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="conclusion" 
-                        checked={argumentStructure.conclusion}
-                        onCheckedChange={(checked) => 
-                          setArgumentStructure(prev => ({...prev, conclusion: !!checked}))
-                        }
-                      />
-                      <Label htmlFor="conclusion" className="text-xs">Arremate Conclusivo</Label>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Intensidade: {argumentativeLevel[0]}%
-                  </Label>
-                  <Slider
-                    value={argumentativeLevel}
-                    onValueChange={setArgumentativeLevel}
-                    max={100}
-                    step={10}
-                    className="mb-2"
-                  />
-                  <div className="flex justify-between text-xs text-soft-gray">
-                    <span>Descritivo</span>
-                    <span>Persuasivo</span>
-                  </div>
-                </div>
               </div>
             )}
           </div>
 
-          {/* Card de Sinônimos */}
+          {/* Card de Estruturas Comparativas */}
           <div 
-            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-green-50/50 to-green-100/50 border-green-200 hover:border-green-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('sinonimos') ? 'ring-2 ring-green-200' : ''}`}
-            onClick={isMobile ? () => toggleCard('sinonimos') : undefined}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-purple-50/50 to-purple-100/50 border-purple-200 hover:border-purple-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-comparativa') ? 'ring-2 ring-purple-200' : ''}`}
+            onClick={isMobile ? () => toggleCard('estrutura-comparativa') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <RefreshCw className="text-white" size={14} />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Sinônimos</h3>
-                  <p className="text-xs text-soft-gray">Mantém o sentido</p>
-                </div>
-              </div>
-              {isMobile && (expandedCards.includes('sinonimos') ? (
-                <ChevronUp className="h-4 w-4 text-soft-gray" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-soft-gray" />
-              ))}
-            </div>
-            
-            {(isDesktop || expandedCards.includes('sinonimos')) && (
-              <div 
-                className="mt-4 pt-4 border-t border-gray-200 flex-1 overflow-y-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <Checkbox 
-                    id="sinonimos-active" 
-                    checked={activeModifications.has('sinonimos')}
-                    onCheckedChange={() => toggleModification('sinonimos')}
-                  />
-                  <Label htmlFor="sinonimos-active" className="text-sm font-medium text-dark-blue">
-                    Incluir substituição por sinônimos
-                  </Label>
-                </div>
-                <p className="text-xs text-soft-gray mb-4">
-                  Substitui palavras por sinônimos para enriquecer o vocabulário.
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Card de Antônimos */}
-          <div 
-            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-orange-50/50 to-orange-100/50 border-orange-200 hover:border-orange-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('antonimos') ? 'ring-2 ring-orange-200' : ''}`}
-            onClick={isMobile ? () => toggleCard('antonimos') : undefined}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Shuffle className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Antônimos</h3>
-                  <p className="text-xs text-soft-gray">Inverte o sentido</p>
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Estruturas Comparativas</h3>
+                  <p className="text-xs text-soft-gray">Comparações e condições</p>
                 </div>
               </div>
-              {isMobile && (expandedCards.includes('antonimos') ? (
+              {isMobile && (expandedCards.includes('estrutura-comparativa') ? (
                 <ChevronUp className="h-4 w-4 text-soft-gray" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-soft-gray" />
               ))}
             </div>
             
-            {(isDesktop || expandedCards.includes('antonimos')) && (
+            {(isDesktop || expandedCards.includes('estrutura-comparativa')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 flex-1 overflow-y-auto"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox 
-                    id="antonimos-active" 
-                    checked={activeModifications.has('antonimos')}
-                    onCheckedChange={() => toggleModification('antonimos')}
+                    id="estrutura-comparativa-active" 
+                    checked={activeModifications.has('estrutura-comparativa')}
+                    onCheckedChange={() => toggleModification('estrutura-comparativa')}
                   />
-                  <Label htmlFor="antonimos-active" className="text-sm font-medium text-dark-blue">
-                    Incluir substituição por antônimos
+                  <Label htmlFor="estrutura-comparativa-active" className="text-sm font-medium text-dark-blue">
+                    Aplicar estrutura comparativa
                   </Label>
                 </div>
-                <p className="text-xs text-soft-gray mb-4">
-                  Substitui palavras por antônimos para explorar o argumento oposto.
-                </p>
+                
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Tipo de Estrutura
+                  </Label>
+                  <RadioGroup value={structureType} onValueChange={setStructureType}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="comparacao-paralela" id="comparacao-paralela" />
+                      <Label htmlFor="comparacao-paralela" className="text-xs">Assim como... também</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="forma-similar" id="forma-similar" />
+                      <Label htmlFor="forma-similar" className="text-xs">Da mesma forma que...</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="condicional-se" id="condicional-se" />
+                      <Label htmlFor="condicional-se" className="text-xs">Se... então</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="medida-proporcional" id="medida-proporcional" />
+                      <Label htmlFor="medida-proporcional" className="text-xs">Na medida em que...</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Card de Estruturas de Oposição */}
+          <div 
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-amber-50/50 to-amber-100/50 border-amber-200 hover:border-amber-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-oposicao') ? 'ring-2 ring-amber-200' : ''}`}
+            onClick={isMobile ? () => toggleCard('estrutura-oposicao') : undefined}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="text-white" size={14} />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Estruturas de Oposição</h3>
+                  <p className="text-xs text-soft-gray">Concessão e explicação</p>
+                </div>
+              </div>
+              {isMobile && (expandedCards.includes('estrutura-oposicao') ? (
+                <ChevronUp className="h-4 w-4 text-soft-gray" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-soft-gray" />
+              ))}
+            </div>
+            
+            {(isDesktop || expandedCards.includes('estrutura-oposicao')) && (
+              <div 
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Checkbox 
+                    id="estrutura-oposicao-active" 
+                    checked={activeModifications.has('estrutura-oposicao')}
+                    onCheckedChange={() => toggleModification('estrutura-oposicao')}
+                  />
+                  <Label htmlFor="estrutura-oposicao-active" className="text-sm font-medium text-dark-blue">
+                    Aplicar estrutura de oposição
+                  </Label>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-medium text-dark-blue mb-2 block">
+                    Tipo de Estrutura
+                  </Label>
+                  <RadioGroup value={structureType} onValueChange={setStructureType}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="embora-oposicao" id="embora-oposicao" />
+                      <Label htmlFor="embora-oposicao" className="text-xs">Embora... [contraargumento]</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="apesar-concessao" id="apesar-concessao" />
+                      <Label htmlFor="apesar-concessao" className="text-xs">Apesar de... [objeção]</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="conforme-evidencia" id="conforme-evidencia" />
+                      <Label htmlFor="conforme-evidencia" className="text-xs">Conforme demonstra...</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="exemplo-confirmacao" id="exemplo-confirmacao" />
+                      <Label htmlFor="exemplo-confirmacao" className="text-xs">Exemplificado por...</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
               </div>
             )}
           </div>
