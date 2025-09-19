@@ -534,7 +534,7 @@ export default function ControladorEscrita() {
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[100px] md:h-[520px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-sky-50/50 to-sky-100/50 border-sky-200 hover:border-sky-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-sky-200' : ''}`}
+            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-sky-50/50 to-sky-100/50 border-sky-200 hover:border-sky-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-sky-200' : ''}`}
             onClick={isMobile ? () => toggleCard('formalidade') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -543,7 +543,7 @@ export default function ControladorEscrita() {
                   <FileText className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Reescrita</h3>
+                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Reescrita</h3>
                   <p className="text-xs text-soft-gray">Ajuste o nível e sentido</p>
                 </div>
               </div>
@@ -556,9 +556,31 @@ export default function ControladorEscrita() {
             
             {(isDesktop || expandedCards.includes('formalidade')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 relative"
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* Seção de Ajuda sobreposta */}
+                {helpSections.formalidade && (
+                  <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 p-4 rounded-lg border border-sky-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-dark-blue">Como usar Reescrita</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleHelpSection('formalidade')}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="space-y-3 text-xs text-soft-gray">
+                      <p><strong>💡 Como usar:</strong> Selecione o nível de formalidade desejado e escolha se quer preservar ou alterar o sentido.</p>
+                      <p><strong>📝 Exemplo:</strong> "É importante estudar" → "É fundamental compreender" (preserva) ou "É dispensável estudar" (altera)</p>
+                      <p><strong>🎯 Ideal para:</strong> Ajustar o registro linguístico e adaptar o texto ao contexto acadêmico ou coloquial.</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox 
                     id="formalidade-active" 
@@ -623,31 +645,18 @@ export default function ControladorEscrita() {
                   </RadioGroup>
                 </div>
                 
-                {/* Seção de Ajuda */}
-                <div className="mt-4">
+                {/* Botão de Ajuda */}
+                <div className="mt-auto pt-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleHelpSection('formalidade')}
-                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-sky-50"
+                    className="w-full flex items-center justify-center gap-2 p-2 text-xs text-dark-blue hover:bg-sky-50"
                     data-testid="button-help-formalidade"
                   >
-                    <span className="flex items-center gap-2">
-                      <HelpCircle className="h-3 w-3" />
-                      Como usar
-                    </span>
-                    {helpSections.formalidade ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    <HelpCircle className="h-3 w-3" />
+                    Como usar
                   </Button>
-                  
-                  <Collapsible open={helpSections.formalidade}>
-                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-gray-50 rounded-b-lg">
-                      <div className="space-y-2">
-                        <p><strong>💡 Como usar:</strong> Selecione o nível de formalidade desejado e escolha se quer preservar ou alterar o sentido.</p>
-                        <p><strong>📝 Exemplo:</strong> "É importante estudar" → "É fundamental compreender" (preserva) ou "É dispensável estudar" (altera)</p>
-                        <p><strong>🎯 Ideal para:</strong> Ajustar o registro linguístico e adaptar o texto ao contexto acadêmico ou coloquial.</p>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
                 </div>
               </div>
             )}
@@ -655,7 +664,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Estruturas Causais */}
           <div 
-            className={`min-h-[100px] md:h-[520px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-emerald-50/50 to-emerald-100/50 border-emerald-200 hover:border-emerald-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-causal') ? 'ring-2 ring-emerald-200' : ''}`}
+            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-emerald-50/50 to-emerald-100/50 border-emerald-200 hover:border-emerald-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-causal') ? 'ring-2 ring-emerald-200' : ''}`}
             onClick={isMobile ? () => toggleCard('estrutura-causal') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -664,7 +673,7 @@ export default function ControladorEscrita() {
                   <Target className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Estruturas Causais</h3>
+                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Estruturas Causais</h3>
                   <p className="text-xs text-soft-gray">Causa e consequência</p>
                 </div>
               </div>
@@ -677,9 +686,31 @@ export default function ControladorEscrita() {
             
             {(isDesktop || expandedCards.includes('estrutura-causal')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 relative"
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* Seção de Ajuda sobreposta */}
+                {helpSections['estrutura-causal'] && (
+                  <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 p-4 rounded-lg border border-emerald-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-dark-blue">Como usar Estruturas Causais</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleHelpSection('estrutura-causal')}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="space-y-3 text-xs text-soft-gray">
+                      <p><strong>🎯 Como usar:</strong> Estabeleça relações de causa e efeito no seu texto usando conectivos causais.</p>
+                      <p><strong>📝 Exemplo:</strong> "A desigualdade social" → "A desigualdade social ocorre devido às políticas públicas insuficientes"</p>
+                      <p><strong>🏆 Ideal para:</strong> Problemas sociais, questões ambientais, análises econômicas e temas que envolvem consequências.</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox 
                     id="estrutura-causal-active" 
@@ -727,31 +758,18 @@ export default function ControladorEscrita() {
                   </RadioGroup>
                 </div>
                 
-                {/* Seção de Ajuda - Estruturas Causais */}
-                <div className="mt-4">
+                {/* Botão de Ajuda */}
+                <div className="mt-auto pt-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleHelpSection('estrutura-causal')}
-                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-emerald-50"
+                    className="w-full flex items-center justify-center gap-2 p-2 text-xs text-dark-blue hover:bg-emerald-50"
                     data-testid="button-help-causal"
                   >
-                    <span className="flex items-center gap-2">
-                      <HelpCircle className="h-3 w-3" />
-                      Como usar
-                    </span>
-                    {helpSections['estrutura-causal'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    <HelpCircle className="h-3 w-3" />
+                    Como usar
                   </Button>
-                  
-                  <Collapsible open={helpSections['estrutura-causal']}>
-                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-emerald-50 rounded-b-lg">
-                      <div className="space-y-2">
-                        <p><strong>🎯 Como usar:</strong> Estabeleça relações de causa e efeito no seu texto usando conectivos causais.</p>
-                        <p><strong>📝 Exemplo:</strong> "A desigualdade social" → "A desigualdade social ocorre devido às políticas públicas insuficientes"</p>
-                        <p><strong>🏆 Ideal para:</strong> Problemas sociais, questões ambientais, análises econômicas e temas que envolvem consequências.</p>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
                 </div>
               </div>
             )}
@@ -759,7 +777,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Estruturas Comparativas */}
           <div 
-            className={`min-h-[100px] md:h-[520px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-purple-50/50 to-purple-100/50 border-purple-200 hover:border-purple-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-comparativa') ? 'ring-2 ring-purple-200' : ''}`}
+            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-purple-50/50 to-purple-100/50 border-purple-200 hover:border-purple-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-comparativa') ? 'ring-2 ring-purple-200' : ''}`}
             onClick={isMobile ? () => toggleCard('estrutura-comparativa') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -768,7 +786,7 @@ export default function ControladorEscrita() {
                   <Shuffle className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Estruturas Comparativas</h3>
+                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Estruturas Comparativas</h3>
                   <p className="text-xs text-soft-gray">Comparações e condições</p>
                 </div>
               </div>
@@ -781,9 +799,31 @@ export default function ControladorEscrita() {
             
             {(isDesktop || expandedCards.includes('estrutura-comparativa')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 relative"
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* Seção de Ajuda sobreposta */}
+                {helpSections['estrutura-comparativa'] && (
+                  <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 p-4 rounded-lg border border-purple-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-dark-blue">Como usar Estruturas Comparativas</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleHelpSection('estrutura-comparativa')}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="space-y-3 text-xs text-soft-gray">
+                      <p><strong>🔄 Como usar:</strong> Crie comparações e analogias para fortalecer seus argumentos com conectivos comparativos.</p>
+                      <p><strong>📝 Exemplo:</strong> "A educação é fundamental" → "Assim como a água é vital para plantas, a educação é fundamental"</p>
+                      <p><strong>🏆 Ideal para:</strong> Estabelecer paralelos, criar analogias, comparar situações e reforçar argumentos com exemplos similares.</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox 
                     id="estrutura-comparativa-active" 
@@ -835,31 +875,18 @@ export default function ControladorEscrita() {
                   </RadioGroup>
                 </div>
                 
-                {/* Seção de Ajuda - Estruturas Comparativas */}
-                <div className="mt-4">
+                {/* Botão de Ajuda */}
+                <div className="mt-auto pt-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleHelpSection('estrutura-comparativa')}
-                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-purple-50"
+                    className="w-full flex items-center justify-center gap-2 p-2 text-xs text-dark-blue hover:bg-purple-50"
                     data-testid="button-help-comparativa"
                   >
-                    <span className="flex items-center gap-2">
-                      <HelpCircle className="h-3 w-3" />
-                      Como usar
-                    </span>
-                    {helpSections['estrutura-comparativa'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    <HelpCircle className="h-3 w-3" />
+                    Como usar
                   </Button>
-                  
-                  <Collapsible open={helpSections['estrutura-comparativa']}>
-                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-purple-50 rounded-b-lg">
-                      <div className="space-y-2">
-                        <p><strong>🔄 Como usar:</strong> Crie comparações e analogias para fortalecer seus argumentos com conectivos comparativos.</p>
-                        <p><strong>📝 Exemplo:</strong> "A educação é fundamental" → "Assim como a água é vital para plantas, a educação é fundamental"</p>
-                        <p><strong>🏆 Ideal para:</strong> Estabelecer paralelos, criar analogias, comparar situações e reforçar argumentos com exemplos similares.</p>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
                 </div>
               </div>
             )}
@@ -867,7 +894,7 @@ export default function ControladorEscrita() {
 
           {/* Card de Estruturas de Oposição */}
           <div 
-            className={`min-h-[100px] md:h-[520px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-amber-50/50 to-amber-100/50 border-amber-200 hover:border-amber-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-oposicao') ? 'ring-2 ring-amber-200' : ''}`}
+            className={`min-h-[100px] md:h-[620px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-amber-50/50 to-amber-100/50 border-amber-200 hover:border-amber-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('estrutura-oposicao') ? 'ring-2 ring-amber-200' : ''}`}
             onClick={isMobile ? () => toggleCard('estrutura-oposicao') : undefined}
           >
             <div className="flex items-center justify-between">
@@ -876,7 +903,7 @@ export default function ControladorEscrita() {
                   <BookOpen className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue">Estruturas de Oposição</h3>
+                  <h3 className="text-xs sm:text-sm font-semibold text-dark-blue">Estruturas de Oposição</h3>
                   <p className="text-xs text-soft-gray">Concessão e explicação</p>
                 </div>
               </div>
@@ -889,9 +916,31 @@ export default function ControladorEscrita() {
             
             {(isDesktop || expandedCards.includes('estrutura-oposicao')) && (
               <div 
-                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 overflow-y-auto"
+                className="mt-4 pt-4 border-t border-gray-200 space-y-4 flex-1 relative"
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* Seção de Ajuda sobreposta */}
+                {helpSections['estrutura-oposicao'] && (
+                  <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 p-4 rounded-lg border border-amber-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-dark-blue">Como usar Estruturas de Oposição</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleHelpSection('estrutura-oposicao')}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="space-y-3 text-xs text-soft-gray">
+                      <p><strong>⚖️ Como usar:</strong> Apresente contrapontos e concessões para criar argumentações mais equilibradas e convincentes.</p>
+                      <p><strong>📝 Exemplo:</strong> "A tecnologia é benéfica" → "Embora a tecnologia traga riscos, seus benefícios superam as desvantagens"</p>
+                      <p><strong>🏆 Ideal para:</strong> Temas polêmicos, debates equilibrados, reconhecer limitações e apresentar visões mais maduras.</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox 
                     id="estrutura-oposicao-active" 
@@ -943,31 +992,18 @@ export default function ControladorEscrita() {
                   </RadioGroup>
                 </div>
                 
-                {/* Seção de Ajuda - Estruturas de Oposição */}
-                <div className="mt-4">
+                {/* Botão de Ajuda */}
+                <div className="mt-auto pt-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleHelpSection('estrutura-oposicao')}
-                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-amber-50"
+                    className="w-full flex items-center justify-center gap-2 p-2 text-xs text-dark-blue hover:bg-amber-50"
                     data-testid="button-help-oposicao"
                   >
-                    <span className="flex items-center gap-2">
-                      <HelpCircle className="h-3 w-3" />
-                      Como usar
-                    </span>
-                    {helpSections['estrutura-oposicao'] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    <HelpCircle className="h-3 w-3" />
+                    Como usar
                   </Button>
-                  
-                  <Collapsible open={helpSections['estrutura-oposicao']}>
-                    <CollapsibleContent className="px-2 py-3 text-xs text-soft-gray bg-amber-50 rounded-b-lg">
-                      <div className="space-y-2">
-                        <p><strong>⚖️ Como usar:</strong> Apresente contrapontos e concessões para criar argumentações mais equilibradas e convincentes.</p>
-                        <p><strong>📝 Exemplo:</strong> "A tecnologia é benéfica" → "Embora a tecnologia traga riscos, seus benefícios superam as desvantagens"</p>
-                        <p><strong>🏆 Ideal para:</strong> Temas polêmicos, debates equilibrados, reconhecer limitações e apresentar visões mais maduras.</p>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
                 </div>
               </div>
             )}
