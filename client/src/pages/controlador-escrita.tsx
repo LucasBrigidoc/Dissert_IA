@@ -531,15 +531,15 @@ export default function ControladorEscrita() {
         </div>
 
         {/* Controles - Mobile Otimizado */}
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 md:items-stretch">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
-            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-bright-blue/20' : ''}`}
+            className={`min-h-[100px] md:h-[420px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-rose-50/50 to-rose-100/50 border-rose-200 hover:border-rose-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-rose-200' : ''}`}
             onClick={isMobile ? () => toggleCard('formalidade') : undefined}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-rose-500 to-rose-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <FileText className="text-white" size={14} />
                 </div>
                 <div className="min-w-0">
@@ -629,7 +629,7 @@ export default function ControladorEscrita() {
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleHelpSection('formalidade')}
-                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-blue-50"
+                    className="w-full flex items-center justify-between p-2 text-xs text-dark-blue hover:bg-rose-50"
                     data-testid="button-help-formalidade"
                   >
                     <span className="flex items-center gap-2">
