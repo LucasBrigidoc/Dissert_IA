@@ -531,7 +531,7 @@ export default function ControladorEscrita() {
         </div>
 
         {/* Controles - Mobile Otimizado */}
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6 md:items-stretch">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:items-stretch">
           {/* Card de Formalidade */}
           <div 
             className={`min-h-[100px] md:h-[480px] rounded-xl sm:rounded-2xl p-3 sm:p-4 liquid-glass bg-gradient-to-br from-sky-50/50 to-sky-100/50 border-sky-200 hover:border-sky-300 transition-all duration-300 flex flex-col ${isMobile ? 'cursor-pointer' : ''} ${expandedCards.includes('formalidade') ? 'ring-2 ring-sky-200' : ''}`}
