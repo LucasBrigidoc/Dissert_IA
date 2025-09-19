@@ -712,6 +712,18 @@ export default function ControladorEscrita() {
                       <RadioGroupItem value="causa-observacao" id="causa-observacao" />
                       <Label htmlFor="causa-observacao" className="text-xs">Causa → Observação → Repertório</Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="efeito-analise" id="efeito-analise" />
+                      <Label htmlFor="efeito-analise" className="text-xs">Efeito → Análise → Solução</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="fator-impacto" id="fator-impacto" />
+                      <Label htmlFor="fator-impacto" className="text-xs">Fator → Impacto → Contexto</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="origem-desenvolvimento" id="origem-desenvolvimento" />
+                      <Label htmlFor="origem-desenvolvimento" className="text-xs">Origem → Desenvolvimento → Resultado</Label>
+                    </div>
                   </RadioGroup>
                 </div>
                 
@@ -804,6 +816,22 @@ export default function ControladorEscrita() {
                       <RadioGroupItem value="medida-proporcional" id="medida-proporcional" />
                       <Label htmlFor="medida-proporcional" className="text-xs">Na medida em que...</Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="enquanto-outro" id="enquanto-outro" />
+                      <Label htmlFor="enquanto-outro" className="text-xs">Enquanto... por outro lado</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="tanto-quanto" id="tanto-quanto" />
+                      <Label htmlFor="tanto-quanto" className="text-xs">Tanto quanto...</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="diferente-de" id="diferente-de" />
+                      <Label htmlFor="diferente-de" className="text-xs">Diferentemente de...</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="semelhanca-de" id="semelhanca-de" />
+                      <Label htmlFor="semelhanca-de" className="text-xs">À semelhança de...</Label>
+                    </div>
                   </RadioGroup>
                 </div>
                 
@@ -895,6 +923,22 @@ export default function ControladorEscrita() {
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="exemplo-confirmacao" id="exemplo-confirmacao" />
                       <Label htmlFor="exemplo-confirmacao" className="text-xs">Exemplificado por...</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no-entanto" id="no-entanto" />
+                      <Label htmlFor="no-entanto" className="text-xs">No entanto... [contraste]</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="contudo" id="contudo" />
+                      <Label htmlFor="contudo" className="text-xs">Contudo... [adversidade]</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="por-sua-vez" id="por-sua-vez" />
+                      <Label htmlFor="por-sua-vez" className="text-xs">Por sua vez... [alternativa]</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="entretanto" id="entretanto" />
+                      <Label htmlFor="entretanto" className="text-xs">Entretanto... [ressalva]</Label>
                     </div>
                   </RadioGroup>
                 </div>
