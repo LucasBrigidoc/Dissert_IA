@@ -302,11 +302,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
   ];
 
   const [selectedStructure, setSelectedStructure] = useState<EssayStructure | null>(null);
-  
-  // Combinar estruturas predefinidas com estruturas do usuário
-  const allStructures = [...predefinedStructures, ...structures];
-  
-  const selectedPredefinedStructure = selectedStructure && predefinedStructures.find(s => s.id === selectedStructure.id);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'predefined' | 'custom'>('all');
   const [essayTopic, setEssayTopic] = useState("");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -318,6 +314,28 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
   const [usedStructure, setUsedStructure] = useState<EssayStructure | null>(null);
   const [suggestedStructure, setSuggestedStructure] = useState<EssayStructure | null>(null);
   const { toast } = useToast();
+  
+  // Combinar estruturas predefinidas com estruturas do usuário
+  const allStructures = [...predefinedStructures, ...structures];
+  
+  // Aplicar filtros e busca
+  const filteredStructures = allStructures.filter((structure) => {
+    // Filtro por tipo
+    if (activeFilter === 'predefined' && structure.userId !== 'system') return false;
+    if (activeFilter === 'custom' && structure.userId === 'system') return false;
+    
+    // Filtro por busca
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+      return structure.name.toLowerCase().includes(searchLower);
+    }
+    
+    return true;
+  });
+  
+  const filteredPredefined = filteredStructures.filter(s => s.userId === 'system');
+  const filteredCustom = filteredStructures.filter(s => s.userId !== 'system');
+  const selectedPredefinedStructure = selectedStructure && predefinedStructures.find(s => s.id === selectedStructure.id);
 
 
   const generateEssayContent = (structure: EssayStructure, topic: string, instructions: string): string => {
@@ -593,55 +611,102 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               </div>
             </div>
 
-            {/* Busca integrada e Sugestão de Modelo */}
-            <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <div className="relative max-w-md flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-soft-gray" />
-                <Input
-                  placeholder="Buscar estruturas..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                  data-testid="input-buscar-estruturas"
-                />
+            {/* Filtros e Busca */}
+            <div className="mb-6 space-y-4">
+              {/* Botões de Filtro */}
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  variant={activeFilter === 'all' ? 'default' : 'outline'}
+                  onClick={() => setActiveFilter('all')}
+                  className={`${
+                    activeFilter === 'all' 
+                      ? 'bg-bright-blue hover:bg-blue-600 text-white' 
+                      : 'border-bright-blue text-bright-blue hover:bg-bright-blue/10'
+                  }`}
+                  data-testid="button-filter-all"
+                >
+                  Todos os Modelos
+                </Button>
+                <Button
+                  variant={activeFilter === 'predefined' ? 'default' : 'outline'}
+                  onClick={() => setActiveFilter('predefined')}
+                  className={`${
+                    activeFilter === 'predefined' 
+                      ? 'bg-bright-blue hover:bg-blue-600 text-white' 
+                      : 'border-bright-blue text-bright-blue hover:bg-bright-blue/10'
+                  }`}
+                  data-testid="button-filter-predefined"
+                >
+                  Predefinidos
+                </Button>
+                <Button
+                  variant={activeFilter === 'custom' ? 'default' : 'outline'}
+                  onClick={() => setActiveFilter('custom')}
+                  className={`${
+                    activeFilter === 'custom' 
+                      ? 'bg-bright-blue hover:bg-blue-600 text-white' 
+                      : 'border-bright-blue text-bright-blue hover:bg-bright-blue/10'
+                  }`}
+                  data-testid="button-filter-custom"
+                >
+                  Personalizadas
+                </Button>
               </div>
-              <Button
-                onClick={suggestBestModel}
-                variant="outline"
-                className="border-gray-500 text-gray-600 hover:bg-gray-50 flex-shrink-0"
-                data-testid="button-sugerir-modelo"
-              >
-                <Lightbulb className="mr-2 h-4 w-4" />
-                Sugerir Melhor Modelo
-              </Button>
+              
+              {/* Busca e Sugestão */}
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <div className="relative max-w-md flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-soft-gray" />
+                  <Input
+                    placeholder="Buscar estruturas..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                    data-testid="input-buscar-estruturas"
+                  />
+                </div>
+                <Button
+                  onClick={suggestBestModel}
+                  variant="outline"
+                  className={`flex-shrink-0 ${
+                    essayTopic.trim() 
+                      ? 'border-green-500 text-green-600 hover:bg-green-50' 
+                      : 'border-gray-500 text-gray-600 hover:bg-gray-50'
+                  }`}
+                  disabled={!essayTopic.trim()}
+                  data-testid="button-sugerir-modelo"
+                >
+                  <Lightbulb className="mr-2 h-4 w-4" />
+                  Sugerir Melhor Modelo
+                </Button>
+              </div>
             </div>
 
             {/* Modelos Predefinidos */}
-            <div className="mb-6">
-              <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">P</span>
-                Modelos Predefinidos Coringa
-              </h3>
+            {(activeFilter === 'all' || activeFilter === 'predefined') && (
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">P</span>
+                  Modelos Predefinidos Coringa
+                </h3>
               
-              {predefinedStructures.filter(structure =>
-                structure.name.toLowerCase().includes(searchTerm.toLowerCase())
-              ).length === 0 ? (
+              {filteredPredefined.length === 0 ? (
                 <div className="text-center py-6 text-soft-gray">
                   <FileText className="mx-auto h-8 w-8 mb-2 opacity-50" />
                   <p className="text-sm">Nenhum modelo predefinido encontrado</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {predefinedStructures.filter(structure =>
-                    structure.name.toLowerCase().includes(searchTerm.toLowerCase())
-                  ).map((structure) => (
+                  {filteredPredefined.map((structure) => (
                     <Card 
                       key={structure.id}
                       className={`cursor-pointer transition-all hover:shadow-md border-2 ${
-                        selectedStructure?.id === structure.id 
-                          ? 'ring-2 ring-bright-blue bg-bright-blue/5 border-bright-blue' 
+                        selectedStructure?.id === structure.id
+                          ? suggestedStructure?.id === structure.id
+                            ? 'ring-2 ring-green-500 bg-green-50/50 border-green-400'
+                            : 'ring-2 ring-bright-blue bg-bright-blue/5 border-bright-blue'
                           : suggestedStructure?.id === structure.id
-                          ? 'ring-2 ring-gray-500 bg-gray-50/50 border-gray-300'
+                          ? 'ring-2 ring-green-500 bg-green-50/30 border-green-300'
                           : 'hover:bg-gray-50 border-gray-200'
                       }`}
                       onClick={() => setSelectedStructure(structure)}
@@ -652,7 +717,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                           <CardTitle className="text-base text-dark-blue">
                             {structure.name}
                             {suggestedStructure?.id === structure.id && (
-                              <Badge variant="outline" className="ml-2 text-xs text-gray-600 border-gray-600">
+                              <Badge variant="outline" className="ml-2 text-xs text-green-600 border-green-600">
                                 ✨ Sugerido
                               </Badge>
                             )}
@@ -788,30 +853,27 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   ))}
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             {/* Estruturas Personalizadas */}
-            {structures.length > 0 && (
+            {(structures.length > 0 || searchTerm.trim()) && (activeFilter === 'all' || activeFilter === 'custom') && (
               <div>
                 <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
                   <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-xs text-blue-600">U</span>
                   Suas Estruturas Personalizadas
                 </h3>
                 
-                {structures.filter(structure =>
-                  structure.name.toLowerCase().includes(searchTerm.toLowerCase())
-                ).length === 0 ? (
+                {filteredCustom.length === 0 ? (
                   <div className="text-center py-6 text-soft-gray">
                     <FileText className="mx-auto h-8 w-8 mb-2 opacity-50" />
                     <p className="text-sm">
-                      {searchTerm ? 'Nenhuma estrutura personalizada encontrada' : 'Crie suas estruturas na página "Criar Estrutura"'}
+                      {searchTerm || activeFilter === 'custom' ? 'Nenhuma estrutura personalizada encontrada' : 'Crie suas estruturas na página "Criar Estrutura"'}
                     </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {structures.filter(structure =>
-                      structure.name.toLowerCase().includes(searchTerm.toLowerCase())
-                    ).map((structure) => (
+                    {filteredCustom.map((structure) => (
                       <Card 
                         key={structure.id}
                         className={`cursor-pointer transition-all hover:shadow-md border-2 ${
@@ -867,18 +929,37 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               <div className="flex items-start justify-between gap-6">
                 {/* Informações da estrutura */}
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-4">
-                    <h2 className="text-xl font-semibold text-dark-blue">
-                      {selectedStructure.name}
-                    </h2>
-                    <Badge variant="secondary">
-                      {Array.isArray(selectedStructure.sections) ? selectedStructure.sections.length : 0} seções
-                    </Badge>
-                    {selectedStructure.userId === 'system' && (
-                      <Badge variant="outline" className="text-bright-blue border-bright-blue">
-                        Modelo Predefinido
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xl font-semibold text-dark-blue">
+                        {selectedStructure.name}
+                      </h2>
+                      <Badge variant="secondary">
+                        {Array.isArray(selectedStructure.sections) ? selectedStructure.sections.length : 0} seções
                       </Badge>
-                    )}
+                      {selectedStructure.userId === 'system' && (
+                        <Badge variant="outline" className={`${
+                          suggestedStructure?.id === selectedStructure.id 
+                            ? 'text-green-600 border-green-600' 
+                            : 'text-bright-blue border-bright-blue'
+                        }`}>
+                          {suggestedStructure?.id === selectedStructure.id ? '✨ Modelo Sugerido' : 'Modelo Predefinido'}
+                        </Badge>
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedStructure(null);
+                        setSuggestedStructure(null);
+                      }}
+                      className="border-red-400 text-red-600 hover:bg-red-50"
+                      data-testid="button-desselecionar-modelo"
+                    >
+                      <X className="mr-2 h-4 w-4" />
+                      Desselecionar
+                    </Button>
                   </div>
                   
                   {/* Preview das seções */}
@@ -903,15 +984,71 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 {/* Botões de ação */}
                 <div className="flex flex-col gap-3 min-w-[200px]">
                   {selectedPredefinedStructure?.guide && (
-                    <Button
-                      variant="outline"
-                      className="border-gray-500 text-gray-600 hover:bg-gray-50"
-                      onClick={() => {}}
-                      data-testid="button-view-guide"
-                    >
-                      <Info className="mr-2 h-4 w-4" />
-                      Ver Guia de Uso
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="border-gray-500 text-gray-600 hover:bg-gray-50"
+                          data-testid="button-view-guide-selected"
+                        >
+                          <Info className="mr-2 h-4 w-4" />
+                          Ver Guia de Uso
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle className="text-xl font-semibold text-dark-blue">
+                            Guia de Uso: {selectedStructure.name}
+                          </DialogTitle>
+                        </DialogHeader>
+                        {selectedPredefinedStructure.guide && (
+                          <div className="space-y-6">
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-600 mb-3 flex items-center">
+                                <span className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center mr-2 text-sm">✓</span>
+                                Quando Usar
+                              </h3>
+                              <ul className="space-y-2">
+                                {selectedPredefinedStructure.guide.whenToUse.map((item, index) => (
+                                  <li key={index} className="flex items-start gap-2 text-gray-700">
+                                    <span className="text-gray-500 mt-1">•</span>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-red-600 mb-3 flex items-center">
+                                <span className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-2 text-sm">✗</span>
+                                Quando NÃO Usar
+                              </h3>
+                              <ul className="space-y-2">
+                                {selectedPredefinedStructure.guide.whenNotToUse.map((item, index) => (
+                                  <li key={index} className="flex items-start gap-2 text-gray-700">
+                                    <span className="text-red-500 mt-1">•</span>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-blue-600 mb-3 flex items-center">
+                                <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2 text-sm">⭐</span>
+                                Vantagens
+                              </h3>
+                              <ul className="space-y-2">
+                                {selectedPredefinedStructure.guide.advantages.map((item, index) => (
+                                  <li key={index} className="flex items-start gap-2 text-gray-700">
+                                    <span className="text-blue-500 mt-1">•</span>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </DialogContent>
+                    </Dialog>
                   )}
                   <Button
                     variant="outline"
@@ -942,7 +1079,9 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             <div className="text-center">
               <p className="text-sm text-soft-gray mb-4">
                 {selectedStructure 
-                  ? `✅ Gerar redação com: ${selectedStructure.name}` 
+                  ? suggestedStructure?.id === selectedStructure.id
+                    ? `🌟 Gerar redação com modelo sugerido: ${selectedStructure.name}`
+                    : `✅ Gerar redação com: ${selectedStructure.name}` 
                   : '⚠️ Selecione um modelo ou use a estrutura padrão'
                 }
               </p>
