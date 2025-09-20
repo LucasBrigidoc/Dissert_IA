@@ -575,21 +575,6 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 </p>
               </div>
             </div>
-            
-            {/* Botão de sugerir modelo */}
-            <div className="mt-4 pt-4 border-t border-bright-blue/20">
-              <div className="flex justify-center">
-                <Button
-                  onClick={suggestBestModel}
-                  variant="outline"
-                  className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
-                  data-testid="button-sugerir-modelo"
-                >
-                  <Lightbulb className="mr-2 h-4 w-4" />
-                  Sugerir Melhor Modelo para este Tema
-                </Button>
-              </div>
-            </div>
           </LiquidGlassCard>
 
           {/* Modelos Disponíveis - UNIFICADO */}
@@ -608,9 +593,9 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               </div>
             </div>
 
-            {/* Busca integrada */}
-            <div className="mb-6">
-              <div className="relative max-w-md">
+            {/* Busca integrada e Sugestão de Modelo */}
+            <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <div className="relative max-w-md flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-soft-gray" />
                 <Input
                   placeholder="Buscar estruturas..."
@@ -620,6 +605,15 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   data-testid="input-buscar-estruturas"
                 />
               </div>
+              <Button
+                onClick={suggestBestModel}
+                variant="outline"
+                className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 flex-shrink-0"
+                data-testid="button-sugerir-modelo"
+              >
+                <Lightbulb className="mr-2 h-4 w-4" />
+                Sugerir Melhor Modelo
+              </Button>
             </div>
 
             {/* Modelos Predefinidos */}
