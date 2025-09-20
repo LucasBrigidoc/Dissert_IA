@@ -1197,89 +1197,92 @@ ${recommendations}`);
                 className="min-h-[280px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
                 data-testid="textarea-result"
               />
+
+              {/* Análise Pedagógica integrada no card de resultado */}
+              {(modifiedText.trim() || feedbackText || suggestedRepertoires.length > 0 || activeModifications.size > 0) && (
+                <>
+                  <Separator className="my-4" />
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Lightbulb className="text-white" size={16} />
+                      </div>
+                      <h3 className="text-sm sm:text-lg font-semibold text-dark-blue">
+                        Análise Pedagógica
+                      </h3>
+                    </div>
+                    
+                    {feedbackText && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div className="text-sm text-dark-blue leading-relaxed whitespace-pre-line">
+                          {feedbackText}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Repertórios Sugeridos integrados */}
+                    {suggestedRepertoires.length > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <BookOpen className="h-4 w-4 text-dark-blue" />
+                          <h4 className="text-sm font-semibold text-dark-blue">
+                            Repertórios Sugeridos para seu Texto
+                          </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {suggestedRepertoires.map((repertoire, index) => (
+                            <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                              <div className="space-y-3">
+                                <div>
+                                  <h5 className="text-sm font-medium text-dark-blue line-clamp-2">
+                                    {repertoire.title}
+                                  </h5>
+                                  <p className="text-xs text-soft-gray mt-1 line-clamp-3">
+                                    {repertoire.description}
+                                  </p>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="text-xs">
+                                      {repertoire.type}
+                                    </Badge>
+                                    <Badge variant="secondary" className="text-xs">
+                                      {repertoire.category}
+                                    </Badge>
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-7 text-xs px-2 bg-bright-blue/10 hover:bg-bright-blue/20 text-bright-blue border-bright-blue/30"
+                                    onClick={() => addRepertoireToText(repertoire)}
+                                    data-testid={`button-add-repertoire-${index}`}
+                                  >
+                                    <Target className="h-3 w-3 mr-1" />
+                                    Adicionar
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {isLoadingRepertoires && (
+                      <div className="flex items-center justify-center py-4">
+                        <div className="flex items-center gap-2 text-soft-gray">
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                          <span className="text-sm">Buscando repertórios relevantes...</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </LiquidGlassCard>
         </div>
 
-        {/* Área de Feedback Educativo */}
-        {(modifiedText.trim() || feedbackText || suggestedRepertoires.length > 0 || activeModifications.size > 0) && (
-          <div className="mb-4 sm:mb-6">
-            <LiquidGlassCard className="p-4 sm:p-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Lightbulb className="text-white" size={16} />
-                  </div>
-                  <h3 className="text-sm sm:text-lg font-semibold text-dark-blue">
-                    Análise Pedagógica
-                  </h3>
-                </div>
-                
-                {feedbackText && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <div className="text-sm text-dark-blue leading-relaxed whitespace-pre-line">
-                      {feedbackText}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Repertórios Sugeridos */}
-                {suggestedRepertoires.length > 0 && (
-                  <div>
-                    <Separator className="my-4" />
-                    <div className="flex items-center gap-2 mb-3">
-                      <BookOpen className="h-4 w-4 text-dark-blue" />
-                      <h4 className="text-sm font-semibold text-dark-blue">
-                        Repertórios Sugeridos para seu Texto
-                      </h4>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      {suggestedRepertoires.map((repertoire, index) => (
-                        <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <h5 className="text-sm font-medium text-dark-blue truncate">
-                                {repertoire.title}
-                              </h5>
-                              <p className="text-xs text-soft-gray mt-1 line-clamp-2">
-                                {repertoire.description}
-                              </p>
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="outline" className="text-xs">
-                                  {repertoire.type}
-                                </Badge>
-                                <Badge variant="secondary" className="text-xs">
-                                  {repertoire.category}
-                                </Badge>
-                              </div>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 text-dark-blue hover:text-bright-blue"
-                              onClick={() => window.open(`/biblioteca?search=${encodeURIComponent(repertoire.title)}`, '_blank')}
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {isLoadingRepertoires && (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="flex items-center gap-2 text-soft-gray">
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                      <span className="text-sm">Buscando repertórios relevantes...</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </LiquidGlassCard>
-          </div>
-        )}
       </div>
     </div>
   );
