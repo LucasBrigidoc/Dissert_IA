@@ -174,6 +174,7 @@ export const sectionSchema = z.object({
   id: z.string(),
   title: z.string().min(1, "Título é obrigatório"),
   description: z.string().min(1, "Descrição é obrigatória"),
+  guidelines: z.string().optional(),
 });
 
 export const insertEssayStructureSchema = createInsertSchema(essayStructures).omit({
