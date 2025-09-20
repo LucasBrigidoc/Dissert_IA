@@ -203,8 +203,8 @@ export default function Estilo() {
               onClick={() => setSelectedMode('use')}
               data-testid="card-usar-estrutura"
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-gray-500/10 to-gray-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <BookOpen className="h-10 w-10 text-gray-600" />
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <BookOpen className="h-10 w-10 text-green-600" />
               </div>
               <h3 className="text-2xl font-bold text-dark-blue mb-4">
                 Usar Estrutura Existente
@@ -212,7 +212,7 @@ export default function Estilo() {
               <p className="text-soft-gray mb-6 leading-relaxed">
                 Escolha uma das suas estruturas já criadas e gere redações seguindo a metodologia que você definiu anteriormente.
               </p>
-              <div className="inline-flex items-center text-gray-600 font-medium">
+              <div className="inline-flex items-center text-green-600 font-medium">
                 Escolher estrutura
                 <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
               </div>
