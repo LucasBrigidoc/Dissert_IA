@@ -559,7 +559,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
-                  Tema da Redação *
+                  Proposta da Redação *
                 </Label>
                 <Textarea
                   id="essay-topic"
@@ -571,7 +571,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   data-testid="textarea-tema-redacao"
                 />
                 <p className="text-xs text-soft-gray mt-1">
-                  Defina claramente o tema central da sua redação
+                  Defina claramente a proposta central da sua redação
                 </p>
               </div>
 
