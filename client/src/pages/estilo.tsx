@@ -181,8 +181,8 @@ export default function Estilo() {
               onClick={() => setSelectedMode('create')}
               data-testid="card-criar-estrutura"
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-bright-blue/20 to-bright-blue/30 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform border border-bright-blue/20">
-                <Plus className="h-10 w-10 text-bright-blue" />
+              <div className="w-20 h-20 bg-bright-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <Plus className="h-10 w-10 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-dark-blue mb-4">
                 Criar Nova Estrutura
