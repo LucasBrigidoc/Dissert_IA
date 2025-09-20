@@ -251,8 +251,8 @@ export default function Estilo() {
 
             <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-gray-100">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gray-500/10 rounded-full flex items-center justify-center mr-4">
-                  <BookOpen className="w-6 h-6 text-gray-600" />
+                <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center mr-4">
+                  <BookOpen className="w-6 h-6 text-green-600" />
                 </div>
                 <h3 className="text-xl font-bold text-dark-blue">Usar Estrutura Existente</h3>
               </div>
@@ -261,15 +261,15 @@ export default function Estilo() {
               </p>
               <ul className="space-y-2 text-sm text-soft-gray">
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
                   Seleciona estrutura já criada
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
                   Gera redação instantaneamente
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
                   Mantém consistência metodológica
                 </li>
               </ul>
