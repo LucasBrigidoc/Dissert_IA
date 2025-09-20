@@ -41,26 +41,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m1-intro",
           title: "Introdução",
-          description: "Contextualização com filósofo + problema + falhas implementação + desengajamento social",
-          guidelines: "O filósofo John Rawls defendia... Contudo, a realidade brasileira apresenta... agravada por falhas sistemáticas e desengajamento..."
+          description: "O filósofo John Rawls, em sua \"Teoria da Justiça\", defendia que uma sociedade bem ordenada deve garantir oportunidades equitativas e proteção aos mais vulneráveis. Contudo, a realidade brasileira contemporânea apresenta significativas distorções desse ideal, especialmente quando se observa a persistência da problemática (tema específico), que se manifesta como um desafio multidimensional na sociedade atual. Nesse contexto, tal questão é agravada por falhas sistemáticas na implementação de soluções efetivas e pelo desengajamento de diversos atores sociais em relação às transformações necessárias.",
+          guidelines: "Estrutura: Filósofo + Ideal + Realidade Atual + Tema Específico + Agravamento por Falhas + Desengajamento Social"
         },
         {
           id: "m1-dev1",
           title: "Primeiro Desenvolvimento - Falhas de Implementação",
-          description: "Evidências estatísticas + deficiências na implementação de soluções",
-          guidelines: "Dados revelam... observam-se falhas sistemáticas evidenciadas por: inadequação de recursos, descontinuidade, falta de coordenação..."
+          description: "Primeiramente, dados de [instituição competente] revelam que (inserir estatística relevante). Diante desse cenário, observam-se falhas sistemáticas na implementação de soluções para a problemática, evidenciadas por (inadequação de recursos aplicados, descontinuidade de ações, falta de coordenação entre setores, ausência de planejamento integrado, burocratização de processos). Os órgãos responsáveis por (área relacionada ao tema) consistentemente demonstram (ineficiência operacional, falta de monitoramento, ausência de adaptação às demandas, resistência a inovações, desalinhamento de objetivos) que comprometem a efetividade das iniciativas voltadas para (problema específico). Assim, essa disfunção na implementação perpetua um ciclo onde problemas persistem apesar da existência de marcos legais e recursos destinados à sua solução.",
+          guidelines: "Estrutura: Dados + Falhas Sistemáticas + Detalhamento das Deficiências + Órgãos Responsáveis + Consequências"
         },
         {
           id: "m1-dev2",
           title: "Segundo Desenvolvimento - Desengajamento Social", 
-          description: "Robert Putnam + falta de engajamento dos atores sociais",
-          guidelines: "Robert Putnam demonstrou... verifica-se desengajamento manifestado por: indiferença social, falta de mobilização..."
+          description: "Ademais, o sociólogo Robert Putnam demonstrou que a vitalidade democrática e a solução de problemas coletivos dependem fundamentalmente do engajamento ativo dos diversos atores sociais. Nessa perspectiva, verifica-se um preocupante desengajamento em relação à problemática, manifestado através de (indiferença social diante do problema, falta de mobilização coletiva, ausência de pressão por mudanças, terceirização de responsabilidades, conformismo diante de injustiças). Diferentes segmentos da sociedade - incluindo (cidadãos, organizações, lideranças, formadores de opinião, grupos de interesse) - falham em exercer adequadamente (fiscalização social, participação ativa, cobrança por resultados, construção de soluções colaborativas) necessárias para enfrentar (problema específico). Dessarte, essa omissão coletiva resulta na ausência de pressão efetiva por transformações, permitindo que problemas se perpetuem sem a devida atenção.",
+          guidelines: "Estrutura: Robert Putnam + Engajamento Democrático + Desengajamento Social + Diferentes Segmentos + Consequências"
         },
         {
           id: "m1-concl",
           title: "Conclusão",
-          description: "Síntese + órgão competente + programa integrado + ações específicas",
-          guidelines: "Superar essa problemática exige... [Órgão competente] deve desenvolver [programa integrado] por meio de [ações específicas]..."
+          description: "Em síntese, superar essa problemática exige tanto aprimoramento dos processos de implementação quanto fortalecimento do engajamento social. Portanto, [Órgão competente], em articulação com [parceiros estratégicos], deve desenvolver [programa integrado] por meio de [ações específicas: modernização de processos, transparência, participação social, monitoramento contínuo], visando [objetivo central] e assegurar soluções efetivas e duradouras. Assim, será possível aproximar a realidade brasileira dos ideais de justiça propostos por Rawls, mediante implementação em [prazo], investimento de [recursos] e sistema de avaliação com indicadores de [efetividade e engajamento].",
+          guidelines: "Estrutura: Síntese + Órgão + Programa + Ações Específicas + Objetivo + Referência ao Filósofo + Cronograma"
         }
       ],
       guide: {
@@ -79,26 +79,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m2-intro",
           title: "Introdução",
-          description: "Pierre Bourdieu + diferentes formas de capital + concentração inadequada + exclusão sistemática",
-          guidelines: "Pierre Bourdieu demonstrou como diferentes formas de capital se combinam... intensificada pela concentração inadequada e exclusão sistemática..."
+          description: "As sociedades modernas enfrentam desafios estruturais que resultam da forma como recursos, oportunidades e poder são distribuídos entre diferentes grupos sociais. O sociólogo Pierre Bourdieu demonstrou como diferentes formas de capital se combinam para perpetuar desigualdades estruturais que limitam o potencial humano. Entretanto, essa dinâmica manifesta-se de forma particularmente problemática na questão (tema específico), evidenciando como desigualdades estruturais podem perpetuar injustiças sociais. Nesse sentido, tal cenário é potencializado pela concentração inadequada de recursos e oportunidades e pela exclusão sistemática de grupos vulneráveis dos processos de desenvolvimento social.",
+          guidelines: "Estrutura: Desafios Modernos + Pierre Bourdieu + Desigualdades + Tema Específico + Concentração + Exclusão"
         },
         {
           id: "m2-dev1",
           title: "Primeiro Desenvolvimento - Concentração Inadequada",
-          description: "Dados sobre concentração + monopolização de benefícios por grupos privilegiados",
-          guidelines: "Dados demonstram... concentração inadequada evidenciada por: monopolização de benefícios, barreiras estruturais, centralização excessiva..."
+          description: "Inicialmente, dados de [centro de pesquisas sociais] demonstram que (inserir estatística relevante sobre concentração ou distribuição). Dessa forma, verifica-se concentração inadequada de recursos e oportunidades relacionados ao tema, evidenciada por (monopolização de benefícios por grupos privilegiados, barreiras estruturais de acesso, centralização excessiva de decisões, manutenção de privilégios históricos, desigualdade na distribuição de recursos). Diferentes atores - incluindo (instituições dominantes, grupos de interesse, organizações estabelecidas, setores específicos) - sistematicamente controlam (distribuição de oportunidades, processos decisórios, acesso a recursos, definição de prioridades) de maneira que perpetua (problema específico). Assim, essa concentração estrutural impede que benefícios se distribuam equitativamente, mantendo desigualdades que agravam a problemática em questão.",
+          guidelines: "Estrutura: Dados + Concentração Inadequada + Atores Dominantes + Controle de Recursos + Consequências"
         },
         {
           id: "m2-dev2",
           title: "Segundo Desenvolvimento - Exclusão Sistemática",
-          description: "Amartya Sen + desenvolvimento verdadeiro + exclusão de grupos vulneráveis",
-          guidelines: "Amartya Sen argumentava... grupos vulneráveis enfrentam exclusão caracterizada por: discriminação estrutural, falta de representatividade..."
+          description: "Outrossim, Amartya Sen argumentava que o desenvolvimento verdadeiro deve expandir as capacidades e liberdades de todos os grupos sociais, especialmente os mais vulneráveis. Nessa perspectiva, grupos vulneráveis enfrentam exclusão sistemática dos processos relacionados ao tema, caracterizada por (discriminação estrutural, falta de representatividade, barreiras de acesso, ausência de políticas específicas, invisibilidade social). Populações como (grupos vulneráveis específicos ao contexto do tema) são consistentemente privadas de (acesso equitativo a oportunidades, participação efetiva em decisões, representação adequada, recursos necessários) que poderiam contribuir significativamente para enfrentar (problema específico). Dessarte, essa exclusão não apenas prejudica os grupos afetados, mas também priva a sociedade de contribuições valiosas para a solução coletiva do problema.",
+          guidelines: "Estrutura: Amartya Sen + Desenvolvimento + Exclusão Sistemática + Grupos Vulneráveis + Consequências Duplas"
         },
         {
           id: "m2-concl",
           title: "Conclusão",
-          description: "Redistribuição de recursos + inclusão efetiva + programa de inclusão e redistribuição",
-          guidelines: "Enfrentar essa questão demanda redistribuição... [Ministério competente] deve implementar [programa de inclusão] através de [medidas específicas]..."
+          description: "Portanto, enfrentar essa questão demanda tanto redistribuição de recursos quanto inclusão efetiva de grupos vulneráveis. Nessa perspectiva, [Ministério competente], em coordenação com [organizações da sociedade civil], deve implementar [programa de inclusão e redistribuição] através de [medidas específicas: políticas redistributivas, ações afirmativas, democratização de oportunidades, fortalecimento de grupos vulneráveis], objetivando [promoção de equidade] e desenvolvimento social inclusivo. Assim, será possível concretizar as capacidades humanas propostas por Sen, mediante [cronograma], [investimentos direcionados] e [sistema de monitoramento inclusivo].",
+          guidelines: "Estrutura: Síntese + Ministério + Programa + Medidas Específicas + Objetivo + Referência a Sen + Cronograma"
         }
       ],
       guide: {
@@ -117,26 +117,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m3-intro",
           title: "Introdução",
-          description: "Sérgio Buarque de Holanda + padrões históricos + estruturas excludentes + mentalidades naturalizadoras",
-          guidelines: "Sérgio Buarque de Holanda demonstrou como padrões históricos se perpetuam... alimentada pela manutenção de estruturas excludentes..."
+          description: "A formação histórica de uma sociedade deixa marcas profundas que continuam influenciando a realidade contemporânea, criando tanto potencialidades quanto obstáculos estruturais para o desenvolvimento humano integral. Sérgio Buarque de Holanda, em \"Raízes do Brasil\", demonstrou como padrões históricos se perpetuam através de instituições e mentalidades que resistem a transformações. Todavia, essa herança histórica manifesta-se de forma problemática na questão (tema específico), evidenciando como padrões do passado ainda moldam desafios do presente. Assim sendo, tal perpetuação é alimentada pela manutenção de estruturas excludentes historicamente consolidadas e pela reprodução de mentalidades que naturalizam injustiças.",
+          guidelines: "Estrutura: Formação Histórica + Sérgio Buarque + Padrões Históricos + Tema Específico + Estruturas + Mentalidades"
         },
         {
           id: "m3-dev1",
           title: "Primeiro Desenvolvimento - Estruturas Excludentes",
-          description: "Persistência de estruturas excludentes + concentração de privilégios em grupos tradicionais",
-          guidelines: "Pesquisas revelam... persistem estruturas excludentes manifestando-se por: concentração de privilégios, manutenção de hierarquias..."
+          description: "Primordialmente, pesquisas de [instituto de estudos sociais] revelam que (inserir dado sobre persistência de padrões históricos). Diante disso, persistem estruturas excludentes historicamente consolidadas, manifestando-se através de (concentração de privilégios em grupos tradicionais, manutenção de hierarquias sociais, reprodução de padrões de dominação, controle de narrativas dominantes, resistência a mudanças estruturais). Grupos detentores de poder histórico - incluindo (elites estabelecidas, instituições tradicionais, organizações dominantes, setores conservadores) - sistematicamente impedem (democratização de oportunidades, reformas estruturais necessárias, redistribuição de poder, modernização de instituições) que poderiam reduzir (problema específico). Assim, essa perpetuação de estruturas excludentes mantém inalterados os padrões que historicamente beneficiaram poucos em detrimento da maioria da população.",
+          guidelines: "Estrutura: Pesquisas + Estruturas Excludentes + Grupos Dominantes + Impedição de Mudanças + Consequências"
         },
         {
           id: "m3-dev2",
           title: "Segundo Desenvolvimento - Mentalidades Naturalizadoras",
-          description: "Paulo Freire + mentalidades que naturalizam + reprodução de preconceitos estruturais",
-          guidelines: "Paulo Freire alertava... observa-se reprodução de mentalidades caracterizada por: aceitação passiva, normalização de injustiças..."
+          description: "Além disso, Paulo Freire alertava sobre a persistência de mentalidades que naturalizam a opressão e impedem o desenvolvimento de consciência crítica necessária para transformações sociais. Nessa perspectiva, observa-se reprodução de mentalidades que naturalizam a problemática, caracterizada por (aceitação passiva de desigualdades, normalização de injustiças, reprodução de preconceitos estruturais, resistência a questionamentos, conformismo diante de problemas). Instituições socializadoras - como (sistemas educativos, meios de comunicação, organizações sociais, grupos de referência) - continuam transmitindo (valores que perpetuam o problema, mentalidades excludentes, preconceitos estruturais, conformismo social) que dificultam o reconhecimento e enfrentamento de (problema específico). Dessarte, essas mentalidades cristalizadas impedem que a sociedade desenvolva consciência crítica suficiente para questionar estruturas problemáticas e construir alternativas transformadoras.",
+          guidelines: "Estrutura: Paulo Freire + Mentalidades Naturalizadoras + Instituições Socializadoras + Transmissão de Valores + Consequências"
         },
         {
           id: "m3-concl",
           title: "Conclusão",
-          description: "Democratização de estruturas + transformação de mentalidades + programa de transformação social",
-          guidelines: "Superar heranças históricas requer democratização... [Órgão governamental] deve implementar [programa de transformação] mediante [ações específicas]..."
+          description: "Em suma, superar heranças históricas problemáticas requer tanto democratização de estruturas quanto transformação de mentalidades naturalizadoras. Por conseguinte, [Órgão governamental], através de [políticas estruturais], deve implementar [programa de transformação social] mediante [ações específicas: reformas democratizantes, educação crítica, desconstrução de preconceitos, fortalecimento de grupos historicamente excluídos], com o objetivo de [transformação estrutural] e promoção de justiça social. Assim, será possível superar as contradições históricas e construir uma sociedade mais democrática e igualitária, através de [implementação gradual], [investimentos transformadores] e [monitoramento de mudanças estruturais].",
+          guidelines: "Estrutura: Síntese + Órgão + Programa + Ações Específicas + Objetivo + Superação Histórica + Cronograma"
         }
       ],
       guide: {
@@ -155,26 +155,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m4-intro",
           title: "Introdução",
-          description: "Amartya Sen + desenvolvimento como liberdade + distribuição inadequada + insuficiência de mecanismos democratizadores",
-          guidelines: "Amartya Sen argumentava que o verdadeiro progresso deve expandir capacidades... intensificada pela distribuição inadequada e insuficiência de mecanismos..."
+          description: "O desenvolvimento social sustentável pressupõe a existência de condições econômicas que permitam a todas as pessoas desenvolver seu potencial e contribuir para o progresso coletivo. Amartya Sen, em \"Desenvolvimento como Liberdade\", argumentava que o verdadeiro progresso deve expandir as capacidades humanas através da equidade econômica e social. Entretanto, a persistência da questão (tema específico) revela como fatores econômicos estruturais podem limitar essas oportunidades de desenvolvimento. Nesse contexto, tal problemática é intensificada pela distribuição inadequada de recursos econômicos e pela insuficiência de mecanismos que democratizem oportunidades de desenvolvimento.",
+          guidelines: "Estrutura: Desenvolvimento Sustentável + Amartya Sen + Capacidades Humanas + Tema Específico + Distribuição + Mecanismos"
         },
         {
           id: "m4-dev1",
           title: "Primeiro Desenvolvimento - Distribuição Inadequada",
-          description: "Dados econômicos + concentração de recursos + desigualdade no acesso a oportunidades",
-          guidelines: "Dados demonstram... distribuição inadequada evidenciada por: concentração de recursos, desigualdade no acesso, monopolização de setores..."
+          description: "Em primeira análise, dados de [instituição de pesquisa econômica] demonstram que (inserir estatística sobre distribuição de recursos ou oportunidades). Nesse sentido, verifica-se distribuição inadequada de recursos econômicos relacionados ao tema, evidenciada pela (concentração de recursos em poucos grupos, desigualdade no acesso a oportunidades econômicas, monopolização de setores estratégicos, barreiras econômicas estruturais, privilégios econômicos históricos). Diferentes atores econômicos - incluindo (grandes organizações, grupos dominantes, setores concentrados, instituições estabelecidas) - sistematicamente controlam (distribuição de oportunidades econômicas, acesso a recursos produtivos, processos de desenvolvimento, benefícios econômicos) de forma que perpetua (problema específico). Assim, essa concentração econômica impede que oportunidades de desenvolvimento se democratizem, mantendo desigualdades que intensificam a problemática.",
+          guidelines: "Estrutura: Dados Econômicos + Distribuição Inadequada + Atores Econômicos + Controle de Recursos + Consequências"
         },
         {
           id: "m4-dev2",
           title: "Segundo Desenvolvimento - Insuficiência de Mecanismos Democratizadores",
-          description: "Joseph Stiglitz + necessidade de mecanismos redistributivos + limitações de políticas",
-          guidelines: "Joseph Stiglitz demonstrou... insuficiência de mecanismos caracterizada por: limitações redistributivas, ausência de programas de inclusão..."
+          description: "Outrossim, Joseph Stiglitz demonstrou que sistemas econômicos necessitam de mecanismos redistributivos e democratizadores para garantir desenvolvimento socialmente sustentável. Nessa perspectiva, observa-se insuficiência de mecanismos que democratizem oportunidades econômicas, caracterizada por (limitações de políticas redistributivas, ausência de programas de inclusão econômica, concentração de benefícios, inadequação de sistemas de apoio, fraqueza de políticas de acesso). Instituições responsáveis - como (órgãos de desenvolvimento, sistemas de crédito, políticas públicas, organizações de fomento) - não implementam adequadamente (redistribuição efetiva de oportunidades, democratização de acesso, políticas de inclusão econômica, sistemas de apoio) necessários para enfrentar (problema específico). Dessarte, essa insuficiência permite que desigualdades econômicas se aprofundem, impedindo que o desenvolvimento se traduza em melhoria generalizada das condições sociais.",
+          guidelines: "Estrutura: Joseph Stiglitz + Mecanismos Democratizadores + Instituições Responsáveis + Implementação + Consequências"
         },
         {
           id: "m4-concl",
           title: "Conclusão",
-          description: "Desenvolvimento econômico-social equitativo + redistribuição + programa de desenvolvimento inclusivo",
-          guidelines: "Construir modelo equitativo requer redistribuição... [Ministério competente] deve implementar [programa de desenvolvimento inclusivo]..."
+          description: "Portanto, construir um modelo de desenvolvimento econômico-social equitativo requer tanto redistribuição de recursos quanto fortalecimento de mecanismos democratizadores. Nessa perspectiva, [Ministério competente], em coordenação com [órgãos de desenvolvimento], deve implementar [programa de desenvolvimento inclusivo] através de [medidas concretas: políticas redistributivas, democratização de oportunidades, fortalecimento de grupos vulneráveis, sistemas de apoio], visando [desenvolvimento equitativo] e promoção de justiça social. Assim, será possível concretizar o desenvolvimento como liberdade proposto por Sen, mediante [cronograma de implementação], [investimentos sociais] e [sistema de monitoramento distributivo].",
+          guidelines: "Estrutura: Síntese + Ministério + Programa + Medidas Concretas + Objetivo + Referência a Sen + Cronograma"
         }
       ],
       guide: {
@@ -193,26 +193,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m5-intro",
           title: "Introdução",
-          description: "Albert Bandura + teoria da aprendizagem social + padrões comportamentais inadequados + ausência de modelos positivos",
-          guidelines: "Albert Bandura demonstrou que comportamentos são aprendidos... intensificada pela reprodução de padrões inadequados e ausência de modelos positivos..."
+          description: "Os padrões comportamentais de uma sociedade refletem valores, crenças e atitudes que influenciam diretamente a forma como problemas coletivos são percebidos e enfrentados. Albert Bandura, através da \"teoria da aprendizagem social\", demonstrou que comportamentos são aprendidos e reproduzidos através da observação e imitação de modelos sociais. Contudo, esses padrões comportamentais manifestam-se de forma problemática na questão (tema específico), evidenciando como dinâmicas comportamentais podem perpetuar ou agravar questões coletivas. Assim sendo, tal situação é intensificada pela reprodução de padrões comportamentais inadequados e pela ausência de modelos comportamentais positivos que inspirem transformações sociais.",
+          guidelines: "Estrutura: Padrões Comportamentais + Albert Bandura + Aprendizagem Social + Tema Específico + Padrões Inadequados + Modelos Positivos"
         },
         {
           id: "m5-dev1",
           title: "Primeiro Desenvolvimento - Padrões Inadequados",
-          description: "Dados comportamentais + reprodução sistemática + normalização de comportamentos problemáticos",
-          guidelines: "Pesquisas revelam... reprodução sistemática caracterizada por: normalização de comportamentos problemáticos, resistência a mudanças..."
+          description: "Primordialmente, pesquisas de [centro de estudos comportamentais] revelam que (inserir dado sobre comportamentos ou atitudes sociais). Dessa forma, verifica-se reprodução sistemática de padrões comportamentais inadequados relacionados ao tema, caracterizados por (normalização de comportamentos problemáticos, reprodução de atitudes prejudiciais, resistência a mudanças comportamentais, perpetuação de práticas inadequadas, conformismo diante de problemas). Diferentes grupos sociais - incluindo (formadores de opinião, lideranças, educadores, comunicadores, influenciadores) - frequentemente demonstram (comportamentos que perpetuam o problema, atitudes inadequadas, resistência a transformações, reprodução de modelos negativos) que são inconscientemente assimilados e reproduzidos pela população, contribuindo para a manutenção de (problema específico). Assim, essa reprodução de padrões inadequados cria um ciclo onde comportamentos problemáticos são naturalizados e transmitidos como condutas socialmente aceitáveis.",
+          guidelines: "Estrutura: Pesquisas + Padrões Inadequados + Grupos Sociais + Comportamentos Problemáticos + Ciclo de Reprodução"
         },
         {
           id: "m5-dev2",
           title: "Segundo Desenvolvimento - Ausência de Modelos Positivos",
-          description: "Viktor Frankl + presença de modelos significativos + carência de referências inspiradoras",
-          guidelines: "Viktor Frankl demonstrou... carência de modelos positivos evidenciada por: ausência de referências inspiradoras, falta de exemplos transformadores..."
+          description: "Além disso, Viktor Frankl demonstrou que a presença de modelos significativos e inspiradores é essencial para motivar transformações comportamentais duradouras e construtivas. Nessa perspectiva, observa-se carência de modelos comportamentais positivos relacionados ao tema, evidenciada pela (ausência de referências inspiradoras, falta de exemplos transformadores, carência de narrativas motivadoras, insuficiência de casos de sucesso, limitação de modelos construtivos). Instituições e lideranças - como (sistemas educativos, meios de comunicação, organizações sociais, lideranças comunitárias) - não conseguem apresentar adequadamente (modelos de comportamento construtivo, exemplos de transformação positiva, histórias inspiradoras, casos de superação) que poderiam motivar mudanças comportamentais relacionadas a (problema específico). Dessarte, essa ausência de inspiração deixa a sociedade sem referências positivas para orientar transformações comportamentais, dificultando processos de mudança social construtiva.",
+          guidelines: "Estrutura: Viktor Frankl + Modelos Positivos + Carência de Referências + Instituições e Lideranças + Ausência de Inspiração"
         },
         {
           id: "m5-concl",
           title: "Conclusão",
-          description: "Transformação comportamental + desconstrução de modelos inadequados + programa de transformação comportamental",
-          guidelines: "Transformar padrões coletivos requer desconstrução... [Ministério competente] deve implementar [programa de transformação comportamental]..."
+          description: "Em suma, transformar padrões comportamentais coletivos requer tanto desconstrução de modelos inadequados quanto promoção de referências positivas inspiradoras. Por conseguinte, [Ministério competente], em parceria com [educadores e comunicadores], deve implementar [programa de transformação comportamental] através de [ações específicas: campanhas educativas, formação de modelos positivos, criação de narrativas inspiradoras, desenvolvimento de referências construtivas], com o objetivo de [transformação comportamental] e promoção de mudanças sociais duradouras. Assim, será possível aplicar os princípios da aprendizagem social para transformações positivas, mediante [implementação gradual], [investimento em educação comportamental] e [monitoramento de mudanças sociais].",
+          guidelines: "Estrutura: Síntese + Ministério + Programa + Ações Específicas + Objetivo + Aprendizagem Social + Cronograma"
         }
       ],
       guide: {
@@ -231,26 +231,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m6-intro",
           title: "Introdução",
-          description: "Ronald Dworkin + integridade do direito + deficiências na aplicação + inadequação institucional",
-          guidelines: "Ronald Dworkin defendia que princípios devem ser concretamente efetivados... intensificada por deficiências nos sistemas de aplicação..."
+          description: "O funcionamento adequado de uma sociedade democrática pressupõe a existência de marcos normativos eficazes e instituições capazes de garantir direitos e solucionar problemas coletivos. Ronald Dworkin, em sua teoria sobre a \"integridade do direito\", defendia que princípios de igualdade e justiça devem ser concretamente efetivados, não apenas formalmente declarados. Todavia, a persistência da questão (tema específico) revela contradições entre marcos legais estabelecidos e sua aplicação efetiva na realidade social. Nesse contexto, tal inefetividade é intensificada por deficiências nos sistemas de aplicação normativa e pela inadequação das estruturas institucionais responsáveis pela garantia de direitos.",
+          guidelines: "Estrutura: Sociedade Democrática + Ronald Dworkin + Integridade do Direito + Tema Específico + Deficiências + Inadequação"
         },
         {
           id: "m6-dev1",
           title: "Primeiro Desenvolvimento - Deficiências de Aplicação",
-          description: "Dados institucionais + morosidade nos processos + custos elevados de acesso",
-          guidelines: "Dados revelam... deficiências sistemáticas evidenciadas por: morosidade nos processos, custos elevados, complexidade excessiva..."
+          description: "Primordialmente, dados de [órgão de controle institucional] revelam que (inserir estatística sobre aplicação de normas ou efetividade institucional). Diante disso, observam-se deficiências sistemáticas nos processos de aplicação normativa relacionados ao tema, evidenciadas por (morosidade nos processos, custos elevados de acesso, complexidade excessiva de procedimentos, desigualdades no tratamento, burocratização que dificulta efetivação). Instituições aplicadoras - incluindo (órgãos de controle, tribunais, organizações reguladoras, entidades fiscalizadoras) - sistematicamente falham em garantir (celeridade na resolução, acesso democrático aos direitos, igualdade de tratamento, proteção efetiva) relacionados ao enfrentamento de (problema específico). Assim, essa ineficiência na aplicação transforma direitos formalmente assegurados em meras declarações, perpetuando lacunas entre a norma e sua efetivação prática.",
+          guidelines: "Estrutura: Dados Institucionais + Deficiências Sistemáticas + Instituições Aplicadoras + Falhas + Consequências"
         },
         {
           id: "m6-dev2",
           title: "Segundo Desenvolvimento - Inadequação Institucional",
-          description: "Norberto Bobbio + proliferação normativa + desatualização de marcos normativos",
-          guidelines: "Norberto Bobbio alertava... inadequação das estruturas caracterizada por: desatualização normativa, conflitos de competências..."
+          description: "Além disso, Norberto Bobbio alertava que a proliferação normativa sem estruturas institucionais adequadas compromete gravemente a eficácia dos sistemas jurídicos. Nessa perspectiva, verifica-se inadequação das estruturas institucionais para enfrentar demandas contemporâneas relacionadas ao tema, caracterizada por (desatualização de marcos normativos, conflitos de competências, sobreposição de atribuições, falta de especialização, ausência de mecanismos de avaliação). Diferentes instituições - como (órgãos públicos, entidades reguladoras, organizações de controle, sistemas de justiça) - sistematicamente apresentam (desalinhamento de competências, falta de coordenação, ausência de especialização, resistência a modernizações) necessárias para enfrentar adequadamente (problema específico). Dessarte, essas inadequações institucionais criam lacunas operacionais que impedem que o sistema normativo cumpra sua função transformadora.",
+          guidelines: "Estrutura: Norberto Bobbio + Inadequação Institucional + Diferentes Instituições + Desalinhamento + Lacunas Operacionais"
         },
         {
           id: "m6-concl",
           title: "Conclusão",
-          description: "Efetivação de direitos + modernização dos sistemas + reforma institucional",
-          guidelines: "Efetivação plena requer modernização... [Poder competente] deve promover [reforma institucional] mediante [ações específicas]..."
+          description: "Em suma, a efetivação plena de direitos e soluções institucionais requer tanto modernização dos sistemas de aplicação quanto adequação das estruturas institucionais. Por conseguinte, [Poder competente], em articulação com [órgãos especializados], deve promover [reforma ou modernização institucional] mediante [ações específicas: atualização normativa, especialização institucional, criação de mecanismos de controle, otimização de processos], com a finalidade de [efetividade institucional] e garantir soluções efetivas. Assim, será possível concretizar a integridade do direito defendida por Dworkin, através de [implementação gradual], [investimentos em modernização] e [sistema de monitoramento de efetividade].",
+          guidelines: "Estrutura: Síntese + Poder Competente + Reforma + Ações Específicas + Finalidade + Dworkin + Cronograma"
         }
       ],
       guide: {
@@ -269,26 +269,26 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         {
           id: "m7-intro",
           title: "Introdução",
-          description: "Jürgen Habermas + esfera pública + manipulação informacional + passividade crítica",
-          guidelines: "Jürgen Habermas defendia que a democracia depende de espaços comunicacionais... agravada pela manipulação de informações e passividade crítica..."
+          description: "A qualidade da democracia e a capacidade de uma sociedade enfrentar seus desafios dependem fundamentalmente da qualidade da informação disponível e da capacidade crítica da população para processar conteúdos complexos. Jürgen Habermas, em sua teoria sobre \"esfera pública\", defendia que a democracia depende de espaços comunicacionais onde diferentes perspectivas podem ser debatidas de forma racional e informada. Entretanto, os processos comunicacionais contemporâneos não têm contribuído adequadamente para solucionar questões como (tema específico), revelando como distorções na comunicação social podem perpetuar problemas coletivos. Nesse sentido, essa disfunção é agravada pela manipulação de informações por grupos de interesse e pela passividade crítica da população diante de conteúdos informacionais.",
+          guidelines: "Estrutura: Qualidade da Democracia + Jürgen Habermas + Esfera Pública + Tema Específico + Manipulação + Passividade"
         },
         {
           id: "m7-dev1",
           title: "Primeiro Desenvolvimento - Manipulação Informacional",
-          description: "Dados sobre mídia + controle de narrativas + produção direcionada de conteúdos",
-          guidelines: "Dados revelam... manipulação sistemática evidenciada por: controle de narrativas, produção direcionada, uso de algoritmos..."
+          description: "Primordialmente, dados de [institutos de pesquisa em comunicação] revelam que (inserir estatística sobre qualidade informacional ou concentração midiática). Nesse sentido, verifica-se manipulação sistemática de fluxos informacionais relacionados ao tema, evidenciada por (controle de narrativas por grupos específicos, produção direcionada de conteúdos, uso de algoritmos para amplificar certas perspectivas, financiamento de narrativas específicas, omissão de informações relevantes). Diferentes atores comunicacionais - incluindo (conglomerados de mídia, plataformas digitais, grupos de interesse, organizações influentes) - sistematicamente distorcem (percepção pública sobre o problema, debates democráticos sobre soluções, acesso a informações diversificadas, compreensão sobre causas) relacionados a (problema específico). Assim, essa manipulação informacional impede que a população tenha acesso a informações equilibradas e diversificadas, dificultando a formação de opiniões fundamentadas e a mobilização para soluções efetivas.",
+          guidelines: "Estrutura: Dados de Comunicação + Manipulação Informacional + Atores Comunicacionais + Distorção + Consequências"
         },
         {
           id: "m7-dev2",
           title: "Segundo Desenvolvimento - Passividade Crítica",
-          description: "Neil Postman + privilégio do entretenimento + consumo acrítico de informações",
-          guidelines: "Neil Postman alertava... passividade crítica caracterizada por: consumo acrítico, preferência por conteúdos superficiais..."
+          description: "Outrossim, Neil Postman alertava sobre os riscos de uma sociedade que privilegia entretenimento sobre reflexão crítica, comprometendo a capacidade de análise profunda de questões complexas. Nessa perspectiva, observa-se passividade crítica da população diante de informações sobre o tema, caracterizada por (consumo acrítico de informações, preferência por conteúdos superficiais, resistência a análises complexas, polarização emocional, ausência de verificação de fontes). Cidadãos e diferentes grupos sociais - incluindo (usuários de redes sociais, consumidores de mídia, formadores de opinião, lideranças) - consistentemente evitam (aprofundamento em questões complexas, verificação de informações, busca por perspectivas diversificadas, reflexão crítica sobre fontes) necessários para compreender adequadamente (problema específico). Dessarte, essa passividade intelectual transforma a população em receptores passivos de informação, impedindo o desenvolvimento de capacidade crítica necessária para participar efetivamente de debates democráticos.",
+          guidelines: "Estrutura: Neil Postman + Passividade Crítica + Diferentes Grupos + Evitam Análise + Receptores Passivos"
         },
         {
           id: "m7-concl",
           title: "Conclusão",
-          description: "Democratização da comunicação + regulação de práticas + programa de educação midiática",
-          guidelines: "Democratizar a comunicação requer regulação... [Ministério competente] deve criar [programa de educação midiática] através de [ações específicas]..."
+          description: "Portanto, democratizar a comunicação requer tanto regulação de práticas manipuladoras quanto desenvolvimento de capacidades críticas na população. Nessa perspectiva, [Ministério competente], em parceria com [universidades e sociedade civil], deve criar [programa de educação midiática e democratização comunicacional] através de [ações específicas: regulação de práticas manipuladoras, programas de alfabetização midiática, fortalecimento de fontes diversificadas, criação de espaços de debate qualificado], visando [democratização da comunicação] e desenvolvimento de cidadania crítica. Assim, será possível concretizar a esfera pública democrática proposta por Habermas, mediante [implementação gradual], [investimento em educação midiática] e [sistema de monitoramento da qualidade informacional].",
+          guidelines: "Estrutura: Síntese + Ministério + Programa + Ações Específicas + Objetivo + Habermas + Cronograma"
         }
       ],
       guide: {
@@ -755,12 +755,12 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                           Quando Usar
                                         </h3>
                                         <ul className="space-y-2">
-                                          {structure.guide.whenToUse.map((item, index) => (
+                                          {structure.guide?.whenToUse?.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
                                               <span className="text-gray-500 mt-1">•</span>
                                               <span>{item}</span>
                                             </li>
-                                          ))}
+                                          )) || []}
                                         </ul>
                                       </div>
 
@@ -771,12 +771,12 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                           Quando NÃO Usar
                                         </h3>
                                         <ul className="space-y-2">
-                                          {structure.guide.whenNotToUse.map((item, index) => (
+                                          {structure.guide?.whenNotToUse?.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
                                               <span className="text-red-500 mt-1">•</span>
                                               <span>{item}</span>
                                             </li>
-                                          ))}
+                                          )) || []}
                                         </ul>
                                       </div>
 
@@ -787,12 +787,12 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                           Vantagens
                                         </h3>
                                         <ul className="space-y-2">
-                                          {structure.guide.advantages.map((item, index) => (
+                                          {structure.guide?.advantages?.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
                                               <span className="text-blue-500 mt-1">•</span>
                                               <span>{item}</span>
                                             </li>
-                                          ))}
+                                          )) || []}
                                         </ul>
                                       </div>
 
