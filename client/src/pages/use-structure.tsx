@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X, HelpCircle, Info } from "lucide-react";
+import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X, HelpCircle, Info, Lightbulb } from "lucide-react";
 import { EssayResult } from "@/pages/essay-result";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -316,7 +316,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
   const [editedStructure, setEditedStructure] = useState<EssayStructure | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [usedStructure, setUsedStructure] = useState<EssayStructure | null>(null);
-  // Estado removido - agora usando Dialog do shadcn
+  const [suggestedStructure, setSuggestedStructure] = useState<EssayStructure | null>(null);
   const { toast } = useToast();
 
 
@@ -356,6 +356,44 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
     }
     
     return essay;
+  };
+
+  // Função para sugerir o melhor modelo baseado no tema
+  const suggestBestModel = () => {
+    if (!essayTopic.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Insira o tema da redação para receber sugestões.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const topic = essayTopic.toLowerCase();
+    let bestMatch = predefinedStructures[0]; // Padrão: Universal Clássico
+    
+    // Análise de palavras-chave para sugerir o melhor modelo
+    if (topic.includes('desigualdade') || topic.includes('distribuição') || topic.includes('renda') || topic.includes('exclusão') || topic.includes('discriminação')) {
+      bestMatch = predefinedStructures[1]; // Desigualdades Estruturais
+    } else if (topic.includes('histórico') || topic.includes('cultura') || topic.includes('tradição') || topic.includes('racial') || topic.includes('gênero') || topic.includes('machismo')) {
+      bestMatch = predefinedStructures[2]; // Herança Histórico-Cultural
+    } else if (topic.includes('econômic') || topic.includes('desenvolviment') || topic.includes('mercado') || topic.includes('emprego') || topic.includes('renda')) {
+      bestMatch = predefinedStructures[3]; // Fatores Econômico-Sociais
+    } else if (topic.includes('comportament') || topic.includes('violênc') || topic.includes('bullying') || topic.includes('preconceito') || topic.includes('consumismo')) {
+      bestMatch = predefinedStructures[4]; // Mudanças Comportamentais
+    } else if (topic.includes('justiça') || topic.includes('direito') || topic.includes('lei') || topic.includes('judiciário') || topic.includes('constitucional')) {
+      bestMatch = predefinedStructures[5]; // Questões Jurídico-Institucionais
+    } else if (topic.includes('mídia') || topic.includes('informação') || topic.includes('comunicação') || topic.includes('fake news') || topic.includes('redes sociais')) {
+      bestMatch = predefinedStructures[6]; // Informação e Comunicação Social
+    }
+
+    setSelectedStructure(bestMatch);
+    setSuggestedStructure(bestMatch);
+    
+    toast({
+      title: "✨ Modelo sugerido!",
+      description: `"${bestMatch.name}" é o melhor modelo para seu tema.`,
+    });
   };
 
   const handleGenerateEssay = async () => {
@@ -491,50 +529,125 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
         </div>
 
         <div className="space-y-6">
-          {/* Search Global */}
-          <div className="flex justify-center">
-            <div className="relative w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-soft-gray" />
-              <Input
-                placeholder="Buscar em todas as estruturas..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-                data-testid="input-buscar-estruturas"
-              />
+          {/* Proposta de Redação - PRIMEIRO ELEMENTO */}
+          <LiquidGlassCard>
+            <div className="flex items-center gap-2 mb-4">
+              <PenTool className="h-5 w-5 text-bright-blue" />
+              <h3 className="text-lg font-semibold text-dark-blue">
+                1. Proposta de Redação
+              </h3>
             </div>
-          </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
+                  Tema da Redação *
+                </Label>
+                <Textarea
+                  id="essay-topic"
+                  placeholder="Ex: A importância da educação digital no século XXI"
+                  value={essayTopic}
+                  onChange={(e) => setEssayTopic(e.target.value)}
+                  rows={3}
+                  className="mt-1"
+                  data-testid="textarea-tema-redacao"
+                />
+                <p className="text-xs text-soft-gray mt-1">
+                  Defina claramente o tema central da sua redação
+                </p>
+              </div>
 
-          {/* Modelos Predefinidos */}
+              <div>
+                <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
+                  Instruções Especiais (opcional)
+                </Label>
+                <Textarea
+                  id="additional-instructions"
+                  placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
+                  value={additionalInstructions}
+                  onChange={(e) => setAdditionalInstructions(e.target.value)}
+                  rows={3}
+                  className="mt-1"
+                  data-testid="textarea-instrucoes-adicionais"
+                />
+                <p className="text-xs text-soft-gray mt-1">
+                  Requisitos específicos, tom, estilo ou público-alvo
+                </p>
+              </div>
+            </div>
+            
+            {/* Botão de sugerir modelo */}
+            <div className="mt-4 pt-4 border-t border-bright-blue/20">
+              <div className="flex justify-center">
+                <Button
+                  onClick={suggestBestModel}
+                  variant="outline"
+                  className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                  data-testid="button-sugerir-modelo"
+                >
+                  <Lightbulb className="mr-2 h-4 w-4" />
+                  Sugerir Melhor Modelo para este Tema
+                </Button>
+              </div>
+            </div>
+          </LiquidGlassCard>
+
+          {/* Modelos Disponíveis - UNIFICADO */}
           <LiquidGlassCard>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-dark-blue">
-                Modelos Predefinidos Coringa
+                2. Selecione um Modelo
               </h2>
-              <Badge variant="outline" className="text-emerald-600 border-emerald-600">
-                7 modelos
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-emerald-600 border-emerald-600">
+                  {predefinedStructures.length} predefinidos
+                </Badge>
+                <Badge variant="outline" className="text-blue-600 border-blue-600">
+                  {structures.length} personalizadas
+                </Badge>
+              </div>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* Busca integrada */}
+            <div className="mb-6">
+              <div className="relative max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-soft-gray" />
+                <Input
+                  placeholder="Buscar estruturas..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                  data-testid="input-buscar-estruturas"
+                />
+              </div>
+            </div>
+
+            {/* Modelos Predefinidos */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center text-xs text-emerald-600">P</span>
+                Modelos Predefinidos Coringa
+              </h3>
+              
               {predefinedStructures.filter(structure =>
                 structure.name.toLowerCase().includes(searchTerm.toLowerCase())
               ).length === 0 ? (
-                <div className="text-center py-8 text-soft-gray">
-                  <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>Nenhum modelo predefinido encontrado</p>
-                  <p className="text-sm">Tente outro termo de busca</p>
+                <div className="text-center py-6 text-soft-gray">
+                  <FileText className="mx-auto h-8 w-8 mb-2 opacity-50" />
+                  <p className="text-sm">Nenhum modelo predefinido encontrado</p>
                 </div>
               ) : (
-                <div className="flex gap-4 pb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {predefinedStructures.filter(structure =>
                     structure.name.toLowerCase().includes(searchTerm.toLowerCase())
                   ).map((structure) => (
                     <Card 
                       key={structure.id}
-                      className={`cursor-pointer transition-all hover:shadow-md min-w-[320px] flex-shrink-0 border-2 ${
+                      className={`cursor-pointer transition-all hover:shadow-md border-2 ${
                         selectedStructure?.id === structure.id 
                           ? 'ring-2 ring-bright-blue bg-bright-blue/5 border-bright-blue' 
+                          : suggestedStructure?.id === structure.id
+                          ? 'ring-2 ring-emerald-500 bg-emerald-50/50 border-emerald-300'
                           : 'hover:bg-gray-50 border-emerald-200'
                       }`}
                       onClick={() => setSelectedStructure(structure)}
@@ -542,15 +655,15 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                     >
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-lg text-dark-blue">
+                          <CardTitle className="text-base text-dark-blue">
                             {structure.name}
-                            {structure.userId === 'system' && (
-                              <Badge variant="outline" className="ml-2 text-xs text-bright-blue border-bright-blue">
-                                Predefinido
+                            {suggestedStructure?.id === structure.id && (
+                              <Badge variant="outline" className="ml-2 text-xs text-emerald-600 border-emerald-600">
+                                ✨ Sugerido
                               </Badge>
                             )}
                           </CardTitle>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
                             <Badge variant="secondary" className="text-xs">
                               {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
                             </Badge>
@@ -655,11 +768,11 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                             )}
                           </div>
                         </div>
-                        <CardDescription>
-                          {structure.userId === 'system' ? 'Modelo predefinido com guia de uso' : `Criada em ${new Date(structure.createdAt!).toLocaleDateString('pt-BR')}`}
+                        <CardDescription className="text-xs">
+                          Modelo predefinido com guia de uso
                         </CardDescription>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="pt-2">
                         <div className="text-sm text-soft-gray">
                           {Array.isArray(structure.sections) && structure.sections.length > 0 && (
                             <div className="flex flex-wrap gap-1">
@@ -682,83 +795,76 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 </div>
               )}
             </div>
-          </LiquidGlassCard>
 
-          {/* Suas Estruturas Personalizadas */}
-          <LiquidGlassCard>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-dark-blue">
-                Suas Estruturas Personalizadas
-              </h2>
-              <Badge variant="outline" className="text-blue-600 border-blue-600">
-                {structures.length} {structures.length === 1 ? 'estrutura' : 'estruturas'}
-              </Badge>
-            </div>
-
-            <div className="overflow-x-auto">
-              {structures.filter(structure =>
-                structure.name.toLowerCase().includes(searchTerm.toLowerCase())
-              ).length === 0 ? (
-                <div className="text-center py-8 text-soft-gray">
-                  <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>
-                    {searchTerm ? 'Nenhuma estrutura personalizada encontrada' : 'Você ainda não criou estruturas personalizadas'}
-                  </p>
-                  <p className="text-sm">
-                    {searchTerm ? 'Tente outro termo de busca' : 'Crie suas próprias estruturas na página "Criar Estrutura"'}
-                  </p>
-                </div>
-              ) : (
-                <div className="flex gap-4 pb-4">
-                  {structures.filter(structure =>
-                    structure.name.toLowerCase().includes(searchTerm.toLowerCase())
-                  ).map((structure) => (
-                    <Card 
-                      key={structure.id}
-                      className={`cursor-pointer transition-all hover:shadow-md min-w-[280px] flex-shrink-0 ${
-                        selectedStructure?.id === structure.id 
-                          ? 'ring-2 ring-bright-blue bg-bright-blue/5' 
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => setSelectedStructure(structure)}
-                      data-testid={`card-estrutura-user-${structure.id}`}
-                    >
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-lg text-dark-blue">
-                            {structure.name}
-                          </CardTitle>
-                          <Badge variant="secondary" className="text-xs">
-                            {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
-                          </Badge>
-                        </div>
-                        <CardDescription>
-                          Criada em {new Date(structure.createdAt!).toLocaleDateString('pt-BR')}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-sm text-soft-gray">
-                          {Array.isArray(structure.sections) && structure.sections.length > 0 && (
-                            <div className="flex flex-wrap gap-1">
-                              {(structure.sections as Section[]).slice(0, 2).map((section, index) => (
-                                <Badge key={index} variant="outline" className="text-xs">
-                                  {section.title || `Seção ${index + 1}`}
-                                </Badge>
-                              ))}
-                              {structure.sections.length > 2 && (
-                                <Badge variant="outline" className="text-xs">
-                                  +{structure.sections.length - 2} mais
-                                </Badge>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Estruturas Personalizadas */}
+            {structures.length > 0 && (
+              <div>
+                <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-xs text-blue-600">U</span>
+                  Suas Estruturas Personalizadas
+                </h3>
+                
+                {structures.filter(structure =>
+                  structure.name.toLowerCase().includes(searchTerm.toLowerCase())
+                ).length === 0 ? (
+                  <div className="text-center py-6 text-soft-gray">
+                    <FileText className="mx-auto h-8 w-8 mb-2 opacity-50" />
+                    <p className="text-sm">
+                      {searchTerm ? 'Nenhuma estrutura personalizada encontrada' : 'Crie suas estruturas na página "Criar Estrutura"'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {structures.filter(structure =>
+                      structure.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map((structure) => (
+                      <Card 
+                        key={structure.id}
+                        className={`cursor-pointer transition-all hover:shadow-md border-2 ${
+                          selectedStructure?.id === structure.id 
+                            ? 'ring-2 ring-bright-blue bg-bright-blue/5 border-bright-blue' 
+                            : 'hover:bg-gray-50 border-blue-200'
+                        }`}
+                        onClick={() => setSelectedStructure(structure)}
+                        data-testid={`card-estrutura-user-${structure.id}`}
+                      >
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-base text-dark-blue">
+                              {structure.name}
+                            </CardTitle>
+                            <Badge variant="secondary" className="text-xs">
+                              {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-xs">
+                            Criada em {new Date(structure.createdAt!).toLocaleDateString('pt-BR')}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pt-2">
+                          <div className="text-sm text-soft-gray">
+                            {Array.isArray(structure.sections) && structure.sections.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {(structure.sections as Section[]).slice(0, 2).map((section, index) => (
+                                  <Badge key={index} variant="outline" className="text-xs">
+                                    {section.title || `Seção ${index + 1}`}
+                                  </Badge>
+                                ))}
+                                {structure.sections.length > 2 && (
+                                  <Badge variant="outline" className="text-xs">
+                                    +{structure.sections.length - 2} mais
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </LiquidGlassCard>
 
           {/* Estrutura Selecionada - Segunda linha */}
@@ -806,7 +912,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                     <Button
                       variant="outline"
                       className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
-                      onClick={() => setShowGuide(selectedStructure.id)}
+                      onClick={() => {}}
                       data-testid="button-view-guide"
                     >
                       <Info className="mr-2 h-4 w-4" />
@@ -830,76 +936,35 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             </LiquidGlassCard>
           )}
 
-          {/* Proposta de Redação - Sempre visível */}
+          {/* Botão de Geração - SEMPRE VISÍVEL NO FINAL */}
           <LiquidGlassCard>
             <div className="flex items-center gap-2 mb-4">
-              <PenTool className="h-5 w-5 text-bright-blue" />
+              <Play className="h-5 w-5 text-bright-blue" />
               <h3 className="text-lg font-semibold text-dark-blue">
-                Proposta de Redação
+                3. Gerar Redação
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
-                  Tema da Redação *
-                </Label>
-                <Textarea
-                  id="essay-topic"
-                  placeholder="Ex: A importância da educação digital no século XXI"
-                  value={essayTopic}
-                  onChange={(e) => setEssayTopic(e.target.value)}
-                  rows={3}
-                  className="mt-1"
-                  data-testid="textarea-tema-redacao"
-                />
-                <p className="text-xs text-soft-gray mt-1">
-                  Defina claramente o tema central da sua redação
-                </p>
-              </div>
-
-              <div>
-                <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
-                  Instruções Especiais (opcional)
-                </Label>
-                <Textarea
-                  id="additional-instructions"
-                  placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
-                  value={additionalInstructions}
-                  onChange={(e) => setAdditionalInstructions(e.target.value)}
-                  rows={3}
-                  className="mt-1"
-                  data-testid="textarea-instrucoes-adicionais"
-                />
-                <p className="text-xs text-soft-gray mt-1">
-                  Requisitos específicos, tom, estilo ou público-alvo
-                </p>
-              </div>
-            </div>
-            
-            {/* Botão de gerar sempre visível */}
-            <div className="mt-6 pt-6 border-t border-bright-blue/20">
-              <div className="text-center">
-                <p className="text-sm text-soft-gray mb-4">
-                  {selectedStructure 
-                    ? `Gerar redação com: ${selectedStructure.name}` 
-                    : 'Gerar redação com estrutura padrão'
-                  }
-                </p>
-                <Button
-                  onClick={handleGenerateEssay}
-                  disabled={!essayTopic.trim() || isGenerating}
-                  className="bg-bright-blue hover:bg-blue-600 px-8"
-                  data-testid="button-gerar-redacao"
-                >
-                  {isGenerating ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Play className="mr-2 h-4 w-4" />
-                  )}
-                  {isGenerating ? "Gerando Redação..." : "Gerar Redação"}
-                </Button>
-              </div>
+            <div className="text-center">
+              <p className="text-sm text-soft-gray mb-4">
+                {selectedStructure 
+                  ? `✅ Gerar redação com: ${selectedStructure.name}` 
+                  : '⚠️ Selecione um modelo ou use a estrutura padrão'
+                }
+              </p>
+              <Button
+                onClick={handleGenerateEssay}
+                disabled={!essayTopic.trim() || isGenerating}
+                className="bg-bright-blue hover:bg-blue-600 px-8 py-3 text-lg"
+                data-testid="button-gerar-redacao"
+              >
+                {isGenerating ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <Play className="mr-2 h-5 w-5" />
+                )}
+                {isGenerating ? "Gerando Redação..." : "Gerar Redação com IA"}
+              </Button>
             </div>
           </LiquidGlassCard>
 
