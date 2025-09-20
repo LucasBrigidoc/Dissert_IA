@@ -285,7 +285,11 @@ export const textModificationTypeSchema = z.enum([
   "formalidade", 
   "argumentativo", 
   "sinonimos", 
-  "antonimos"
+  "antonimos",
+  "estrutura-causal",
+  "estrutura-comparativa", 
+  "estrutura-condicional",
+  "estrutura-oposicao"
 ]);
 
 export const wordDifficultySchema = z.enum([

@@ -76,17 +76,17 @@ export default function ControladorEscrita() {
     }));
   };
   
-  // Função para buscar repertórios relevantes
-  const fetchRelevantRepertoires = async (text: string, modifications: string[]) => {
-    if (!text.trim() || modifications.length === 0) {
+  // Função para buscar repertórios relevantes usando o texto processado
+  const fetchRelevantRepertoires = async (processedText: string, modifications: string[]) => {
+    if (!processedText.trim() || modifications.length === 0) {
       setSuggestedRepertoires([]);
       return;
     }
     
     setIsLoadingRepertoires(true);
     try {
-      // Extrair palavras-chave do texto para busca
-      const keywords = text.toLowerCase()
+      // Extrair palavras-chave do texto processado para maior relevância
+      const keywords = processedText.toLowerCase()
         .split(/\s+/)
         .filter(word => word.length > 3)
         .slice(0, 5)
@@ -124,11 +124,11 @@ export default function ControladorEscrita() {
   };
   
   // Função para gerar feedback educativo detalhado
-  const generateFeedback = (modifications: string[], textLength: number) => {
+  const generateFeedback = (modifications: string[], textLength: number, processedText: string = modifiedText) => {
     const feedbacks = [];
     
     // Análise estrutural do texto
-    const textAnalysis = analyzeTextStructure(originalText, modifiedText);
+    const textAnalysis = analyzeTextStructure(originalText, processedText);
     
     if (modifications.includes('formalidade')) {
       const levelText = formalityLevel[0] > 70 ? 'alta formalidade' : formalityLevel[0] < 30 ? 'baixa formalidade' : 'formalidade equilibrada';
@@ -393,14 +393,16 @@ ${recommendations}`);
       }
       
       setModifiedText(processedText);
-      setModificationType(appliedModifications.length > 0 ? appliedModifications.join(', ') as TextModificationType : "");
+      // Store the raw modification description, not forcing enum cast
+      const modificationDescription = appliedModifications.length > 0 ? appliedModifications.join(', ') : "";
+      setModificationType(modificationDescription as TextModificationType);
       
-      // Gerar feedback educativo
+      // Gerar feedback educativo com o texto processado atual
       const activeMods = Array.from(activeModifications);
-      setFeedbackText(generateFeedback(activeMods, processedText.length));
+      setFeedbackText(generateFeedback(activeMods, processedText.length, processedText));
       
-      // Buscar repertórios relevantes
-      await fetchRelevantRepertoires(originalText, activeMods);
+      // Buscar repertórios relevantes usando o texto processado
+      await fetchRelevantRepertoires(processedText, activeMods);
       
       toast({
         title: "Modificações aplicadas com sucesso!",
@@ -475,6 +477,12 @@ ${recommendations}`);
       const result = await response.json();
       
       setModifiedText(result.modifiedText);
+      
+      // Gerar feedback educativo com o texto processado
+      setFeedbackText(generateFeedback([type], result.modifiedText.length, result.modifiedText));
+      
+      // Buscar repertórios relevantes com o texto processado
+      await fetchRelevantRepertoires(result.modifiedText, [type]);
       
       // Show success message with source info
       const sourceLabel = result.source === 'ai' ? 'IA' : 
