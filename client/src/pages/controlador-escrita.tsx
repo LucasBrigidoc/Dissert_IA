@@ -123,38 +123,131 @@ export default function ControladorEscrita() {
     }
   };
   
-  // Função para gerar feedback educativo
+  // Função para gerar feedback educativo detalhado
   const generateFeedback = (modifications: string[], textLength: number) => {
     const feedbacks = [];
     
+    // Análise estrutural do texto
+    const textAnalysis = analyzeTextStructure(originalText, modifiedText);
+    
     if (modifications.includes('formalidade')) {
       const levelText = formalityLevel[0] > 70 ? 'alta formalidade' : formalityLevel[0] < 30 ? 'baixa formalidade' : 'formalidade equilibrada';
-      feedbacks.push(`✅ Ajustado para ${levelText} ${meaningPreservation === 'preserve' ? 'preservando' : 'alterando'} o sentido original`);
+      feedbacks.push(`📝 **REESCRITA APLICADA**
+• Nível de formalidade: ${levelText} (${formalityLevel[0]}%)
+• Preservação de sentido: ${meaningPreservation === 'preserve' ? 'Mantida' : 'Alterada intencionalmente'}
+• Complexidade lexical: ${wordDifficulty === 'simples' ? 'Simplificada' : wordDifficulty === 'complexo' ? 'Elevada' : 'Equilibrada'}
+• **Impacto argumentativo**: ${formalityLevel[0] > 70 ? 'Maior credibilidade acadêmica' : 'Maior proximidade com o leitor'}`);
     }
     
     if (modifications.includes('estrutura-causal')) {
-      feedbacks.push(`🎯 Aplicada estrutura causal: ${structureType.replace('-', ' → ')} para fortalecer a argumentação`);
+      feedbacks.push(`🎯 **ESTRUTURA CAUSAL IMPLEMENTADA**
+• Padrão aplicado: ${structureType.replace('-', ' → ')}
+• **Força argumentativa**: Estabelece relações de causa-efeito claras
+• **Coesão textual**: Conectivos causais fortalecem a progressão lógica
+• **Persuasão**: Argumentação baseada em evidências e consequências`);
     }
     
     if (modifications.includes('estrutura-comparativa')) {
-      feedbacks.push(`🔄 Adicionados conectivos comparativos para estabelecer relações entre ideias`);
+      feedbacks.push(`🔄 **ESTRUTURA COMPARATIVA INTEGRADA**
+• **Método**: Conectivos de comparação e contraste
+• **Efeito retórico**: Estabelece paralelos e diferenciações
+• **Clareza argumentativa**: Facilita compreensão através de analogias
+• **Profundidade**: Múltiplas perspectivas sobre o mesmo tema`);
     }
     
     if (modifications.includes('estrutura-oposicao')) {
-      feedbacks.push(`⚖️ Incorporada estrutura de oposição para apresentar contrapontos equilibrados`);
+      feedbacks.push(`⚖️ **ESTRUTURA DE OPOSIÇÃO ELABORADA**
+• **Técnica**: Apresentação de contrapontos equilibrados
+• **Dialética**: Tese vs. antítese para síntese argumentativa
+• **Credibilidade**: Demonstra conhecimento de múltiplas perspectivas
+• **Persuasão**: Refuta objeções antecipadamente`);
     }
     
+    // Análise quantitativa e qualitativa
+    const analysisText = `📊 **ANÁLISE TEXTUAL COMPLETA**
+• Extensão: ${textLength} caracteres ${textLength > 500 ? '(formato dissertativo ideal)' : textLength > 200 ? '(parágrafo bem desenvolvido)' : '(resumo ou introdução)'}
+• Densidade argumentativa: ${textAnalysis.argumentDensity}
+• Complexidade sintática: ${textAnalysis.syntaxComplexity}
+• Registro linguístico: ${textAnalysis.linguisticRegister}`;
+    
     if (textLength > 0) {
-      feedbacks.push(`📊 Texto processado: ${textLength} caracteres ${textLength > 500 ? '(extenso, ideal para desenvolvimento)' : '(conciso, bom para introdução)'}`);
+      feedbacks.push(analysisText);
+    }
+    
+    // Recomendações pedagógicas
+    if (modifications.length > 0) {
+      const recommendations = generatePedagogicalRecommendations(modifications, textLength);
+      feedbacks.push(`💡 **RECOMENDAÇÕES PEDAGÓGICAS**
+${recommendations}`);
     }
     
     if (feedbacks.length > 0) {
       return feedbacks.join('\n\n');
     } else if (modifications.length > 0) {
-      return '🔧 Modificações selecionadas: ' + modifications.join(', ') + '\n\n💡 Execute as modificações para ver análises detalhadas das melhorias aplicadas ao seu texto.';
+      return '🔧 **MODIFICAÇÕES SELECIONADAS**: ' + modifications.join(', ') + '\n\n💡 Execute as modificações para receber análise detalhada da construção argumentativa e melhorias aplicadas ao seu texto.';
     } else {
-      return 'Selecione e aplique modificações para ver melhorias detalhadas do seu texto.';
+      return 'Selecione e aplique modificações para receber análise pedagógica completa sobre a construção do seu texto.';
     }
+  };
+
+  // Função para analisar estrutura do texto
+  const analyzeTextStructure = (original: string, modified: string) => {
+    const wordCount = modified.split(/\s+/).length;
+    const sentenceCount = modified.split(/[.!?]+/).length - 1;
+    const avgWordsPerSentence = sentenceCount > 0 ? Math.round(wordCount / sentenceCount) : 0;
+    
+    return {
+      argumentDensity: wordCount > 100 ? 'Alta' : wordCount > 50 ? 'Média' : 'Básica',
+      syntaxComplexity: avgWordsPerSentence > 20 ? 'Complexa' : avgWordsPerSentence > 12 ? 'Moderada' : 'Simples',
+      linguisticRegister: formalityLevel[0] > 70 ? 'Acadêmico' : formalityLevel[0] > 40 ? 'Padrão' : 'Coloquial'
+    };
+  };
+
+  // Função para gerar recomendações pedagógicas
+  const generatePedagogicalRecommendations = (modifications: string[], textLength: number) => {
+    const recommendations = [];
+    
+    if (modifications.includes('formalidade')) {
+      recommendations.push('• Continue variando o registro conforme o contexto (vestibular = formal, blog = informal)');
+    }
+    if (modifications.includes('estrutura-causal')) {
+      recommendations.push('• Explore mais conectivos causais: "visto que", "uma vez que", "por conseguinte"');
+    }
+    if (modifications.includes('estrutura-comparativa')) {
+      recommendations.push('• Pratique analogias históricas e sociais para enriquecer comparações');
+    }
+    if (modifications.includes('estrutura-oposicao')) {
+      recommendations.push('• Desenvolva contrapontos antes de refutá-los para maior credibilidade');
+    }
+    
+    if (textLength < 200) {
+      recommendations.push('• Desenvolva mais os argumentos com exemplos concretos e dados');
+    } else if (textLength > 800) {
+      recommendations.push('• Considere dividir em parágrafos menores para melhor organização');
+    }
+    
+    return recommendations.length > 0 ? recommendations.join('\n') : '• Continue praticando diferentes técnicas de escrita argumentativa';
+  };
+
+  // Função para adicionar repertório ao texto
+  const addRepertoireToText = (repertoire: any) => {
+    if (!modifiedText.trim()) {
+      toast({
+        title: "Nenhum texto para enriquecer",
+        description: "Primeiro gere um texto modificado para poder adicionar repertórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const repertoireText = ` Conforme evidenciado por ${repertoire.title}, ${repertoire.description.split('.')[0].toLowerCase()}.`;
+    const newText = modifiedText + repertoireText;
+    setModifiedText(newText);
+    
+    toast({
+      title: "Repertório adicionado!",
+      description: `"${repertoire.title}" foi integrado ao seu texto.`,
+    });
   };
 
   // Função para alternar cards expandidos
