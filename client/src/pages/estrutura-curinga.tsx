@@ -135,8 +135,8 @@ export function EstruturaCuringa() {
               onClick={() => setSelectedMode('use')}
               data-testid="card-usar-estrutura"
             >
-              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-green-500/20 transition-colors">
-                <FileText className="h-8 w-8 text-green-600" />
+              <div className="w-16 h-16 bg-gray-500/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-gray-500/20 transition-colors">
+                <FileText className="h-8 w-8 text-gray-600" />
               </div>
               <h3 className="text-2xl font-bold text-dark-blue mb-4">
                 Usar Estrutura Existente

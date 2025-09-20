@@ -584,7 +584,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 2. Selecione um Modelo
               </h2>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-emerald-600 border-emerald-600">
+                <Badge variant="outline" className="text-gray-600 border-gray-600">
                   {predefinedStructures.length} predefinidos
                 </Badge>
                 <Badge variant="outline" className="text-blue-600 border-blue-600">
@@ -608,7 +608,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               <Button
                 onClick={suggestBestModel}
                 variant="outline"
-                className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 flex-shrink-0"
+                className="border-gray-500 text-gray-600 hover:bg-gray-50 flex-shrink-0"
                 data-testid="button-sugerir-modelo"
               >
                 <Lightbulb className="mr-2 h-4 w-4" />
@@ -619,7 +619,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             {/* Modelos Predefinidos */}
             <div className="mb-6">
               <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center text-xs text-emerald-600">P</span>
+                <span className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">P</span>
                 Modelos Predefinidos Coringa
               </h3>
               
@@ -641,8 +641,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                         selectedStructure?.id === structure.id 
                           ? 'ring-2 ring-bright-blue bg-bright-blue/5 border-bright-blue' 
                           : suggestedStructure?.id === structure.id
-                          ? 'ring-2 ring-emerald-500 bg-emerald-50/50 border-emerald-300'
-                          : 'hover:bg-gray-50 border-emerald-200'
+                          ? 'ring-2 ring-gray-500 bg-gray-50/50 border-gray-300'
+                          : 'hover:bg-gray-50 border-gray-200'
                       }`}
                       onClick={() => setSelectedStructure(structure)}
                       data-testid={`card-estrutura-${structure.id}`}
@@ -652,7 +652,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                           <CardTitle className="text-base text-dark-blue">
                             {structure.name}
                             {suggestedStructure?.id === structure.id && (
-                              <Badge variant="outline" className="ml-2 text-xs text-emerald-600 border-emerald-600">
+                              <Badge variant="outline" className="ml-2 text-xs text-gray-600 border-gray-600">
                                 ✨ Sugerido
                               </Badge>
                             )}
@@ -685,14 +685,14 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                     <div className="space-y-6">
                                       {/* Quando Usar */}
                                       <div>
-                                        <h3 className="text-lg font-semibold text-emerald-600 mb-3 flex items-center">
-                                          <span className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center mr-2 text-sm">✓</span>
+                                        <h3 className="text-lg font-semibold text-gray-600 mb-3 flex items-center">
+                                          <span className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center mr-2 text-sm">✓</span>
                                           Quando Usar
                                         </h3>
                                         <ul className="space-y-2">
                                           {structure.guide.whenToUse.map((item, index) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
-                                              <span className="text-emerald-500 mt-1">•</span>
+                                              <span className="text-gray-500 mt-1">•</span>
                                               <span>{item}</span>
                                             </li>
                                           ))}
@@ -905,7 +905,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   {selectedPredefinedStructure?.guide && (
                     <Button
                       variant="outline"
-                      className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                      className="border-gray-500 text-gray-600 hover:bg-gray-50"
                       onClick={() => {}}
                       data-testid="button-view-guide"
                     >

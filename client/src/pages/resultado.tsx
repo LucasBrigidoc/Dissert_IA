@@ -100,7 +100,7 @@ export function Resultado() {
           <Button 
             variant="outline" 
             onClick={handleSaveAndBackToSimulator}
-            className="border-green-500/30 text-green-600 hover:bg-green-50"
+            className="border-gray-500/30 text-gray-600 hover:bg-gray-50"
             data-testid="button-save-and-new-simulation"
           >
             <Save className="mr-2" size={16} />
@@ -121,23 +121,23 @@ export function Resultado() {
       {/* Main Results */}
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Overall Grade */}
-        <LiquidGlassCard className="bg-gradient-to-br from-green-50/80 to-blue-50/80 border-green-200/50">
+        <LiquidGlassCard className="bg-gradient-to-br from-gray-50/80 to-blue-50/80 border-gray-200/50">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-gray-500 to-blue-500 rounded-full flex items-center justify-center">
                 <Target className="text-white" size={16} />
               </div>
               <h1 className="text-2xl font-bold text-dark-blue">Resultado da Redação</h1>
             </div>
             
             <div className="space-y-2">
-              <div className="text-6xl font-bold text-green-600">
+              <div className="text-6xl font-bold text-gray-600">
                 {essayAnalysis.grade}
               </div>
               <div className="text-lg text-gray-600">
                 de {essayAnalysis.maxGrade} pontos
               </div>
-              <div className="inline-block px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+              <div className="inline-block px-4 py-2 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
                 {essayAnalysis.grade >= 8 ? 'Excelente' : essayAnalysis.grade >= 6 ? 'Bom' : 'Precisa melhorar'}
               </div>
             </div>
@@ -196,7 +196,7 @@ export function Resultado() {
                   {/* Progress bar */}
                   <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-gradient-to-r from-bright-blue to-green-500 h-2 rounded-full"
+                      className="bg-gradient-to-r from-bright-blue to-gray-500 h-2 rounded-full"
                       style={{ width: `${(competency.score / 10) * 100}%` }}
                     />
                   </div>
@@ -209,20 +209,20 @@ export function Resultado() {
         {/* Strengths and Improvements */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Strengths */}
-          <LiquidGlassCard className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 border-green-200/50">
+          <LiquidGlassCard className="bg-gradient-to-br from-gray-50/80 to-slate-50/80 border-gray-200/50">
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 bg-gradient-to-br from-gray-500 to-slate-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="text-white" size={12} />
                 </div>
-                <h3 className="text-lg font-bold text-green-800">Pontos Fortes</h3>
+                <h3 className="text-lg font-bold text-gray-800">Pontos Fortes</h3>
               </div>
               
               <ul className="space-y-2">
                 {essayAnalysis.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start space-x-2">
-                    <CheckCircle className="text-green-600 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-green-700">{strength}</span>
+                    <CheckCircle className="text-gray-600 mt-0.5 flex-shrink-0" size={16} />
+                    <span className="text-gray-700">{strength}</span>
                   </li>
                 ))}
               </ul>
@@ -256,7 +256,7 @@ export function Resultado() {
           <Button 
             variant="outline"
             onClick={handleSaveAndBackToSimulator}
-            className="border-green-500/30 text-green-600 hover:bg-green-50"
+            className="border-gray-500/30 text-gray-600 hover:bg-gray-50"
             data-testid="button-save-and-new-simulation"
           >
             <Save className="mr-2" size={16} />
