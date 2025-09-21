@@ -339,8 +339,8 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                             value={section.description || ''}
                             onChange={(e) => updateSection(index, 'description', e.target.value)}
                             placeholder="Descreva o conteúdo desta seção..."
-                            rows={6}
-                            className="bg-white resize-none text-base leading-relaxed min-h-[120px]"
+                            rows={10}
+                            className="bg-white resize-none text-base leading-relaxed min-h-[200px]"
                             data-testid={`textarea-descricao-secao-${index}`}
                           />
                         </div>
