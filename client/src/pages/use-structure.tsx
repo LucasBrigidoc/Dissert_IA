@@ -524,42 +524,43 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 md:px-4 py-4 md:py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4 md:mb-8">
           <Button 
             variant="outline" 
             onClick={onBack} 
-            className="mb-4 border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hover:border-bright-blue backdrop-blur-sm bg-white/60 transition-all duration-200 shadow-sm" 
+            size="sm"
+            className="mb-3 md:mb-4 border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hover:border-bright-blue backdrop-blur-sm bg-white/60 transition-all duration-200 shadow-sm text-sm md:text-base h-8 md:h-10" 
             data-testid="button-voltar"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
             Voltar
           </Button>
           
           <div>
-            <h1 className="text-3xl font-bold text-dark-blue mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-dark-blue mb-1 md:mb-2">
               Usar Estrutura Existente
             </h1>
-            <p className="text-soft-gray">
+            <p className="text-sm md:text-base text-soft-gray">
               Selecione uma estrutura salva e gere redações seguindo esse modelo
             </p>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-3 md:space-y-6">
           {/* Proposta de Redação - PRIMEIRO ELEMENTO */}
-          <LiquidGlassCard>
-            <div className="flex items-center gap-2 mb-4">
-              <PenTool className="h-5 w-5 text-bright-blue" />
-              <h3 className="text-lg font-semibold text-dark-blue">
+          <LiquidGlassCard className="p-3 md:p-6">
+            <div className="flex items-center gap-2 mb-3 md:mb-4">
+              <PenTool className="h-4 w-4 md:h-5 md:w-5 text-bright-blue" />
+              <h3 className="text-base md:text-lg font-semibold text-dark-blue">
                 1. Proposta de Redação
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
-                <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
+                <Label htmlFor="essay-topic" className="text-sm md:text-base text-dark-blue font-medium">
                   Proposta da Redação *
                 </Label>
                 <Textarea
@@ -568,7 +569,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   value={essayTopic}
                   onChange={(e) => setEssayTopic(e.target.value)}
                   rows={3}
-                  className="mt-1"
+                  className="mt-1 text-sm md:text-base min-h-[70px] md:min-h-[80px]"
                   data-testid="textarea-tema-redacao"
                 />
                 <p className="text-xs text-soft-gray mt-1">
@@ -577,7 +578,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               </div>
 
               <div>
-                <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
+                <Label htmlFor="additional-instructions" className="text-sm md:text-base text-dark-blue font-medium">
                   Instruções Especiais (opcional)
                 </Label>
                 <Textarea
@@ -586,7 +587,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   value={additionalInstructions}
                   onChange={(e) => setAdditionalInstructions(e.target.value)}
                   rows={3}
-                  className="mt-1"
+                  className="mt-1 text-sm md:text-base min-h-[70px] md:min-h-[80px]"
                   data-testid="textarea-instrucoes-adicionais"
                 />
                 <p className="text-xs text-soft-gray mt-1">
@@ -597,41 +598,44 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
           </LiquidGlassCard>
 
           {/* Modelos Disponíveis - UNIFICADO */}
-          <LiquidGlassCard>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-dark-blue">
+          <LiquidGlassCard className="p-3 md:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-4 gap-2">
+              <h2 className="text-lg md:text-xl font-semibold text-dark-blue">
                 2. Selecione um Modelo
               </h2>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-gray-600 border-gray-600">
+              <div className="flex items-center gap-1 md:gap-2">
+                <Badge variant="outline" className="text-gray-600 border-gray-600 text-xs px-2 py-1">
                   {predefinedStructures.length} predefinidos
                 </Badge>
-                <Badge variant="outline" className="text-blue-600 border-blue-600">
+                <Badge variant="outline" className="text-blue-600 border-blue-600 text-xs px-2 py-1">
                   {structures.length} personalizadas
                 </Badge>
               </div>
             </div>
 
             {/* Filtros e Busca */}
-            <div className="mb-6 space-y-4">
+            <div className="mb-4 md:mb-6 space-y-3 md:space-y-4">
               {/* Botões de Filtro */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 md:gap-3">
                 <Button
                   variant={activeFilter === 'all' ? 'default' : 'outline'}
+                  size="sm"
                   onClick={() => setActiveFilter('all')}
-                  className={`${
+                  className={`text-xs md:text-sm h-8 md:h-10 px-3 md:px-4 ${
                     activeFilter === 'all' 
                       ? 'bg-bright-blue hover:bg-blue-600 text-white' 
                       : 'border-bright-blue text-bright-blue hover:bg-bright-blue/10'
                   }`}
                   data-testid="button-filter-all"
                 >
-                  Todos os Modelos
+                  <span className="hidden sm:inline">Todos os Modelos</span>
+                  <span className="sm:hidden">Todos</span>
                 </Button>
                 <Button
                   variant={activeFilter === 'predefined' ? 'default' : 'outline'}
+                  size="sm"
                   onClick={() => setActiveFilter('predefined')}
-                  className={`${
+                  className={`text-xs md:text-sm h-8 md:h-10 px-3 md:px-4 ${
                     activeFilter === 'predefined' 
                       ? 'bg-bright-blue hover:bg-blue-600 text-white' 
                       : 'border-bright-blue text-bright-blue hover:bg-bright-blue/10'
@@ -642,8 +646,9 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 </Button>
                 <Button
                   variant={activeFilter === 'custom' ? 'default' : 'outline'}
+                  size="sm"
                   onClick={() => setActiveFilter('custom')}
-                  className={`${
+                  className={`text-xs md:text-sm h-8 md:h-10 px-3 md:px-4 ${
                     activeFilter === 'custom' 
                       ? 'bg-bright-blue hover:bg-blue-600 text-white' 
                       : 'border-bright-blue text-bright-blue hover:bg-bright-blue/10'
@@ -655,21 +660,22 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               </div>
               
               {/* Busca e Sugestão */}
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div className="relative max-w-md flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-soft-gray" />
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-4 items-start sm:items-center justify-between">
+                <div className="relative w-full sm:max-w-md sm:flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 md:h-4 md:w-4 text-soft-gray" />
                   <Input
                     placeholder="Buscar estruturas..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-8 md:pl-10 h-8 md:h-10 text-sm md:text-base"
                     data-testid="input-buscar-estruturas"
                   />
                 </div>
                 <Button
                   onClick={suggestBestModel}
                   variant="outline"
-                  className={`flex-shrink-0 ${
+                  size="sm"
+                  className={`flex-shrink-0 w-full sm:w-auto text-xs md:text-sm h-8 md:h-10 px-3 md:px-4 ${
                     essayTopic.trim() 
                       ? 'border-green-500 text-green-600 hover:bg-green-50' 
                       : 'border-gray-500 text-gray-600 hover:bg-gray-50'
@@ -677,27 +683,29 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   disabled={!essayTopic.trim()}
                   data-testid="button-sugerir-modelo"
                 >
-                  <Lightbulb className="mr-2 h-4 w-4" />
-                  Sugerir Melhor Modelo
+                  <Lightbulb className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline">Sugerir Melhor Modelo</span>
+                  <span className="sm:hidden">Sugerir</span>
                 </Button>
               </div>
             </div>
 
             {/* Modelos Predefinidos */}
             {(activeFilter === 'all' || activeFilter === 'predefined') && (
-              <div className="mb-6">
-                <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">P</span>
-                  Modelos Predefinidos Coringa
+              <div className="mb-4 md:mb-6">
+                <h3 className="text-base md:text-lg font-medium text-dark-blue mb-2 md:mb-3 flex items-center gap-2">
+                  <span className="w-5 h-5 md:w-6 md:h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">P</span>
+                  <span className="hidden sm:inline">Modelos Predefinidos Coringa</span>
+                  <span className="sm:hidden">Predefinidos</span>
                 </h3>
               
               {filteredPredefined.length === 0 ? (
-                <div className="text-center py-6 text-soft-gray">
-                  <FileText className="mx-auto h-8 w-8 mb-2 opacity-50" />
-                  <p className="text-sm">Nenhum modelo predefinido encontrado</p>
+                <div className="text-center py-4 md:py-6 text-soft-gray">
+                  <FileText className="mx-auto h-6 w-6 md:h-8 md:w-8 mb-2 opacity-50" />
+                  <p className="text-xs md:text-sm">Nenhum modelo predefinido encontrado</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                   {filteredPredefined.map((structure) => (
                     <Card 
                       key={structure.id}
@@ -713,17 +721,19 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                       onClick={() => setSelectedStructure(structure)}
                       data-testid={`card-estrutura-${structure.id}`}
                     >
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-base text-dark-blue">
-                            {structure.name}
+                      <CardHeader className="pb-2 px-3 md:px-6 pt-3 md:pt-6">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className="text-sm md:text-base text-dark-blue line-clamp-2">
+                              {structure.name}
+                            </CardTitle>
                             {suggestedStructure?.id === structure.id && (
-                              <Badge variant="outline" className="ml-2 text-xs text-green-600 border-green-600">
+                              <Badge variant="outline" className="mt-1 text-xs text-green-600 border-green-600">
                                 ✨ Sugerido
                               </Badge>
                             )}
-                          </CardTitle>
-                          <div className="flex items-center gap-1">
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
                             <Badge variant="secondary" className="text-xs">
                               {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
                             </Badge>
@@ -733,11 +743,11 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-6 w-6 p-0 text-bright-blue hover:bg-bright-blue/10"
+                                    className="h-5 w-5 md:h-6 md:w-6 p-0 text-bright-blue hover:bg-bright-blue/10"
                                     onClick={(e) => e.stopPropagation()}
                                     data-testid={`button-guide-${structure.id}`}
                                   >
-                                    <HelpCircle className="h-4 w-4" />
+                                    <HelpCircle className="h-3 w-3 md:h-4 md:w-4" />
                                   </Button>
                                 </DialogTrigger>
                                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -828,22 +838,22 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                             )}
                           </div>
                         </div>
-                        <CardDescription className="text-xs">
+                        <CardDescription className="text-xs mt-1">
                           Modelo predefinido com guia de uso
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="pt-2">
-                        <div className="text-sm text-soft-gray">
+                      <CardContent className="pt-0 px-3 md:px-6 pb-3 md:pb-6">
+                        <div className="text-xs md:text-sm text-soft-gray">
                           {Array.isArray(structure.sections) && structure.sections.length > 0 && (
                             <div className="flex flex-wrap gap-1">
-                              {(structure.sections as Section[]).slice(0, 2).map((section, index) => (
+                              {(structure.sections as Section[]).slice(0, 1).map((section, index) => (
                                 <Badge key={index} variant="outline" className="text-xs">
                                   {section.title || `Seção ${index + 1}`}
                                 </Badge>
                               ))}
-                              {structure.sections.length > 2 && (
+                              {structure.sections.length > 1 && (
                                 <Badge variant="outline" className="text-xs">
-                                  +{structure.sections.length - 2} mais
+                                  +{structure.sections.length - 1} mais
                                 </Badge>
                               )}
                             </div>
@@ -860,20 +870,21 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             {/* Estruturas Personalizadas */}
             {(structures.length > 0 || searchTerm.trim()) && (activeFilter === 'all' || activeFilter === 'custom') && (
               <div>
-                <h3 className="text-lg font-medium text-dark-blue mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-xs text-blue-600">U</span>
-                  Suas Estruturas Personalizadas
+                <h3 className="text-base md:text-lg font-medium text-dark-blue mb-2 md:mb-3 flex items-center gap-2">
+                  <span className="w-5 h-5 md:w-6 md:h-6 bg-blue-100 rounded-full flex items-center justify-center text-xs text-blue-600">U</span>
+                  <span className="hidden sm:inline">Suas Estruturas Personalizadas</span>
+                  <span className="sm:hidden">Personalizadas</span>
                 </h3>
                 
                 {filteredCustom.length === 0 ? (
-                  <div className="text-center py-6 text-soft-gray">
-                    <FileText className="mx-auto h-8 w-8 mb-2 opacity-50" />
-                    <p className="text-sm">
+                  <div className="text-center py-4 md:py-6 text-soft-gray">
+                    <FileText className="mx-auto h-6 w-6 md:h-8 md:w-8 mb-2 opacity-50" />
+                    <p className="text-xs md:text-sm">
                       {searchTerm || activeFilter === 'custom' ? 'Nenhuma estrutura personalizada encontrada' : 'Crie suas estruturas na página "Criar Estrutura"'}
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                     {filteredCustom.map((structure) => (
                       <Card 
                         key={structure.id}
@@ -885,31 +896,33 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                         onClick={() => setSelectedStructure(structure)}
                         data-testid={`card-estrutura-user-${structure.id}`}
                       >
-                        <CardHeader className="pb-2">
-                          <div className="flex items-center justify-between">
-                            <CardTitle className="text-base text-dark-blue">
-                              {structure.name}
-                            </CardTitle>
+                        <CardHeader className="pb-2 px-3 md:px-6 pt-3 md:pt-6">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <CardTitle className="text-sm md:text-base text-dark-blue line-clamp-2">
+                                {structure.name}
+                              </CardTitle>
+                              <CardDescription className="text-xs mt-1">
+                                Criada em {new Date(structure.createdAt!).toLocaleDateString('pt-BR')}
+                              </CardDescription>
+                            </div>
                             <Badge variant="secondary" className="text-xs">
                               {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
                             </Badge>
                           </div>
-                          <CardDescription className="text-xs">
-                            Criada em {new Date(structure.createdAt!).toLocaleDateString('pt-BR')}
-                          </CardDescription>
                         </CardHeader>
-                        <CardContent className="pt-2">
-                          <div className="text-sm text-soft-gray">
+                        <CardContent className="pt-0 px-3 md:px-6 pb-3 md:pb-6">
+                          <div className="text-xs md:text-sm text-soft-gray">
                             {Array.isArray(structure.sections) && structure.sections.length > 0 && (
                               <div className="flex flex-wrap gap-1">
-                                {(structure.sections as Section[]).slice(0, 2).map((section, index) => (
+                                {(structure.sections as Section[]).slice(0, 1).map((section, index) => (
                                   <Badge key={index} variant="outline" className="text-xs">
                                     {section.title || `Seção ${index + 1}`}
                                   </Badge>
                                 ))}
-                                {structure.sections.length > 2 && (
+                                {structure.sections.length > 1 && (
                                   <Badge variant="outline" className="text-xs">
-                                    +{structure.sections.length - 2} mais
+                                    +{structure.sections.length - 1} mais
                                   </Badge>
                                 )}
                               </div>
@@ -926,27 +939,29 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
           {/* Estrutura Selecionada - Segunda linha */}
           {selectedStructure && (
-            <LiquidGlassCard>
-              <div className="flex items-start justify-between gap-6">
+            <LiquidGlassCard className="p-3 md:p-6">
+              <div className="flex flex-col lg:flex-row items-start justify-between gap-4 lg:gap-6">
                 {/* Informações da estrutura */}
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-3 mb-4">
-                    <div className="flex items-center gap-3">
-                      <h2 className="text-xl font-semibold text-dark-blue">
+                <div className="flex-1 w-full lg:w-auto">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 mb-3 md:mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      <h2 className="text-lg md:text-xl font-semibold text-dark-blue">
                         {selectedStructure.name}
                       </h2>
-                      <Badge variant="secondary">
-                        {Array.isArray(selectedStructure.sections) ? selectedStructure.sections.length : 0} seções
-                      </Badge>
-                      {selectedStructure.userId === 'system' && (
-                        <Badge variant="outline" className={`${
-                          suggestedStructure?.id === selectedStructure.id 
-                            ? 'text-green-600 border-green-600' 
-                            : 'text-bright-blue border-bright-blue'
-                        }`}>
-                          {suggestedStructure?.id === selectedStructure.id ? '✨ Modelo Sugerido' : 'Modelo Predefinido'}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="secondary" className="text-xs">
+                          {Array.isArray(selectedStructure.sections) ? selectedStructure.sections.length : 0} seções
                         </Badge>
-                      )}
+                        {selectedStructure.userId === 'system' && (
+                          <Badge variant="outline" className={`text-xs ${
+                            suggestedStructure?.id === selectedStructure.id 
+                              ? 'text-green-600 border-green-600' 
+                              : 'text-bright-blue border-bright-blue'
+                          }`}>
+                            {suggestedStructure?.id === selectedStructure.id ? '✨ Sugerido' : 'Predefinido'}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     <Button
                       variant="outline"
@@ -955,10 +970,10 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                         setSelectedStructure(null);
                         setSuggestedStructure(null);
                       }}
-                      className="border-red-400 text-red-600 hover:bg-red-50"
+                      className="border-red-400 text-red-600 hover:bg-red-50 text-xs md:text-sm h-8 md:h-10 px-3 md:px-4 w-full sm:w-auto"
                       data-testid="button-desselecionar-modelo"
                     >
-                      <X className="mr-2 h-4 w-4" />
+                      <X className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
                       Desselecionar
                     </Button>
                   </div>
@@ -966,10 +981,10 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   {/* Preview das seções */}
                   <div className="space-y-2">
                     {Array.isArray(selectedStructure.sections) && selectedStructure.sections.length > 0 && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                         {(selectedStructure.sections as Section[]).map((section, index) => (
-                          <div key={index} className="p-3 bg-bright-blue/5 rounded-lg border border-bright-blue/20">
-                            <h4 className="font-medium text-dark-blue text-sm">
+                          <div key={index} className="p-2 md:p-3 bg-bright-blue/5 rounded-lg border border-bright-blue/20">
+                            <h4 className="font-medium text-dark-blue text-xs md:text-sm">
                               {section.title || `Seção ${index + 1}`}
                             </h4>
                             <p className="text-xs text-soft-gray mt-1 line-clamp-2">
@@ -983,17 +998,19 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 </div>
 
                 {/* Botões de ação */}
-                <div className="flex flex-col gap-3 min-w-[200px]">
+                <div className="flex flex-row lg:flex-col gap-2 lg:gap-3 w-full lg:min-w-[200px] lg:w-auto">
                   {selectedPredefinedStructure?.guide && (
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
-                          className="border-gray-500 text-gray-600 hover:bg-gray-50"
+                          size="sm"
+                          className="border-gray-500 text-gray-600 hover:bg-gray-50 text-xs md:text-sm h-8 md:h-10 px-3 md:px-4 flex-1 lg:flex-none"
                           data-testid="button-view-guide-selected"
                         >
-                          <Info className="mr-2 h-4 w-4" />
-                          Ver Guia de Uso
+                          <Info className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                          <span className="hidden sm:inline">Ver Guia de Uso</span>
+                          <span className="sm:hidden">Guia</span>
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
