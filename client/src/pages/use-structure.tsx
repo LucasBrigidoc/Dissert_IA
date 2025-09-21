@@ -1104,7 +1104,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
           {/* Modal de Edição */}
           {editingStructure && editedStructure && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-0">
+            <div className="fixed inset-0 bg-black z-50 p-0">
               <div className="bg-white w-full h-full p-8 overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-dark-blue">
