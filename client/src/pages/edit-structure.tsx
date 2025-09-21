@@ -452,19 +452,18 @@ export default function EditStructurePage({}: EditStructurePageProps) {
   const handleSave = (structure: EssayStructure) => {
     // Limpar sessionStorage
     sessionStorage.removeItem('structureToEdit');
-    
-    // Voltar para página anterior
-    const previousPage = sessionStorage.getItem('previousPage') || '/estrutura-curinga';
     sessionStorage.removeItem('previousPage');
-    setLocation(previousPage);
+    
+    // Volta para a tela "Usar estrutura existente" após salvar
+    setLocation('/estrutura-curinga?mode=use');
   };
 
   const handleCancel = () => {
     // Limpar sessionStorage e voltar para "Usar estrutura existente"
     sessionStorage.removeItem('structureToEdit');
     sessionStorage.removeItem('previousPage');
-    // Sempre volta para a tela "Usar estrutura existente" 
-    setLocation('/estrutura-curinga');
+    // Volta para a tela "Usar estrutura existente" com parâmetro específico
+    setLocation('/estrutura-curinga?mode=use');
   };
 
   if (!originalStructure) {

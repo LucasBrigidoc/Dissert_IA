@@ -20,12 +20,22 @@ export function EstruturaCuringa() {
   const [location] = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
+  const modeParam = urlParams.get('mode');
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
 
   // Garantir que a página sempre abra no topo
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Definir modo baseado no parâmetro da URL
+  useEffect(() => {
+    if (modeParam === 'use') {
+      setSelectedMode('use');
+    } else if (modeParam === 'create') {
+      setSelectedMode('create');
+    }
+  }, [modeParam]);
   
   // Mock userId - in a real app this would come from auth context
   const userId = "mock-user-id";
