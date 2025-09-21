@@ -200,7 +200,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="container mx-auto px-3 md:px-6 pt-16 md:pt-24 pb-6 md:pb-12 max-w-4xl">
+      <div className="container mx-auto px-3 md:px-6 pt-16 md:pt-24 pb-6 md:pb-12 max-w-6xl">
         <div className="space-y-4 md:space-y-10">
           {/* Informações da estrutura original */}
           <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-blue-500">
@@ -300,7 +300,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                 <div className="space-y-3 md:space-y-6">
                   {Array.isArray(editedStructure.sections) && 
                     (editedStructure.sections as Section[]).map((section, index) => (
-                    <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 md:p-8 rounded-xl border border-bright-blue/20">
+                    <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 md:p-12 rounded-xl border border-bright-blue/20">
                       <div className="flex items-center justify-between mb-3 md:mb-4">
                         <div className="flex items-center gap-2 md:gap-3">
                           <div className="bg-bright-blue p-1.5 md:p-2 rounded-full">
