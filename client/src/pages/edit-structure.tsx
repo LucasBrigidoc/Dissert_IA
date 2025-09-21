@@ -298,7 +298,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                 <div className="space-y-6">
                   {Array.isArray(editedStructure.sections) && 
                     (editedStructure.sections as Section[]).map((section, index) => (
-                    <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-bright-blue/20">
+                    <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl border border-bright-blue/20">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <div className="bg-bright-blue p-2 rounded-full">
@@ -321,7 +321,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                         )}
                       </div>
 
-                      <div className="space-y-5">
+                      <div className="space-y-6">
                         <div>
                           <Label className="text-base font-semibold text-dark-blue mb-2 block">Título da Seção</Label>
                           <Input
@@ -339,8 +339,8 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                             value={section.description || ''}
                             onChange={(e) => updateSection(index, 'description', e.target.value)}
                             placeholder="Descreva o conteúdo desta seção..."
-                            rows={4}
-                            className="bg-white resize-none text-base leading-relaxed"
+                            rows={6}
+                            className="bg-white resize-none text-base leading-relaxed min-h-[120px]"
                             data-testid={`textarea-descricao-secao-${index}`}
                           />
                         </div>
@@ -351,8 +351,8 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                             value={section.guidelines || ''}
                             onChange={(e) => updateSection(index, 'guidelines', e.target.value)}
                             placeholder="Dicas de como usar esta seção..."
-                            rows={3}
-                            className="bg-white resize-none text-base leading-relaxed"
+                            rows={5}
+                            className="bg-white resize-none text-base leading-relaxed min-h-[100px]"
                             data-testid={`textarea-diretrizes-secao-${index}`}
                           />
                         </div>
@@ -460,13 +460,11 @@ export default function EditStructurePage({}: EditStructurePageProps) {
   };
 
   const handleCancel = () => {
-    // Limpar sessionStorage e voltar para página anterior
+    // Limpar sessionStorage e voltar para "Usar estrutura existente"
     sessionStorage.removeItem('structureToEdit');
-    
-    // Tentar obter a página anterior do sessionStorage
-    const previousPage = sessionStorage.getItem('previousPage') || '/estrutura-curinga';
     sessionStorage.removeItem('previousPage');
-    setLocation(previousPage);
+    // Sempre volta para a tela "Usar estrutura existente" 
+    setLocation('/estrutura-curinga');
   };
 
   if (!originalStructure) {
