@@ -1104,8 +1104,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
           {/* Modal de Edição */}
           {editingStructure && editedStructure && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-2">
+              <div className="bg-white rounded-2xl p-8 max-w-6xl w-full max-h-[95vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-dark-blue">
                     Editar Estrutura
