@@ -200,10 +200,10 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="container mx-auto px-3 md:px-6 pt-16 md:pt-24 pb-6 md:pb-12 max-w-6xl">
+      <div className="w-full px-3 md:px-6 pt-16 md:pt-24 pb-6 md:pb-12">
         <div className="space-y-4 md:space-y-10">
           {/* Informações da estrutura original */}
-          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-blue-500">
+          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-blue-500 max-w-4xl mx-auto">
             <CardHeader className="pb-3 md:pb-6 px-3 md:px-6 pt-3 md:pt-6">
               <div className="flex items-center gap-2 md:gap-4">
                 <div className="bg-blue-100 p-2 md:p-3 rounded-lg">
@@ -229,7 +229,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
           </LiquidGlassCard>
 
           {/* Formulário de edição */}
-          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-green-500">
+          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-green-500 w-full">
             <CardHeader className="px-3 md:px-6 pt-3 md:pt-6 pb-3 md:pb-6">
               <div className="flex items-center gap-2 md:gap-4">
                 <div className="bg-green-100 p-2 md:p-3 rounded-lg">
@@ -367,7 +367,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
           </LiquidGlassCard>
 
           {/* Botões de ação */}
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-6 justify-center max-w-4xl mx-auto">
             <Button
               onClick={onCancel}
               variant="outline"
@@ -397,7 +397,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
           </div>
 
           {/* Aviso sobre cópia */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-6 max-w-4xl mx-auto">
             <div className="flex items-start gap-2 md:gap-4">
               <AlertCircle className="h-4 w-4 md:h-6 md:w-6 text-blue-600 mt-1 flex-shrink-0" />
               <div className="text-sm md:text-base">
