@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X, HelpCircle, Info, Lightbulb } from "lucide-react";
 import { EssayResult } from "@/pages/essay-result";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,9 @@ interface UseStructureProps {
 }
 
 export function UseStructure({ structures, onBack, onSaveStructure }: UseStructureProps) {
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  
   // 7 Estruturas Predefinidas Coringa
   const predefinedStructures: StructureWithGuide[] = [
     {
@@ -308,12 +312,9 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
   const [searchTerm, setSearchTerm] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedEssay, setGeneratedEssay] = useState("");
-  const [editingStructure, setEditingStructure] = useState<EssayStructure | null>(null);
-  const [editedStructure, setEditedStructure] = useState<EssayStructure | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [usedStructure, setUsedStructure] = useState<EssayStructure | null>(null);
   const [suggestedStructure, setSuggestedStructure] = useState<EssayStructure | null>(null);
-  const { toast } = useToast();
   
   // Combinar estruturas predefinidas com estruturas do usuário
   const allStructures = [...predefinedStructures, ...structures];
@@ -1054,8 +1055,12 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                     variant="outline"
                     className="border-bright-blue text-bright-blue hover:bg-bright-blue/10"
                     onClick={() => {
-                      setEditingStructure(selectedStructure);
-                      setEditedStructure({ ...selectedStructure });
+                      if (selectedStructure) {
+                        // Salvar dados da estrutura temporariamente no sessionStorage
+                        sessionStorage.setItem('structureToEdit', JSON.stringify(selectedStructure));
+                        // Navegar para nova página de edição
+                        setLocation('/edit-structure');
+                      }
                     }}
                     data-testid="button-editar-estrutura"
                   >
@@ -1102,109 +1107,6 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
           </LiquidGlassCard>
 
 
-          {/* Modal de Edição */}
-          {editingStructure && editedStructure && (
-            <div className="fixed inset-0 bg-black z-50 p-0">
-              <div className="bg-white w-full h-full p-8 overflow-y-auto">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-dark-blue">
-                    Editar Estrutura
-                  </h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700"
-                    onClick={() => {
-                      setEditingStructure(null);
-                      setEditedStructure(null);
-                    }}
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-dark-blue font-medium">Nome da Estrutura</Label>
-                    <Input
-                      value={editedStructure.name}
-                      onChange={(e) => setEditedStructure({
-                        ...editedStructure,
-                        name: e.target.value
-                      })}
-                      placeholder="Nome da estrutura"
-                      className="mt-1"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label className="text-dark-blue font-medium">Seções</Label>
-                    <div className="space-y-3 mt-2">
-                      {Array.isArray(editedStructure.sections) && (editedStructure.sections as Section[]).map((section, index) => (
-                        <div key={index} className="p-3 border border-bright-blue/20 rounded-lg">
-                          <Input
-                            value={section.title || ''}
-                            onChange={(e) => {
-                              const newSections = [...(editedStructure.sections as Section[])];
-                              newSections[index] = { ...section, title: e.target.value };
-                              setEditedStructure({ ...editedStructure, sections: newSections });
-                            }}
-                            placeholder="Título da seção"
-                            className="mb-2"
-                          />
-                          <Textarea
-                            value={section.description || ''}
-                            onChange={(e) => {
-                              const newSections = [...(editedStructure.sections as Section[])];
-                              newSections[index] = { ...section, description: e.target.value };
-                              setEditedStructure({ ...editedStructure, sections: newSections });
-                            }}
-                            placeholder="Descrição da seção"
-                            rows={2}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex gap-3 mt-6">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setEditingStructure(null);
-                      setEditedStructure(null);
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (editedStructure && onSaveStructure) {
-                        const structureToSave = {
-                          ...editedStructure,
-                          id: editingStructure.id === 'example-1' ? `user-${Date.now()}` : editedStructure.id,
-                          updatedAt: new Date()
-                        };
-                        onSaveStructure(structureToSave);
-                        setSelectedStructure(structureToSave);
-                        toast({
-                          title: "Estrutura salva!",
-                          description: "Sua estrutura foi salva em 'Suas Estruturas'."
-                        });
-                      }
-                      setEditingStructure(null);
-                      setEditedStructure(null);
-                    }}
-                    className="bg-bright-blue hover:bg-blue-600"
-                  >
-                    <Save className="mr-2 h-4 w-4" />
-                    Salvar Estrutura
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
 
           
         </div>
