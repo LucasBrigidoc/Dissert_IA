@@ -165,7 +165,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header fixo com gradiente e ícones */}
       <div className="fixed top-0 z-50 w-full bg-gradient-to-r from-bright-blue to-purple-600 shadow-xl">
-        <div className="container mx-auto px-6 py-6">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
@@ -179,18 +179,18 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
                 Voltar
               </Button>
               <div className="flex items-center gap-3">
-                <div className="bg-white/20 p-4 rounded-full">
-                  <Edit3 className="h-7 w-7 text-white" />
+                <div className="bg-white/20 p-3 rounded-full">
+                  <Edit3 className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white">Editor de Estruturas</h1>
-                  <p className="text-lg text-blue-100">Personalize sua estrutura de redação</p>
+                  <h1 className="text-2xl font-bold text-white">Editor de Estruturas</h1>
+                  <p className="text-base text-blue-100">Personalize sua estrutura de redação</p>
                 </div>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
+              <Badge variant="secondary" className="bg-white/20 text-white border-white/30 px-3 py-1 text-sm">
                 <Copy className="h-5 w-5 mr-2" />
                 Criando Cópia
               </Badge>
@@ -200,7 +200,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="container mx-auto px-6 pt-32 pb-12 max-w-4xl">
+      <div className="container mx-auto px-6 pt-24 pb-12 max-w-4xl">
         <div className="space-y-10">
           {/* Informações da estrutura original */}
           <LiquidGlassCard className="border-l-4 border-l-blue-500">
@@ -454,13 +454,19 @@ export default function EditStructurePage({}: EditStructurePageProps) {
     sessionStorage.removeItem('structureToEdit');
     
     // Voltar para página anterior
-    setLocation("/estrutura-curinga");
+    const previousPage = sessionStorage.getItem('previousPage') || '/estrutura-curinga';
+    sessionStorage.removeItem('previousPage');
+    setLocation(previousPage);
   };
 
   const handleCancel = () => {
-    // Limpar sessionStorage e voltar
+    // Limpar sessionStorage e voltar para página anterior
     sessionStorage.removeItem('structureToEdit');
-    setLocation("/estrutura-curinga");
+    
+    // Tentar obter a página anterior do sessionStorage
+    const previousPage = sessionStorage.getItem('previousPage') || '/estrutura-curinga';
+    sessionStorage.removeItem('previousPage');
+    setLocation(previousPage);
   };
 
   if (!originalStructure) {

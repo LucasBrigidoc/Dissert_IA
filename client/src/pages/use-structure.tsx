@@ -1058,6 +1058,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                       if (selectedStructure) {
                         // Salvar dados da estrutura temporariamente no sessionStorage
                         sessionStorage.setItem('structureToEdit', JSON.stringify(selectedStructure));
+                        // Salvar página atual como página anterior
+                        sessionStorage.setItem('previousPage', window.location.pathname + window.location.search);
                         // Navegar para nova página de edição
                         setLocation('/edit-structure');
                       }
