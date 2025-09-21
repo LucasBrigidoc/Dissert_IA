@@ -1104,8 +1104,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
           {/* Modal de Edição */}
           {editingStructure && editedStructure && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-2">
-              <div className="bg-white rounded-2xl p-8 max-w-6xl w-full max-h-[95vh] overflow-y-auto">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-0">
+              <div className="bg-white w-full h-full p-8 overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-dark-blue">
                     Editar Estrutura
@@ -1113,12 +1113,13 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700"
                     onClick={() => {
                       setEditingStructure(null);
                       setEditedStructure(null);
                     }}
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
                 
