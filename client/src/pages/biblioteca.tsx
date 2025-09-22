@@ -489,36 +489,36 @@ export default function BibliotecaPage() {
 
         {/* Statistics Cards */}
         <div className="mb-4 sm:mb-8">
-          {/* Mobile: Compact Stats Row */}
+          {/* Mobile: Compact Stats Grid - 2 Lines */}
           <div className="sm:hidden">
             <LiquidGlassCard className="p-3">
-              <div className="flex gap-3 overflow-x-auto pb-1">
-                <div className="flex items-center space-x-2 flex-shrink-0 bg-blue-50 rounded-full px-3 py-1">
+              <div className="grid grid-cols-3 gap-3 pb-1">
+                <div className="flex items-center space-x-2 bg-blue-50 rounded-full px-3 py-1">
                   <BookOpen className="text-blue-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.repertorios.length}</span>
                   <span className="text-xs text-soft-gray">Rep</span>
                 </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 bg-green-50 rounded-full px-3 py-1">
+                <div className="flex items-center space-x-2 bg-green-50 rounded-full px-3 py-1">
                   <PenTool className="text-green-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.redacoes.length}</span>
                   <span className="text-xs text-soft-gray">Red</span>
                 </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 bg-yellow-50 rounded-full px-3 py-1">
+                <div className="flex items-center space-x-2 bg-yellow-50 rounded-full px-3 py-1">
                   <Lightbulb className="text-yellow-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.temas.length}</span>
                   <span className="text-xs text-soft-gray">Tem</span>
                 </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 bg-purple-50 rounded-full px-3 py-1">
+                <div className="flex items-center space-x-2 bg-purple-50 rounded-full px-3 py-1">
                   <Target className="text-purple-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.estilos.length}</span>
                   <span className="text-xs text-soft-gray">Est</span>
                 </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 bg-orange-50 rounded-full px-3 py-1">
+                <div className="flex items-center space-x-2 bg-orange-50 rounded-full px-3 py-1">
                   <Newspaper className="text-orange-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.newsletters.length}</span>
                   <span className="text-xs text-soft-gray">New</span>
                 </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 bg-indigo-50 rounded-full px-3 py-1">
+                <div className="flex items-center space-x-2 bg-indigo-50 rounded-full px-3 py-1">
                   <FolderOpen className="text-indigo-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.propostas.length}</span>
                   <span className="text-xs text-soft-gray">Pro</span>
