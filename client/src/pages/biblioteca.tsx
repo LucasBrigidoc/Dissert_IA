@@ -3,8 +3,9 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import jsPDF from 'jspdf';
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -487,90 +488,223 @@ export default function BibliotecaPage() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <LiquidGlassCard className="p-4 text-center">
-            <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.repertorios.length}</div>
-            <div className="text-sm text-soft-gray">Repertórios</div>
-          </LiquidGlassCard>
+        <div className="mb-4 sm:mb-8">
+          {/* Mobile: Compact Stats Row */}
+          <div className="sm:hidden">
+            <LiquidGlassCard className="p-3">
+              <div className="flex gap-3 overflow-x-auto pb-1">
+                <div className="flex items-center space-x-2 flex-shrink-0 bg-blue-50 rounded-full px-3 py-1">
+                  <BookOpen className="text-blue-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.repertorios.length}</span>
+                  <span className="text-xs text-soft-gray">Rep</span>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0 bg-green-50 rounded-full px-3 py-1">
+                  <PenTool className="text-green-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.redacoes.length}</span>
+                  <span className="text-xs text-soft-gray">Red</span>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0 bg-yellow-50 rounded-full px-3 py-1">
+                  <Lightbulb className="text-yellow-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.temas.length}</span>
+                  <span className="text-xs text-soft-gray">Tem</span>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0 bg-purple-50 rounded-full px-3 py-1">
+                  <Target className="text-purple-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.estilos.length}</span>
+                  <span className="text-xs text-soft-gray">Est</span>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0 bg-orange-50 rounded-full px-3 py-1">
+                  <Newspaper className="text-orange-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.newsletters.length}</span>
+                  <span className="text-xs text-soft-gray">New</span>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0 bg-indigo-50 rounded-full px-3 py-1">
+                  <FolderOpen className="text-indigo-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.propostas.length}</span>
+                  <span className="text-xs text-soft-gray">Pro</span>
+                </div>
+              </div>
+            </LiquidGlassCard>
+          </div>
           
-          <LiquidGlassCard className="p-4 text-center">
-            <PenTool className="mx-auto mb-2 text-green-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.redacoes.length}</div>
-            <div className="text-sm text-soft-gray">Redações</div>
-          </LiquidGlassCard>
-          
-          <LiquidGlassCard className="p-4 text-center">
-            <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.temas.length}</div>
-            <div className="text-sm text-soft-gray">Temas</div>
-          </LiquidGlassCard>
-          
-          <LiquidGlassCard className="p-4 text-center">
-            <Target className="mx-auto mb-2 text-purple-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.estilos.length}</div>
-            <div className="text-sm text-soft-gray">Estilos</div>
-          </LiquidGlassCard>
-          
-          <LiquidGlassCard className="p-4 text-center">
-            <Newspaper className="mx-auto mb-2 text-orange-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.newsletters.length}</div>
-            <div className="text-sm text-soft-gray">Newsletters</div>
-          </LiquidGlassCard>
-          
-          <LiquidGlassCard className="p-4 text-center">
-            <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
-            <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.propostas.length}</div>
-            <div className="text-sm text-soft-gray">Propostas</div>
-          </LiquidGlassCard>
+          {/* Desktop: Full Grid */}
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <LiquidGlassCard className="p-4 text-center">
+              <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.repertorios.length}</div>
+              <div className="text-sm text-soft-gray">Repertórios</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <PenTool className="mx-auto mb-2 text-green-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.redacoes.length}</div>
+              <div className="text-sm text-soft-gray">Redações</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.temas.length}</div>
+              <div className="text-sm text-soft-gray">Temas</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <Target className="mx-auto mb-2 text-purple-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.estilos.length}</div>
+              <div className="text-sm text-soft-gray">Estilos</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <Newspaper className="mx-auto mb-2 text-orange-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.newsletters.length}</div>
+              <div className="text-sm text-soft-gray">Newsletters</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.propostas.length}</div>
+              <div className="text-sm text-soft-gray">Propostas</div>
+            </LiquidGlassCard>
+          </div>
         </div>
 
         {/* Files Grid */}
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {filteredFiles.length === 0 ? (
-            <LiquidGlassCard className="p-8 text-center">
-              <Archive className="mx-auto mb-4 text-gray-400" size={48} />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">Nenhum arquivo encontrado</h3>
-              <p className="text-gray-500">
+            <LiquidGlassCard className="p-6 sm:p-8 text-center">
+              <Archive className="mx-auto mb-4 text-gray-400" size={36} />
+              <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Nenhum arquivo encontrado</h3>
+              <p className="text-sm text-gray-500 mb-4">
                 {searchTerm ? "Tente buscar com outros termos" : "Comece usando as funcionalidades para criar seu primeiro arquivo"}
               </p>
+              {!searchTerm && (
+                <Button 
+                  onClick={() => setLocation('/funcionalidades')}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
+                  data-testid="button-create-files"
+                >
+                  Explorar Funcionalidades
+                </Button>
+              )}
             </LiquidGlassCard>
           ) : (
             filteredFiles.map((file: any) => (
-              <LiquidGlassCard key={file.id} className="p-6 hover:shadow-lg smooth-transition">
+              <LiquidGlassCard key={file.id} className="p-3 sm:p-6 hover:shadow-lg smooth-transition">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-4 flex-1">
+                  <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
                     <div className="flex-shrink-0">
-                      {getIcon(file.type)}
+                      {/* Mobile: Smaller icon */}
+                      <div className="sm:hidden">
+                        {file.type === "Repertório" && <BookOpen size={16} className="text-blue-600" />}
+                        {file.type === "Redação" && <PenTool size={16} className="text-green-600" />}
+                        {file.type === "Tema" && <Lightbulb size={16} className="text-yellow-600" />}
+                        {file.type === "Estilo" && <Target size={16} className="text-purple-600" />}
+                        {file.type === "Newsletter" && <Newspaper size={16} className="text-orange-600" />}
+                        {file.type === "Proposta" && <FolderOpen size={16} className="text-indigo-600" />}
+                      </div>
+                      {/* Desktop: Regular icon */}
+                      <div className="hidden sm:block">
+                        {getIcon(file.type)}
+                      </div>
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-dark-blue truncate">{file.title}</h3>
-                        <Badge className={`text-xs ${getTypeColor(file.type)}`}>
-                          {file.type}
-                        </Badge>
+                      {/* Mobile: Compact header */}
+                      <div className="sm:hidden">
+                        <div className="flex items-start gap-2 mb-1">
+                          <h3 className="text-sm font-semibold text-dark-blue truncate flex-1">{file.title}</h3>
+                          <Badge className={`text-xs flex-shrink-0 ${getTypeColor(file.type)}`}>
+                            {file.type}
+                          </Badge>
+                        </div>
                         {(file as any).grade && (
-                          <Badge className="bg-green-100 text-green-800 text-xs">
+                          <Badge className="bg-green-100 text-green-800 text-xs mb-1">
                             Nota: {(file as any).grade}
                           </Badge>
                         )}
+                        <p className="text-xs text-soft-gray mb-2 line-clamp-2">{file.description}</p>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <Clock size={10} className="mr-1" />
+                          <span>{new Date(file.date).toLocaleDateString('pt-BR')}</span>
+                          <span className="mx-2">•</span>
+                          <span>{file.size}</span>
+                        </div>
                       </div>
                       
-                      <p className="text-sm text-soft-gray mb-2">{file.description}</p>
-                      
-                      <div className="flex items-center space-x-4 text-xs text-gray-500">
-                        <span className="flex items-center">
-                          <Clock size={12} className="mr-1" />
-                          {new Date(file.date).toLocaleDateString('pt-BR')}
-                        </span>
-                        <span>{file.size}</span>
-                        <span>{file.category}</span>
+                      {/* Desktop: Full layout */}
+                      <div className="hidden sm:block">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold text-dark-blue truncate">{file.title}</h3>
+                          <Badge className={`text-xs ${getTypeColor(file.type)}`}>
+                            {file.type}
+                          </Badge>
+                          {(file as any).grade && (
+                            <Badge className="bg-green-100 text-green-800 text-xs">
+                              Nota: {(file as any).grade}
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <p className="text-sm text-soft-gray mb-2">{file.description}</p>
+                        
+                        <div className="flex items-center space-x-4 text-xs text-gray-500">
+                          <span className="flex items-center">
+                            <Clock size={12} className="mr-1" />
+                            {new Date(file.date).toLocaleDateString('pt-BR')}
+                          </span>
+                          <span>{file.size}</span>
+                          <span>{file.category}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2 flex-shrink-0">
+                  {/* Mobile: Overflow menu */}
+                  <div className="sm:hidden flex-shrink-0">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-8 w-8 p-0"
+                          data-testid={`button-menu-${file.id}`}
+                        >
+                          <MoreVertical size={16} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem 
+                          onClick={() => {
+                            setSelectedFile(file);
+                            setShowFileDetails(true);
+                          }}
+                          className="flex items-center gap-2 p-3"
+                          data-testid={`menu-view-${file.id}`}
+                        >
+                          <Eye size={16} />
+                          Visualizar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => downloadAsPDF(file)}
+                          className="flex items-center gap-2 p-3"
+                          data-testid={`menu-download-${file.id}`}
+                        >
+                          <Download size={16} />
+                          Baixar PDF
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => deleteFile(file.id)}
+                          className="flex items-center gap-2 p-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          data-testid={`menu-delete-${file.id}`}
+                        >
+                          <Trash2 size={16} />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  
+                  {/* Desktop: Individual buttons */}
+                  <div className="hidden sm:flex items-center space-x-2 flex-shrink-0">
                     <Button 
                       size="sm" 
                       variant="ghost" 
