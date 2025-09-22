@@ -122,6 +122,7 @@ export function EnhancedStructureEditor({
   const [isModelSectionExpanded, setIsModelSectionExpanded] = useState(false);
   const [creationMode, setCreationMode] = useState<"model" | "manual">("model");
   const [showGuidanceCard, setShowGuidanceCard] = useState<number | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Mapeamento das orientações para cada tipo de parágrafo
   const guidanceMap: { [key: string]: string } = {
@@ -199,35 +200,89 @@ export function EnhancedStructureEditor({
     }
   };
 
-  const analyzeModelEssay = () => {
+  const analyzeModelEssay = async () => {
     if (!modelEssay.trim()) return;
     
-    // Análise básica do texto modelo para sugerir estrutura
-    const paragraphs = modelEssay.split('\n\n').filter(p => p.trim());
-    const suggestedSections: Section[] = paragraphs.map((paragraph, index) => {
-      let title = "";
-      let description = "";
+    try {
+      setIsAnalyzing(true); // Use loading state
       
-      if (index === 0) {
-        title = "Introdução";
-        description = "Parágrafo introdutório que apresenta o tema e contextualização";
-      } else if (index === paragraphs.length - 1) {
-        title = "Conclusão";
-        description = "Parágrafo final que conclui o raciocínio";
+      // Call the AI analysis API
+      const response = await fetch('/api/structures/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          essayText: modelEssay.trim(),
+          userId: 'default' // Could be dynamic based on user context
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.structure) {
+        // Convert AI analysis to Section format
+        const suggestedSections: Section[] = data.structure.sections.map((section: any) => ({
+          id: section.id || nanoid(),
+          title: section.title,
+          description: section.description
+        }));
+        
+        // Update name and sections
+        onNameChange(data.structure.name || "Estrutura Analisada");
+        onSectionsChange(suggestedSections);
+        setShowModelAnalysis(true);
+        
+        // Show success message
+        alert('✅ Estrutura analisada com sucesso! Agora você pode editá-la conforme necessário.');
       } else {
-        title = `Desenvolvimento ${index}`;
-        description = "Parágrafo de desenvolvimento com argumentos e exemplos";
+        throw new Error('Invalid response format');
       }
       
-      return {
-        id: nanoid(),
-        title,
-        description: `${description}\n\nExemplo do texto: "${paragraph.substring(0, 100)}..."`
-      };
-    });
-    
-    onSectionsChange(suggestedSections);
-    setShowModelAnalysis(true);
+    } catch (error) {
+      console.error('Error analyzing essay:', error);
+      
+      // Fallback to basic analysis
+      const paragraphs = modelEssay.split('\n\n').filter(p => p.trim());
+      const fallbackSections: Section[] = paragraphs.map((paragraph, index) => {
+        let title = "";
+        let description = "";
+        
+        if (index === 0) {
+          title = "Introdução";
+          description = "Desenvolva uma introdução com contextualização do tema usando conectivos como 'De acordo com', 'Conforme' ou 'Segundo'. Apresente sua tese de forma clara usando conectivos de oposição como 'Entretanto', 'Contudo' ou 'No entanto'. Finalize anunciando os dois argumentos que serão desenvolvidos com 'Além disso' ou 'Logo'.";
+        } else if (index === paragraphs.length - 1) {
+          title = "Conclusão";
+          description = "Retome a tese com 'Em suma', 'Portanto' ou 'Sobre isso'. Apresente proposta de intervenção completa respondendo: QUEM deve fazer, O QUE deve ser feito, COMO deve ser executado, POR MEIO DE QUE e PARA QUE finalidade. Use 'Nessa perspectiva' ou 'Por conseguinte' para desenvolver a proposta. Finalize com 'Assim' detalhando a implementação ou resultado esperado.";
+        } else {
+          const devNumber = index === 1 ? "Primeiro" : "Segundo";
+          title = `${devNumber} Desenvolvimento`;
+          description = index === 1 ? 
+            "Inicie com conectivos como 'Primeiramente', 'Inicialmente' ou 'Em primeira análise'. Apresente seu primeiro argumento com citação, dados ou contextualização histórica. Use 'Nesse sentido', 'Diante disso' para desenvolver e exemplificar o argumento. Conclua o parágrafo com 'Assim' ou 'Dessarte' fazendo transição para o próximo desenvolvimento." :
+            "Comece com 'Além disso' ou 'Ademais' para apresentar o segundo argumento. Use 'Nesse aspecto', 'Nessa perspectiva' para sustentar com explicações detalhadas, exemplos e citações. Finalize com 'Assim' ou 'Dessarte' para preparar a transição para a conclusão.";
+        }
+        
+        return {
+          id: nanoid(),
+          title,
+          description: `${description}\n\n💡 Trecho da redação modelo: "${paragraph.substring(0, 150)}..."`
+        };
+      });
+      
+      onSectionsChange(fallbackSections);
+      onNameChange("Estrutura Dissertativa (Análise Local)");
+      setShowModelAnalysis(true);
+      
+      // Show fallback message
+      alert('⚠️ Análise com IA indisponível. Usando análise local básica. A estrutura foi criada seguindo o guia de redação dissertativa argumentativa.');
+      
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const createManualStructure = () => {
@@ -342,13 +397,22 @@ export function EnhancedStructureEditor({
               />
               <Button 
                 onClick={analyzeModelEssay}
-                disabled={!modelEssay.trim()}
+                disabled={!modelEssay.trim() || isAnalyzing}
                 variant="default"
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-bright-blue hover:bg-bright-blue/90 text-white"
                 size="lg"
               >
-                <Wand2 className="mr-2 h-4 w-4" />
-                Analisar e Criar Estrutura
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Analisando com IA...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    Analisar e Criar Estrutura
+                  </>
+                )}
               </Button>
               
               {!modelEssay.trim() && (

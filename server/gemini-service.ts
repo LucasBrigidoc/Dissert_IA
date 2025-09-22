@@ -1412,6 +1412,187 @@ INSTRUÇÕES IMPORTANTES:
       recommendation: "Continue praticando a escrita e busque ampliar seu repertório cultural. Foque na elaboração de propostas de intervenção bem estruturadas."
     };
   }
+
+  // ==================== ESSAY STRUCTURE ANALYSIS ====================
+
+  async analyzeEssayStructure(essayText: string, existingStructures: any[] = []): Promise<any> {
+    if (!this.model) {
+      return this.generateFallbackStructureAnalysis(essayText);
+    }
+
+    try {
+      // Manual de Redação Dissertativa Argumentativa fornecido
+      const redactionGuide = `
+MANUAL DE REDAÇÃO DISSERTATIVA ARGUMENTATIVA
+
+1º PARÁGRAFO - INTRODUÇÃO:
+- 1ª FRASE: CONECTIVOS: De acordo, Conforme, Segundo, O, A, Na, No
+  ESTRATÉGIAS: Contextualização do tema, Afirmação do tema, citação de repertório
+  OBJETIVO: Ambientar o leitor no assunto e relacionar com a realidade
+
+- 2ª FRASE: CONECTIVOS: Entretanto, Contudo, No entanto, Todavia  
+  ESTRATÉGIAS: Apresentar tema, comparar com realidade atual, apresentar tese
+  OBJETIVO: Mostrar o tema/proposta impedindo fuga e trazendo a tese
+
+- 3ª FRASE: CONECTIVOS: Além disso, Logo, Assim sendo
+  ESTRATÉGIAS: Apresentar ideias que serão desenvolvidas, mostrar 2 argumentos
+  OBJETIVO: Introduzir desenvolvimentos que virão
+
+2º PARÁGRAFO - PRIMEIRO DESENVOLVIMENTO:
+- 1ª FRASE: CONECTIVOS: Inicialmente, Primeiramente, Primordialmente, Em primeira análise
+  ESTRATÉGIAS: Citação, Afirmação ou Contextualização histórica
+  OBJETIVO: Apresentar 1ª ideia com dados, citações ou contexto histórico
+
+- 2ª FRASE: CONECTIVOS: Nesse sentido, Diante disso, Dessa forma
+  ESTRATÉGIAS: Apresentação e Retomada da 1ª ideia  
+  OBJETIVO: Desenvolver, explicar e aprofundar primeiro argumento
+
+- 3ª FRASE: CONECTIVOS: Assim, Dessarte
+  ESTRATÉGIAS: Isolamento da ideia com breve conclusão
+  OBJETIVO: Fechar primeiro argumento e fazer transição
+
+3º PARÁGRAFO - SEGUNDO DESENVOLVIMENTO:
+- 1ª FRASE: CONECTIVOS: Além disso, Ademais
+  ESTRATÉGIAS: Apresentação e Retomada da 2ª ideia
+  OBJETIVO: Apresentar segundo argumento retomando ideia da introdução
+
+- 2ª FRASE: CONECTIVOS: Nesse aspecto, Nessa perspectiva, Dessa maneira
+  ESTRATÉGIAS: Posicionamento real, explicação, exemplos, citação
+  OBJETIVO: Sustentar segundo argumento com fundamentação detalhada
+
+- 3ª FRASE: CONECTIVOS: Assim, Dessarte
+  ESTRATÉGIAS: Isolamento da ideia com breve conclusão
+  OBJETIVO: Finalizar segundo desenvolvimento preparando para conclusão
+
+4º PARÁGRAFO - CONCLUSÃO:
+- 1ª FRASE: CONECTIVOS: Sobre isso, Em suma, Portanto
+  ESTRATÉGIAS: Resumo do tema com proposta de solução
+  OBJETIVO: Retomar tese e argumentos preparando para intervenção
+
+- 2ª FRASE: CONECTIVOS: Nessa perspectiva, Por conseguinte
+  ESTRATÉGIAS: Responder - Quem? O que? Como? Por meio de que? Para que?
+  OBJETIVO: Proposta de intervenção completa
+
+- 3ª FRASE: CONECTIVOS: Assim, Por conseguinte
+  ESTRATÉGIAS: Isolamento com breve solução, detalhamento da proposta
+  OBJETIVO: Finalizar detalhando implementação ou resultado esperado
+`;
+
+      // Criar contexto baseado em estruturas existentes
+      let existingStructuresContext = "";
+      if (existingStructures.length > 0) {
+        const qualityStructures = existingStructures.slice(0, 3); // Pegar as 3 melhores
+        existingStructuresContext = `
+ESTRUTURAS EXISTENTES DE QUALIDADE (para manter mesmo nível):
+${qualityStructures.map((struct, index) => `
+Estrutura ${index + 1}: "${struct.name}"
+Seções: ${JSON.stringify(struct.sections, null, 2)}
+`).join('\n')}
+
+Use estas como referência para o nível de qualidade e detalhamento esperado.
+`;
+      }
+
+      const prompt = `Analise a redação abaixo e crie uma estrutura dissertativa argumentativa seguindo rigorosamente o MANUAL DE REDAÇÃO fornecido.
+
+${redactionGuide}
+
+${existingStructuresContext}
+
+REDAÇÃO PARA ANÁLISE:
+"${essayText}"
+
+INSTRUÇÕES ESPECÍFICAS:
+1. Analise como a redação está estruturada atualmente
+2. Identifique os parágrafos (introdução, desenvolvimentos, conclusão)
+3. Crie uma estrutura baseada no manual que preserve o conteúdo bom e melhore o que está inadequado
+4. Cada seção deve ter instruções específicas sobre conectivos e estratégias argumentativas
+5. Mantenha o mesmo nível de qualidade das estruturas existentes
+6. Use o guia para criar instruções pedagógicas detalhadas
+
+FORMATO DE RESPOSTA (JSON):
+{
+  "name": "Nome descritivo da estrutura baseada no tema da redação",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Introdução",
+      "description": "Instruções detalhadas para a introdução seguindo o manual (contextualização + tese + anúncio dos argumentos). Inclua conectivos específicos e estratégias argumentativas."
+    },
+    {
+      "id": "dev1", 
+      "title": "Primeiro Desenvolvimento",
+      "description": "Instruções para o primeiro argumento seguindo o manual (citação/afirmação + desenvolvimento + conclusão parcial). Inclua conectivos e estratégias específicas."
+    },
+    {
+      "id": "dev2",
+      "title": "Segundo Desenvolvimento", 
+      "description": "Instruções para o segundo argumento seguindo o manual (nova perspectiva + fundamentação + conclusão parcial). Inclua conectivos e estratégias específicas."
+    },
+    {
+      "id": "conclusao",
+      "title": "Conclusão",
+      "description": "Instruções para conclusão seguindo o manual (retomada + proposta de intervenção completa + finalização). Inclua os 5 elementos obrigatórios: quem, o que, como, por meio de que, para que."
+    }
+  ]
+}
+
+Gere APENAS o JSON, sem explicações adicionais.`;
+
+      const result = await this.model.generateContent(prompt);
+      const response = result.response.text();
+      
+      // Parse JSON response
+      let cleanedResponse = response.replace(/```json|```/g, '').trim();
+      
+      // Clean up common formatting issues
+      cleanedResponse = cleanedResponse
+        .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+        .replace(/([{,]\s*)(\w+):/g, '$1"$2":') // Quote unquoted property names
+        .replace(/:\s*'([^']*)'/g, ': "$1"'); // Replace single quotes with double quotes
+
+      const structureData = JSON.parse(cleanedResponse);
+      
+      console.log("✅ Successfully analyzed essay structure with AI");
+      return structureData;
+      
+    } catch (error) {
+      console.error("Error analyzing essay structure with AI:", error);
+      return this.generateFallbackStructureAnalysis(essayText);
+    }
+  }
+
+  private generateFallbackStructureAnalysis(essayText: string): any {
+    // Análise básica local quando AI não está disponível
+    const words = essayText.trim().split(/\s+/).length;
+    const paragraphs = essayText.split('\n\n').filter(p => p.trim().length > 0);
+    
+    return {
+      name: `Estrutura Dissertativa Argumentativa (${words} palavras)`,
+      sections: [
+        {
+          id: "intro",
+          title: "Introdução",
+          description: "Desenvolva uma introdução com contextualização do tema usando conectivos como 'De acordo com', 'Conforme' ou 'Segundo'. Apresente sua tese de forma clara usando conectivos de oposição como 'Entretanto', 'Contudo' ou 'No entanto'. Finalize anunciando os dois argumentos que serão desenvolvidos com 'Além disso' ou 'Logo'."
+        },
+        {
+          id: "dev1",
+          title: "Primeiro Desenvolvimento",
+          description: "Inicie com conectivos como 'Primeiramente', 'Inicialmente' ou 'Em primeira análise'. Apresente seu primeiro argumento com citação, dados ou contextualização histórica. Use 'Nesse sentido', 'Diante disso' para desenvolver e exemplificar o argumento. Conclua o parágrafo com 'Assim' ou 'Dessarte' fazendo transição para o próximo desenvolvimento."
+        },
+        {
+          id: "dev2", 
+          title: "Segundo Desenvolvimento",
+          description: "Comece com 'Além disso' ou 'Ademais' para apresentar o segundo argumento. Use 'Nesse aspecto', 'Nessa perspectiva' para sustentar com explicações detalhadas, exemplos e citações. Finalize com 'Assim' ou 'Dessarte' para preparar a transição para a conclusão."
+        },
+        {
+          id: "conclusao",
+          title: "Conclusão",
+          description: "Retome a tese com 'Em suma', 'Portanto' ou 'Sobre isso'. Apresente proposta de intervenção completa respondendo: QUEM deve fazer, O QUE deve ser feito, COMO deve ser executado, POR MEIO DE QUE e PARA QUE finalidade. Use 'Nessa perspectiva' ou 'Por conseguinte' para desenvolver a proposta. Finalize com 'Assim' detalhando a implementação ou resultado esperado."
+        }
+      ]
+    };
+  }
 }
 
 export const geminiService = new GeminiService();

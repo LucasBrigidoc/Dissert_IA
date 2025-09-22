@@ -210,6 +210,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ESSAY STRUCTURE ANALYSIS ROUTES =====================
+  
+  // Analyze essay text and generate structure
+  app.post("/api/structures/analyze", async (req, res) => {
+    try {
+      // Validate request body
+      const validationResult = z.object({
+        essayText: z.string().trim().min(50, "Essay text must be at least 50 characters"),
+        userId: z.string().optional() // To fetch existing structures for quality reference
+      }).safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const { essayText, userId } = validationResult.data;
+
+      // Rate limiting check (5 analyses per hour per IP)
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const rateLimitCheck = await storage.checkRateLimit(`structure_analysis_${clientIP}`, 5, 60);
+      
+      if (!rateLimitCheck.allowed) {
+        res.set('Retry-After', '3600');
+        return res.status(429).json({ 
+          message: "Rate limit exceeded. You can analyze 5 essays per hour.", 
+          retryAfter: 3600,
+          rateLimitType: "structure_analysis"
+        });
+      }
+      
+      console.log(`🔍 Structure analysis request: ${essayText.substring(0, 50)}..., IP: ${clientIP}`);
+      
+      // Get existing structures for quality reference if userId provided
+      let existingStructures: any[] = [];
+      if (userId) {
+        try {
+          existingStructures = await storage.getStructuresByUser(userId);
+        } catch (error) {
+          console.log("Could not fetch existing structures:", error);
+        }
+      }
+      
+      // Analyze essay structure using Gemini AI
+      const structureAnalysis = await geminiService.analyzeEssayStructure(
+        essayText,
+        existingStructures
+      );
+      
+      res.json({
+        success: true,
+        structure: structureAnalysis,
+        message: "Essay structure analyzed successfully"
+      });
+      
+    } catch (error) {
+      console.error("Structure analysis error:", error);
+      res.status(500).json({ message: "Failed to analyze essay structure. Please try again." });
+    }
+  });
+
   // ===================== ESSAY GENERATION ROUTES =====================
 
   // Generate essay using custom structure
