@@ -164,7 +164,7 @@ export default function Estilo() {
           <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
             <div 
               className="text-center p-6 md:p-8"
-              onClick={() => setSelectedMode('create')}
+              onClick={() => setLocation('/create-structure')}
               data-testid="card-criar-estrutura"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-bright-blue/20 to-bright-blue/30 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform">
