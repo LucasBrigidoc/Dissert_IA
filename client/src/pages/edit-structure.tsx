@@ -439,7 +439,7 @@ export default function EditStructurePage({}: EditStructurePageProps) {
           description: "Não foi possível carregar a estrutura para edição.",
           variant: "destructive"
         });
-        setLocation("/estrutura-curinga");
+        setLocation("/use-structure");
       }
     } else {
       // Se não há dados, volta para a página anterior
@@ -448,7 +448,7 @@ export default function EditStructurePage({}: EditStructurePageProps) {
         description: "Selecione uma estrutura para editar.",
         variant: "destructive"
       });
-      setLocation("/estrutura-curinga");
+      setLocation("/use-structure");
     }
   }, [setLocation, toast]);
 
@@ -458,15 +458,15 @@ export default function EditStructurePage({}: EditStructurePageProps) {
     sessionStorage.removeItem('previousPage');
     
     // Volta para a tela "Usar estrutura existente" após salvar
-    setLocation('/estrutura-curinga?mode=use');
+    setLocation('/use-structure');
   };
 
   const handleCancel = () => {
     // Limpar sessionStorage e voltar para "Usar estrutura existente"
     sessionStorage.removeItem('structureToEdit');
     sessionStorage.removeItem('previousPage');
-    // Volta para a tela "Usar estrutura existente" com parâmetro específico
-    setLocation('/estrutura-curinga?mode=use');
+    // Volta para a tela "Usar estrutura existente"
+    setLocation('/use-structure');
   };
 
   if (!originalStructure) {
