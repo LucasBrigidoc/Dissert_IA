@@ -416,13 +416,13 @@ export default function BibliotecaPage() {
               </div>
             </div>
             
-            {/* Filter Chips - Horizontal Scroll on Mobile */}
+            {/* Filter Chips - 2 Lines Grid on Mobile, Single Line on Desktop */}
             <div className="-mx-4 sm:mx-0">
-              <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 sm:px-0 pb-1">
+              <div className="grid grid-cols-4 gap-2 px-4 pb-1 sm:flex sm:flex-nowrap sm:overflow-x-auto sm:no-scrollbar sm:px-0">
                 <Button
                   variant={selectedCategory === "todos" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("todos")}
                   data-testid="filter-todos"
                 >
@@ -431,7 +431,7 @@ export default function BibliotecaPage() {
                 <Button
                   variant={selectedCategory === "repertório" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("repertório")}
                   data-testid="filter-repertorio"
                 >
@@ -440,7 +440,7 @@ export default function BibliotecaPage() {
                 <Button
                   variant={selectedCategory === "redação" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("redação")}
                   data-testid="filter-redacao"
                 >
@@ -449,7 +449,7 @@ export default function BibliotecaPage() {
                 <Button
                   variant={selectedCategory === "tema" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("tema")}
                   data-testid="filter-tema"
                 >
@@ -458,7 +458,7 @@ export default function BibliotecaPage() {
                 <Button
                   variant={selectedCategory === "estilo" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("estilo")}
                   data-testid="filter-estilo"
                 >
@@ -467,7 +467,7 @@ export default function BibliotecaPage() {
                 <Button
                   variant={selectedCategory === "newsletter" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("newsletter")}
                   data-testid="filter-newsletter"
                 >
@@ -476,7 +476,7 @@ export default function BibliotecaPage() {
                 <Button
                   variant={selectedCategory === "proposta" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
                   onClick={() => setSelectedCategory("proposta")}
                   data-testid="filter-proposta"
                 >
