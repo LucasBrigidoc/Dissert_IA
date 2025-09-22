@@ -394,17 +394,29 @@ export function EnhancedStructureEditor({
                 <div className="text-center py-8">
                   <div className="border border-dashed border-bright-blue/30 rounded-lg py-8 bg-gradient-to-br from-bright-blue/5 to-transparent">
                     <FileText className="mx-auto h-12 w-12 mb-4 text-bright-blue opacity-50" />
-                    <p className="font-medium text-dark-blue mb-2">Estrutura Dissertativa Argumentativa</p>
-                    <p className="text-sm text-soft-gray mb-1">Crie uma redação seguindo o modelo pedagógico</p>
-                    <p className="text-xs text-soft-gray mb-4">4 parágrafos com conectivos e estratégias específicas</p>
-                    <Button 
-                      onClick={createManualStructure}
-                      className="bg-bright-blue hover:bg-bright-blue/90 text-white"
-                      size="lg"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Criar Estrutura Guiada
-                    </Button>
+                    <p className="font-medium text-dark-blue mb-2">Criar Nova Estrutura</p>
+                    <p className="text-sm text-soft-gray mb-1">Escolha como começar sua estrutura</p>
+                    <p className="text-xs text-soft-gray mb-6">Você pode usar um modelo guiado ou começar do zero</p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button 
+                        onClick={createManualStructure}
+                        className="bg-bright-blue hover:bg-bright-blue/90 text-white"
+                        size="lg"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Criar Estrutura Guiada
+                      </Button>
+                      <Button 
+                        onClick={addSection}
+                        variant="outline"
+                        className="border-bright-blue text-bright-blue hover:bg-bright-blue/10"
+                        size="lg"
+                        data-testid="button-criar-primeira-secao"
+                      >
+                        <Edit3 className="mr-2 h-4 w-4" />
+                        Criar Primeira Seção
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ) : (
