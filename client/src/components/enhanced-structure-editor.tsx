@@ -207,200 +207,162 @@ export function EnhancedStructureEditor({
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Análise de Redação Modelo - Colapsável */}
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Análise de Redação Modelo */}
       <Card className="border-green-500/20">
-        <CardHeader 
-          className="cursor-pointer" 
-          onClick={() => setIsModelSectionExpanded(!isModelSectionExpanded)}
-        >
-          <CardTitle className="text-dark-blue flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
-              Redação Modelo (Opcional)
-            </div>
-            <div className="text-sm text-soft-gray">
-              {isModelSectionExpanded ? "Clique para recolher" : "Clique para expandir"}
-            </div>
-          </CardTitle>
-          <p className="text-sm text-soft-gray mt-2">
-            Cole uma redação modelo para analisar sua estrutura e criar seções baseadas nela
-          </p>
-        </CardHeader>
-        {isModelSectionExpanded && (
-          <CardContent className="space-y-4">
-            <Textarea
-              placeholder="Cole aqui uma redação que serve como modelo para a estrutura..."
-              value={modelEssay}
-              onChange={(e) => setModelEssay(e.target.value)}
-              rows={6}
-              className="border-green-500/20"
-            />
-            <Button 
-              onClick={analyzeModelEssay}
-              disabled={!modelEssay.trim()}
-              variant="outline"
-              className="border-green-500/30 text-green-600 hover:bg-green-500/10"
-            >
-              <Wand2 className="mr-2 h-4 w-4" />
-              Analisar e Criar Estrutura
-            </Button>
-          </CardContent>
-        )}
-      </Card>
-
-      {/* Seleção de Estilo */}
-      <Card className="border-bright-blue/20">
         <CardHeader>
           <CardTitle className="text-dark-blue flex items-center gap-2">
-            <Wand2 className="h-5 w-5" />
-            Qual o estilo de redação?
+            <Upload className="h-5 w-5" />
+            Analisar Redação Modelo
           </CardTitle>
+          <p className="text-sm text-soft-gray">
+            Cole uma redação modelo para analisar sua estrutura e criar seções automaticamente
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select value={selectedStyle} onValueChange={handleStyleChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione o estilo de redação" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(ESSAY_STYLES).map(([key, style]) => (
-                <SelectItem key={key} value={key}>
-                  <div>
-                    <div className="font-medium">{style.name}</div>
-                    <div className="text-sm text-soft-gray">{style.description}</div>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Textarea
+            placeholder="Cole aqui uma redação que serve como modelo para a estrutura..."
+            value={modelEssay}
+            onChange={(e) => setModelEssay(e.target.value)}
+            rows={8}
+            className="border-green-500/20 min-h-[200px]"
+          />
+          <Button 
+            onClick={analyzeModelEssay}
+            disabled={!modelEssay.trim()}
+            variant="default"
+            className="bg-green-600 hover:bg-green-700 text-white"
+            size="lg"
+          >
+            <Wand2 className="mr-2 h-4 w-4" />
+            Analisar e Criar Estrutura
+          </Button>
           
-          {selectedStyle && selectedStyle !== "personalizada" && (
-            <div className="p-4 bg-bright-blue/5 rounded-lg border border-bright-blue/20">
-              <p className="text-sm text-dark-blue">
-                <strong>Estrutura sugerida:</strong> {ESSAY_STYLES[selectedStyle as keyof typeof ESSAY_STYLES].description}
-              </p>
+          {!modelEssay.trim() && (
+            <div className="text-center py-6 text-soft-gray border border-dashed border-soft-gray/30 rounded-lg">
+              <Upload className="mx-auto h-8 w-8 mb-2 opacity-50" />
+              <p className="font-medium">Cole uma redação modelo acima</p>
+              <p className="text-sm">A estrutura será criada automaticamente baseada no texto</p>
             </div>
           )}
         </CardContent>
       </Card>
 
-      <Separator />
+      {/* Estrutura Gerada */}
+      {sections.length > 0 && (
+        <Card className="border-bright-blue/20">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-dark-blue flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Estrutura Gerada
+                </CardTitle>
+                <p className="text-sm text-soft-gray">
+                  {showModelAnalysis 
+                    ? "Estrutura criada baseada na redação modelo - você pode editar conforme necessário"
+                    : "Seções da sua estrutura de redação"
+                  }
+                </p>
+              </div>
+              <Badge variant="secondary" className="text-bright-blue">
+                {sections.length} seção{sections.length !== 1 ? 'ões' : ''}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Nome da Estrutura */}
+            <div className="space-y-2">
+              <Label htmlFor="structure-name" className="text-dark-blue font-medium">
+                Nome da Estrutura
+              </Label>
+              <Input
+                id="structure-name"
+                placeholder="Ex: Estrutura baseada em redação modelo"
+                value={name}
+                onChange={(e) => onNameChange(e.target.value)}
+                className="h-10"
+                data-testid="input-nome-estrutura"
+              />
+            </div>
 
-      {/* Nome da Estrutura */}
-      <div className="space-y-2">
-        <Label htmlFor="structure-name" className="text-dark-blue font-medium text-lg">
-          Nome da Estrutura
-        </Label>
-        <Input
-          id="structure-name"
-          placeholder="Ex: Dissertação Argumentativa modelo 1"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          className="text-lg h-12"
-          data-testid="input-nome-estrutura"
-        />
-      </div>
+            {/* Lista de Seções */}
+            <div className="space-y-3">
+              {sections.map((section, index) => (
+                <Card 
+                  key={section.id} 
+                  className={`transition-all duration-200 ${
+                    draggedIndex === index ? 'opacity-50 scale-95' : 'hover:shadow-md'
+                  }`}
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-3">
+                      <GripVertical className="h-5 w-5 text-soft-gray cursor-move" />
+                      <Badge variant="outline" className="text-xs">
+                        {index === 0 ? 'Introdução' : 
+                         index === sections.length - 1 ? 'Conclusão' :
+                         `Parágrafo ${index + 1}`}
+                      </Badge>
+                      <div className="flex-1" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeSection(index)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        data-testid={`button-remover-secao-${index}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor={`section-title-${index}`} className="text-sm font-medium">
+                        Título da Seção
+                      </Label>
+                      <Input
+                        id={`section-title-${index}`}
+                        placeholder="Ex: Introdução"
+                        value={section.title}
+                        onChange={(e) => updateSection(index, 'title', e.target.value)}
+                        data-testid={`input-titulo-secao-${index}`}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`section-description-${index}`} className="text-sm font-medium">
+                        Descrição/Instruções
+                      </Label>
+                      <Textarea
+                        id={`section-description-${index}`}
+                        placeholder="Ex: Apresente o tema e sua tese principal"
+                        value={section.description}
+                        onChange={(e) => updateSection(index, 'description', e.target.value)}
+                        rows={3}
+                        data-testid={`textarea-descricao-secao-${index}`}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-      {/* Seções */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-semibold text-dark-blue">Seções da Estrutura</h3>
-            <p className="text-soft-gray text-sm">
-              {showModelAnalysis 
-                ? "Estrutura gerada baseada na redação modelo - ajuste conforme necessário"
-                : "Defina as seções que comporão sua estrutura de redação"
-              }
-            </p>
-          </div>
-          <Badge variant="secondary" className="text-bright-blue">
-            {sections.length} seção{sections.length !== 1 ? 'ões' : ''}
-          </Badge>
-        </div>
-
-        {/* Lista de Seções */}
-        <div className="space-y-3">
-          {sections.map((section, index) => (
-            <Card 
-              key={section.id} 
-              className={`transition-all duration-200 ${
-                draggedIndex === index ? 'opacity-50 scale-95' : 'hover:shadow-md'
-              }`}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDragEnd={handleDragEnd}
+            {/* Botão Adicionar Seção */}
+            <Button
+              variant="outline"
+              className="w-full border-dashed border-bright-blue text-bright-blue hover:bg-bright-blue/5"
+              onClick={addSection}
+              data-testid="button-adicionar-secao"
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3">
-                  <GripVertical className="h-5 w-5 text-soft-gray cursor-move" />
-                  <Badge variant="outline" className="text-xs">
-                    {index === 0 ? 'Introdução' : 
-                     index === sections.length - 1 ? 'Conclusão' :
-                     `Parágrafo ${index + 1}`}
-                  </Badge>
-                  <div className="flex-1" />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeSection(index)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                    data-testid={`button-remover-secao-${index}`}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor={`section-title-${index}`} className="text-sm font-medium">
-                    Título da Seção
-                  </Label>
-                  <Input
-                    id={`section-title-${index}`}
-                    placeholder="Ex: Introdução"
-                    value={section.title}
-                    onChange={(e) => updateSection(index, 'title', e.target.value)}
-                    data-testid={`input-titulo-secao-${index}`}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor={`section-description-${index}`} className="text-sm font-medium">
-                    Descrição/Instruções
-                  </Label>
-                  <Textarea
-                    id={`section-description-${index}`}
-                    placeholder="Ex: Apresente o tema e sua tese principal"
-                    value={section.description}
-                    onChange={(e) => updateSection(index, 'description', e.target.value)}
-                    rows={3}
-                    data-testid={`textarea-descricao-secao-${index}`}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Botão Adicionar Seção */}
-        <Button
-          variant="outline"
-          className="w-full border-dashed border-bright-blue text-bright-blue hover:bg-bright-blue/5"
-          onClick={addSection}
-          data-testid="button-adicionar-secao"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Adicionar Seção
-        </Button>
-
-        {sections.length === 0 && !selectedStyle && (
-          <div className="text-center py-8 text-soft-gray">
-            <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
-            <p>Selecione um estilo de redação para começar</p>
-            <p className="text-sm">Ou adicione seções manualmente</p>
-          </div>
-        )}
-      </div>
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar Seção
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
