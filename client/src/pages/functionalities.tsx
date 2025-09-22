@@ -39,6 +39,7 @@ export default function FunctionalitiesPage() {
     newspaper: Newspaper,
     sliders: Sliders,
     pen: PenTool,
+    edit3: Edit3,
     "graduation-cap": GraduationCap,
     lightbulb: Lightbulb,
     archive: Archive
