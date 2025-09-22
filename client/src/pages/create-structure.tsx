@@ -274,30 +274,30 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="w-full px-2 sm:px-4 md:px-6 pt-14 sm:pt-16 md:pt-24 pb-4 sm:pb-6 md:pb-12">
-        <div className="space-y-3 sm:space-y-4 md:space-y-10">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-16 sm:pt-20 md:pt-28 pb-6 sm:pb-8 md:pb-16">
+        <div className="space-y-6 sm:space-y-8 md:space-y-12">
           {/* Formulário de criação */}
-          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-bright-blue w-full">
+          <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-bright-blue w-full shadow-lg">
             <Card className="border-0 shadow-none bg-transparent">
-              <CardHeader className="px-2 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-2 sm:pb-3 md:pb-6">
-                <div className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4">
-                  <div className="bg-blue-100 p-1.5 sm:p-2 md:p-3 rounded-lg flex-shrink-0 mobile-touch-target">
-                    <Palette className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-bright-blue" />
+              <CardHeader className="px-4 sm:px-6 md:px-8 pt-6 sm:pt-7 md:pt-8 pb-4 sm:pb-5 md:pb-6">
+                <div className="flex items-center gap-4 sm:gap-5 md:gap-6">
+                  <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 sm:p-4 md:p-5 rounded-xl flex-shrink-0 shadow-md mobile-touch-target">
+                    <Palette className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-bright-blue" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <CardTitle className="text-base sm:text-lg md:text-xl text-dark-blue mobile-text-adjust">
+                    <CardTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-dark-blue font-bold mobile-text-adjust">
                       {editingStructure ? 'Editar Estrutura' : 'Criar Nova Estrutura'}
                     </CardTitle>
-                    <CardDescription className="text-xs sm:text-sm md:text-base mt-1 mobile-text-adjust">
+                    <CardDescription className="text-sm sm:text-base md:text-lg mt-2 text-soft-gray mobile-text-adjust">
                       {editingStructure 
-                        ? 'Modifique sua estrutura existente'
-                        : 'Defina seções personalizadas para criar um modelo reutilizável'
+                        ? 'Modifique e aperfeiçoe sua estrutura existente'
+                        : 'Defina seções personalizadas para criar um modelo reutilizável e eficiente'
                       }
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-2 sm:px-4 md:px-6 pb-3 sm:pb-4 md:pb-6">
+              <CardContent className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-7 md:pb-8">
                 <EnhancedStructureEditor
                   name={name}
                   sections={sections}
@@ -313,81 +313,88 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           </LiquidGlassCard>
 
           {/* Proposta de Redação */}
-          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-green-500 w-full">
+          <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-green-500 w-full shadow-lg">
             <Card className="border-0 shadow-none bg-transparent">
-              <CardHeader className="px-2 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-2 sm:pb-3 md:pb-6">
-                <div className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4">
-                  <div className="bg-green-100 p-1.5 sm:p-2 md:p-3 rounded-lg flex-shrink-0 mobile-touch-target">
-                    <PenTool className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-green-600" />
+              <CardHeader className="px-4 sm:px-6 md:px-8 pt-6 sm:pt-7 md:pt-8 pb-4 sm:pb-5 md:pb-6">
+                <div className="flex items-center gap-4 sm:gap-5 md:gap-6">
+                  <div className="bg-gradient-to-br from-green-100 to-green-200 p-3 sm:p-4 md:p-5 rounded-xl flex-shrink-0 shadow-md mobile-touch-target">
+                    <PenTool className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-green-600" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <CardTitle className="text-base sm:text-lg md:text-xl text-dark-blue mobile-text-adjust">Testar Estrutura</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm md:text-base mt-1 mobile-text-adjust">Gere uma redação usando sua estrutura personalizada</CardDescription>
+                    <CardTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-dark-blue font-bold mobile-text-adjust">Testar Estrutura</CardTitle>
+                    <CardDescription className="text-sm sm:text-base md:text-lg mt-2 text-soft-gray mobile-text-adjust">Gere uma redação usando sua estrutura personalizada e veja os resultados</CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-2 sm:px-4 md:px-6 pb-3 sm:pb-4 md:pb-6">
-                <div className="space-y-3 sm:space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
-                  <div className="space-y-2">
-                    <Label htmlFor="essay-topic" className="text-sm sm:text-base text-dark-blue font-medium mobile-text-adjust">
-                      Tema da Redação *
-                    </Label>
-                    <Textarea
-                      id="essay-topic"
-                      placeholder="Ex: A importância da educação digital no século XXI"
-                      value={essayTopic}
-                      onChange={(e) => setEssayTopic(e.target.value)}
-                      rows={3}
-                      className="mt-1 text-sm sm:text-base mobile-touch-target resize-none"
-                      data-testid="textarea-tema-redacao"
-                    />
-                    <p className="text-xs sm:text-sm text-soft-gray mobile-text-adjust">
-                      Defina claramente o tema central da sua redação
-                    </p>
-                  </div>
+              <CardContent className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-7 md:pb-8">
+                <div className="space-y-6 sm:space-y-7 md:space-y-8">
+                  
+                  {/* Grid de campos de entrada */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-7 md:gap-8">
+                    <div className="space-y-3 sm:space-y-4">
+                      <Label htmlFor="essay-topic" className="text-base sm:text-lg md:text-xl text-dark-blue font-semibold mobile-text-adjust flex items-center gap-2">
+                        <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                        Tema da Redação
+                      </Label>
+                      <Textarea
+                        id="essay-topic"
+                        placeholder="Ex: A importância da educação digital no século XXI"
+                        value={essayTopic}
+                        onChange={(e) => setEssayTopic(e.target.value)}
+                        rows={4}
+                        className="text-sm sm:text-base md:text-lg p-4 sm:p-5 mobile-touch-target resize-none border-2 focus:border-bright-blue rounded-lg"
+                        data-testid="textarea-tema-redacao"
+                      />
+                      <p className="text-sm sm:text-base text-soft-gray mobile-text-adjust">
+                        📝 Defina claramente o tema central da sua redação
+                      </p>
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="additional-instructions" className="text-sm sm:text-base text-dark-blue font-medium mobile-text-adjust">
-                      Instruções Especiais (opcional)
-                    </Label>
-                    <Textarea
-                      id="additional-instructions"
-                      placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados..."
-                      value={additionalInstructions}
-                      onChange={(e) => setAdditionalInstructions(e.target.value)}
-                      rows={3}
-                      className="mt-1 text-sm sm:text-base mobile-touch-target resize-none"
-                      data-testid="textarea-instrucoes-adicionais"
-                    />
-                    <p className="text-xs sm:text-sm text-soft-gray mobile-text-adjust">
-                      Requisitos específicos, tom, estilo ou público-alvo
-                    </p>
+                    <div className="space-y-3 sm:space-y-4">
+                      <Label htmlFor="additional-instructions" className="text-base sm:text-lg md:text-xl text-dark-blue font-semibold mobile-text-adjust flex items-center gap-2">
+                        <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                        Instruções Especiais <span className="text-sm font-normal">(opcional)</span>
+                      </Label>
+                      <Textarea
+                        id="additional-instructions"
+                        placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
+                        value={additionalInstructions}
+                        onChange={(e) => setAdditionalInstructions(e.target.value)}
+                        rows={4}
+                        className="text-sm sm:text-base md:text-lg p-4 sm:p-5 mobile-touch-target resize-none border-2 focus:border-green-500 rounded-lg"
+                        data-testid="textarea-instrucoes-adicionais"
+                      />
+                      <p className="text-sm sm:text-base text-soft-gray mobile-text-adjust">
+                        ⚙️ Requisitos específicos, tom, estilo ou público-alvo
+                      </p>
+                    </div>
                   </div>
-                </div>
-                
-                {/* Botão de gerar sempre visível */}
-                <div className="mt-4 sm:mt-5 md:mt-6 pt-3 sm:pt-4 md:pt-6 border-t border-bright-blue/20">
-                  <div className="text-center space-y-2 sm:space-y-3">
-                    <p className="text-xs sm:text-sm text-soft-gray px-1 mobile-text-adjust">
-                      {isValid 
-                        ? `Criar redação com: ${name || 'Nova estrutura'}` 
-                        : 'Complete a estrutura para testar'
-                      }
-                    </p>
-                    <div className="flex flex-col gap-2 sm:gap-3">
+                  
+                  {/* Seção de ação */}
+                  <div className="mt-6 sm:mt-8 md:mt-10 pt-6 sm:pt-7 md:pt-8 border-t-2 border-bright-blue/20">
+                    <div className="text-center space-y-4 sm:space-y-5">
+                      <div className="bg-gradient-to-r from-blue-50 to-green-50 p-4 sm:p-5 md:p-6 rounded-xl">
+                        <p className="text-sm sm:text-base md:text-lg text-dark-blue font-medium mobile-text-adjust">
+                          {isValid 
+                            ? `🚀 Pronto para criar redação com: "${name || 'Nova estrutura'}"` 
+                            : '⚠️ Complete a estrutura acima para testar'
+                          }
+                        </p>
+                      </div>
                       <Button
                         onClick={handleGenerateEssay}
                         disabled={!essayTopic.trim() || !isValid || isGenerating}
-                        className="bg-bright-blue hover:bg-blue-600 px-4 sm:px-6 md:px-8 w-full mobile-touch-target text-sm sm:text-base"
+                        size="lg"
+                        className="bg-gradient-to-r from-bright-blue to-green-500 hover:from-blue-600 hover:to-green-600 px-8 sm:px-10 md:px-12 py-4 sm:py-5 w-full sm:w-auto text-base sm:text-lg md:text-xl font-semibold mobile-touch-target shadow-lg hover:shadow-xl transition-all"
                         data-testid="button-gerar-redacao"
                       >
                         {isGenerating ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          <Loader2 className="mr-3 h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
                         ) : (
-                          <Play className="mr-2 h-4 w-4" />
+                          <Play className="mr-3 h-5 w-5 sm:h-6 sm:w-6" />
                         )}
                         <span>
-                          {isGenerating ? "Gerando Redação..." : "Criar Redação"}
+                          {isGenerating ? "Gerando Redação..." : "Criar Redação Agora"}
                         </span>
                       </Button>
                     </div>
@@ -399,15 +406,51 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
 
           {/* Validation Messages */}
           {!isValid && (name || sections.length > 0) && (
-            <div className="p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg w-full mobile-spacing">
-              <h3 className="font-medium text-yellow-800 mb-2 text-sm sm:text-base mobile-text-adjust">Campos obrigatórios:</h3>
-              <ul className="text-xs sm:text-sm text-yellow-700 space-y-1 mobile-text-adjust">
-                {!name.trim() && <li>• Nome da estrutura</li>}
-                {sections.length === 0 && <li>• Pelo menos uma seção</li>}
-                {sections.some(s => !s.title.trim()) && <li>• Título de todas as seções</li>}
-                {sections.some(s => !s.description.trim()) && <li>• Descrição de todas as seções</li>}
-              </ul>
-            </div>
+            <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-yellow-500 w-full shadow-lg">
+              <Card className="border-0 shadow-none bg-transparent">
+                <CardContent className="px-4 sm:px-6 md:px-8 py-6 sm:py-7 md:py-8">
+                  <div className="flex items-start gap-4 sm:gap-5 md:gap-6">
+                    <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 p-3 sm:p-4 rounded-xl flex-shrink-0 shadow-md">
+                      <svg className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-800 mb-3 sm:mb-4 mobile-text-adjust">⚠️ Campos Obrigatórios</h3>
+                      <p className="text-sm sm:text-base md:text-lg text-yellow-700 mb-4 sm:mb-5 mobile-text-adjust">
+                        Complete os campos a seguir para continuar:
+                      </p>
+                      <ul className="space-y-2 sm:space-y-3">
+                        {!name.trim() && (
+                          <li className="flex items-center gap-3 text-sm sm:text-base md:text-lg text-yellow-700 mobile-text-adjust">
+                            <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                            Nome da estrutura
+                          </li>
+                        )}
+                        {sections.length === 0 && (
+                          <li className="flex items-center gap-3 text-sm sm:text-base md:text-lg text-yellow-700 mobile-text-adjust">
+                            <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                            Pelo menos uma seção
+                          </li>
+                        )}
+                        {sections.some(s => !s.title.trim()) && (
+                          <li className="flex items-center gap-3 text-sm sm:text-base md:text-lg text-yellow-700 mobile-text-adjust">
+                            <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                            Título de todas as seções
+                          </li>
+                        )}
+                        {sections.some(s => !s.description.trim()) && (
+                          <li className="flex items-center gap-3 text-sm sm:text-base md:text-lg text-yellow-700 mobile-text-adjust">
+                            <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                            Descrição de todas as seções
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </LiquidGlassCard>
           )}
         </div>
       </div>
