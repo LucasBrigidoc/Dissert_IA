@@ -14,10 +14,6 @@ run = ["export", "GEMINI_API_KEY=AIzaSyDi4JqFjFfI-w1AgTvMdXnNL27xbu9_9tI", "&&",
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 41155
-externalPort = 3000
-
 [env]
 PORT = "5000"
 

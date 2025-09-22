@@ -131,66 +131,62 @@ export default function Estilo() {
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-4">
               <Link href={backUrl} data-testid="button-back">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={14} />
                   <span>Voltar</span>
                 </Button>
               </Link>
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                  <Edit className="text-white" size={20} />
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <Edit className="text-white" size={16} />
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
-                </div>
+                <h1 className="text-xl md:text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
               </div>
             </div>
-            <div>
-              <p className="text-soft-gray">Gere redações personalizadas seguindo sua metodologia preferida</p>
+            <div className="hidden md:block">
+              <p className="text-sm text-soft-gray">Gere redações personalizadas seguindo sua metodologia preferida</p>
             </div>
           </div>
         </div>
       </div>
       {/* Content */}
-      <div className="container mx-auto px-4 py-8 pt-24">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 pt-20 md:pt-24">
         {/* Introduction Section */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-dark-blue mb-4">Como funciona a Estrutura Coringa?</h2>
-            <p className="text-lg text-soft-gray max-w-2xl mx-auto leading-relaxed">
+        <div className="max-w-4xl mx-auto mb-8 md:mb-12">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-dark-blue mb-3 md:mb-4">Como funciona a Estrutura Coringa?</h2>
+            <p className="text-base md:text-lg text-soft-gray max-w-2xl mx-auto leading-relaxed px-2">
               A Estrutura Coringa permite que você crie modelos de redação personalizados com suas próprias seções e metodologias.
             </p>
           </div>
-          
-          
         </div>
 
         {/* Action Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        <div className="grid gap-4 md:gap-6 lg:grid-cols-2 max-w-4xl mx-auto mb-8 md:mb-12">
           <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
             <div 
-              className="text-center p-8"
+              className="text-center p-6 md:p-8"
               onClick={() => setSelectedMode('create')}
               data-testid="card-criar-estrutura"
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-bright-blue/20 to-bright-blue/30 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <Plus className="h-10 w-10 text-bright-blue" />
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-bright-blue/20 to-bright-blue/30 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                <Plus className="h-8 w-8 md:h-10 md:w-10 text-bright-blue" />
               </div>
-              <h3 className="text-2xl font-bold text-dark-blue mb-4">
+              <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">
                 Criar Nova Estrutura
               </h3>
-              <p className="text-soft-gray mb-6 leading-relaxed">
+              <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 leading-relaxed px-2">
                 Monte sua própria estrutura definindo seções personalizadas, instruções específicas e metodologia única para suas redações.
               </p>
-              <div className="inline-flex items-center text-bright-blue font-medium">
+              <div className="inline-flex items-center text-bright-blue font-medium text-sm md:text-base">
                 Começar criação
                 <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
               </div>
@@ -199,20 +195,20 @@ export default function Estilo() {
 
           <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
             <div 
-              className="text-center p-8"
+              className="text-center p-6 md:p-8"
               onClick={() => setSelectedMode('use')}
               data-testid="card-usar-estrutura"
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <BookOpen className="h-10 w-10 text-green-600" />
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                <BookOpen className="h-8 w-8 md:h-10 md:w-10 text-green-600" />
               </div>
-              <h3 className="text-2xl font-bold text-dark-blue mb-4">
+              <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">
                 Usar Estrutura Existente
               </h3>
-              <p className="text-soft-gray mb-6 leading-relaxed">
+              <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 leading-relaxed px-2">
                 Escolha uma das suas estruturas já criadas e gere redações seguindo a metodologia que você definiu anteriormente.
               </p>
-              <div className="inline-flex items-center text-green-600 font-medium">
+              <div className="inline-flex items-center text-green-600 font-medium text-sm md:text-base">
                 Escolher estrutura
                 <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
               </div>
@@ -221,55 +217,55 @@ export default function Estilo() {
         </div>
 
         {/* Comparison Cards */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-blue-100">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-bright-blue/10 rounded-full flex items-center justify-center mr-4">
-                  <Plus className="w-6 h-6 text-bright-blue" />
+        <div className="max-w-4xl mx-auto mb-8 md:mb-12">
+          <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-blue-100">
+              <div className="flex items-start md:items-center mb-3 md:mb-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-bright-blue/10 rounded-full flex items-center justify-center mr-3 md:mr-4 flex-shrink-0">
+                  <Plus className="w-5 h-5 md:w-6 md:h-6 text-bright-blue" />
                 </div>
-                <h3 className="text-xl font-bold text-dark-blue">Criar Nova Estrutura</h3>
+                <h3 className="text-lg md:text-xl font-bold text-dark-blue leading-tight">Criar Nova Estrutura</h3>
               </div>
-              <p className="text-soft-gray mb-4">
+              <p className="text-sm md:text-base text-soft-gray mb-3 md:mb-4 leading-relaxed">
                 Ideal quando você quer personalizar completamente sua metodologia de redação.
               </p>
-              <ul className="space-y-2 text-sm text-soft-gray">
+              <ul className="space-y-2 text-xs md:text-sm text-soft-gray">
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-bright-blue rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-bright-blue rounded-full mr-3 flex-shrink-0"></div>
                   Define suas próprias seções
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-bright-blue rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-bright-blue rounded-full mr-3 flex-shrink-0"></div>
                   Cria instruções personalizadas
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-bright-blue rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-bright-blue rounded-full mr-3 flex-shrink-0"></div>
                   Salva para reutilizar depois
                 </li>
               </ul>
             </div>
 
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-gray-100">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center mr-4">
-                  <BookOpen className="w-6 h-6 text-green-600" />
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-gray-100">
+              <div className="flex items-start md:items-center mb-3 md:mb-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-green-500/10 rounded-full flex items-center justify-center mr-3 md:mr-4 flex-shrink-0">
+                  <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
                 </div>
-                <h3 className="text-xl font-bold text-dark-blue">Usar Estrutura Existente</h3>
+                <h3 className="text-lg md:text-xl font-bold text-dark-blue leading-tight">Usar Estrutura Existente</h3>
               </div>
-              <p className="text-soft-gray mb-4">
+              <p className="text-sm md:text-base text-soft-gray mb-3 md:mb-4 leading-relaxed">
                 Perfeito quando você já tem uma estrutura pronta e quer gerar redações rapidamente.
               </p>
-              <ul className="space-y-2 text-sm text-soft-gray">
+              <ul className="space-y-2 text-xs md:text-sm text-soft-gray">
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3 flex-shrink-0"></div>
                   Seleciona estrutura já criada
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3 flex-shrink-0"></div>
                   Gera redação instantaneamente
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3 flex-shrink-0"></div>
                   Mantém consistência metodológica
                 </li>
               </ul>
@@ -280,33 +276,34 @@ export default function Estilo() {
         {/* Existing Structures */}
         {structures.length > 0 && (
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold text-dark-blue mb-6 text-center">
+            <h2 className="text-xl md:text-2xl font-bold text-dark-blue mb-4 md:mb-6 text-center px-2">
               Suas Estruturas Salvas
             </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {structures.map((structure) => (
                 <Card key={structure.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg text-dark-blue">
+                  <CardHeader className="pb-2 md:pb-3">
+                    <CardTitle className="text-base md:text-lg text-dark-blue leading-tight">
                       {structure.name}
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-sm">
                       {Array.isArray(structure.sections) ? structure.sections.length : 0} seções
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-soft-gray">
+                      <span className="text-xs md:text-sm text-soft-gray">
                         {new Date(structure.createdAt!).toLocaleDateString('pt-BR')}
                       </span>
-                      <div className="flex gap-2">
+                      <div className="flex gap-1 md:gap-2">
                         <Button 
                           variant="ghost" 
                           size="sm"
                           onClick={() => handleEdit(structure)}
                           data-testid={`button-editar-${structure.id}`}
+                          className="h-8 w-8 p-0"
                         >
-                          <Edit3 className="h-4 w-4" />
+                          <Edit3 className="h-3 w-3 md:h-4 md:w-4" />
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -314,8 +311,9 @@ export default function Estilo() {
                           onClick={() => handleDelete(structure.id)}
                           disabled={deleteMutation.isPending}
                           data-testid={`button-deletar-${structure.id}`}
+                          className="h-8 w-8 p-0"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
                         </Button>
                       </div>
                     </div>
