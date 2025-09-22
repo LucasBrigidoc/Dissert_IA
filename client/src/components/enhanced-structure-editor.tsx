@@ -549,7 +549,7 @@ export function EnhancedStructureEditor({
                       <Button
                         onClick={onSave}
                         disabled={!name.trim() || sections.length === 0 || sections.some(s => !s.title.trim() || !s.description.trim()) || isSaving}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white"
+                        className="w-full bg-bright-blue hover:bg-bright-blue/90 text-white"
                         data-testid="button-salvar-estrutura-manual"
                       >
                         {isSaving ? (
@@ -731,7 +731,7 @@ export function EnhancedStructureEditor({
                 <Button
                   onClick={onSave}
                   disabled={!name.trim() || sections.length === 0 || sections.some(s => !s.title.trim() || !s.description.trim()) || isSaving}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full bg-bright-blue hover:bg-bright-blue/90 text-white"
                   data-testid="button-salvar-estrutura-gerada"
                 >
                   {isSaving ? (
