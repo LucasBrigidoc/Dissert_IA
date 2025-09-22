@@ -256,7 +256,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         </div>
 
         {/* Editor Centralizado */}
-        <LiquidGlassCard>
+        <LiquidGlassCard className="max-w-4xl mx-auto">
           <EnhancedStructureEditor
             name={name}
             sections={sections}
@@ -269,7 +269,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         
 
         {/* Proposta de Redação */}
-        <LiquidGlassCard className="mt-4 md:mt-6">
+        <LiquidGlassCard className="mt-4 md:mt-6 max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-3 md:mb-4">
             <PenTool className="h-4 w-4 md:h-5 md:w-5 text-bright-blue" />
             <h3 className="text-base md:text-lg font-semibold text-dark-blue">
@@ -359,7 +359,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
 
         {/* Validation Messages */}
         {!isValid && (name || sections.length > 0) && (
-          <div className="mt-4 md:mt-6 p-3 md:p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="mt-4 md:mt-6 p-3 md:p-4 bg-yellow-50 border border-yellow-200 rounded-lg max-w-4xl mx-auto">
             <h3 className="font-medium text-yellow-800 mb-2 text-sm md:text-base">Campos obrigatórios:</h3>
             <ul className="text-xs md:text-sm text-yellow-700 space-y-1">
               {!name.trim() && <li>• Nome da estrutura</li>}
