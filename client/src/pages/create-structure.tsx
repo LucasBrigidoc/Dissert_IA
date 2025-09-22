@@ -269,7 +269,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         
 
         {/* Proposta de Redação */}
-        <LiquidGlassCard className="mt-4 md:mt-6 w-full">
+        <LiquidGlassCard className="mt-4 md:mt-6 max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-3 md:mb-4">
             <PenTool className="h-4 w-4 md:h-5 md:w-5 text-bright-blue" />
             <h3 className="text-base md:text-lg font-semibold text-dark-blue">
