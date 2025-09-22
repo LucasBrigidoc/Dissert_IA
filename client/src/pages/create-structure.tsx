@@ -274,21 +274,21 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="w-full px-3 md:px-6 pt-16 md:pt-24 pb-6 md:pb-12">
-        <div className="space-y-4 md:space-y-10">
+      <div className="w-full px-2 sm:px-4 md:px-6 pt-14 sm:pt-16 md:pt-24 pb-4 sm:pb-6 md:pb-12">
+        <div className="space-y-3 sm:space-y-4 md:space-y-10">
           {/* Formulário de criação */}
           <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-bright-blue w-full">
             <Card className="border-0 shadow-none bg-transparent">
-              <CardHeader className="px-3 md:px-6 pt-3 md:pt-6 pb-3 md:pb-6">
-                <div className="flex items-center gap-2 md:gap-4">
-                  <div className="bg-blue-100 p-2 md:p-3 rounded-lg">
-                    <Palette className="h-4 w-4 md:h-6 md:w-6 text-bright-blue" />
+              <CardHeader className="px-2 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-2 sm:pb-3 md:pb-6">
+                <div className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4">
+                  <div className="bg-blue-100 p-1.5 sm:p-2 md:p-3 rounded-lg flex-shrink-0 mobile-touch-target">
+                    <Palette className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-bright-blue" />
                   </div>
-                  <div>
-                    <CardTitle className="text-lg md:text-xl text-dark-blue">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-base sm:text-lg md:text-xl text-dark-blue mobile-text-adjust">
                       {editingStructure ? 'Editar Estrutura' : 'Criar Nova Estrutura'}
                     </CardTitle>
-                    <CardDescription className="text-sm md:text-base">
+                    <CardDescription className="text-xs sm:text-sm md:text-base mt-1 mobile-text-adjust">
                       {editingStructure 
                         ? 'Modifique sua estrutura existente'
                         : 'Defina seções personalizadas para criar um modelo reutilizável'
@@ -297,7 +297,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-3 md:px-6 pb-3 md:pb-6">
+              <CardContent className="px-2 sm:px-4 md:px-6 pb-3 sm:pb-4 md:pb-6">
                 <EnhancedStructureEditor
                   name={name}
                   sections={sections}
@@ -315,21 +315,21 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           {/* Proposta de Redação */}
           <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-green-500 w-full">
             <Card className="border-0 shadow-none bg-transparent">
-              <CardHeader className="px-3 md:px-6 pt-3 md:pt-6 pb-3 md:pb-6">
-                <div className="flex items-center gap-2 md:gap-4">
-                  <div className="bg-green-100 p-2 md:p-3 rounded-lg">
-                    <PenTool className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
+              <CardHeader className="px-2 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-2 sm:pb-3 md:pb-6">
+                <div className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4">
+                  <div className="bg-green-100 p-1.5 sm:p-2 md:p-3 rounded-lg flex-shrink-0 mobile-touch-target">
+                    <PenTool className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-green-600" />
                   </div>
-                  <div>
-                    <CardTitle className="text-lg md:text-xl text-dark-blue">Testar Estrutura</CardTitle>
-                    <CardDescription className="text-sm md:text-base">Gere uma redação usando sua estrutura personalizada</CardDescription>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-base sm:text-lg md:text-xl text-dark-blue mobile-text-adjust">Testar Estrutura</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm md:text-base mt-1 mobile-text-adjust">Gere uma redação usando sua estrutura personalizada</CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-3 md:px-6 pb-3 md:pb-6">
-                <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
-                  <div>
-                    <Label htmlFor="essay-topic" className="text-sm md:text-base text-dark-blue font-medium">
+              <CardContent className="px-2 sm:px-4 md:px-6 pb-3 sm:pb-4 md:pb-6">
+                <div className="space-y-3 sm:space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+                  <div className="space-y-2">
+                    <Label htmlFor="essay-topic" className="text-sm sm:text-base text-dark-blue font-medium mobile-text-adjust">
                       Tema da Redação *
                     </Label>
                     <Textarea
@@ -338,47 +338,47 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                       value={essayTopic}
                       onChange={(e) => setEssayTopic(e.target.value)}
                       rows={3}
-                      className="mt-1 text-sm md:text-base"
+                      className="mt-1 text-sm sm:text-base mobile-touch-target resize-none"
                       data-testid="textarea-tema-redacao"
                     />
-                    <p className="text-xs text-soft-gray mt-1">
+                    <p className="text-xs sm:text-sm text-soft-gray mobile-text-adjust">
                       Defina claramente o tema central da sua redação
                     </p>
                   </div>
 
-                  <div>
-                    <Label htmlFor="additional-instructions" className="text-sm md:text-base text-dark-blue font-medium">
+                  <div className="space-y-2">
+                    <Label htmlFor="additional-instructions" className="text-sm sm:text-base text-dark-blue font-medium mobile-text-adjust">
                       Instruções Especiais (opcional)
                     </Label>
                     <Textarea
                       id="additional-instructions"
-                      placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados estatísticos..."
+                      placeholder="Ex: Abordagem argumentativa, público jovem, incluir dados..."
                       value={additionalInstructions}
                       onChange={(e) => setAdditionalInstructions(e.target.value)}
                       rows={3}
-                      className="mt-1 text-sm md:text-base"
+                      className="mt-1 text-sm sm:text-base mobile-touch-target resize-none"
                       data-testid="textarea-instrucoes-adicionais"
                     />
-                    <p className="text-xs text-soft-gray mt-1">
+                    <p className="text-xs sm:text-sm text-soft-gray mobile-text-adjust">
                       Requisitos específicos, tom, estilo ou público-alvo
                     </p>
                   </div>
                 </div>
                 
                 {/* Botão de gerar sempre visível */}
-                <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-bright-blue/20">
-                  <div className="text-center">
-                    <p className="text-sm text-soft-gray mb-3 md:mb-4 px-2">
+                <div className="mt-4 sm:mt-5 md:mt-6 pt-3 sm:pt-4 md:pt-6 border-t border-bright-blue/20">
+                  <div className="text-center space-y-2 sm:space-y-3">
+                    <p className="text-xs sm:text-sm text-soft-gray px-1 mobile-text-adjust">
                       {isValid 
                         ? `Criar redação com: ${name || 'Nova estrutura'}` 
                         : 'Complete a estrutura para testar'
                       }
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-2 md:gap-3 justify-center">
+                    <div className="flex flex-col gap-2 sm:gap-3">
                       <Button
                         onClick={handleGenerateEssay}
                         disabled={!essayTopic.trim() || !isValid || isGenerating}
-                        className="bg-bright-blue hover:bg-blue-600 px-4 md:px-8 w-full sm:w-auto"
+                        className="bg-bright-blue hover:bg-blue-600 px-4 sm:px-6 md:px-8 w-full mobile-touch-target text-sm sm:text-base"
                         data-testid="button-gerar-redacao"
                       >
                         {isGenerating ? (
@@ -386,11 +386,10 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                         ) : (
                           <Play className="mr-2 h-4 w-4" />
                         )}
-                        <span className="text-sm md:text-base">
+                        <span>
                           {isGenerating ? "Gerando Redação..." : "Criar Redação"}
                         </span>
                       </Button>
-                      
                     </div>
                   </div>
                 </div>
@@ -400,9 +399,9 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
 
           {/* Validation Messages */}
           {!isValid && (name || sections.length > 0) && (
-            <div className="p-3 md:p-4 bg-yellow-50 border border-yellow-200 rounded-lg w-full">
-              <h3 className="font-medium text-yellow-800 mb-2 text-sm md:text-base">Campos obrigatórios:</h3>
-              <ul className="text-xs md:text-sm text-yellow-700 space-y-1">
+            <div className="p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg w-full mobile-spacing">
+              <h3 className="font-medium text-yellow-800 mb-2 text-sm sm:text-base mobile-text-adjust">Campos obrigatórios:</h3>
+              <ul className="text-xs sm:text-sm text-yellow-700 space-y-1 mobile-text-adjust">
                 {!name.trim() && <li>• Nome da estrutura</li>}
                 {sections.length === 0 && <li>• Pelo menos uma seção</li>}
                 {sections.some(s => !s.title.trim()) && <li>• Título de todas as seções</li>}
