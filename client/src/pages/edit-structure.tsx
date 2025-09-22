@@ -203,7 +203,7 @@ export function EditStructure({ originalStructure, onSave, onCancel }: EditStruc
       <div className="w-full px-3 md:px-6 pt-16 md:pt-24 pb-6 md:pb-12">
         <div className="space-y-4 md:space-y-10">
           {/* Informações da estrutura original */}
-          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-blue-500 max-w-4xl mx-auto">
+          <LiquidGlassCard className="border-l-2 md:border-l-4 border-l-blue-500 w-full">
             <CardHeader className="pb-3 md:pb-6 px-3 md:px-6 pt-3 md:pt-6">
               <div className="flex items-center gap-2 md:gap-4">
                 <div className="bg-blue-100 p-2 md:p-3 rounded-lg">
