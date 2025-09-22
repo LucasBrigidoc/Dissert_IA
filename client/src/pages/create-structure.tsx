@@ -232,28 +232,28 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header fixo com gradiente e ícones */}
       <div className="fixed top-0 z-50 w-full bg-gradient-to-r from-bright-blue to-purple-600 shadow-xl">
-        <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
+        <div className="container mx-auto px-3 md:px-6 py-2 sm:py-3 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 md:gap-4">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-white/20 transition-all duration-200 h-8 md:h-12 px-3 md:px-6 text-sm md:text-base"
+                className="text-white hover:bg-white/20 transition-all duration-200 h-8 md:h-12 px-2 sm:px-3 md:px-6 text-xs sm:text-sm md:text-base"
                 onClick={onBack}
                 data-testid="button-voltar"
               >
-                <ArrowLeft className="h-4 w-4 md:h-6 md:w-6 mr-1 md:mr-3" />
+                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 mr-1 md:mr-3" />
                 <span className="hidden sm:inline">Voltar</span>
               </Button>
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="bg-white/20 p-1.5 md:p-3 rounded-full">
-                  <Plus className="h-4 w-4 md:h-6 md:w-6 text-white" />
+              <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+                <div className="bg-white/20 p-1 sm:p-1.5 md:p-3 rounded-full">
+                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg md:text-2xl font-bold text-white">
+                  <h1 className="text-sm sm:text-lg md:text-2xl font-bold text-white">
                     {editingStructure ? 'Editor de Estruturas' : 'Criador de Estruturas'}
                   </h1>
-                  <p className="text-xs md:text-base text-blue-100 hidden sm:block">
+                  <p className="text-xs md:text-base text-blue-100 hidden md:block">
                     {editingStructure 
                       ? 'Personalize sua estrutura de redação'
                       : 'Crie sua estrutura personalizada de redação'
@@ -263,9 +263,9 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
               </div>
             </div>
             
-            <div className="flex items-center gap-2 md:gap-3">
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30 px-2 md:px-3 py-1 text-xs md:text-sm">
-                <Plus className="h-3 w-3 md:h-5 md:w-5 mr-1 md:mr-2" />
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+              <Badge variant="secondary" className="bg-white/20 text-white border-white/30 px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 text-xs md:text-sm">
+                <Plus className="h-2 w-2 sm:h-3 sm:w-3 md:h-5 md:w-5 mr-1 md:mr-2" />
                 <span className="hidden sm:inline">Nova </span>Estrutura
               </Badge>
             </div>
