@@ -173,9 +173,30 @@ export default function Simulador() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <Link href={backUrl} data-testid="button-back">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-1 h-8 px-2 text-xs"
+              >
+                <ArrowLeft size={14} />
+                <span>Voltar</span>
+              </Button>
+            </Link>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                <GraduationCap className="text-white" size={14} />
+              </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Simulador de Prova</h1>
+            </div>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Link href={backUrl} data-testid="button-back">
                 <Button
