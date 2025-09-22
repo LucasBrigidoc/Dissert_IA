@@ -391,17 +391,6 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                         </span>
                       </Button>
                       
-                      <Button
-                        onClick={handleSave}
-                        disabled={!isValid || isLoading}
-                        className="bg-green-600 hover:bg-green-700 px-4 md:px-8 w-full sm:w-auto"
-                        data-testid="button-salvar-estrutura"
-                      >
-                        <Save className="mr-2 h-4 w-4" />
-                        <span className="text-sm md:text-base">
-                          {isLoading ? 'Salvando...' : (editingStructure ? 'Atualizar' : 'Salvar')} Estrutura
-                        </span>
-                      </Button>
                     </div>
                   </div>
                 </div>
