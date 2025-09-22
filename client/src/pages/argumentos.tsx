@@ -3,7 +3,8 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCircle2, Clock, Users, RotateCcw } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCircle2, Clock, Users, RotateCcw, HelpCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -771,6 +772,36 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                     disabled={chatState.isLoading}
                     data-testid="input-chat-message"
                   />
+                  
+                  {/* Botão de Ajuda com Guia para a Seção Atual */}
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="border-bright-blue/20 text-bright-blue hover:bg-bright-blue/10"
+                        data-testid="button-help-guidance"
+                      >
+                        <HelpCircle size={16} />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                          <HelpCircle className="h-5 w-5 text-bright-blue" />
+                          Guia para: {chatState.currentSection.charAt(0).toUpperCase() + chatState.currentSection.slice(1)}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4 space-y-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                            {getSectionGuidanceMessage(chatState.currentSection)}
+                          </div>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
                   <Button 
                     onClick={(e) => {
                       e.preventDefault();
