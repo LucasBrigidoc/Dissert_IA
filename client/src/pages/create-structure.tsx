@@ -304,6 +304,9 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                   onNameChange={setName}
                   onSectionsChange={setSections}
                   isEditing={!!editingStructure}
+                  onSave={handleSave}
+                  isSaving={isLoading}
+                  showSaveButton={true}
                 />
               </CardContent>
             </Card>

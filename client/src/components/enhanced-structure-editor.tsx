@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, GripVertical, FileText, Upload, Wand2, Edit3 } from "lucide-react";
+import { Plus, Trash2, GripVertical, FileText, Upload, Wand2, Edit3, Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +18,9 @@ interface EnhancedStructureEditorProps {
   onNameChange: (name: string) => void;
   onSectionsChange: (sections: Section[]) => void;
   isEditing?: boolean;
+  onSave?: () => void;
+  isSaving?: boolean;
+  showSaveButton?: boolean;
 }
 
 const ESSAY_STYLES = {
@@ -107,7 +110,10 @@ export function EnhancedStructureEditor({
   sections, 
   onNameChange, 
   onSectionsChange,
-  isEditing = false
+  isEditing = false,
+  onSave,
+  isSaving = false,
+  showSaveButton = false
 }: EnhancedStructureEditorProps) {
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [modelEssay, setModelEssay] = useState("");
@@ -430,6 +436,30 @@ export function EnhancedStructureEditor({
                     <Plus className="mr-2 h-4 w-4" />
                     Adicionar Seção
                   </Button>
+
+                  {/* Botão Salvar Estrutura */}
+                  {showSaveButton && onSave && (
+                    <div className="pt-4 border-t border-bright-blue/20">
+                      <Button
+                        onClick={onSave}
+                        disabled={!name.trim() || sections.length === 0 || sections.some(s => !s.title.trim() || !s.description.trim()) || isSaving}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white"
+                        data-testid="button-salvar-estrutura-manual"
+                      >
+                        {isSaving ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Salvando...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Salvar Estrutura
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -546,6 +576,30 @@ export function EnhancedStructureEditor({
               <Plus className="mr-2 h-4 w-4" />
               Adicionar Seção
             </Button>
+
+            {/* Botão Salvar Estrutura */}
+            {showSaveButton && onSave && (
+              <div className="pt-4 border-t border-bright-blue/20">
+                <Button
+                  onClick={onSave}
+                  disabled={!name.trim() || sections.length === 0 || sections.some(s => !s.title.trim() || !s.description.trim()) || isSaving}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  data-testid="button-salvar-estrutura-gerada"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Salvar Estrutura
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
