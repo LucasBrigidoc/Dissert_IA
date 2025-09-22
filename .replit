@@ -8,11 +8,15 @@ channel = "stable-25_05"
 [deployment]
 deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
-run = ["bash", "-c", "GEMINI_API_KEY=AIzaSyDi4JqFjFfI-w1AgTvMdXnNL27xbu9_9tI npm run start"]
+run = ["export", "GEMINI_API_KEY=AIzaSyDi4JqFjFfI-w1AgTvMdXnNL27xbu9_9tI", "&&", "npm", "run"]
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 41155
+externalPort = 3000
 
 [env]
 PORT = "5000"
@@ -33,13 +37,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "GEMINI_API_KEY=\"AIzaSyDi4JqFjFfI-w1AgTvMdXnNL27xbu9_9tI\" npm run dev"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export GEMINI_API_KEY=AIzaSyDi4JqFjFfI-w1AgTvMdXnNL27xbu9_9tI && npm run dev"
+waitForPort = 5000
 
 [agent]
 expertMode = true
