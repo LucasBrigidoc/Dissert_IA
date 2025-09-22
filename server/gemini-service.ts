@@ -2,8 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { Repertoire } from "@shared/schema";
 
 export class GeminiService {
-  private genAI: GoogleGenerativeAI;
+  private genAI: GoogleGenerativeAI | null;
   private model: any;
+  private hasApiKey: boolean;
 
   // Local analysis mappings - no AI required
   private queryPatterns = {
@@ -33,12 +34,16 @@ export class GeminiService {
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error("GEMINI_API_KEY not found in environment variables");
-    }
+    this.hasApiKey = !!apiKey;
     
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    if (!apiKey) {
+      console.warn("GEMINI_API_KEY not found in environment variables. AI features will be limited.");
+      this.genAI = null;
+      this.model = null;
+    } else {
+      this.genAI = new GoogleGenerativeAI(apiKey);
+      this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    }
   }
 
   // Local analysis - NO AI TOKENS USED!
