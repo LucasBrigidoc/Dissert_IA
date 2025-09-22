@@ -387,81 +387,104 @@ export default function BibliotecaPage() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8 pt-24">
-        {/* Search and Filter Bar */}
-        <LiquidGlassCard className="mb-8 p-6">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-              <Input
-                placeholder="Buscar por título, categoria ou descrição..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-                data-testid="input-search"
-              />
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-8 pt-16 sm:pt-24">
+        {/* Search and Filter Bar - Sticky on Mobile */}
+        <div className="sm:static sticky top-16 sm:top-20 z-40 -mx-4 sm:mx-0 mb-4 sm:mb-8">
+          <LiquidGlassCard className="mx-4 sm:mx-0 p-3 sm:p-6">
+            {/* Search Input */}
+            <div className="mb-3 sm:mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 sm:top-3 text-gray-400" size={16} />
+                <Input
+                  placeholder="Buscar arquivos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9 sm:pl-10 h-9 sm:h-10 text-sm"
+                  data-testid="input-search"
+                />
+                {searchTerm && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1 h-7 w-7 p-0"
+                    onClick={() => setSearchTerm('')}
+                  >
+                    ✕
+                  </Button>
+                )}
+              </div>
             </div>
             
-            <div className="flex gap-2">
-              <Button
-                variant={selectedCategory === "todos" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("todos")}
-                data-testid="filter-todos"
-              >
-                Todos
-              </Button>
-              <Button
-                variant={selectedCategory === "repertório" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("repertório")}
-                data-testid="filter-repertorio"
-              >
-                Repertórios
-              </Button>
-              <Button
-                variant={selectedCategory === "redação" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("redação")}
-                data-testid="filter-redacao"
-              >
-                Redações
-              </Button>
-              <Button
-                variant={selectedCategory === "tema" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("tema")}
-                data-testid="filter-tema"
-              >
-                Temas
-              </Button>
-              <Button
-                variant={selectedCategory === "estilo" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("estilo")}
-                data-testid="filter-estilo"
-              >
-                Estilos
-              </Button>
-              <Button
-                variant={selectedCategory === "newsletter" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("newsletter")}
-                data-testid="filter-newsletter"
-              >
-                Newsletters
-              </Button>
-              <Button
-                variant={selectedCategory === "proposta" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("proposta")}
-                data-testid="filter-proposta"
-              >
-                Propostas
-              </Button>
+            {/* Filter Chips - Horizontal Scroll on Mobile */}
+            <div className="-mx-4 sm:mx-0">
+              <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 sm:px-0 pb-1">
+                <Button
+                  variant={selectedCategory === "todos" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("todos")}
+                  data-testid="filter-todos"
+                >
+                  Todos
+                </Button>
+                <Button
+                  variant={selectedCategory === "repertório" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("repertório")}
+                  data-testid="filter-repertorio"
+                >
+                  Repertórios
+                </Button>
+                <Button
+                  variant={selectedCategory === "redação" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("redação")}
+                  data-testid="filter-redacao"
+                >
+                  Redações
+                </Button>
+                <Button
+                  variant={selectedCategory === "tema" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("tema")}
+                  data-testid="filter-tema"
+                >
+                  Temas
+                </Button>
+                <Button
+                  variant={selectedCategory === "estilo" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("estilo")}
+                  data-testid="filter-estilo"
+                >
+                  Estilos
+                </Button>
+                <Button
+                  variant={selectedCategory === "newsletter" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("newsletter")}
+                  data-testid="filter-newsletter"
+                >
+                  Newsletters
+                </Button>
+                <Button
+                  variant={selectedCategory === "proposta" ? "default" : "secondary"}
+                  size="sm"
+                  className="rounded-full whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+                  onClick={() => setSelectedCategory("proposta")}
+                  data-testid="filter-proposta"
+                >
+                  Propostas
+                </Button>
+              </div>
             </div>
-          </div>
-        </LiquidGlassCard>
+          </LiquidGlassCard>
+        </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
