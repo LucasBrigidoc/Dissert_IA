@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, GripVertical, FileText, Upload, Wand2, Edit3, Save, Loader2 } from "lucide-react";
+import { Plus, Trash2, GripVertical, FileText, Upload, Wand2, Edit3, Save, Loader2, HelpCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -121,6 +121,66 @@ export function EnhancedStructureEditor({
   const [showModelAnalysis, setShowModelAnalysis] = useState(false);
   const [isModelSectionExpanded, setIsModelSectionExpanded] = useState(false);
   const [creationMode, setCreationMode] = useState<"model" | "manual">("model");
+  const [showGuidanceCard, setShowGuidanceCard] = useState<number | null>(null);
+
+  // Mapeamento das orientações para cada tipo de parágrafo
+  const guidanceMap: { [key: string]: string } = {
+    "1º Parágrafo - Introdução": `🎯 **INTRODUÇÃO - Como estruturar:**
+
+📝 **1ª FRASE:** Contextualização
+• Use conectivos: "De acordo", "Conforme", "Segundo", "O", "A", "Na", "No"
+• Contextualize o tema ou cite um repertório relevante
+
+📝 **2ª FRASE:** Apresentação da tese
+• Use conectivos: "Entretanto", "Contudo", "No entanto", "Todavia"
+• Apresente o tema e declare sua tese principal
+
+📝 **3ª FRASE:** Roteiro argumentativo
+• Use conectivos: "Além disso", "Logo", "Assim sendo"
+• Apresente as ideias que serão desenvolvidas nos próximos parágrafos`,
+
+    "2º Parágrafo - Primeiro Desenvolvimento": `🎯 **PRIMEIRO DESENVOLVIMENTO - Como estruturar:**
+
+📝 **1ª FRASE:** Abertura argumentativa
+• Use conectivos: "Inicialmente", "Primeiramente", "Primordialmente", "Em primeira análise"
+• Faça citação, afirmação ou contextualização histórica
+
+📝 **2ª FRASE:** Desenvolvimento da ideia
+• Use conectivos: "Nesse sentido", "Diante disso", "Dessa forma"
+• Retome e desenvolva detalhadamente a primeira ideia
+
+📝 **3ª FRASE:** Fechamento do argumento
+• Use conectivos: "Assim", "Dessarte"
+• Isole a ideia com uma breve conclusão parcial`,
+
+    "3º Parágrafo - Segundo Desenvolvimento": `🎯 **SEGUNDO DESENVOLVIMENTO - Como estruturar:**
+
+📝 **1ª FRASE:** Nova perspectiva
+• Use conectivos: "Além disso", "Ademais"
+• Apresente a segunda ideia/argumento
+
+📝 **2ª FRASE:** Posicionamento e exemplificação
+• Use conectivos: "Nesse aspecto", "Nessa perspectiva", "Dessa maneira"
+• Desenvolva seu posicionamento com explicações e exemplos
+
+📝 **3ª FRASE:** Preparação para conclusão
+• Use conectivos: "Assim", "Dessarte"
+• Isole a ideia preparando a transição para a conclusão`,
+
+    "4º Parágrafo - Conclusão": `🎯 **CONCLUSÃO - Como estruturar:**
+
+📝 **1ª FRASE:** Síntese e proposta
+• Use conectivos: "Sobre isso", "Em suma", "Portanto"
+• Faça um resumo do tema e apresente proposta de solução
+
+📝 **2ª FRASE:** Detalhamento da intervenção
+• Use conectivos: "Nessa perspectiva", "Por conseguinte"
+• Responda: Quem deve fazer? O que? Como? Por meio do que? Para que?
+
+📝 **3ª FRASE:** Finalização
+• Use conectivos: "Assim", "Por conseguinte"
+• Detalhe a proposta e o resultado esperado`
+  };
 
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style);
@@ -179,30 +239,22 @@ export function EnhancedStructureEditor({
       {
         id: nanoid(),
         title: "1º Parágrafo - Introdução",
-        description: `1ª FRASE: Use conectivos (De acordo, Conforme, Segundo, O, A, Na, No) + Contextualização do tema/citação de repertório
-2ª FRASE: Use conectivos (Entretanto, Contudo, No entanto, Todavia) + Apresentar o tema e sua tese
-3ª FRASE: Use conectivos (Além disso, Logo, Assim sendo) + Apresentar as ideias que serão desenvolvidas`
+        description: ""
       },
       {
         id: nanoid(),
         title: "2º Parágrafo - Primeiro Desenvolvimento", 
-        description: `1ª FRASE: Use conectivos (Inicialmente, Primeiramente, Primordialmente, Em primeira análise) + Citação/afirmação/contextualização histórica
-2ª FRASE: Use conectivos (Nesse sentido, Diante disso, Dessa forma) + Retomada e desenvolvimento da 1ª ideia
-3ª FRASE: Use conectivos (Assim, Dessarte) + Isolamento da ideia com breve conclusão`
+        description: ""
       },
       {
         id: nanoid(),
         title: "3º Parágrafo - Segundo Desenvolvimento",
-        description: `1ª FRASE: Use conectivos (Além disso, Ademais) + Apresentação da 2ª ideia
-2ª FRASE: Use conectivos (Nesse aspecto, Nessa perspectiva, Dessa maneira) + Seu posicionamento com explicação/exemplos
-3ª FRASE: Use conectivos (Assim, Dessarte) + Isolamento da ideia preparando para conclusão`
+        description: ""
       },
       {
         id: nanoid(),
         title: "4º Parágrafo - Conclusão",
-        description: `1ª FRASE: Use conectivos (Sobre isso, Em suma, Portanto) + Resumo do tema com proposta de solução
-2ª FRASE: Use conectivos (Nessa perspectiva, Por conseguinte) + Responda: Quem deve fazer? O que? Como? Por meio do que? Para que?
-3ª FRASE: Use conectivos (Assim, Por conseguinte) + Detalhamento da proposta e resultado esperado`
+        description: ""
       }
     ];
     
@@ -410,17 +462,59 @@ export function EnhancedStructureEditor({
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`manual-section-description-${index}`} className="text-sm font-medium">
-                            Descrição/Instruções
-                          </Label>
-                          <Textarea
-                            id={`manual-section-description-${index}`}
-                            placeholder="Ex: Apresente o tema e sua tese principal"
-                            value={section.description}
-                            onChange={(e) => updateSection(index, 'description', e.target.value)}
-                            rows={3}
-                            data-testid={`textarea-descricao-secao-${index}`}
-                          />
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor={`manual-section-description-${index}`} className="text-sm font-medium">
+                              Descrição/Instruções
+                            </Label>
+                            {guidanceMap[section.title] && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowGuidanceCard(showGuidanceCard === index ? null : index)}
+                                className="h-6 w-6 p-0 text-bright-blue hover:text-bright-blue hover:bg-bright-blue/10"
+                                data-testid={`button-orientacoes-${index}`}
+                              >
+                                <HelpCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <div className="relative">
+                            <Textarea
+                              id={`manual-section-description-${index}`}
+                              placeholder="Ex: Apresente o tema e sua tese principal"
+                              value={section.description}
+                              onChange={(e) => updateSection(index, 'description', e.target.value)}
+                              rows={3}
+                              data-testid={`textarea-descricao-secao-${index}`}
+                            />
+                            {/* Card de Orientações */}
+                            {showGuidanceCard === index && guidanceMap[section.title] && (
+                              <div className="absolute top-full left-0 right-0 z-50 mt-2">
+                                <Card className="border-bright-blue shadow-lg">
+                                  <CardHeader className="pb-3">
+                                    <div className="flex items-center justify-between">
+                                      <CardTitle className="text-bright-blue text-sm font-medium">
+                                        Orientações para {section.title}
+                                      </CardTitle>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setShowGuidanceCard(null)}
+                                        className="h-6 w-6 p-0"
+                                      >
+                                        <X className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </CardHeader>
+                                  <CardContent className="pt-0">
+                                    <div className="text-xs whitespace-pre-line text-gray-600 max-h-60 overflow-y-auto">
+                                      {guidanceMap[section.title]}
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -549,17 +643,59 @@ export function EnhancedStructureEditor({
                       />
                     </div>
                     <div>
-                      <Label htmlFor={`generated-section-description-${index}`} className="text-sm font-medium">
-                        Descrição/Instruções
-                      </Label>
-                      <Textarea
-                        id={`generated-section-description-${index}`}
-                        placeholder="Ex: Apresente o tema e sua tese principal"
-                        value={section.description}
-                        onChange={(e) => updateSection(index, 'description', e.target.value)}
-                        rows={3}
-                        data-testid={`textarea-descricao-secao-${index}`}
-                      />
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor={`generated-section-description-${index}`} className="text-sm font-medium">
+                          Descrição/Instruções
+                        </Label>
+                        {guidanceMap[section.title] && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowGuidanceCard(showGuidanceCard === index ? null : index)}
+                            className="h-6 w-6 p-0 text-bright-blue hover:text-bright-blue hover:bg-bright-blue/10"
+                            data-testid={`button-orientacoes-gerada-${index}`}
+                          >
+                            <HelpCircle className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <Textarea
+                          id={`generated-section-description-${index}`}
+                          placeholder="Ex: Apresente o tema e sua tese principal"
+                          value={section.description}
+                          onChange={(e) => updateSection(index, 'description', e.target.value)}
+                          rows={3}
+                          data-testid={`textarea-descricao-secao-${index}`}
+                        />
+                        {/* Card de Orientações */}
+                        {showGuidanceCard === index && guidanceMap[section.title] && (
+                          <div className="absolute top-full left-0 right-0 z-50 mt-2">
+                            <Card className="border-bright-blue shadow-lg">
+                              <CardHeader className="pb-3">
+                                <div className="flex items-center justify-between">
+                                  <CardTitle className="text-bright-blue text-sm font-medium">
+                                    Orientações para {section.title}
+                                  </CardTitle>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setShowGuidanceCard(null)}
+                                    className="h-6 w-6 p-0"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="pt-0">
+                                <div className="text-xs whitespace-pre-line text-gray-600 max-h-60 overflow-y-auto">
+                                  {guidanceMap[section.title]}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
