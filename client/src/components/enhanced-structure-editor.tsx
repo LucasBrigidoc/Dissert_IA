@@ -166,16 +166,41 @@ export function EnhancedStructureEditor({
 
   const createManualStructure = () => {
     if (!name.trim()) {
-      onNameChange("Estrutura Personalizada");
+      onNameChange("Estrutura Dissertativa Argumentativa");
     }
     
-    const initialSection: Section = {
-      id: nanoid(),
-      title: "Introdução",
-      description: "Apresente o tema e sua tese principal"
-    };
+    const guidedSections: Section[] = [
+      {
+        id: nanoid(),
+        title: "1º Parágrafo - Introdução",
+        description: `1ª FRASE: Use conectivos (De acordo, Conforme, Segundo, O, A, Na, No) + Contextualização do tema/citação de repertório
+2ª FRASE: Use conectivos (Entretanto, Contudo, No entanto, Todavia) + Apresentar o tema e sua tese
+3ª FRASE: Use conectivos (Além disso, Logo, Assim sendo) + Apresentar as ideias que serão desenvolvidas`
+      },
+      {
+        id: nanoid(),
+        title: "2º Parágrafo - Primeiro Desenvolvimento", 
+        description: `1ª FRASE: Use conectivos (Inicialmente, Primeiramente, Primordialmente, Em primeira análise) + Citação/afirmação/contextualização histórica
+2ª FRASE: Use conectivos (Nesse sentido, Diante disso, Dessa forma) + Retomada e desenvolvimento da 1ª ideia
+3ª FRASE: Use conectivos (Assim, Dessarte) + Isolamento da ideia com breve conclusão`
+      },
+      {
+        id: nanoid(),
+        title: "3º Parágrafo - Segundo Desenvolvimento",
+        description: `1ª FRASE: Use conectivos (Além disso, Ademais) + Apresentação da 2ª ideia
+2ª FRASE: Use conectivos (Nesse aspecto, Nessa perspectiva, Dessa maneira) + Seu posicionamento com explicação/exemplos
+3ª FRASE: Use conectivos (Assim, Dessarte) + Isolamento da ideia preparando para conclusão`
+      },
+      {
+        id: nanoid(),
+        title: "4º Parágrafo - Conclusão",
+        description: `1ª FRASE: Use conectivos (Sobre isso, Em suma, Portanto) + Resumo do tema com proposta de solução
+2ª FRASE: Use conectivos (Nessa perspectiva, Por conseguinte) + Responda: Quem deve fazer? O que? Como? Por meio do que? Para que?
+3ª FRASE: Use conectivos (Assim, Por conseguinte) + Detalhamento da proposta e resultado esperado`
+      }
+    ];
     
-    onSectionsChange([initialSection]);
+    onSectionsChange(guidedSections);
     setCreationMode("manual");
   };
 
@@ -288,7 +313,7 @@ export function EnhancedStructureEditor({
                 Criar Estrutura do Zero
               </CardTitle>
               <p className="text-sm text-soft-gray">
-                Crie sua estrutura personalizada definindo nome e seções manualmente
+                Crie uma estrutura dissertativa argumentativa seguindo o modelo pedagógico com conectivos e estratégias específicas
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -309,17 +334,18 @@ export function EnhancedStructureEditor({
 
               {sections.length === 0 ? (
                 <div className="text-center py-8">
-                  <div className="border border-dashed border-bright-blue/30 rounded-lg py-8">
+                  <div className="border border-dashed border-bright-blue/30 rounded-lg py-8 bg-gradient-to-br from-bright-blue/5 to-transparent">
                     <FileText className="mx-auto h-12 w-12 mb-4 text-bright-blue opacity-50" />
-                    <p className="font-medium text-dark-blue mb-2">Estrutura Vazia</p>
-                    <p className="text-sm text-soft-gray mb-4">Comece criando sua primeira seção</p>
+                    <p className="font-medium text-dark-blue mb-2">Estrutura Dissertativa Argumentativa</p>
+                    <p className="text-sm text-soft-gray mb-1">Crie uma redação seguindo o modelo pedagógico</p>
+                    <p className="text-xs text-soft-gray mb-4">4 parágrafos com conectivos e estratégias específicas</p>
                     <Button 
                       onClick={createManualStructure}
                       className="bg-bright-blue hover:bg-bright-blue/90 text-white"
                       size="lg"
                     >
                       <Plus className="mr-2 h-4 w-4" />
-                      Criar Primeira Seção
+                      Criar Estrutura Guiada
                     </Button>
                   </div>
                 </div>
