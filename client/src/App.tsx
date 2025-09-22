@@ -29,6 +29,7 @@ import Biblioteca from "@/pages/biblioteca";
 import Propostas from "@/pages/propostas";
 import MapaMental from "@/pages/mapa-mental";
 import EditStructurePage from "@/pages/edit-structure";
+import UseStructurePage from "@/pages/use-structure-page";
 
 function Router() {
   return (
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/propostas" component={Propostas} />
       <Route path="/mapa-mental" component={MapaMental} />
       <Route path="/edit-structure" component={EditStructurePage} />
+      <Route path="/use-structure" component={UseStructurePage} />
       <Route component={NotFound} />
     </Switch>
   );

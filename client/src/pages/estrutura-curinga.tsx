@@ -7,7 +7,6 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { CreateStructure } from "@/pages/create-structure";
-import { UseStructure } from "@/pages/use-structure";
 import { apiRequest } from "@/lib/queryClient";
 import type { EssayStructure, Section } from "@shared/schema";
 
@@ -17,7 +16,7 @@ export function EstruturaCuringa() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
   const modeParam = urlParams.get('mode');
@@ -93,9 +92,6 @@ export function EstruturaCuringa() {
     );
   }
 
-  if (selectedMode === 'use') {
-    return <UseStructure structures={structures} onBack={() => setSelectedMode(null)} />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
@@ -142,7 +138,7 @@ export function EstruturaCuringa() {
           <LiquidGlassCard className="hover:scale-105 transition-transform cursor-pointer group">
             <div 
               className="text-center p-8"
-              onClick={() => setSelectedMode('use')}
+              onClick={() => setLocation(`/use-structure?from=${fromPage}`)}
               data-testid="card-usar-estrutura"
             >
               <div className="w-16 h-16 bg-gray-500/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-gray-500/20 transition-colors">
