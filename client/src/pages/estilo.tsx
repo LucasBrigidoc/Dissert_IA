@@ -14,7 +14,7 @@ export default function Estilo() {
   const [location, setLocation] = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
-  const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
+  const backUrl = '/functionalities';
 
   // Garantir que a página sempre abra no topo
   useEffect(() => {
