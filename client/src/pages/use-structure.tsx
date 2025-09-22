@@ -766,7 +766,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                           Quando Usar
                                         </h3>
                                         <ul className="space-y-2">
-                                          {structure.guide?.whenToUse?.map((item: string, index: number) => (
+                                          {(structure as StructureWithGuide).guide?.whenToUse?.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
                                               <span className="text-gray-500 mt-1">•</span>
                                               <span>{item}</span>
@@ -782,7 +782,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                           Quando NÃO Usar
                                         </h3>
                                         <ul className="space-y-2">
-                                          {structure.guide?.whenNotToUse?.map((item: string, index: number) => (
+                                          {(structure as StructureWithGuide).guide?.whenNotToUse?.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
                                               <span className="text-red-500 mt-1">•</span>
                                               <span>{item}</span>
@@ -798,7 +798,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                                           Vantagens
                                         </h3>
                                         <ul className="space-y-2">
-                                          {structure.guide?.advantages?.map((item: string, index: number) => (
+                                          {(structure as StructureWithGuide).guide?.advantages?.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start gap-2 text-gray-700">
                                               <span className="text-blue-500 mt-1">•</span>
                                               <span>{item}</span>

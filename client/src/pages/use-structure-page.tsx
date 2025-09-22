@@ -18,7 +18,8 @@ export default function UseStructurePage() {
   });
 
   const handleBack = () => {
-    setLocation(`/estrutura-curinga?from=${fromPage}`);
+    // Go back directly to the original page, not to estrutura-curinga
+    setLocation(`/${fromPage}`);
   };
 
   if (isLoading) {
