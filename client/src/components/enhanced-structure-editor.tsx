@@ -364,24 +364,24 @@ export function EnhancedStructureEditor({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <Tabs defaultValue="model" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-0 h-auto p-3 bg-gray-50">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-0 h-auto p-2 bg-gray-50">
           <TabsTrigger 
             value="model" 
-            className="flex flex-col items-center gap-3 py-4 px-6 h-auto data-[state=active]:bg-bright-blue data-[state=active]:text-white transition-all hover:bg-blue-50 rounded-lg border border-gray-200 data-[state=active]:border-bright-blue"
+            className="flex flex-col items-center gap-2 py-3 px-4 h-auto data-[state=active]:bg-bright-blue data-[state=active]:text-white transition-all hover:bg-blue-50 rounded-lg border border-gray-200 data-[state=active]:border-bright-blue"
           >
-            <Upload className="h-8 w-8" />
+            <Upload className="h-5 w-5" />
             <div className="text-center">
-              <div className="font-semibold text-sm sm:text-base">Analisar Redação</div>
+              <div className="font-medium text-xs sm:text-sm">Analisar Redação</div>
               <div className="text-xs opacity-80">Modelo existente</div>
             </div>
           </TabsTrigger>
           <TabsTrigger 
             value="manual" 
-            className="flex flex-col items-center gap-3 py-4 px-6 h-auto data-[state=active]:bg-bright-blue data-[state=active]:text-white transition-all hover:bg-blue-50 rounded-lg border border-gray-200 data-[state=active]:border-bright-blue"
+            className="flex flex-col items-center gap-2 py-3 px-4 h-auto data-[state=active]:bg-bright-blue data-[state=active]:text-white transition-all hover:bg-blue-50 rounded-lg border border-gray-200 data-[state=active]:border-bright-blue"
           >
-            <Edit3 className="h-8 w-8" />
+            <Edit3 className="h-5 w-5" />
             <div className="text-center">
-              <div className="font-semibold text-sm sm:text-base">Criar do Zero</div>
+              <div className="font-medium text-xs sm:text-sm">Criar do Zero</div>
               <div className="text-xs opacity-80">Nova estrutura</div>
             </div>
           </TabsTrigger>
