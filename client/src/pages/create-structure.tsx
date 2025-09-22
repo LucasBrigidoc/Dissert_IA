@@ -228,32 +228,30 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <Button 
             variant="outline" 
             onClick={onBack} 
-            className="mb-4 bg-white/80 backdrop-blur-sm border-blue-200 hover:bg-blue-50 hover:border-bright-blue text-dark-blue transition-all duration-200" 
+            size="sm"
+            className="mb-3 md:mb-4 bg-white/80 backdrop-blur-sm border-blue-200 hover:bg-blue-50 hover:border-bright-blue text-dark-blue transition-all duration-200" 
             data-testid="button-voltar"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            <ArrowLeft className="mr-2 h-3 w-3 md:h-4 md:w-4" />
+            <span className="text-sm md:text-base">Voltar</span>
           </Button>
           
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-dark-blue mb-2">
-                {editingStructure ? 'Editar Estrutura' : 'Criar Nova Estrutura'}
-              </h1>
-              <p className="text-soft-gray">
-                {editingStructure 
-                  ? 'Modifique sua estrutura existente'
-                  : 'Defina seções personalizadas para criar um modelo reutilizável'
-                }
-              </p>
-            </div>
-            
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-dark-blue mb-2">
+              {editingStructure ? 'Editar Estrutura' : 'Criar Nova Estrutura'}
+            </h1>
+            <p className="text-sm md:text-base text-soft-gray leading-relaxed">
+              {editingStructure 
+                ? 'Modifique sua estrutura existente'
+                : 'Defina seções personalizadas para criar um modelo reutilizável'
+              }
+            </p>
           </div>
         </div>
 
@@ -271,17 +269,17 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         
 
         {/* Proposta de Redação */}
-        <LiquidGlassCard>
-          <div className="flex items-center gap-2 mb-4">
-            <PenTool className="h-5 w-5 text-bright-blue" />
-            <h3 className="text-lg font-semibold text-dark-blue">
+        <LiquidGlassCard className="mt-4 md:mt-6">
+          <div className="flex items-center gap-2 mb-3 md:mb-4">
+            <PenTool className="h-4 w-4 md:h-5 md:w-5 text-bright-blue" />
+            <h3 className="text-base md:text-lg font-semibold text-dark-blue">
               Testar Estrutura
             </h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
             <div>
-              <Label htmlFor="essay-topic" className="text-dark-blue font-medium">
+              <Label htmlFor="essay-topic" className="text-sm md:text-base text-dark-blue font-medium">
                 Tema da Redação *
               </Label>
               <Textarea
@@ -290,7 +288,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                 value={essayTopic}
                 onChange={(e) => setEssayTopic(e.target.value)}
                 rows={3}
-                className="mt-1"
+                className="mt-1 text-sm md:text-base"
                 data-testid="textarea-tema-redacao"
               />
               <p className="text-xs text-soft-gray mt-1">
@@ -299,7 +297,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
             </div>
 
             <div>
-              <Label htmlFor="additional-instructions" className="text-dark-blue font-medium">
+              <Label htmlFor="additional-instructions" className="text-sm md:text-base text-dark-blue font-medium">
                 Instruções Especiais (opcional)
               </Label>
               <Textarea
@@ -308,7 +306,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                 value={additionalInstructions}
                 onChange={(e) => setAdditionalInstructions(e.target.value)}
                 rows={3}
-                className="mt-1"
+                className="mt-1 text-sm md:text-base"
                 data-testid="textarea-instrucoes-adicionais"
               />
               <p className="text-xs text-soft-gray mt-1">
@@ -318,19 +316,19 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
           </div>
           
           {/* Botão de gerar sempre visível */}
-          <div className="mt-6 pt-6 border-t border-bright-blue/20">
+          <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-bright-blue/20">
             <div className="text-center">
-              <p className="text-sm text-soft-gray mb-4">
+              <p className="text-sm text-soft-gray mb-3 md:mb-4 px-2">
                 {isValid 
                   ? `Criar redação com: ${name || 'Nova estrutura'}` 
                   : 'Complete a estrutura para testar'
                 }
               </p>
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-3 justify-center">
                 <Button
                   onClick={handleGenerateEssay}
                   disabled={!essayTopic.trim() || !isValid || isGenerating}
-                  className="bg-bright-blue hover:bg-blue-600 px-8"
+                  className="bg-bright-blue hover:bg-blue-600 px-4 md:px-8 w-full sm:w-auto"
                   data-testid="button-gerar-redacao"
                 >
                   {isGenerating ? (
@@ -338,17 +336,21 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                   ) : (
                     <Play className="mr-2 h-4 w-4" />
                   )}
-                  {isGenerating ? "Gerando Redação..." : "Criar Redação"}
+                  <span className="text-sm md:text-base">
+                    {isGenerating ? "Gerando Redação..." : "Criar Redação"}
+                  </span>
                 </Button>
                 
                 <Button
                   onClick={handleSave}
                   disabled={!isValid || isLoading}
-                  className="bg-green-600 hover:bg-green-700 px-8"
+                  className="bg-green-600 hover:bg-green-700 px-4 md:px-8 w-full sm:w-auto"
                   data-testid="button-salvar-estrutura"
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  {isLoading ? 'Salvando...' : (editingStructure ? 'Atualizar' : 'Salvar')} Estrutura
+                  <span className="text-sm md:text-base">
+                    {isLoading ? 'Salvando...' : (editingStructure ? 'Atualizar' : 'Salvar')} Estrutura
+                  </span>
                 </Button>
               </div>
             </div>
@@ -357,9 +359,9 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
 
         {/* Validation Messages */}
         {!isValid && (name || sections.length > 0) && (
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <h3 className="font-medium text-yellow-800 mb-2">Campos obrigatórios:</h3>
-            <ul className="text-sm text-yellow-700 space-y-1">
+          <div className="mt-4 md:mt-6 p-3 md:p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <h3 className="font-medium text-yellow-800 mb-2 text-sm md:text-base">Campos obrigatórios:</h3>
+            <ul className="text-xs md:text-sm text-yellow-700 space-y-1">
               {!name.trim() && <li>• Nome da estrutura</li>}
               {sections.length === 0 && <li>• Pelo menos uma seção</li>}
               {sections.some(s => !s.title.trim()) && <li>• Título de todas as seções</li>}
