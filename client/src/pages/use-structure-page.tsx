@@ -18,8 +18,8 @@ export default function UseStructurePage() {
   });
 
   const handleBack = () => {
-    // Go back directly to the original page, not to estrutura-curinga
-    setLocation(`/${fromPage}`);
+    // Always go back to the estilo page
+    setLocation('/estilo');
   };
 
   if (isLoading) {
