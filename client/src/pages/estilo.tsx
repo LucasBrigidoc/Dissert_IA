@@ -7,12 +7,11 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { CreateStructure } from "@/pages/create-structure";
-import { UseStructure } from "@/pages/use-structure";
 import { apiRequest } from "@/lib/queryClient";
 import type { EssayStructure, Section } from "@shared/schema";
 
 export default function Estilo() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
   const backUrl = fromPage === 'functionalities' ? '/functionalities' : '/dashboard';
@@ -117,15 +116,6 @@ export default function Estilo() {
     );
   }
 
-  if (selectedMode === 'use') {
-    return (
-      <UseStructure 
-        structures={structures} 
-        onBack={() => setSelectedMode(null)}
-        onSaveStructure={(structure) => saveMutation.mutate(structure)}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
@@ -196,7 +186,7 @@ export default function Estilo() {
           <LiquidGlassCard className="hover:scale-105 transition-all duration-300 cursor-pointer group">
             <div 
               className="text-center p-6 md:p-8"
-              onClick={() => setSelectedMode('use')}
+              onClick={() => setLocation(`/use-structure?from=${fromPage}`)}
               data-testid="card-usar-estrutura"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform">
