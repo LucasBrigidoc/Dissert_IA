@@ -14,6 +14,12 @@ interface SearchResult {
   results: Proposal[];
   count: number;
   query?: string;
+  futureExamDetected?: boolean;
+  futureExamInfo?: {
+    examName: string;
+    futureYear: number;
+    message: string;
+  };
   suggestions?: {
     themes: string[];
     examTypes: string[];
@@ -440,6 +446,28 @@ export default function Propostas() {
           </div>
         </LiquidGlassCard>
 
+        {/* Future Exam Detection Message */}
+        {searchResults?.futureExamDetected && searchResults.futureExamInfo && (
+          <LiquidGlassCard className="mb-6 p-4 sm:p-6 border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <Clock className="text-white" size={20} />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-amber-800 text-lg mb-2">
+                  Prova Futura Detectada
+                </h4>
+                <p className="text-amber-700 mb-3">
+                  {searchResults.futureExamInfo.message}
+                </p>
+                <div className="text-sm text-amber-600 bg-amber-100 rounded-lg p-3">
+                  <span className="font-medium">💡 Dica:</span> As propostas abaixo são de anos anteriores e podem te ajudar a entender o padrão e estilo das questões para se preparar melhor!
+                </div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+        )}
+
         {/* Results */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
@@ -452,7 +480,10 @@ export default function Propostas() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-dark-blue">
-                {searchResults?.count || 0} propostas encontradas
+                {searchResults?.futureExamDetected 
+                  ? `${searchResults?.count || 0} propostas relacionadas de anos anteriores`
+                  : `${searchResults?.count || 0} propostas encontradas`
+                }
               </h3>
               {displayProposals.length > 0 && displayProposals.length >= 10 && (
                 <Button

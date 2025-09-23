@@ -625,26 +625,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===================== PROPOSAL ROUTES =====================
 
+  // Function to detect future exam years
+  function detectFutureExam(searchQuery: string) {
+    const currentYear = new Date().getFullYear();
+    const yearMatches = searchQuery.match(/(\d{4})/g);
+    
+    if (yearMatches) {
+      for (const yearMatch of yearMatches) {
+        const year = parseInt(yearMatch);
+        if (year > currentYear && year <= currentYear + 10) { // Only consider realistic future years
+          // Extract exam name (remove the year and clean up)
+          const examName = searchQuery.replace(yearMatch, '').trim()
+            .replace(/\s+/g, ' ')
+            .replace(/^(enem|vestibular|concurso|simulado)\s*/i, (match) => match.trim());
+          
+          return {
+            isFuture: true,
+            futureYear: year,
+            examName: examName || 'essa prova',
+            searchTermForPast: searchQuery.replace(yearMatch, '').trim()
+          };
+        }
+      }
+    }
+    
+    return { isFuture: false };
+  }
+
   // Intelligent proposal search endpoint with rate limiting
   app.post("/api/proposals/search", async (req, res) => {
     try {
       const validatedData = proposalSearchQuerySchema.parse(req.body);
       const { query, examType, theme, difficulty, year, excludeIds } = validatedData;
       
-      // Rate limiting check (30 searches per hour per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(clientIP, 30, 60);
+      // Detect future exam searches
+      const futureExamDetection = detectFutureExam(query);
       
-      if (!rateLimitCheck.allowed) {
-        return res.status(429).json({ 
-          message: "Rate limit exceeded. You can make 30 searches per hour.", 
-          retryAfter: 3600 
+      // Rate limiting - use daily limit for future exam detection, hourly for regular searches
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      let rateLimitCheck;
+      
+      if (futureExamDetection.isFuture) {
+        // Daily rate limit for future exam detection (50 searches per day)
+        rateLimitCheck = await storage.checkRateLimit(`future_exam_${clientIP}`, 50, 1440);
+        if (!rateLimitCheck.allowed) {
+          return res.status(429).json({ 
+            message: "Rate limit exceeded. You can search for future exams 50 times per day.", 
+            retryAfter: 86400 // 24 hours
+          });
+        }
+      } else {
+        // Regular rate limiting (30 searches per hour per IP)
+        rateLimitCheck = await storage.checkRateLimit(clientIP, 30, 60);
+        if (!rateLimitCheck.allowed) {
+          return res.status(429).json({ 
+            message: "Rate limit exceeded. You can make 30 searches per hour.", 
+            retryAfter: 3600 
+          });
+        }
+      }
+      
+      console.log(`🔍 Proposal search request: "${query}", IP: ${clientIP}${futureExamDetection.isFuture ? ' [FUTURE EXAM DETECTED]' : ''}`);
+      
+      // Handle future exam detection
+      if (futureExamDetection.isFuture) {
+        console.log(`🔮 Future exam detected: ${futureExamDetection.examName || 'unknown exam'} ${futureExamDetection.futureYear}`);
+        
+        // Search for related proposals from previous years using the exam name without year
+        const searchTermForPast = futureExamDetection.searchTermForPast || 
+          (futureExamDetection.examName || '').replace(/\b(enem|vestibular|concurso|simulado)\b/i, '$1').trim();
+        
+        // Local analysis for the past exam search
+        const localAnalysis = geminiService.analyzeProposalSearchLocal(searchTermForPast);
+        
+        // Search existing proposals from previous years
+        let pastProposals = await storage.searchProposals(searchTermForPast, {
+          examType: examType || localAnalysis.suggestedExamTypes[0],
+          theme: theme || localAnalysis.suggestedThemes[0],
+          difficulty
+          // Don't filter by year - we want past years
+        });
+        
+        // Filter out excluded IDs
+        if (excludeIds && excludeIds.length > 0) {
+          pastProposals = pastProposals.filter(p => !excludeIds.includes(p.id));
+        }
+        
+        // Prefer more recent years first
+        pastProposals = pastProposals.sort((a, b) => {
+          const yearA = parseInt(String(a.year || '0'));
+          const yearB = parseInt(String(b.year || '0'));
+          return yearB - yearA; // Descending order (most recent first)
+        });
+        
+        return res.json({
+          results: pastProposals.slice(0, 10),
+          count: pastProposals.length,
+          query: localAnalysis.normalizedQuery,
+          futureExamDetected: true,
+          futureExamInfo: {
+            examName: futureExamDetection.examName,
+            futureYear: futureExamDetection.futureYear,
+            message: `Ainda não temos informações sobre ${futureExamDetection.examName} ${futureExamDetection.futureYear}. Aqui estão propostas relacionadas de anos anteriores:`
+          },
+          suggestions: {
+            themes: localAnalysis.suggestedThemes,
+            examTypes: localAnalysis.suggestedExamTypes
+          }
         });
       }
       
-      console.log(`🔍 Proposal search request: "${query}", IP: ${clientIP}`);
-      
-      // Step 1: Local analysis (no AI tokens used)
+      // Step 1: Local analysis (no AI tokens used) for regular searches
       const localAnalysis = geminiService.analyzeProposalSearchLocal(query);
       console.log("Local analysis:", localAnalysis);
       
@@ -683,6 +774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         results: searchResults.slice(0, 10),
         count: searchResults.length,
         query: localAnalysis.normalizedQuery,
+        futureExamDetected: false,
         suggestions: {
           themes: localAnalysis.suggestedThemes,
           examTypes: localAnalysis.suggestedExamTypes
