@@ -133,14 +133,235 @@ export class GeminiService {
     });
   }
 
-  // ULTRA-OPTIMIZED: Generate 6 repertoires in 1 request with minimal tokens
+  // Sistema de detecção de contexto educacional
+  private detectEducationalContext(query: string): string {
+    const queryLower = query.toLowerCase();
+    
+    if (queryLower.includes('enem') || queryLower.includes('exame nacional')) {
+      return 'enem';
+    }
+    if (queryLower.includes('vestibular') || queryLower.includes('entrada universidade')) {
+      return 'vestibular';
+    }
+    if (queryLower.includes('concurso') || queryLower.includes('cargo público') || queryLower.includes('servidor público')) {
+      return 'concurso_publico';
+    }
+    if (queryLower.includes('dissertação') || queryLower.includes('mestrado') || queryLower.includes('doutorado') || queryLower.includes('acadêmico')) {
+      return 'academico';
+    }
+    if (queryLower.includes('oab') || queryLower.includes('ordem dos advogados')) {
+      return 'oab';
+    }
+    
+    return 'geral';
+  }
+
+  // Sistema de detecção temática inteligente
+  private detectThematicContext(query: string): string {
+    const queryLower = query.toLowerCase();
+    
+    const thematicPatterns = {
+      'tecnologia_digital': ['tecnologia', 'digital', 'internet', 'inteligência artificial', 'ia', '5g', 'lgpd', 'privacidade', 'dados', 'algoritmo'],
+      'educacao_ensino': ['educação', 'ensino', 'escola', 'professor', 'aprendizagem', 'pedagógico', 'currículo', 'universitário'],
+      'meio_ambiente': ['meio ambiente', 'sustentabilidade', 'clima', 'aquecimento global', 'desmatamento', 'poluição', 'energia renovável', 'biodiversidade'],
+      'desigualdade_social': ['desigualdade', 'pobreza', 'exclusão', 'marginalização', 'renda', 'social', 'vulnerabilidade', 'miséria'],
+      'saude_publica': ['saúde', 'sus', 'medicina', 'epidemia', 'pandemia', 'doença', 'vacinação', 'hospitais'],
+      'violencia_seguranca': ['violência', 'segurança', 'criminalidade', 'homicídio', 'feminicídio', 'drogas', 'policial'],
+      'democracia_politica': ['democracia', 'eleições', 'política', 'governo', 'cidadania', 'participação', 'representação'],
+      'trabalho_economia': ['trabalho', 'emprego', 'desemprego', 'economia', 'renda', 'salário', 'precarização', 'reforma trabalhista'],
+      'cultura_arte': ['cultura', 'arte', 'música', 'cinema', 'literatura', 'identidade cultural', 'patrimônio'],
+      'comunicacao_midia': ['comunicação', 'mídia', 'jornalismo', 'fake news', 'redes sociais', 'informação'],
+      'direitos_humanos': ['direitos humanos', 'igualdade', 'discriminação', 'preconceito', 'racismo', 'gênero', 'lgbtqia'],
+      'urbanizacao': ['cidade', 'urbano', 'mobilidade', 'transporte', 'habitação', 'saneamento', 'periferia']
+    };
+    
+    let bestMatch = 'geral';
+    let maxScore = 0;
+    
+    for (const [theme, keywords] of Object.entries(thematicPatterns)) {
+      let score = 0;
+      for (const keyword of keywords) {
+        if (queryLower.includes(keyword)) {
+          score += keyword.split(' ').length;
+        }
+      }
+      
+      if (score > maxScore) {
+        maxScore = score;
+        bestMatch = theme;
+      }
+    }
+    
+    return bestMatch;
+  }
+
+  // Detecção de nível do usuário pela query
+  private detectUserLevelFromQuery(query: string): 'basic' | 'intermediate' | 'advanced' {
+    const queryLower = query.toLowerCase();
+    let score = 0;
+    
+    if (queryLower.includes('não sei') || queryLower.includes('me ajuda') || queryLower.includes('exemplos simples')) {
+      score -= 2;
+    }
+    
+    if (queryLower.includes('como usar') || queryLower.includes('aplicar') || queryLower.includes('desenvolver')) {
+      score += 1;
+    }
+    
+    if (queryLower.includes('multidisciplinar') || queryLower.includes('complexo') || queryLower.includes('sofisticado') || 
+        queryLower.includes('filosófico') || queryLower.includes('sociológico') || queryLower.includes('epistemológico')) {
+      score += 3;
+    }
+    
+    const words = queryLower.split(/\s+/);
+    const complexWords = words.filter(word => word.length > 8).length;
+    if (complexWords > 3) score += 2;
+    
+    if (query.length > 200) score += 1;
+    if (query.length > 400) score += 2;
+    
+    if (score >= 4) return 'advanced';
+    if (score >= 1) return 'intermediate';
+    return 'basic';
+  }
+
+  // Sistema de examples temáticos por tema e nível
+  private getThematicExamples(theme: string, context: string, level: string): string {
+    const examples = {
+      'tecnologia_digital': {
+        basic: [
+          {
+            title: "Black Mirror",
+            description: "Série que mostra os perigos da tecnologia. Use episódios como 'Nosedive' para falar sobre redes sociais viciantes ou 'USS Callister' sobre ética na programação. Ideal para argumentar sobre limites tecnológicos.",
+            type: "series", category: "technology", popularity: "very-popular", year: "2011", rating: 47,
+            keywords: ["tecnologia", "black mirror", "redes sociais", "ética digital"]
+          },
+          {
+            title: "Lei Geral de Proteção de Dados (LGPD)",
+            description: "Lei brasileira de 2020 que protege dados pessoais. Use para argumentar sobre privacidade digital, direito ao esquecimento e responsabilidade das empresas. Fundamental em temas sobre tecnologia e cidadania.",
+            type: "laws", category: "technology", popularity: "very-popular", year: "2020", rating: 46,
+            keywords: ["lgpd", "privacidade", "dados pessoais", "direitos digitais"]
+          }
+        ]
+      },
+      'educacao_ensino': {
+        basic: [
+          {
+            title: "Cidade de Deus",
+            description: "Filme que retrata a realidade de jovens na periferia do Rio. Mostra como a falta de oportunidades educacionais pode levar à criminalidade. Use para argumentar sobre importância da educação como transformação social.",
+            type: "movies", category: "education", popularity: "very-popular", year: "2002", rating: 48,
+            keywords: ["educação social", "periferia", "oportunidades", "transformação"]
+          }
+        ]
+      }
+    };
+    
+    const themeExamples = examples[theme as keyof typeof examples];
+    if (!themeExamples) {
+      return this.getGenericExamples();
+    }
+    
+    const levelExamples = themeExamples[level as keyof typeof themeExamples] || themeExamples.basic;
+    return JSON.stringify(levelExamples, null, 2);
+  }
+
+  // Examples genéricos para temas não mapeados
+  private getGenericExamples(): string {
+    return `[
+  {
+    "title": "Dom Casmurro",
+    "description": "Romance de Machado de Assis sobre ciúme e narrativa não-confiável. Use para discutir temas como relacionamentos, desconfiança e sociedade do século XIX. Ideal para argumentos sobre psicologia humana.",
+    "type": "books",
+    "category": "social",
+    "popularity": "very-popular",
+    "year": "1899",
+    "rating": 48,
+    "keywords": ["machado de assis", "ciúme", "capitu", "literatura brasileira"]
+  }
+]`;
+  }
+
+  // Construtor de prompt inteligente personalizado
+  private buildIntelligentPrompt(query: string, userFilters: any, context: any): string {
+    const { analysis, educationalContext, thematicContext, userLevel, batchSize, typeInstruction } = context;
+    
+    // Instruções de diversificação baseadas no contexto
+    const diversificationRules = this.getDiversificationRules(thematicContext, educationalContext);
+    
+    // Adaptações específicas por nível
+    const levelInstructions = this.getLevelInstructions(userLevel);
+    
+    // Examples contextuais
+    const contextualExamples = this.getThematicExamples(thematicContext, educationalContext, userLevel);
+    
+    return `BUSCA INTELIGENTE: "${query}"
+${typeInstruction}
+
+CONTEXTO DETECTADO:
+🎓 Contexto: ${educationalContext}
+🎯 Tema: ${thematicContext}
+📚 Nível: ${userLevel}
+
+${diversificationRules}
+
+${levelInstructions}
+
+REGRA ABSOLUTA: Retorne apenas obras/pessoas/leis/dados ESPECÍFICOS e REAIS, nunca categorias.
+
+EXEMPLOS CONTEXTUAIS para "${query}":
+${contextualExamples}
+
+Gere ${batchSize} repertórios específicos com INSTRUÇÕES DE USO:
+
+FORMATO OBRIGATÓRIO:
+{
+  "title": "Nome específico",
+  "description": "Descrição detalhada + COMO USAR: explicar onde aplicar na redação (tese/argumento/exemplo) + conexões temáticas",
+  "type": "tipo",
+  "category": "categoria", 
+  "popularity": "popularidade",
+  "year": "ano",
+  "rating": número,
+  "keywords": ["palavras-chave"]
+}
+
+Se não conseguir gerar títulos específicos reais, retorne array vazio [].`;
+  }
+
+  // Regras de diversificação por tema
+  private getDiversificationRules(theme: string, context: string): string {
+    const rules = {
+      'tecnologia_digital': '📱 DIVERSIFICAÇÃO TECNOLOGIA:\n• 35% Séries/Filmes (Black Mirror, Matrix, Ex Machina)\n• 30% Leis/Marcos (LGPD, Marco Civil, GDPR)\n• 20% Documentários (Dilema das Redes, Coded Bias)\n• 15% Pesquisas/Dados (dados de uso, relatórios)',
+      'educacao_ensino': '📚 DIVERSIFICAÇÃO EDUCAÇÃO:\n• 40% Leis/Políticas (LDB, PNE, FUNDEB)\n• 25% Dados/Índices (IDEB, PISA, taxa alfabetização)\n• 20% Filmes/Documentários (Escritores da Liberdade, Pro Dia Nascer Feliz)\n• 15% Livros/Autores (Paulo Freire, Darcy Ribeiro)',
+      'meio_ambiente': '🌍 DIVERSIFICAÇÃO AMBIENTAL:\n• 35% Acordos/Leis (Acordo Paris, Código Florestal)\n• 25% Dados Ambientais (desmatamento, emissões CO2)\n• 25% Documentários (Uma Verdade Inconveniente, Seaspiracy)\n• 15% Filmes (Wall-E, Avatar, Mad Max)',
+      'geral': '🎯 DIVERSIFICAÇÃO EQUILIBRADA:\n• 40% Literatura/Clássicos\n• 25% Marcos legais/Políticas\n• 20% Cinema nacional/internacional\n• 15% Dados oficiais/Pesquisas'
+    };
+    
+    return rules[theme as keyof typeof rules] || rules.geral;
+  }
+
+  // Instruções específicas por nível
+  private getLevelInstructions(level: string): string {
+    const instructions = {
+      basic: '🟢 NÍVEL BÁSICO - FOQUE EM:\n• Obras conhecidas e acessíveis\n• Explicações didáticas simples\n• Exemplos claros de como usar\n• Conectivos básicos sugeridos',
+      intermediate: '🟡 NÍVEL INTERMEDIÁRIO - FOQUE EM:\n• Misture popular com específico\n• Dados de fontes oficiais\n• Múltiplas perspectivas\n• Conectivos variados',
+      advanced: '🔴 NÍVEL AVANÇADO - FOQUE EM:\n• Repertórios sofisticados\n• Análises multidisciplinares\n• Referências acadêmicas\n• Perspectivas filosóficas/sociológicas'
+    };
+    
+    return instructions[level as keyof typeof instructions] || instructions.basic;
+  }
+
+  // SISTEMA INTELIGENTE: Repertórios contextuais e pedagógicos
   async generateRepertoiresBatch(query: string, userFilters: {
     type?: string;
     category?: string;
     popularity?: string;
   } = {}, batchSize: number = 6): Promise<any[]> {
-    // Use local analysis (0 tokens)
+    // Análise inteligente local (0 tokens)
     const analysis = this.analyzeSearchQueryLocal(query);
+    const educationalContext = this.detectEducationalContext(query);
+    const thematicContext = this.detectThematicContext(query);
+    const userLevel = this.detectUserLevelFromQuery(query);
     
     // Ultra-concise prompt - 80% fewer tokens
     const typeInstruction = userFilters.type && userFilters.type !== 'all' 
@@ -154,60 +375,15 @@ export class GeminiService {
     const allowedCategory = userFilters.category || 'education';
     const allowedPopularity = userFilters.popularity || 'popular';
 
-    // Generate few-shot examples based on query context
-    const getFewShotExamples = (query: string) => {
-      if (query.toLowerCase().includes('educação financeira')) {
-        return `[
-  {
-    "title": "Pai Rico, Pai Pobre",
-    "description": "Livro de Robert Kiyosaki que contrasta mentalidades sobre dinheiro. Ideal para argumentar sobre educação financeira desde cedo, mostrando diferenças entre ativos e passivos. Use para defender que jovens devem aprender sobre investimentos.",
-    "type": "books",
-    "category": "education",
-    "popularity": "very-popular",
-    "year": "1997",
-    "rating": 45,
-    "keywords": ["educação financeira", "kiyosaki", "investimentos", "dinheiro"]
-  },
-  {
-    "title": "O Homem Mais Rico da Babilônia",
-    "description": "George Clason ensina princípios financeiros através de parábolas antigas. Perfeito para fundamentar argumentos sobre poupança e planejamento financeiro. Use para mostrar que conceitos financeiros são universais e atemporais.",
-    "type": "books", 
-    "category": "education",
-    "popularity": "popular",
-    "year": "1926",
-    "rating": 42,
-    "keywords": ["finanças", "poupança", "babilônia", "clason"]
-  }
-]`;
-      }
-      return `[
-  {
-    "title": "Dom Casmurro",
-    "description": "Romance de Machado de Assis sobre ciúme e narrativa não-confiável. Use para discutir temas como relacionamentos, desconfiança e sociedade do século XIX. Ideal para argumentos sobre psicologia humana.",
-    "type": "books",
-    "category": "social", 
-    "popularity": "very-popular",
-    "year": "1899",
-    "rating": 48,
-    "keywords": ["machado de assis", "ciúme", "capitu", "literatura brasileira"]
-  }
-]`;
-    };
-
-    const prompt = `Query: "${query}"
-${typeInstruction}
-
-REGRA ABSOLUTA: Retorne apenas obras/pessoas/leis ESPECÍFICAS e REAIS, nunca categorias.
-
-EXEMPLOS CORRETOS baseados em "${query}":
-${getFewShotExamples(query)}
-
-Se você não conseguir gerar títulos específicos reais, retorne array vazio [].
-
-Gere ${batchSize} repertórios específicos similares ao exemplo:
-// Tipos possíveis: books, laws, movies, research, documentaries, news, data, events  
-// Categorias: social, environment, technology, education, politics
-// Popularidade: very-popular, popular, moderate`;
+    // Prompt inteligente personalizado
+    const prompt = this.buildIntelligentPrompt(query, userFilters, {
+      analysis,
+      educationalContext,
+      thematicContext,
+      userLevel,
+      batchSize,
+      typeInstruction
+    });
 
     try {
       const result = await this.model.generateContent(prompt);
