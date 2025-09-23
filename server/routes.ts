@@ -299,14 +299,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { structureName, sections, topic, additionalInstructions } = validationResult.data;
 
-      // Rate limiting check (3 essay generations per day per IP)
+      // Rate limiting check (6 essay generations per day per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 3, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 6, 1440);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '86400');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can generate 3 essays per day.", 
+          message: "Rate limit exceeded. You can generate 6 essays per day.", 
           retryAfter: 86400,
           rateLimitType: "essay_generation"
         });
@@ -943,14 +943,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = chatMessageSchema.parse(req.body);
       const { conversationId, messageId, message, section, context } = validatedData;
       
-      // Rate limiting check (15 AI chats per day per IP)
+      // Rate limiting check (7 AI chats per day per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${clientIP}`, 15, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${clientIP}`, 7, 1440);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '86400');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can make 15 AI chat requests per day.", 
+          message: "Rate limit exceeded. You can make 7 AI chat requests per day.", 
           retryAfter: 86400 
         });
       }
