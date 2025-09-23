@@ -3,7 +3,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical, GraduationCap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import jsPDF from 'jspdf';
@@ -563,6 +563,135 @@ export default function BibliotecaPage() {
               <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.propostas.length}</div>
               <div className="text-sm text-soft-gray">Propostas</div>
+            </LiquidGlassCard>
+          </div>
+        </div>
+
+        {/* Material Complementar Section */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mr-3 sm:mr-4">
+              <GraduationCap className="text-white" size={16} />
+            </div>
+            <div>
+              <h2 className="text-lg sm:text-2xl font-bold text-dark-blue">Material Complementar</h2>
+              <p className="text-xs sm:text-sm text-soft-gray">Guias e materiais educativos para aprimorar sua redação</p>
+            </div>
+          </div>
+          
+          <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {/* Guia de Estrutura Dissertativa */}
+            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer bg-gradient-to-br from-green-50/80 to-green-100/50 border-green-200/50 hover:border-green-300/70" data-testid="material-estrutura">
+              <div className="flex items-start space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FileText className="text-white" size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Guia de Estrutura Dissertativa</h3>
+                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                    Manual completo sobre introdução, desenvolvimento e conclusão. Aprenda as técnicas fundamentais da estrutura dissertativa.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-green-100 text-green-800 text-xs">Fundamental</Badge>
+                    <span className="text-xs text-gray-500">12 min de leitura</span>
+                  </div>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Conectivos e Coesão */}
+            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer bg-gradient-to-br from-blue-50/80 to-blue-100/50 border-blue-200/50 hover:border-blue-300/70" data-testid="material-conectivos">
+              <div className="flex items-start space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Target className="text-white" size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Conectivos e Coesão Textual</h3>
+                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                    Lista completa de conectivos por categoria com exemplos práticos para melhorar a fluidez do seu texto.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-blue-100 text-blue-800 text-xs">Técnico</Badge>
+                    <span className="text-xs text-gray-500">8 min de leitura</span>
+                  </div>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Repertório Cultural */}
+            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50 hover:border-purple-300/70" data-testid="material-repertorio">
+              <div className="flex items-start space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="text-white" size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Como Usar Repertório Cultural</h3>
+                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                    Estratégias para incorporar referências históricas, filosóficas e culturais de forma natural e produtiva.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-purple-100 text-purple-800 text-xs">Avançado</Badge>
+                    <span className="text-xs text-gray-500">15 min de leitura</span>
+                  </div>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Proposta de Intervenção */}
+            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer bg-gradient-to-br from-orange-50/80 to-orange-100/50 border-orange-200/50 hover:border-orange-300/70" data-testid="material-intervencao">
+              <div className="flex items-start space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Lightbulb className="text-white" size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Proposta de Intervenção Eficaz</h3>
+                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                    Guia completo para elaborar propostas viáveis, detalhadas e que respeitem os direitos humanos.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-orange-100 text-orange-800 text-xs">ENEM</Badge>
+                    <span className="text-xs text-gray-500">10 min de leitura</span>
+                  </div>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Norma Culta */}
+            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer bg-gradient-to-br from-indigo-50/80 to-indigo-100/50 border-indigo-200/50 hover:border-indigo-300/70" data-testid="material-norma">
+              <div className="flex items-start space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <PenTool className="text-white" size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Domínio da Norma Culta</h3>
+                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                    Principais regras gramaticais, concordância, regência e pontuação para redações nota máxima.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-indigo-100 text-indigo-800 text-xs">Gramática</Badge>
+                    <span className="text-xs text-gray-500">20 min de leitura</span>
+                  </div>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            {/* Análise de Redações Nota 1000 */}
+            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer bg-gradient-to-br from-amber-50/80 to-amber-100/50 border-amber-200/50 hover:border-amber-300/70" data-testid="material-analise">
+              <div className="flex items-start space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Eye className="text-white" size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Análise de Redações Nota 1000</h3>
+                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                    Estudo detalhado de redações que obtiveram nota máxima no ENEM com comentários e técnicas aplicadas.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-amber-100 text-amber-800 text-xs">Exemplos</Badge>
+                    <span className="text-xs text-gray-500">25 min de leitura</span>
+                  </div>
+                </div>
+              </div>
             </LiquidGlassCard>
           </div>
         </div>
