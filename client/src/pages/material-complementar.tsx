@@ -84,22 +84,47 @@ export default function MaterialComplementarPage() {
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <Button
+              onClick={() => setLocation('/dashboard')}
+              variant="outline"
+              size="sm"
+              className="flex items-center space-x-1 h-8 px-2 text-xs"
+              data-testid="button-back-dashboard"
+            >
+              <ArrowLeft size={14} />
+              <span>Voltar</span>
+            </Button>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center">
+                <GraduationCap className="text-white" size={14} />
+              </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Material Complementar</h1>
+            </div>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button
                 onClick={() => setLocation('/dashboard')}
                 variant="outline"
-                size="sm"
-                className="border-soft-gray/30 text-soft-gray hover:border-bright-blue hover:text-bright-blue"
+                className="flex items-center space-x-2 text-soft-gray hover:text-bright-blue border-soft-gray/30 hover:border-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
                 data-testid="button-back-dashboard"
               >
-                <ArrowLeft size={16} className="mr-2" />
-                Voltar
+                <ArrowLeft size={14} />
+                <span>Voltar</span>
               </Button>
-              <div>
-                <h1 className="text-lg sm:text-2xl font-bold text-dark-blue">Material Complementar</h1>
-                <p className="text-sm text-soft-gray">Guias educativos para aprimorar sua redação</p>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center">
+                  <GraduationCap className="text-white" size={16} />
+                </div>
+                <h1 className="text-2xl font-bold text-dark-blue">Material Complementar</h1>
               </div>
+            </div>
+            <div className="text-sm text-soft-gray">
+              Guias educativos para aprimorar sua redação
             </div>
           </div>
         </div>
