@@ -4,6 +4,17 @@ DissertAI is a comprehensive SaaS educational platform designed to revolutionize
 
 # Recent Changes
 
+- **September 23, 2025**: AI Rate Limiting Optimization - Daily Limits Implementation
+  - **Cost Optimization**: Implemented comprehensive daily rate limiting across all AI-powered features for improved cost control
+    - **Propostas**: Busca 20/dia, Geração 7/dia, Detecção de provas futuras 10/dia
+    - **Redações**: Geração 3/dia, Análise de estruturas 15/dia
+    - **Repertórios**: Busca 20/dia, Geração 6/dia
+    - **Chat com IA**: 15 conversas/dia
+    - **Correção**: Correção de redações 8/dia, Modificação de textos 15/dia
+  - **User Experience**: Updated all error messages to clearly indicate daily limits with 24-hour retry periods
+  - **Technical Implementation**: Converted all rate limiting from hourly (60 min) to daily (1440 min) windows for better user distribution
+  - **Cost Impact**: Reduced maximum user cost from R$100.20 to R$75.60 per month (25% reduction) while maintaining generous usage limits
+  - **Sustainability**: Balanced approach ensuring high-quality user experience while controlling AI API costs for long-term platform viability
 - **September 16, 2025**: AI Essay Generation Integration for "Estrutura Coringa" Feature Completed
   - **AI Essay Generation**: Implemented complete AI-powered essay generation using custom user-defined structures
     - Added `generateEssayFromStructure` function to GeminiService for structure-based essay generation
