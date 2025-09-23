@@ -650,7 +650,35 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
     }
   }
 
-  // Context-aware AI Chat with conversation memory
+  // Detectar perguntas repetidas para orientação mais eficiente
+  private detectRepeatedQuestions(userMessages: any[]): boolean {
+    if (userMessages.length < 3) return false;
+    
+    const recentMessages = userMessages.slice(-3);
+    const similarities = [];
+    
+    for (let i = 0; i < recentMessages.length - 1; i++) {
+      for (let j = i + 1; j < recentMessages.length; j++) {
+        const msg1 = recentMessages[i].content.toLowerCase();
+        const msg2 = recentMessages[j].content.toLowerCase();
+        
+        // Verificar palavras-chave similares
+        const keywords1 = msg1.split(' ').filter((word: string) => word.length > 3);
+        const keywords2 = msg2.split(' ').filter((word: string) => word.length > 3);
+        
+        const commonKeywords = keywords1.filter((word: string) => keywords2.includes(word));
+        const similarity = commonKeywords.length / Math.max(keywords1.length, keywords2.length);
+        
+        if (similarity > 0.4) {
+          similarities.push(similarity);
+        }
+      }
+    }
+    
+    return similarities.length > 0 && similarities.some(sim => sim > 0.5);
+  }
+
+  // Context-aware AI Chat with conversation memory (versão otimizada)
   async generateWithContext(
     summary: string | null,
     recentMessages: any[],
@@ -666,7 +694,7 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
         conversationContext += `CONTEXTO DA CONVERSA:\n${summary}\n\n`;
       }
       
-      // Add recent messages for immediate context
+      // Add recent messages for immediate context (otimizado para detectar padrões)
       if (recentMessages && recentMessages.length > 0) {
         conversationContext += 'MENSAGENS RECENTES:\n';
         recentMessages.slice(-6).forEach((msg, index) => {
@@ -676,6 +704,13 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
           }
         });
         conversationContext += '\n';
+        
+        // Análise de padrões na conversa
+        const userMessages = recentMessages.filter(msg => msg.type === 'user');
+        const hasRepeatedQuestions = this.detectRepeatedQuestions(userMessages);
+        if (hasRepeatedQuestions) {
+          conversationContext += 'PADRÃO DETECTADO: Usuário fazendo perguntas similares - forneça orientação mais direcionada.\n\n';
+        }
       }
       
       // Get the current user message from the last message
@@ -683,7 +718,7 @@ ${excludeIds.length > 0 ? `- EVITE repertórios similares aos já mostrados (IDs
         ? recentMessages[recentMessages.length - 1]?.content || ''
         : '';
       
-      // Build enhanced contextual prompt with conversation memory
+      // Build enhanced contextual prompt with conversation memory (usando nova versão)
       const basePrompt = this.buildContextualPrompt(currentMessage, section, context);
       
       // Combine conversation context with base prompt
@@ -908,31 +943,109 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
       'quais são',
       'me ensina',
       'explica',
-      'como funciona'
+      'como funciona',
+      'você tem algum',
+      'pode citar',
+      'me dá uma ideia',
+      'estou sem ideias',
+      'não consigo pensar',
+      'não sei o que',
+      'pode me mostrar',
+      'tem alguma sugestão'
     ];
     
     const messageLower = userMessage.toLowerCase();
     return needsExamplesPatterns.some(pattern => messageLower.includes(pattern));
   }
 
-  private detectUserLevel(context: any): 'beginner' | 'intermediate' | 'advanced' {
+  // Nova função para detectar padrões de dificuldade específicos
+  private detectStrugglingAreas(userMessage: string, context: any): string[] {
+    const struggles = [];
+    const messageLower = userMessage.toLowerCase();
+    
+    // Dificuldades com argumentação
+    if (messageLower.includes('argumento') || messageLower.includes('como defender') || messageLower.includes('como justificar')) {
+      struggles.push('argumentacao');
+    }
+    
+    // Dificuldades com exemplos
+    if (messageLower.includes('exemplo') || messageLower.includes('como usar') || messageLower.includes('política')) {
+      struggles.push('exemplificacao');
+    }
+    
+    // Dificuldades com conectivos
+    if (messageLower.includes('conectar') || messageLower.includes('ligar') || messageLower.includes('conectivo')) {
+      struggles.push('coesao');
+    }
+    
+    // Dificuldades com estrutura
+    if (messageLower.includes('estrutura') || messageLower.includes('organizar') || messageLower.includes('como começar')) {
+      struggles.push('estrutura');
+    }
+    
+    return struggles;
+  }
+
+  private detectUserLevel(context: any, conversationHistory?: any[]): 'beginner' | 'intermediate' | 'advanced' {
     let score = 0;
     
-    // Analisar qualidade da tese/ideia
-    if (context.tese && context.tese.length > 50) score += 1;
-    if (context.tese && context.tese.length > 100) score += 1;
+    // Analisar qualidade da tese/ideia (sistema aprimorado)
+    if (context.tese) {
+      if (context.tese.length > 50) score += 1;
+      if (context.tese.length > 100) score += 2;
+      if (context.tese.length > 200) score += 1;
+      
+      // Verificar especificidade da tese
+      if (/\b(deve|deveria|é necessário|é fundamental|urge)\b/i.test(context.tese)) score += 1;
+      
+      // Verificar se tem posicionamento claro
+      if (/\b(defendo que|acredito que|é evidente que|conclui-se que)\b/i.test(context.tese)) score += 1;
+    }
     
-    // Analisar parágrafos existentes
+    // Analisar parágrafos existentes com critérios mais refinados
     const paragraphs = context.paragrafos || {};
     Object.values(paragraphs).forEach((paragraph: any) => {
-      if (paragraph && paragraph.length > 80) score += 1;
-      if (paragraph && paragraph.length > 150) score += 1;
-      // Verifica conectivos sofisticados
-      if (paragraph && /\b(portanto|contudo|outrossim|ademais|destarte)\b/i.test(paragraph)) score += 1;
+      if (paragraph) {
+        // Critérios de tamanho
+        if (paragraph.length > 80) score += 1;
+        if (paragraph.length > 150) score += 1;
+        if (paragraph.length > 250) score += 1;
+        
+        // Conectivos básicos
+        if (/\b(portanto|contudo|entretanto|ademais|além disso|por isso)\b/i.test(paragraph)) score += 1;
+        
+        // Conectivos sofisticados
+        if (/\b(outrossim|destarte|não obstante|conquanto|porquanto|dessarte)\b/i.test(paragraph)) score += 2;
+        
+        // Estruturas argumentativas
+        if (/\b(em primeiro lugar|primeiramente|inicialmente|por conseguinte|em suma)\b/i.test(paragraph)) score += 1;
+        
+        // Uso de dados e evidências
+        if (/\b(segundo|de acordo com|conforme|dados do|pesquisa|estatística|\d+%)\b/i.test(paragraph)) score += 2;
+        
+        // Referências a autoridades
+        if (/\b(especialista|expert|pesquisador|sociólogo|economista|filósofo)\b/i.test(paragraph)) score += 1;
+      }
     });
     
-    if (score >= 6) return 'advanced';
-    if (score >= 3) return 'intermediate';
+    // Analisar histórico da conversa se disponível
+    if (conversationHistory && conversationHistory.length > 0) {
+      const userMessages = conversationHistory.filter(msg => msg.type === 'user');
+      const avgMessageLength = userMessages.reduce((acc, msg) => acc + msg.content.length, 0) / userMessages.length;
+      
+      if (avgMessageLength > 100) score += 1;
+      if (avgMessageLength > 200) score += 1;
+      
+      // Verificar complexidade das perguntas
+      const complexQuestions = userMessages.filter(msg => 
+        /\b(como posso|qual seria|você acha que|é possível|existe alguma forma)\b/i.test(msg.content)
+      );
+      score += Math.min(complexQuestions.length, 2);
+    }
+    
+    // Sistema de classificação aprimorado
+    if (score >= 12) return 'advanced';
+    if (score >= 6) return 'intermediate';
     return 'beginner';
   }
 
