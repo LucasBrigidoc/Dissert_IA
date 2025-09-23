@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles, BookOpen } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -1791,6 +1791,31 @@ export default function Dashboard() {
                 data-testid="button-access-biblioteca"
               >
                 Acessar Biblioteca
+              </Button>
+            </div>
+          </div>
+        </LiquidGlassCard>
+
+        {/* Material Complementar - Full Width */}
+        <LiquidGlassCard className="bg-gradient-to-br from-green-50/80 to-green-100/50 border-green-200/50" data-testid="card-material-complementar">
+          <div className="flex items-center mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <BookOpen className="text-white" size={16} />
+            </div>
+            <h4 className="font-semibold text-dark-blue">Material Complementar</h4>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-6 items-center">
+            <div className="lg:col-span-2">
+              <div className="font-medium text-dark-blue mb-2 text-lg">Guias educativos para aprimorar sua redação 📖</div>
+              <p className="text-soft-gray leading-relaxed">Acesse materiais didáticos essenciais sobre estrutura dissertativa, conectivos, repertório cultural, gramática e técnicas avançadas de escrita argumentativa.</p>
+            </div>
+            <div className="flex justify-end">
+              <Button 
+                onClick={() => setLocation('/material-complementar')}
+                className="bg-gradient-to-r from-green-500 to-green-700 text-white hover:from-green-600 hover:to-green-800 px-8 py-3"
+                data-testid="button-access-material-complementar"
+              >
+                Acessar Materiais
               </Button>
             </div>
           </div>

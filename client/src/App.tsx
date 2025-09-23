@@ -26,6 +26,7 @@ import ControladorEscrita from "@/pages/controlador-escrita";
 import Simulacao from "@/pages/simulacao";
 import { Resultado } from "@/pages/resultado";
 import Biblioteca from "@/pages/biblioteca";
+import MaterialComplementar from "@/pages/material-complementar";
 import Propostas from "@/pages/propostas";
 import MapaMental from "@/pages/mapa-mental";
 import EditStructurePage from "@/pages/edit-structure";
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/simulacao" component={Simulacao} />
       <Route path="/resultado" component={Resultado} />
       <Route path="/biblioteca" component={Biblioteca} />
+      <Route path="/material-complementar" component={MaterialComplementar} />
       <Route path="/propostas" component={Propostas} />
       <Route path="/mapa-mental" component={MapaMental} />
       <Route path="/edit-structure" component={EditStructurePage} />
