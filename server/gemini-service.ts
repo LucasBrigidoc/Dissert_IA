@@ -225,22 +225,44 @@ export class GeminiService {
     return 'basic';
   }
 
-  // Sistema de examples temáticos por tema e nível
+  // Sistema COMPLETO de examples temáticos por tema e nível  
   private getThematicExamples(theme: string, context: string, level: string): string {
     const examples = {
       'tecnologia_digital': {
         basic: [
           {
             title: "Black Mirror",
-            description: "Série que mostra os perigos da tecnologia. Use episódios como 'Nosedive' para falar sobre redes sociais viciantes ou 'USS Callister' sobre ética na programação. Ideal para argumentar sobre limites tecnológicos.",
+            description: "Série que mostra os perigos da tecnologia. COMO USAR: Cite episódios específicos como 'Nosedive' para argumentar contra dependência de redes sociais, ou 'USS Callister' para discutir ética na programação. Conecte com temas de limite tecnológico e impacto social.",
             type: "series", category: "technology", popularity: "very-popular", year: "2011", rating: 47,
             keywords: ["tecnologia", "black mirror", "redes sociais", "ética digital"]
           },
           {
             title: "Lei Geral de Proteção de Dados (LGPD)",
-            description: "Lei brasileira de 2020 que protege dados pessoais. Use para argumentar sobre privacidade digital, direito ao esquecimento e responsabilidade das empresas. Fundamental em temas sobre tecnologia e cidadania.",
+            description: "Lei brasileira de 2020 que protege dados pessoais. COMO USAR: Use na tese para defender regulamentação tech, no desenvolvimento para exemplificar avanços legislativos, ou na conclusão propondo expansão de direitos digitais.",
             type: "laws", category: "technology", popularity: "very-popular", year: "2020", rating: 46,
             keywords: ["lgpd", "privacidade", "dados pessoais", "direitos digitais"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "O Dilema das Redes",
+            description: "Documentário que expõe como algoritmos manipulam comportamento. Ex-executivos do Google e Facebook revelam técnicas de vício digital. COMO USAR: Use para argumentar sobre economia da atenção, citando depoimentos específicos de ex-funcionários para dar credibilidade ao argumento.",
+            type: "documentaries", category: "technology", popularity: "popular", year: "2020", rating: 45,
+            keywords: ["algoritmos", "manipulação", "vício digital", "big tech"]
+          },
+          {
+            title: "Marco Civil da Internet",
+            description: "Lei 12.965/2014 que estabelece direitos e deveres no uso da internet no Brasil. COMO USAR: Compare com legislações internacionais, use para defender neutralidade de rede, ou cite seus princípios ao propor novas regulamentações digitais.",
+            type: "laws", category: "technology", popularity: "popular", year: "2014", rating: 44,
+            keywords: ["marco civil", "neutralidade", "internet", "regulamentação"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Capitalismo de Vigilância (Shoshana Zuboff)",
+            description: "Obra que analisa como empresas tecnológicas extraem dados comportamentais para prever e modificar ações humanas. COMO USAR: Use conceitos como 'surplus comportamental' para análises críticas sobre autonomia individual na era digital. Conecte com questões filosóficas sobre livre-arbítrio.",
+            type: "books", category: "technology", popularity: "moderate", year: "2019", rating: 48,
+            keywords: ["capitalismo de vigilância", "zuboff", "dados comportamentais", "autonomia"]
           }
         ]
       },
@@ -248,9 +270,299 @@ export class GeminiService {
         basic: [
           {
             title: "Cidade de Deus",
-            description: "Filme que retrata a realidade de jovens na periferia do Rio. Mostra como a falta de oportunidades educacionais pode levar à criminalidade. Use para argumentar sobre importância da educação como transformação social.",
+            description: "Filme que retrata jovens na periferia carioca. COMO USAR: Contraste destinos de Buscapé (educação) vs Zé Pequeno (criminalidade) para argumentar sobre educação como ferramenta de transformação social. Use na introdução para impactar ou no desenvolvimento como exemplo concreto.",
             type: "movies", category: "education", popularity: "very-popular", year: "2002", rating: 48,
             keywords: ["educação social", "periferia", "oportunidades", "transformação"]
+          },
+          {
+            title: "Lei de Diretrizes e Bases (LDB)",
+            description: "Lei 9.394/96 que organiza a educação brasileira. COMO USAR: Cite artigos específicos sobre direito à educação gratuita para defender ampliação de acesso, ou use dados sobre educação básica obrigatória para propor políticas inclusivas.",
+            type: "laws", category: "education", popularity: "very-popular", year: "1996", rating: 45,
+            keywords: ["ldb", "educação básica", "direito educação", "estado"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "IDEB (Índice de Desenvolvimento da Educação Básica)",
+            description: "Indicador criado em 2007 que combina fluxo escolar e desempenho. Meta é alcançar 6,0 até 2021. COMO USAR: Use dados específicos (ex: Brasil tem IDEB 5,8) para mostrar desafios quantitativos da educação. Compare com outros países para contextualizar.",
+            type: "data", category: "education", popularity: "popular", year: "2007", rating: 44,
+            keywords: ["ideb", "qualidade educação", "avaliação", "metas educacionais"]
+          },
+          {
+            title: "Programa Mais Educação",
+            description: "Política de 2007 que amplia jornada escolar com atividades complementares. COMO USAR: Use como exemplo de política pública exitosa, conecte com conceito de educação integral, ou cite para propor ampliação de programas similares.",
+            type: "laws", category: "education", popularity: "popular", year: "2007", rating: 43,
+            keywords: ["educação integral", "jornada ampliada", "atividades complementares"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Pedagogia do Oprimido (Paulo Freire)",
+            description: "Obra fundamental que propõe educação libertadora baseada no diálogo e consciência crítica. COMO USAR: Use conceitos como 'educação bancária' vs 'educação problematizadora' para análises críticas do sistema educacional. Conecte com questões de emancipação social.",
+            type: "books", category: "education", popularity: "moderate", year: "1968", rating: 49,
+            keywords: ["paulo freire", "pedagogia crítica", "educação libertadora", "conscientização"]
+          }
+        ]
+      },
+      'meio_ambiente': {
+        basic: [
+          {
+            title: "Wall-E",
+            description: "Animação da Pixar sobre Terra devastada pelo consumismo. COMO USAR: Use a imagem da Terra coberta de lixo para introdução impactante sobre consumo sustentável, ou cite o contraste entre vida artificial (nave) e natural (planta) para defender preservação ambiental.",
+            type: "movies", category: "environment", popularity: "very-popular", year: "2008", rating: 47,
+            keywords: ["sustentabilidade", "consumismo", "futuro planeta", "responsabilidade ambiental"]
+          },
+          {
+            title: "Código Florestal Brasileiro",
+            description: "Lei 12.651/2012 que define regras para proteção da vegetação nativa. COMO USAR: Cite percentuais de Reserva Legal (20% Amazônia, 35% Cerrado) para mostrar legislação específica, ou use conceito de APPs para defender proteção de nascentes.",
+            type: "laws", category: "environment", popularity: "very-popular", year: "2012", rating: 45,
+            keywords: ["código florestal", "vegetação nativa", "apps", "reserva legal"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Acordo de Paris",
+            description: "Tratado internacional de 2015 que visa limitar aquecimento global a 2°C. COMO USAR: Cite metas específicas de redução de emissões para argumentar sobre responsabilidade nacional, ou compare adesão de países para mostrar cooperação internacional necessária.",
+            type: "laws", category: "environment", popularity: "popular", year: "2015", rating: 46,
+            keywords: ["mudanças climáticas", "aquecimento global", "cooperação internacional"]
+          },
+          {
+            title: "Dados INPE Desmatamento",
+            description: "Instituto Nacional de Pesquisas Espaciais monitora desmatamento em tempo real. COMO USAR: Use números específicos (ex: 2020 teve 10.851 km² desmatados na Amazônia) para dar precisão aos argumentos. Compare dados anuais para mostrar tendências.",
+            type: "data", category: "environment", popularity: "popular", year: "2020", rating: 44,
+            keywords: ["desmatamento", "amazônia", "monitoramento", "dados oficiais"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Antropoceno e Colapso Climático",
+            description: "Conceito científico que define nova era geológica marcada pela ação humana no planeta. COMO USAR: Use para análises profundas sobre responsabilidade geracional, conecte com filosofia ambiental e ética intergeracional. Ideal para redações que demandam perspectiva histórica ampla.",
+            type: "research", category: "environment", popularity: "moderate", year: "2016", rating: 47,
+            keywords: ["antropoceno", "era geológica", "impacto humano", "ética intergeracional"]
+          }
+        ]
+      },
+      'desigualdade_social': {
+        basic: [
+          {
+            title: "Cidade de Deus",
+            description: "Filme de 2002 sobre periferia carioca. COMO USAR: Contraste entre personagens que tiveram acesso à educação (Buscapé) vs aqueles sem oportunidades (Zé Pequeno) para ilustrar como desigualdade perpetua ciclos de violência.",
+            type: "movies", category: "social", popularity: "very-popular", year: "2002", rating: 48,
+            keywords: ["desigualdade", "periferia", "violência urbana", "oportunidades"]
+          },
+          {
+            title: "Auxílio Emergencial 2020",
+            description: "Programa social que transferiu R$ 321 bilhões para 68 milhões de brasileiros durante pandemia. COMO USAR: Use dados específicos para mostrar eficácia de programas de transferência de renda na redução da pobreza emergencial.",
+            type: "data", category: "social", popularity: "very-popular", year: "2020", rating: 45,
+            keywords: ["transferência de renda", "pandemia", "proteção social", "pobreza"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Coeficiente de Gini Brasil",
+            description: "Indicador que mede desigualdade de renda. Brasil tem Gini de 0,543 (2019), um dos maiores do mundo. COMO USAR: Compare com países nórdicos (Gini ~0,25) para dimensionar problema brasileiro, ou cite evolução histórica para mostrar (des)progresso social.",
+            type: "data", category: "social", popularity: "popular", year: "2019", rating: 44,
+            keywords: ["desigualdade de renda", "gini", "concentração de renda", "comparação internacional"]
+          },
+          {
+            title: "Programa Bolsa Família",
+            description: "Maior programa de transferência de renda da América Latina (2003-2021), atendendo 14 milhões de famílias. COMO USAR: Cite dados sobre redução da extrema pobreza (de 9,7% para 2,8%) para defender políticas de redistribuição de renda.",
+            type: "laws", category: "social", popularity: "popular", year: "2003", rating: 46,
+            keywords: ["bolsa família", "transferência de renda", "combate à pobreza", "condicionalidades"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Casa-Grande & Senzala (Gilberto Freyre)",
+            description: "Obra de 1933 sobre formação social brasileira e herança escravista. COMO USAR: Use conceito de 'democracia racial' como mito para análise crítica sobre persistência de desigualdades estruturais. Conecte com questões contemporâneas de racismo institucional.",
+            type: "books", category: "social", popularity: "moderate", year: "1933", rating: 47,
+            keywords: ["formação social", "escravidão", "democracia racial", "estrutural"]
+          }
+        ]
+      },
+      'saude_publica': {
+        basic: [
+          {
+            title: "SUS (Sistema Único de Saúde)",
+            description: "Sistema público de saúde brasileiro criado em 1990, um dos maiores do mundo. COMO USAR: Cite princípios da universalidade e integralidade para defender saúde como direito, ou use dados de cobertura (75% da população) para mostrar importância social.",
+            type: "laws", category: "social", popularity: "very-popular", year: "1990", rating: 48,
+            keywords: ["sus", "saúde pública", "universalidade", "sistema de saúde"]
+          },
+          {
+            title: "Oswaldo Cruz e Revolta da Vacina",
+            description: "Sanitarista brasileiro que modernizou saúde pública no início do século XX. Revolta da Vacina (1904) mostra resistência popular. COMO USAR: Use para mostrar histórico de campanhas sanitárias no Brasil, conectando com debates atuais sobre vacinação obrigatória.",
+            type: "events", category: "social", popularity: "popular", year: "1904", rating: 44,
+            keywords: ["oswaldo cruz", "revolta da vacina", "saúde pública", "vacinação"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Lei Arouca (Lei 8080/90)",
+            description: "Lei orgânica que regulamenta o SUS, estabelecendo diretrizes e princípios. COMO USAR: Cite artigos específicos sobre participação social e descentralização para defender gestão democrática da saúde, ou use princípios da integralidade para propor políticas.",
+            type: "laws", category: "social", popularity: "popular", year: "1990", rating: 45,
+            keywords: ["lei arouca", "sus", "participação social", "integralidade"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Determinantes Sociais da Saúde (OMS)",
+            description: "Conceito que analisa como condições socioeconômicas influenciam saúde das populações. COMO USAR: Use para análises multidisciplinares conectando saúde com educação, renda e habitação. Ideal para argumentos sobre necessidade de políticas intersetoriais.",
+            type: "research", category: "social", popularity: "moderate", year: "2005", rating: 46,
+            keywords: ["determinantes sociais", "oms", "saúde coletiva", "intersetorialidade"]
+          }
+        ]
+      },
+      'violencia_seguranca': {
+        basic: [
+          {
+            title: "Tropa de Elite",
+            description: "Filme de 2007 que retrata violência urbana no Rio de Janeiro. COMO USAR: Use críticas do Capitão Nascimento ao sistema para mostrar complexidade da segurança pública, ou contraste entre BOPE e polícia regular para argumentar sobre especialização vs. proximidade comunitária.",
+            type: "movies", category: "social", popularity: "very-popular", year: "2007", rating: 46,
+            keywords: ["violência urbana", "segurança pública", "rio de janeiro", "bope"]
+          },
+          {
+            title: "Lei Maria da Penha",
+            description: "Lei 11.340/2006 que cria mecanismos para coibir violência doméstica contra mulher. COMO USAR: Cite dados de redução de feminicídios pós-lei para demonstrar eficácia legislativa, ou compare com legislações internacionais para mostrar avanço brasileiro.",
+            type: "laws", category: "social", popularity: "very-popular", year: "2006", rating: 48,
+            keywords: ["maria da penha", "violência doméstica", "feminicídio", "direitos da mulher"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Atlas da Violência (IPEA)",
+            description: "Relatório anual que mapeia homicídios no Brasil. Taxa de 27,4 homicídios por 100 mil habitantes (2019). COMO USAR: Use dados específicos por região/demografia para mostrar padrões (jovens negros concentram 75% das vítimas). Compare com países desenvolvidos para dimensionar problema.",
+            type: "data", category: "social", popularity: "popular", year: "2019", rating: 45,
+            keywords: ["atlas da violência", "homicídios", "ipea", "juventude negra"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Necropolítica (Achille Mbembe)",
+            description: "Conceito que analisa como Estados exercem poder de morte sobre populações específicas. COMO USAR: Use para análises críticas sobre seletividade da violência estatal, conectando com questões de racismo estrutural e genocídio da juventude negra brasileira.",
+            type: "books", category: "social", popularity: "moderate", year: "2016", rating: 47,
+            keywords: ["necropolítica", "mbembe", "racismo estrutural", "poder de morte"]
+          }
+        ]
+      },
+      'democracia_politica': {
+        basic: [
+          {
+            title: "Constituição Federal de 1988",
+            description: "Constituição Cidadã que redemocratizou o Brasil. COMO USAR: Cite artigo 1º sobre soberania popular para defender participação cidadã, ou use princípios constitucionais para propor fortalecimento democrático. Compare com períodos autoritários para valorizar conquistas.",
+            type: "laws", category: "politics", popularity: "very-popular", year: "1988", rating: 49,
+            keywords: ["constituição 1988", "democratização", "direitos fundamentais", "cidadania"]
+          },
+          {
+            title: "Diretas Já (1983-1984)",
+            description: "Movimento que mobilizou milhões pela eleição direta para presidente. COMO USAR: Use como exemplo de mobilização popular exitosa, cite números de manifestantes (1,5 milhão em São Paulo) para mostrar poder da participação cidadã organizada.",
+            type: "events", category: "politics", popularity: "popular", year: "1984", rating: 47,
+            keywords: ["diretas já", "redemocratização", "mobilização popular", "eleições diretas"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Lei da Ficha Limpa",
+            description: "Lei 135/2010 que impede candidatura de condenados. Surgiu de iniciativa popular com 1,3 milhão de assinaturas. COMO USAR: Use como exemplo de participação cidadã efetiva na criação de políticas, cite dados sobre políticos barrados para mostrar impacto prático.",
+            type: "laws", category: "politics", popularity: "popular", year: "2010", rating: 46,
+            keywords: ["ficha limpa", "iniciativa popular", "combate à corrupção", "moralização política"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Coronelismo (Victor Nunes Leal)",
+            description: "Análise clássica sobre poder local no Brasil e persistência de práticas oligárquicas. COMO USAR: Use conceito de 'compromisso coronelista' para analisar continuidades autoritárias na democracia brasileira. Conecte com discussões sobre clientelismo contemporâneo.",
+            type: "books", category: "politics", popularity: "moderate", year: "1949", rating: 48,
+            keywords: ["coronelismo", "poder local", "oligarquia", "clientelismo"]
+          }
+        ]
+      },
+      'trabalho_economia': {
+        basic: [
+          {
+            title: "CLT (Consolidação das Leis do Trabalho)",
+            description: "Marco trabalhista de 1943 que regulamenta relações de trabalho no Brasil. COMO USAR: Cite direitos específicos (férias, 13º, FGTS) para defender proteção trabalhista, ou compare com flexibilizações recentes para mostrar tensões entre capital e trabalho.",
+            type: "laws", category: "social", popularity: "very-popular", year: "1943", rating: 47,
+            keywords: ["clt", "direitos trabalhistas", "consolidação", "proteção"]
+          },
+          {
+            title: "Tempos Modernos (Charlie Chaplin)",
+            description: "Filme de 1936 sobre desumanização do trabalho industrial. COMO USAR: Use cenas icônicas (Chaplin na engrenagem) para introduzir temas sobre alienação do trabalho, ou compare taylorismo histórico com precarização atual (uberização).",
+            type: "movies", category: "social", popularity: "very-popular", year: "1936", rating: 48,
+            keywords: ["trabalho industrial", "alienação", "chaplin", "taylorismo"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Taxa de Desemprego IBGE",
+            description: "Indicador oficial que mede população desocupada. Brasil teve 14,2% (2021), recorde histórico. COMO USAR: Compare com períodos históricos para mostrar gravidade da crise, ou use dados por demografia (jovens têm taxa maior) para propor políticas específicas.",
+            type: "data", category: "social", popularity: "popular", year: "2021", rating: 44,
+            keywords: ["desemprego", "ibge", "crise econômica", "mercado de trabalho"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Uberização do Trabalho",
+            description: "Conceito sociológico sobre precarização através de plataformas digitais. COMO USAR: Use para análises sobre 'falso empreendedorismo' e flexibilização extrema. Conecte com questões de direitos trabalhistas na economia digital e responsabilização de plataformas.",
+            type: "research", category: "social", popularity: "moderate", year: "2020", rating: 45,
+            keywords: ["uberização", "precarização", "plataformas digitais", "gig economy"]
+          }
+        ]
+      },
+      'cultura_arte': {
+        basic: [
+          {
+            title: "Villa-Lobos",
+            description: "Compositor brasileiro que fundiu música erudita com popular, criando identidade musical nacional. COMO USAR: Use como exemplo de valorização cultural brasileira, cite obras como 'Bachianas Brasileiras' para mostrar síntese entre tradições locais e universais.",
+            type: "events", category: "culture", popularity: "popular", year: "1930", rating: 46,
+            keywords: ["villa-lobos", "música brasileira", "identidade cultural", "nacionalismo"]
+          },
+          {
+            title: "Lei Rouanet",
+            description: "Lei 8.313/91 que incentiva produção cultural via renúncia fiscal. COMO USAR: Cite dados de investimento (R$ 1,2 bi/ano) para defender políticas culturais, ou use críticas sobre concentração regional para propor democratização do acesso cultural.",
+            type: "laws", category: "culture", popularity: "popular", year: "1991", rating: 44,
+            keywords: ["lei rouanet", "incentivo cultural", "renúncia fiscal", "políticas culturais"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Semana de Arte Moderna de 1922",
+            description: "Marco do modernismo brasileiro que revolucionou expressões artísticas nacionais. COMO USAR: Use conceito de 'antropofagia cultural' (Oswald de Andrade) para discutir identidade brasileira, ou cite ruptura com padrões europeus para defender originalidade cultural nacional.",
+            type: "events", category: "culture", popularity: "popular", year: "1922", rating: 47,
+            keywords: ["semana de 22", "modernismo", "antropofagia cultural", "identidade nacional"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Indústria Cultural (Adorno e Horkheimer)",
+            description: "Conceito frankfurtiano sobre massificação e mercantilização da cultura. COMO USAR: Use para análises críticas sobre padronização cultural, conecte com debates sobre streaming, algoritmos e homogeneização do gosto. Ideal para discussões sobre autonomia estética.",
+            type: "books", category: "culture", popularity: "moderate", year: "1947", rating: 48,
+            keywords: ["indústria cultural", "escola de frankfurt", "massificação", "mercantilização"]
+          }
+        ]
+      },
+      'comunicacao_midia': {
+        basic: [
+          {
+            title: "Redes Sociais e Fake News",
+            description: "Fenômeno contemporâneo de desinformação amplificada por algoritmos. COMO USAR: Cite casos específicos (eleições 2018/2022) para mostrar impacto na democracia, ou use dados sobre velocidade de propagação (fake news se espalha 6x mais rápido) para defender educação midiática.",
+            type: "research", category: "technology", popularity: "very-popular", year: "2020", rating: 45,
+            keywords: ["fake news", "desinformação", "redes sociais", "democracia"]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Marco Civil da Internet",
+            description: "Lei 12.965/2014 que estabelece princípios para internet no Brasil, incluindo neutralidade de rede. COMO USAR: Use artigos sobre liberdade de expressão vs. remoção de conteúdo para discutir limites da regulação digital, ou cite neutralidade para defender acesso igualitário à informação.",
+            type: "laws", category: "technology", popularity: "popular", year: "2014", rating: 44,
+            keywords: ["marco civil", "neutralidade de rede", "liberdade de expressão", "regulação digital"]
+          }
+        ],
+        advanced: [
+          {
+            title: "Esfera Pública (Jürgen Habermas)",
+            description: "Conceito sobre espaço democrático de debate racional entre cidadãos. COMO USAR: Use para análises sobre deterioração do debate público nas redes sociais, conecte com questões de polarização e fragmentação informacional. Ideal para propor reconstrução dialógica da democracia.",
+            type: "books", category: "social", popularity: "moderate", year: "1962", rating: 47,
+            keywords: ["esfera pública", "habermas", "debate democrático", "razão comunicativa"]
           }
         ]
       }
@@ -265,18 +577,48 @@ export class GeminiService {
     return JSON.stringify(levelExamples, null, 2);
   }
 
-  // Examples genéricos para temas não mapeados
+  // Examples genéricos robustos para temas não mapeados
   private getGenericExamples(): string {
     return `[
   {
     "title": "Dom Casmurro",
-    "description": "Romance de Machado de Assis sobre ciúme e narrativa não-confiável. Use para discutir temas como relacionamentos, desconfiança e sociedade do século XIX. Ideal para argumentos sobre psicologia humana.",
+    "description": "Romance de Machado de Assis sobre ciúme e narrativa não-confiável. COMO USAR: Use Capitu como exemplo de personagem complexa para argumentar sobre subjetividade, ou cite a ambiguidade narrativa para discutir diferentes perspectivas sobre a verdade.",
     "type": "books",
     "category": "social",
     "popularity": "very-popular",
     "year": "1899",
     "rating": 48,
     "keywords": ["machado de assis", "ciúme", "capitu", "literatura brasileira"]
+  },
+  {
+    "title": "Declaração Universal dos Direitos Humanos",
+    "description": "Marco histórico de 1948 que estabelece direitos fundamentais. COMO USAR: Cite artigo 1º (dignidade e igualdade) para defender direitos universais, ou use como referência para propor políticas inclusivas e combate à discriminação.",
+    "type": "laws",
+    "category": "social",
+    "popularity": "very-popular",
+    "year": "1948",
+    "rating": 49,
+    "keywords": ["direitos humanos", "onu", "dignidade", "igualdade"]
+  },
+  {
+    "title": "1984 - George Orwell",
+    "description": "Distopia sobre controle totalitário e manipulação da informação. COMO USAR: Use conceitos como 'Grande Irmão' para criticar vigilância excessiva, ou 'duplipensar' para discutir manipulação de narrativas e fake news.",
+    "type": "books",
+    "category": "politics",
+    "popularity": "very-popular",
+    "year": "1949",
+    "rating": 48,
+    "keywords": ["distopia", "totalitarismo", "vigilância", "manipulação"]
+  },
+  {
+    "title": "Dados COVID-19 Brasil",
+    "description": "Pandemia que causou 700+ mil mortes no Brasil, evidenciando desigualdades sociais e importância da ciência. COMO USAR: Use dados de mortalidade por classe social para argumentar sobre desigualdade na saúde, ou cite importância de políticas baseadas em evidência científica.",
+    "type": "data",
+    "category": "social",
+    "popularity": "very-popular", 
+    "year": "2020",
+    "rating": 45,
+    "keywords": ["covid-19", "pandemia", "saúde pública", "desigualdade", "ciência"]
   }
 ]`;
   }
@@ -284,6 +626,15 @@ export class GeminiService {
   // Construtor de prompt inteligente personalizado
   private buildIntelligentPrompt(query: string, userFilters: any, context: any): string {
     const { analysis, educationalContext, thematicContext, userLevel, batchSize, typeInstruction } = context;
+    
+    // CORREÇÃO CRÍTICA: Aplicar filtros do usuário no prompt
+    const categoryFilter = userFilters.category && userFilters.category !== 'all' 
+      ? `\nFILTRO CATEGORIA: Gere APENAS repertórios com "category": "${userFilters.category}"`
+      : '';
+    
+    const popularityFilter = userFilters.popularity && userFilters.popularity !== 'all' 
+      ? `\nFILTRO POPULARIDADE: Gere APENAS repertórios com "popularity": "${userFilters.popularity}"`
+      : '';
     
     // Instruções de diversificação baseadas no contexto
     const diversificationRules = this.getDiversificationRules(thematicContext, educationalContext);
@@ -295,7 +646,7 @@ export class GeminiService {
     const contextualExamples = this.getThematicExamples(thematicContext, educationalContext, userLevel);
     
     return `BUSCA INTELIGENTE: "${query}"
-${typeInstruction}
+${typeInstruction}${categoryFilter}${popularityFilter}
 
 CONTEXTO DETECTADO:
 🎓 Contexto: ${educationalContext}
@@ -307,6 +658,8 @@ ${diversificationRules}
 ${levelInstructions}
 
 REGRA ABSOLUTA: Retorne apenas obras/pessoas/leis/dados ESPECÍFICOS e REAIS, nunca categorias.
+${userFilters.category ? `IMPORTANTE: Todos os itens devem ter category="${userFilters.category}".` : ''}
+${userFilters.popularity ? `IMPORTANTE: Todos os itens devem ter popularity="${userFilters.popularity}".` : ''}
 
 EXEMPLOS CONTEXTUAIS para "${query}":
 ${contextualExamples}
@@ -317,9 +670,9 @@ FORMATO OBRIGATÓRIO:
 {
   "title": "Nome específico",
   "description": "Descrição detalhada + COMO USAR: explicar onde aplicar na redação (tese/argumento/exemplo) + conexões temáticas",
-  "type": "tipo",
-  "category": "categoria", 
-  "popularity": "popularidade",
+  "type": "${userFilters.type || 'tipo'}",
+  "category": "${userFilters.category || 'categoria'}", 
+  "popularity": "${userFilters.popularity || 'popularidade'}",
   "year": "ano",
   "rating": número,
   "keywords": ["palavras-chave"]
@@ -349,6 +702,72 @@ Se não conseguir gerar títulos específicos reais, retorne array vazio [].`;
     };
     
     return instructions[level as keyof typeof instructions] || instructions.basic;
+  }
+
+  // Sistema de pós-processamento para garantir diversificação
+  private enforceDiversificationRules(repertoires: any[], theme: string, targetDistribution: any): any[] {
+    if (repertoires.length === 0) return repertoires;
+    
+    // Definir distribuição ideal por tema
+    const themeDistributions = {
+      'tecnologia_digital': { 'series': 35, 'laws': 30, 'documentaries': 20, 'data': 15 },
+      'educacao_ensino': { 'laws': 40, 'data': 25, 'movies': 20, 'books': 15 },
+      'meio_ambiente': { 'laws': 35, 'data': 25, 'documentaries': 25, 'movies': 15 },
+      'geral': { 'books': 40, 'laws': 25, 'movies': 20, 'data': 15 }
+    };
+    
+    const idealDistribution = themeDistributions[theme as keyof typeof themeDistributions] || themeDistributions.geral;
+    const totalCount = repertoires.length;
+    
+    // Calcular quantidades ideais
+    const idealCounts: any = {};
+    for (const [type, percentage] of Object.entries(idealDistribution)) {
+      idealCounts[type] = Math.round((totalCount * percentage) / 100);
+    }
+    
+    // Agrupar repertórios por tipo
+    const byType: any = {};
+    repertoires.forEach(rep => {
+      const type = rep.type || 'books';
+      if (!byType[type]) byType[type] = [];
+      byType[type].push(rep);
+    });
+    
+    // Balancear conforme distribuição ideal
+    const balanced: any[] = [];
+    for (const [type, idealCount] of Object.entries(idealCounts)) {
+      const available = byType[type] || [];
+      const toTake = Math.min(idealCount as number, available.length);
+      
+      // Pegar os melhores por rating
+      const selected = available
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        .slice(0, toTake);
+      
+      balanced.push(...selected);
+      
+      // Remover dos disponíveis
+      if (byType[type]) {
+        byType[type] = byType[type].filter((rep: any) => !selected.includes(rep));
+      }
+    }
+    
+    // Completar com repertórios restantes se necessário
+    const remaining: any[] = [];
+    for (const typeArray of Object.values(byType)) {
+      remaining.push(...(typeArray as any[]));
+    }
+    
+    // Adicionar os melhores restantes até completar o total
+    const stillNeeded = totalCount - balanced.length;
+    if (stillNeeded > 0) {
+      const bestRemaining = remaining
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        .slice(0, stillNeeded);
+      balanced.push(...bestRemaining);
+    }
+    
+    return balanced.slice(0, totalCount);
   }
 
   // SISTEMA INTELIGENTE: Repertórios contextuais e pedagógicos
@@ -469,6 +888,37 @@ Se não conseguir gerar títulos específicos reais, retorne array vazio [].`;
         }
         
         console.log(`✅ Successfully parsed ${repertoires.length} repertoires from AI`);
+        
+        // CORREÇÃO CRÍTICA: Aplicar filtros do usuário rigorosamente
+        if (repertoires.length > 0) {
+          const beforeUserFilters = repertoires.length;
+          
+          // Filtrar por tipo se especificado
+          if (userFilters.type && userFilters.type !== 'all') {
+            repertoires = repertoires.filter(rep => rep.type === userFilters.type);
+          }
+          
+          // Filtrar por categoria se especificada
+          if (userFilters.category && userFilters.category !== 'all') {
+            repertoires = repertoires.filter(rep => rep.category === userFilters.category);
+          }
+          
+          // Filtrar por popularidade se especificada
+          if (userFilters.popularity && userFilters.popularity !== 'all') {
+            repertoires = repertoires.filter(rep => rep.popularity === userFilters.popularity);
+          }
+          
+          if (beforeUserFilters > repertoires.length) {
+            console.log(`🔧 User filters applied: ${beforeUserFilters} → ${repertoires.length} repertoires (removed ${beforeUserFilters - repertoires.length} non-matching)`);
+          }
+        }
+        
+        // APLICAR DIVERSIFICAÇÃO: Garantir distribuição equilibrada (apenas se não há filtro de tipo específico)
+        if (repertoires.length > 0 && (!userFilters.type || userFilters.type === 'all')) {
+          const beforeDiversification = repertoires.length;
+          repertoires = this.enforceDiversificationRules(repertoires, thematicContext, {});
+          console.log(`🎯 Diversification enforced: ${beforeDiversification} → ${repertoires.length} repertoires balanced`);
+        }
         
       } catch (parseError: any) {
         console.log("JSON parsing failed, using fallback:", parseError?.message || parseError);
