@@ -658,7 +658,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       const aiResult: TextModificationResult = {
         modifiedText,
         modificationType: type as TextModificationType,
-        source: 'ai',
+        source: 'optimized_ai',
         tokensUsed: optimizedTokens
       };
 
@@ -697,6 +697,201 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
         this.cache.delete(key);
       }
     }
+  }
+
+  // Essay correction with detailed analysis
+  async correctEssay(essayText: string, topic: string, examType: string = 'ENEM'): Promise<any> {
+    if (!this.hasApiKey || !this.model) {
+      // Fallback correction without AI
+      return this.getFallbackEssayCorrection(essayText, topic, examType);
+    }
+
+    try {
+      // Generate cache key for essay correction
+      const cacheKey = `essay_correction_${createHash('md5').update(`${essayText}_${topic}_${examType}`).digest('hex').substring(0, 16)}`;
+      
+      // Check cache first
+      const cached = this.cache.get(cacheKey);
+      if (cached && (Date.now() - cached.timestamp) < this.CACHE_TTL) {
+        return { ...cached.result, source: 'cache' };
+      }
+
+      // Build optimized correction prompt
+      const correctionPrompt = this.buildEssayCorrectionPrompt(essayText, topic, examType);
+      
+      console.log(`🎯 Correcting essay with Gemini AI (${examType} - ${topic})`);
+      
+      // Execute AI correction
+      const result = await this.model.generateContent(correctionPrompt);
+      const response = result.response.text();
+      
+      // Parse AI response
+      const correction = this.parseEssayCorrection(response, essayText);
+      
+      // Cache the result
+      this.cache.set(cacheKey, {
+        result: correction,
+        timestamp: Date.now()
+      });
+      
+      console.log(`✅ Essay corrected successfully (Score: ${correction.totalScore})`);
+      return correction;
+      
+    } catch (error) {
+      console.error("Error in essay correction:", error);
+      return this.getFallbackEssayCorrection(essayText, topic, examType);
+    }
+  }
+
+  private buildEssayCorrectionPrompt(essayText: string, topic: string, examType: string): string {
+    const competencies = examType === 'ENEM' ? [
+      "Competência 1: Demonstrar domínio da modalidade escrita formal da língua portuguesa (0-200 pontos)",
+      "Competência 2: Compreender a proposta de redação e aplicar conceitos das várias áreas de conhecimento (0-200 pontos)", 
+      "Competência 3: Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos (0-200 pontos)",
+      "Competência 4: Demonstrar conhecimento dos mecanismos linguísticos necessários para argumentação (0-200 pontos)",
+      "Competência 5: Elaborar proposta de intervenção para o problema abordado (0-200 pontos)"
+    ] : [
+      "Competência 1: Adequação ao tema e ao tipo textual (0-250 pontos)",
+      "Competência 2: Organização textual e coerência (0-250 pontos)",
+      "Competência 3: Argumentação e desenvolvimento (0-250 pontos)",
+      "Competência 4: Domínio da norma culta e coesão (0-250 pontos)"
+    ];
+
+    return `Você é um corretor profissional especializado em redações de ${examType}. Analise esta redação de forma detalhada e profissional.
+
+TEMA: ${topic}
+TIPO DE EXAME: ${examType}
+
+REDAÇÃO A SER CORRIGIDA:
+"${essayText}"
+
+CRITÉRIOS DE CORREÇÃO ${examType}:
+${competencies.join('\n')}
+
+Forneça uma correção completa no seguinte formato JSON:
+
+{
+  "totalScore": [nota total de 0-1000],
+  "overallFeedback": "[feedback geral em 1-2 frases]",
+  "competencies": [
+    {
+      "name": "[nome da competência]",
+      "score": [pontuação obtida],
+      "maxScore": [pontuação máxima],
+      "criteria": "[critério avaliado]",
+      "feedback": "[feedback específico]"
+    }
+  ],
+  "strengths": ["[ponto forte 1]", "[ponto forte 2]", "[ponto forte 3]"],
+  "improvements": ["[melhoria 1]", "[melhoria 2]", "[melhoria 3]"],
+  "detailedAnalysis": "[análise detalhada da redação, estrutura, argumentação e linguagem]",
+  "recommendation": "[recomendação do professor para melhorar]",
+  "statistics": {
+    "wordCount": ${essayText.split(/\s+/).length},
+    "averageWordsPerSentence": [média de palavras por frase],
+    "readingTime": "[tempo estimado de leitura]"
+  }
+}
+
+INSTRUÇÕES ESPECÍFICAS:
+- Seja rigoroso mas construtivo na correção
+- Considere o nível adequado para ${examType}
+- Forneça feedback específico e acionável
+- Use linguagem profissional mas acessível
+- Destaque tanto pontos fortes quanto áreas de melhoria
+- Responda APENAS com o JSON válido, sem texto adicional`;
+  }
+
+  private parseEssayCorrection(response: string, essayText: string): any {
+    try {
+      // Clean response to extract JSON
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error("No JSON found in AI response");
+      }
+      
+      const jsonStr = jsonMatch[0];
+      const parsed = JSON.parse(jsonStr);
+      
+      // Validate and ensure required fields
+      const correction = {
+        totalScore: parsed.totalScore || 600,
+        overallFeedback: parsed.overallFeedback || "Redação analisada com critérios profissionais.",
+        competencies: parsed.competencies || [],
+        strengths: parsed.strengths || [],
+        improvements: parsed.improvements || [],
+        detailedAnalysis: parsed.detailedAnalysis || "Análise detalhada da estrutura, argumentação e linguagem.",
+        recommendation: parsed.recommendation || "Continue praticando para aprimorar sua escrita.",
+        statistics: {
+          wordCount: essayText.split(/\s+/).length,
+          averageWordsPerSentence: parsed.statistics?.averageWordsPerSentence || Math.round(essayText.split(/\s+/).length / essayText.split(/[.!?]+/).length),
+          readingTime: parsed.statistics?.readingTime || `${Math.ceil(essayText.split(/\s+/).length / 200)} min`
+        }
+      };
+      
+      return correction;
+      
+    } catch (error) {
+      console.error("Error parsing essay correction response:", error);
+      return this.getFallbackEssayCorrection(essayText, "", "");
+    }
+  }
+
+  private getFallbackEssayCorrection(essayText: string, topic: string, examType: string): any {
+    const wordCount = essayText.split(/\s+/).length;
+    const sentences = essayText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const avgWordsPerSentence = Math.round(wordCount / sentences.length) || 15;
+    
+    // Generate a reasonable score based on text length and structure
+    const baseScore = Math.min(800, Math.max(400, wordCount * 2.5));
+    
+    const competencies = examType === 'ENEM' ? [
+      { name: "Domínio da escrita formal", score: Math.round(baseScore * 0.18), maxScore: 200, criteria: "Modalidade escrita formal da língua", feedback: "Mantenha atenção à norma culta e evite marcas de oralidade." },
+      { name: "Compreensão da proposta", score: Math.round(baseScore * 0.19), maxScore: 200, criteria: "Compreensão do tema e aplicação de conhecimentos", feedback: "Demonstre conhecimento interdisciplinar sobre o tema." },
+      { name: "Organização das ideias", score: Math.round(baseScore * 0.21), maxScore: 200, criteria: "Seleção e organização de argumentos", feedback: "Organize melhor a progressão das ideias e argumentos." },
+      { name: "Mecanismos linguísticos", score: Math.round(baseScore * 0.20), maxScore: 200, criteria: "Articulação de argumentos e coesão", feedback: "Use conectivos variados para melhor articulação." },
+      { name: "Proposta de intervenção", score: Math.round(baseScore * 0.22), maxScore: 200, criteria: "Elaboração de proposta detalhada", feedback: "Detalhe mais sua proposta com agente, ação, meio e finalidade." }
+    ] : [
+      { name: "Adequação ao tema", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Adequação temática e textual", feedback: "Mantenha foco no tema e no gênero dissertativo-argumentativo." },
+      { name: "Organização textual", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Estrutura e coerência", feedback: "Organize melhor a estrutura com introdução, desenvolvimento e conclusão." },
+      { name: "Argumentação", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Desenvolvimento argumentativo", feedback: "Desenvolva argumentos mais consistentes e persuasivos." },
+      { name: "Domínio da norma culta", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Correção gramatical e coesão", feedback: "Revise aspectos gramaticais e conectivos de coesão." }
+    ];
+
+    return {
+      totalScore: Math.round(baseScore),
+      overallFeedback: wordCount < 150 
+        ? "Redação muito curta. Desenvolva mais seus argumentos para atingir o mínimo esperado." 
+        : wordCount > 400 
+          ? "Boa extensão da redação. Foque na qualidade dos argumentos e estrutura."
+          : "Redação com extensão adequada. Continue desenvolvendo argumentação e estrutura.",
+      competencies,
+      strengths: [
+        wordCount >= 200 ? "Extensão adequada do texto" : "Tentativa de desenvolvimento do tema",
+        sentences.length >= 8 ? "Variação nas estruturas frasais" : "Uso de períodos organizados",
+        "Tentativa de estruturação dissertativa"
+      ],
+      improvements: [
+        wordCount < 200 ? "Desenvolva mais os argumentos e exemplos" : "Aprofunde a argumentação com repertórios específicos",
+        "Revise aspectos gramaticais e ortográficos",
+        examType === 'ENEM' ? "Elabore proposta de intervenção mais detalhada" : "Fortaleça a conclusão argumentativa"
+      ],
+      detailedAnalysis: `Redação de ${wordCount} palavras com estrutura ${sentences.length <= 6 ? 'básica' : 'adequada'}. ${
+        wordCount < 150 ? 'Texto muito curto, necessita maior desenvolvimento. ' : ''
+      }${
+        avgWordsPerSentence < 10 ? 'Períodos muito curtos, varie a construção frasal. ' : 
+        avgWordsPerSentence > 25 ? 'Períodos longos, cuidado com a clareza. ' : 'Períodos com extensão adequada. '
+      }Continue praticando a estrutura dissertativa-argumentativa.`,
+      recommendation: wordCount < 200 
+        ? "Foque em desenvolver mais seus argumentos. Busque atingir pelo menos 300 palavras com exemplos e repertórios socioculturais."
+        : "Sua redação está no caminho certo. Trabalhe na qualidade da argumentação e na correção linguística para pontuações mais altas.",
+      statistics: {
+        wordCount,
+        averageWordsPerSentence: avgWordsPerSentence,
+        readingTime: `${Math.ceil(wordCount / 200)} min`
+      },
+      source: 'fallback'
+    };
   }
 }
 

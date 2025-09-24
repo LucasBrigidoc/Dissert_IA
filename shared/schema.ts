@@ -354,7 +354,7 @@ export const textModificationConfigSchema = z.object({
 export const textModificationResultSchema = z.object({
   modifiedText: z.string(),
   modificationType: textModificationTypeSchema,
-  source: z.enum(["ai", "cache", "fallback"]),
+  source: z.enum(["cache", "optimized_ai", "fallback", "fallback_error"]),
   tokensUsed: z.number().optional(),
 });
 
