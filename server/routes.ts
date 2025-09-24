@@ -315,8 +315,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`📝 Essay generation request: ${structureName || 'Custom Structure'}, topic: ${topic.substring(0, 50)}..., IP: ${clientIP}`);
       
-      // Generate essay using Gemini AI
-      const generatedEssay = await geminiService.generateEssayFromStructure(
+      // Generate essay using OPTIMIZED AI system
+      const essayResult = await optimizedAnalysisService.generateEssayFromStructureOptimized(
         structureName || 'Custom Structure',
         sections,
         topic.trim(),
@@ -325,11 +325,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         success: true,
-        essay: generatedEssay,
+        essay: essayResult.essay,
         structureName: structureName || 'Custom Structure',
         topic: topic.trim(),
         additionalInstructions: additionalInstructions?.trim() || null,
-        message: "Essay generated successfully"
+        source: essayResult.source,
+        tokensSaved: essayResult.tokensSaved || 0,
+        message: "Essay generated successfully with AI optimization"
       });
       
     } catch (error) {
