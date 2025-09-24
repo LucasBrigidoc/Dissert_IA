@@ -1006,8 +1006,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const messages = Array.isArray(conversation.messages) ? conversation.messages : [];
       const recentMessages = messages.slice(-12);
       
-      // Generate AI response with conversation context
-      const aiResponse = await geminiService.generateWithContext(
+      // Generate AI response with OPTIMIZED conversation context
+      const aiResult = await optimizedAnalysisService.generateWithContextOptimized(
         conversation.summary,
         recentMessages,
         section,
@@ -1018,7 +1018,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const aiMessage = {
         id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'ai' as const,
-        content: aiResponse,
+        content: aiResult.response,
         section,
         timestamp: new Date()
       };
@@ -1044,8 +1044,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         conversationId: conversation.id,
-        response: aiResponse,
+        response: aiResult.response,
         section,
+        source: aiResult.source,
+        tokensSaved: aiResult.tokensSaved || 0,
         timestamp: new Date().toISOString()
       });
       
