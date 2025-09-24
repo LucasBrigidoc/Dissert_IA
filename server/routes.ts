@@ -3,7 +3,6 @@ import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
 import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema } from "@shared/schema";
-import { geminiService } from "./gemini-service";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
