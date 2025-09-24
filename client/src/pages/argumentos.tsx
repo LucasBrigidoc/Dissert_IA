@@ -149,6 +149,21 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
     setBackUrl(detectedUrl);
   }, []);
 
+  // Salvar automaticamente dados da conversa no localStorage para o visualizador
+  useEffect(() => {
+    if (chatState.messages.length > 1) { // Só salvar se houver conversa real (mais que a mensagem de boas-vindas)
+      const conversationData = {
+        conversationId: chatState.conversationId || 'session-' + Date.now(),
+        messages: chatState.messages,
+        currentSection: chatState.currentSection,
+        brainstormData: brainstormData,
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem('conversationData', JSON.stringify(conversationData));
+    }
+  }, [chatState.messages, chatState.currentSection, brainstormData]);
+
   // Mutation para enviar mensagem para a IA
   const sendMessageMutation = useMutation({
     mutationFn: async (data: {conversationId?: string | null, messageId: string, message: string, section: string, context: any}) => {
@@ -604,21 +619,18 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
            brainstormData.paragrafos.conclusao.trim() !== '';
   };
 
-  // Criar mapa mental em nova tela
-  const handleCreateMindMap = () => {
-    if (!isEssayComplete()) {
-      return;
-    }
-    
-    // Salvar dados atuais no localStorage para passar para a nova tela
-    localStorage.setItem('mindMapData', JSON.stringify({
-      tema: brainstormData.tema,
-      tese: brainstormData.tese,
-      paragrafos: brainstormData.paragrafos,
+  // Ver conversa organizada no visualizador
+  const handleViewConversation = () => {
+    // Salvar dados da conversa atual para o visualizador
+    const conversationData = {
+      conversationId: chatState.conversationId || 'session-' + Date.now(),
+      messages: chatState.messages,
+      currentSection: chatState.currentSection,
+      brainstormData: brainstormData,
       timestamp: new Date().toISOString()
-    }));
+    };
     
-    // Navegar para tela do mapa mental
+    localStorage.setItem('conversationData', JSON.stringify(conversationData));
     window.location.href = '/mapa-mental';
   };
 
@@ -876,17 +888,17 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 <h3 className="text-base font-semibold text-dark-blue">Preview da Estrutura</h3>
               </div>
               <Button 
-                onClick={handleCreateMindMap}
-                disabled={!isEssayComplete()}
+                onClick={handleViewConversation}
+                disabled={chatState.messages.length <= 1}
                 className={`text-sm ${
-                  isEssayComplete() 
+                  chatState.messages.length > 1
                     ? "bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue" 
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 } px-4 py-2.5`}
-                data-testid="button-create-mindmap"
+                data-testid="button-view-conversation"
               >
                 <Map className="mr-2" size={16} />
-                {isEssayComplete() ? "Criar Mapa Mental" : "Aguardando Conclusão"}
+                {chatState.messages.length > 1 ? "Ver Conversa" : "Inicie uma Conversa"}
               </Button>
             </div>
             

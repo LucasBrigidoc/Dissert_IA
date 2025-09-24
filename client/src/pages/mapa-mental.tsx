@@ -1,24 +1,35 @@
 import { useState, useEffect } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, Map, BookOpen, Home, RefreshCw, Download } from "lucide-react";
+import { ArrowLeft, Save, MessageSquare, BookOpen, Home, RefreshCw, User, Bot, Clock, Target } from "lucide-react";
 import { useLocation } from "wouter";
 
-interface MindMapData {
-  tema: string;
-  tese: string;
-  paragrafos: {
-    introducao: string;
-    desenvolvimento1: string;
-    desenvolvimento2: string;
-    conclusao: string;
+interface ConversationData {
+  conversationId: string;
+  messages: Array<{
+    id: string;
+    type: 'user' | 'ai';
+    content: string;
+    section?: string;
+    timestamp: Date;
+  }>;
+  currentSection: string;
+  brainstormData: {
+    tema: string;
+    tese: string;
+    paragrafos: {
+      introducao: string;
+      desenvolvimento1: string;
+      desenvolvimento2: string;
+      conclusao: string;
+    };
   };
   timestamp: string;
 }
 
-export default function MapaMental() {
+export default function VisualizadorConversa() {
   const [location, setLocation] = useLocation();
-  const [mindMapData, setMindMapData] = useState<MindMapData | null>(null);
+  const [conversationData, setConversationData] = useState<ConversationData | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
@@ -28,19 +39,22 @@ export default function MapaMental() {
   }, []);
 
   useEffect(() => {
-    // Carregar dados do localStorage
-    const savedData = localStorage.getItem('mindMapData');
-    if (savedData) {
+    // Carregar dados da conversa do localStorage
+    const savedChatData = localStorage.getItem('conversationData');
+    if (savedChatData) {
       try {
-        const parsedData = JSON.parse(savedData);
-        setMindMapData(parsedData);
+        const parsedData = JSON.parse(savedChatData);
+        // Converter timestamps de string para Date
+        parsedData.messages = parsedData.messages?.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        })) || [];
+        setConversationData(parsedData);
       } catch (error) {
-        console.error('Erro ao carregar dados do mapa mental:', error);
-        // Redirecionar para argumentos se não houver dados
+        console.error('Erro ao carregar dados da conversa:', error);
         setLocation('/argumentos');
       }
     } else {
-      // Redirecionar para argumentos se não houver dados
       setLocation('/argumentos');
     }
   }, [setLocation]);
@@ -70,18 +84,46 @@ export default function MapaMental() {
     setLocation('/argumentos');
   };
 
-  // Criar novo mapa mental (limpar dados e voltar)
+  // Criar nova conversa (limpar dados e voltar)
   const handleCreateNew = () => {
-    localStorage.removeItem('mindMapData');
+    localStorage.removeItem('conversationData');
     setLocation('/argumentos');
   };
 
-  if (!mindMapData) {
+  // Função para obter ícone da seção
+  const getSectionIcon = (section: string) => {
+    const icons: Record<string, string> = {
+      tema: '🎯',
+      tese: '💡', 
+      introducao: '📝',
+      desenvolvimento1: '🔍',
+      desenvolvimento2: '📊',
+      conclusao: '✅',
+      finalizacao: '🎉'
+    };
+    return icons[section] || '💬';
+  };
+
+  // Função para obter nome da seção
+  const getSectionName = (section: string) => {
+    const names: Record<string, string> = {
+      tema: 'Desenvolvimento do Tema',
+      tese: 'Construção da Tese',
+      introducao: 'Introdução',
+      desenvolvimento1: 'Primeiro Desenvolvimento',
+      desenvolvimento2: 'Segundo Desenvolvimento', 
+      conclusao: 'Conclusão',
+      finalizacao: 'Finalização'
+    };
+    return names[section] || 'Conversa Geral';
+  };
+
+  if (!conversationData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-bright-blue mx-auto mb-4"></div>
-          <p className="text-soft-gray">Carregando mapa mental...</p>
+          <p className="text-soft-gray">Carregando conversa...</p>
         </div>
       </div>
     );
@@ -104,9 +146,9 @@ export default function MapaMental() {
               </button>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Map className="text-white" size={16} />
+                  <MessageSquare className="text-white" size={16} />
                 </div>
-                <h1 className="text-2xl font-bold text-dark-blue">Mapa Mental da Redação</h1>
+                <h1 className="text-2xl font-bold text-dark-blue">Visualizador de Conversa</h1>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -144,91 +186,135 @@ export default function MapaMental() {
       <div className="container mx-auto px-4 sm:px-6 py-4 pt-24">
         <div className="space-y-6">
           
-          {/* Mapa Mental Visualização */}
+          {/* Resumo da Conversa */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="space-y-8">
+            <div className="space-y-6">
               
-              {/* Centro - Tema Principal */}
-              {mindMapData.tema && (
-                <div className="text-center">
-                  <div className="inline-block bg-gradient-to-r from-bright-blue to-dark-blue text-white px-8 py-4 rounded-full text-xl font-bold shadow-lg">
-                    {mindMapData.tema}
+              {/* Header da Conversa */}
+              <div className="text-center border-b border-bright-blue/10 pb-6">
+                <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 px-6 py-3 rounded-full">
+                  <MessageSquare className="text-bright-blue" size={20} />
+                  <span className="text-lg font-bold text-dark-blue">
+                    {getSectionName(conversationData.currentSection)}
+                  </span>
+                  <span className="text-2xl">{getSectionIcon(conversationData.currentSection)}</span>
+                </div>
+                <div className="mt-2 text-sm text-soft-gray">
+                  {conversationData.messages.length} mensagens trocadas
+                </div>
+              </div>
+
+              {/* Timeline da Conversa */}
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {conversationData.messages.map((message, index) => (
+                  <div key={message.id} className={`flex ${
+                    message.type === 'user' ? 'justify-end' : 'justify-start'
+                  }`}>
+                    <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                      message.type === 'user' 
+                        ? 'bg-gradient-to-r from-bright-blue to-dark-blue text-white'
+                        : 'bg-gradient-to-r from-gray-50 to-gray-100 text-dark-blue border border-gray-200'
+                    }`}>
+                      <div className="flex items-center space-x-2 mb-2">
+                        {message.type === 'user' ? (
+                          <User size={14} className="text-white/80" />
+                        ) : (
+                          <Bot size={14} className="text-bright-blue" />
+                        )}
+                        <span className={`text-xs font-medium ${
+                          message.type === 'user' ? 'text-white/80' : 'text-soft-gray'
+                        }`}>
+                          {message.type === 'user' ? 'Você' : 'IA Assistant'}
+                        </span>
+                        <Clock size={12} className={message.type === 'user' ? 'text-white/60' : 'text-soft-gray/60'} />
+                        <span className={`text-xs ${
+                          message.type === 'user' ? 'text-white/60' : 'text-soft-gray/60'
+                        }`}>
+                          {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <div className={`text-sm leading-relaxed ${
+                        message.type === 'user' ? 'text-white' : 'text-dark-blue'
+                      }`}>
+                        {message.content}
+                      </div>
+                      {message.section && (
+                        <div className={`mt-2 text-xs px-2 py-1 rounded-full inline-block ${
+                          message.type === 'user' 
+                            ? 'bg-white/20 text-white/80'
+                            : 'bg-bright-blue/10 text-bright-blue'
+                        }`}>
+                          {getSectionIcon(message.section)} {getSectionName(message.section)}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="mt-2 text-sm text-soft-gray">Tema Central</div>
+                ))}
+              </div>
+
+              {/* Progresso Construído */}
+              {conversationData.brainstormData && (
+                <div className="border-t border-bright-blue/10 pt-6">
+                  <h3 className="text-lg font-bold text-dark-blue mb-4 text-center">
+                    🎯 Progresso da Redação
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    {/* Tema */}
+                    {conversationData.brainstormData.tema && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="text-sm font-semibold text-blue-700 mb-2">🎯 Tema</div>
+                        <div className="text-sm text-dark-blue">{conversationData.brainstormData.tema}</div>
+                      </div>
+                    )}
+                    
+                    {/* Tese */}
+                    {conversationData.brainstormData.tese && (
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <div className="text-sm font-semibold text-purple-700 mb-2">💡 Tese</div>
+                        <div className="text-sm text-dark-blue">{conversationData.brainstormData.tese}</div>
+                      </div>
+                    )}
+                    
+                    {/* Introdução */}
+                    {conversationData.brainstormData.paragrafos.introducao && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div className="text-sm font-semibold text-green-700 mb-2">📝 Introdução</div>
+                        <div className="text-sm text-dark-blue">{conversationData.brainstormData.paragrafos.introducao}</div>
+                      </div>
+                    )}
+                    
+                    {/* Desenvolvimento 1 */}
+                    {conversationData.brainstormData.paragrafos.desenvolvimento1 && (
+                      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <div className="text-sm font-semibold text-orange-700 mb-2">🔍 Desenvolvimento I</div>
+                        <div className="text-sm text-dark-blue">{conversationData.brainstormData.paragrafos.desenvolvimento1}</div>
+                      </div>
+                    )}
+                    
+                    {/* Desenvolvimento 2 */}
+                    {conversationData.brainstormData.paragrafos.desenvolvimento2 && (
+                      <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                        <div className="text-sm font-semibold text-indigo-700 mb-2">📊 Desenvolvimento II</div>
+                        <div className="text-sm text-dark-blue">{conversationData.brainstormData.paragrafos.desenvolvimento2}</div>
+                      </div>
+                    )}
+                    
+                    {/* Conclusão */}
+                    {conversationData.brainstormData.paragrafos.conclusao && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 md:col-span-2">
+                        <div className="text-sm font-semibold text-red-700 mb-2">✅ Conclusão</div>
+                        <div className="text-sm text-dark-blue">{conversationData.brainstormData.paragrafos.conclusao}</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
-              {/* Tese Principal */}
-              {mindMapData.tese && (
-                <div className="max-w-4xl mx-auto">
-                  <div className="bg-bright-blue/10 border-2 border-bright-blue/30 rounded-xl p-6 text-center">
-                    <div className="text-sm font-bold text-bright-blue mb-2 uppercase tracking-wide">Tese Principal</div>
-                    <div className="text-lg text-dark-blue font-medium leading-relaxed">{mindMapData.tese}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Conectores Visuais */}
-              <div className="flex justify-center">
-                <div className="w-px h-8 bg-gradient-to-b from-bright-blue/50 to-transparent"></div>
-              </div>
-
-              {/* Estrutura dos Parágrafos - Layout em Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-                
-                {/* Introdução */}
-                {mindMapData.paragrafos.introducao && (
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-xl p-5 relative">
-                    <div className="absolute -top-3 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      1. INTRODUÇÃO
-                    </div>
-                    <div className="mt-2 text-sm text-dark-blue leading-relaxed">
-                      {mindMapData.paragrafos.introducao}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Desenvolvimento I */}
-                {mindMapData.paragrafos.desenvolvimento1 && (
-                  <div className="bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-xl p-5 relative">
-                    <div className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      2. DESENVOLVIMENTO I
-                    </div>
-                    <div className="mt-2 text-sm text-dark-blue leading-relaxed">
-                      {mindMapData.paragrafos.desenvolvimento1}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Desenvolvimento II */}
-                {mindMapData.paragrafos.desenvolvimento2 && (
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200/50 rounded-xl p-5 relative">
-                    <div className="absolute -top-3 left-4 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      3. DESENVOLVIMENTO II
-                    </div>
-                    <div className="mt-2 text-sm text-dark-blue leading-relaxed">
-                      {mindMapData.paragrafos.desenvolvimento2}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Conclusão */}
-                {mindMapData.paragrafos.conclusao && (
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200/50 rounded-xl p-5 relative lg:col-span-2">
-                    <div className="absolute -top-3 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      4. CONCLUSÃO
-                    </div>
-                    <div className="mt-2 text-sm text-dark-blue leading-relaxed">
-                      {mindMapData.paragrafos.conclusao}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Informações do Mapa */}
-              <div className="text-center border-t border-bright-blue/10 pt-6">
+              {/* Informações da Conversa */}
+              <div className="text-center border-t border-bright-blue/10 pt-4">
                 <div className="text-xs text-soft-gray">
-                  Mapa mental gerado em: {new Date(mindMapData.timestamp).toLocaleString('pt-BR')}
+                  Conversa iniciada em: {new Date(conversationData.timestamp).toLocaleString('pt-BR')}
                 </div>
               </div>
 
@@ -253,7 +339,7 @@ export default function MapaMental() {
               data-testid="button-create-new"
             >
               <RefreshCw className="mr-2" size={16} />
-              Criar Novo Mapa Mental
+              Nova Conversa
             </Button>
           </div>
 
