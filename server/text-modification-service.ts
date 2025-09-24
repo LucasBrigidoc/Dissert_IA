@@ -125,7 +125,7 @@ export class TextModificationService {
       case 'formalidade':
         const nivel = config.formalityLevel || 50;
         const dificuldade = config.wordDifficulty || 'medio';
-        const preservarSentido = config.meaningPreservation !== 'change';
+        const preservarSentido = true; // Always preserve meaning by default
         
         return `Especialista redação ENEM. Reescreva: formalidade ${nivel}%, vocabulário ${dificuldade}.
 
@@ -658,9 +658,8 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       const aiResult: TextModificationResult = {
         modifiedText,
         modificationType: type as TextModificationType,
-        source: 'ai_optimized',
-        tokensUsed: optimizedTokens,
-        tokensSaved: tokensSaved
+        source: 'ai',
+        tokensUsed: optimizedTokens
       };
 
       // Store in intelligent cache for future use

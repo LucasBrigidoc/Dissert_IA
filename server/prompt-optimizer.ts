@@ -13,7 +13,7 @@ export class PromptOptimizer {
       case 'formalidade':
         const nivel = config.formalityLevel || 50;
         const dificuldade = config.wordDifficulty || 'medio';
-        const preservarSentido = config.meaningPreservation !== 'change';
+        const preservarSentido = true; // Always preserve meaning by default
         
         return `Especialista redação ENEM. Reescreva: formalidade ${nivel}%, vocabulário ${dificuldade}.
 
@@ -117,7 +117,7 @@ Apenas texto melhorado:`;
       'fator-impacto': 'ocasiona, promove, por conseguinte',
       'origem-desenvolvimento': 'origina-se, desenvolve-se, por consequência'
     };
-    return connectives[type] || 'devido a, consequentemente, portanto';
+    return connectives[type as keyof typeof connectives] || 'devido a, consequentemente, portanto';
   }
 
   private static getComparativeConnectives(type: string): string {
@@ -131,7 +131,7 @@ Apenas texto melhorado:`;
       'diferente-de': 'diferentemente de, ao contrário de',
       'semelhanca-de': 'à semelhança de, tal qual, como'
     };
-    return connectives[type] || 'assim como, da mesma forma, tal qual';
+    return connectives[type as keyof typeof connectives] || 'assim como, da mesma forma, tal qual';
   }
 
   private static getOppositionConnectives(type: string): string {
@@ -145,6 +145,6 @@ Apenas texto melhorado:`;
       'por-sua-vez': 'por sua vez, em contrapartida',
       'entretanto': 'entretanto, no entanto, contudo'
     };
-    return connectives[type] || 'embora, contudo, não obstante';
+    return connectives[type as keyof typeof connectives] || 'embora, contudo, não obstante';
   }
 }

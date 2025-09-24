@@ -172,7 +172,7 @@ export class ContextCompressor {
       }
     }
     
-    return [...new Set(requests)].slice(0, 3);
+    return Array.from(new Set(requests)).slice(0, 3);
   }
 
   // Extract decisions made
@@ -193,7 +193,7 @@ export class ContextCompressor {
       }
     }
     
-    return [...new Set(decisions)].slice(0, 3);
+    return Array.from(new Set(decisions)).slice(0, 3);
   }
 
   // Extract keywords from text

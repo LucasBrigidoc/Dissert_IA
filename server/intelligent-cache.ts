@@ -177,14 +177,14 @@ export class IntelligentCache {
     }
 
     // Cleanup session cache - remove old entries
-    for (const [key, entry] of this.userSessionCache.entries()) {
+    for (const [key, entry] of Array.from(this.userSessionCache.entries())) {
       if (Date.now() - entry.timestamp > this.SESSION_TTL) {
         this.userSessionCache.delete(key);
       }
     }
 
     // Cleanup template cache - remove old entries
-    for (const [key, entry] of this.templateCache.entries()) {
+    for (const [key, entry] of Array.from(this.templateCache.entries())) {
       if (Date.now() - entry.timestamp > this.TEMPLATE_TTL) {
         this.templateCache.delete(key);
       }

@@ -92,7 +92,7 @@ export class LocalPreprocessor {
   private handleSynonymsLocally(text: string, config: TextModificationConfig): PreprocessResult {
     const difficulty = config.wordDifficulty || 'medio';
     
-    if (difficulty === 'facil' || difficulty === 'medio') {
+    if (difficulty === 'simples' || difficulty === 'medio') {
       let modifiedText = text;
       let changesMade = 0;
 
