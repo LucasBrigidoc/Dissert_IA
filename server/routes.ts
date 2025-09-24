@@ -475,8 +475,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // Single optimized AI call that generates 6 repertoires
-        const generatedRepertoires = await geminiService.generateRepertoiresBatch(query, filters, 6);
+        // Single OPTIMIZED AI call that generates 6 repertoires
+        const repertoireResult = await optimizedAnalysisService.generateRepertoiresBatchOptimized(query, filters, 6);
+        const generatedRepertoires = repertoireResult.repertoires;
         
         // Save all generated repertoires to database
         for (const genRep of generatedRepertoires) {
@@ -536,8 +537,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         results,
-        source: "ai",
+        source: repertoireResult?.source || "optimized_ai",
         count: results.length,
+        tokensSaved: repertoireResult?.tokensSaved || 0,
         analysis: {
           keywords: analysis.keywords,
           suggestedTypes: analysis.suggestedTypes,
