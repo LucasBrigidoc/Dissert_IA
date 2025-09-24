@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema } from "@shared/schema";
 import { geminiService } from "./gemini-service";
 import { textModificationService } from "./text-modification-service";
+import { optimizedAnalysisService } from "./optimized-analysis-service";
 import bcrypt from "bcrypt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -255,8 +256,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Analyze essay structure using Gemini AI
-      const structureAnalysis = await geminiService.analyzeEssayStructure(
+      // Analyze essay structure using OPTIMIZED AI system
+      const structureAnalysis = await optimizedAnalysisService.analyzeEssayStructureOptimized(
         essayText,
         existingStructures
       );
