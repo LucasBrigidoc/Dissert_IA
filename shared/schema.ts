@@ -418,3 +418,79 @@ export type ArgumentStructure = z.infer<typeof argumentStructureSchema>;
 export type TextModificationConfig = z.infer<typeof textModificationConfigSchema>;
 export type TextModificationResult = z.infer<typeof textModificationResultSchema>;
 export type TextModificationRequest = z.infer<typeof textModificationRequestSchema>;
+
+// ===================== ADMIN & COST TRACKING TABLES =====================
+
+// Admin users table for administrative access
+export const adminUsers = pgTable("admin_users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  adminLevel: varchar("admin_level", { enum: ["super_admin", "admin", "moderator"] }).notNull().default("admin"),
+  permissions: json("permissions").notNull().default([]),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Cost tracking table for monitoring AI usage costs per user
+export const userCosts = pgTable("user_costs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Null for anonymous users
+  ipAddress: text("ip_address").notNull(),
+  operation: varchar("operation", { 
+    enum: ["structure_analysis", "essay_generation", "essay_correction", "proposal_generation", 
+           "proposal_search", "future_exam_detection", "repertoire_search", "repertoire_generation", 
+           "ai_chat", "text_modification"] 
+  }).notNull(),
+  tokensInput: integer("tokens_input").notNull().default(0),
+  tokensOutput: integer("tokens_output").notNull().default(0),
+  costBrl: integer("cost_brl").notNull().default(0), // Cost in centavos (R$ 0.01 = 1)
+  modelUsed: text("model_used").notNull().default("gemini-1.5-flash"),
+  source: varchar("source", { enum: ["ai", "cache", "fallback"] }).notNull(),
+  processingTime: integer("processing_time").default(0), // milliseconds
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Business metrics table for tracking key performance indicators
+export const businessMetrics = pgTable("business_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  metricDate: timestamp("metric_date").notNull(),
+  totalUsers: integer("total_users").default(0),
+  activeUsers: integer("active_users").default(0), // Users who made requests in last 30 days
+  totalOperations: integer("total_operations").default(0),
+  totalCostBrl: integer("total_cost_brl").default(0), // Cost in centavos
+  avgCostPerUser: integer("avg_cost_per_user").default(0), // Cost in centavos
+  cacheHitRate: integer("cache_hit_rate").default(0), // Percentage * 100
+  topOperation: text("top_operation"),
+  totalRevenue: integer("total_revenue").default(0), // Revenue in centavos (future subscription tracking)
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User daily usage summary for efficient cost tracking
+export const userDailyUsage = pgTable("user_daily_usage", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  ipAddress: text("ip_address").notNull(),
+  usageDate: timestamp("usage_date").notNull(), // Date without time for daily aggregation
+  totalOperations: integer("total_operations").default(0),
+  totalCostBrl: integer("total_cost_brl").default(0), // Cost in centavos
+  operationBreakdown: json("operation_breakdown").notNull().default({}), // Count per operation type
+  costBreakdown: json("cost_breakdown").notNull().default({}), // Cost per operation type
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Insert schemas for admin and cost tracking tables
+export const insertAdminUserSchema = createInsertSchema(adminUsers);
+export const insertUserCostSchema = createInsertSchema(userCosts);
+export const insertBusinessMetricSchema = createInsertSchema(businessMetrics);
+export const insertUserDailyUsageSchema = createInsertSchema(userDailyUsage);
+
+// Admin and cost tracking types
+export type AdminUser = typeof adminUsers.$inferSelect;
+export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
+export type UserCost = typeof userCosts.$inferSelect;
+export type InsertUserCost = z.infer<typeof insertUserCostSchema>;
+export type BusinessMetric = typeof businessMetrics.$inferSelect;
+export type InsertBusinessMetric = z.infer<typeof insertBusinessMetricSchema>;
+export type UserDailyUsage = typeof userDailyUsage.$inferSelect;
+export type InsertUserDailyUsage = z.infer<typeof insertUserDailyUsageSchema>;
