@@ -1370,6 +1370,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ADMIN & COST TRACKING ROUTES =====================
+
+  // Admin dashboard - Business overview
+  app.get('/api/admin/overview', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      
+      // Get business overview for the last N days
+      const overview = await storage.getBusinessOverview(
+        new Date(Date.now() - days * 24 * 60 * 60 * 1000),
+        new Date()
+      );
+      
+      res.json(overview);
+    } catch (error) {
+      console.error('Error getting business overview:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // Admin dashboard - Top cost users
+  app.get('/api/admin/top-users', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 7;
+      const limit = parseInt(req.query.limit as string) || 20;
+      
+      const topUsers = await storage.getTopCostUsers(
+        new Date(Date.now() - days * 24 * 60 * 60 * 1000),
+        new Date(),
+        limit
+      );
+      
+      res.json(topUsers);
+    } catch (error) {
+      console.error('Error getting top cost users:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // Admin dashboard - User cost summary
+  app.get('/api/admin/user-costs', async (req, res) => {
+    try {
+      const { userId, ipAddress } = req.query as { userId?: string; ipAddress?: string };
+      const days = parseInt(req.query.days as string) || 30;
+      
+      if (!userId && !ipAddress) {
+        return res.status(400).json({ message: 'Either userId or ipAddress must be provided' });
+      }
+      
+      const summary = await storage.getUserCostSummary(
+        { userId, ipAddress },
+        new Date(Date.now() - days * 24 * 60 * 60 * 1000),
+        new Date()
+      );
+      
+      res.json(summary);
+    } catch (error) {
+      console.error('Error getting user cost summary:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // Admin dashboard - Daily operation stats
+  app.get('/api/admin/daily-stats', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 7;
+      const endDate = new Date();
+      const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+      
+      const stats = await storage.getDailyOperationStats(startDate, endDate);
+      
+      res.json(stats);
+    } catch (error) {
+      console.error('Error getting daily stats:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // Admin dashboard - User activity stats
+  app.get('/api/admin/user-activity', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      
+      const stats = await storage.getUserActivityStats(days);
+      
+      res.json(stats);
+    } catch (error) {
+      console.error('Error getting user activity stats:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // Admin dashboard - Generate daily metrics (manual trigger)
+  app.post('/api/admin/generate-metrics', async (req, res) => {
+    try {
+      const { date } = req.body;
+      const targetDate = date ? new Date(date) : new Date();
+      
+      // Initialize cost tracking service
+      const { CostTrackingService } = await import('./cost-tracking-service');
+      const costTracker = new CostTrackingService(storage);
+      
+      await costTracker.generateDailyMetrics(targetDate);
+      
+      res.json({ success: true, message: 'Daily metrics generated successfully' });
+    } catch (error) {
+      console.error('Error generating daily metrics:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // Admin dashboard - Real-time cost tracking (for current day)
+  app.get('/api/admin/current-costs', async (req, res) => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const stats = await storage.getDailyOperationStats(today, tomorrow);
+      
+      res.json({
+        ...stats,
+        date: today.toISOString().split('T')[0],
+        realTime: true
+      });
+    } catch (error) {
+      console.error('Error getting current costs:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 
   const httpServer = createServer(app);
   return httpServer;

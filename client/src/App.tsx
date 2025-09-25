@@ -32,6 +32,7 @@ import MapaMental from "@/pages/mapa-mental";
 import EditStructurePage from "@/pages/edit-structure";
 import UseStructurePage from "@/pages/use-structure-page";
 import CreateStructurePage from "@/pages/create-structure-page";
+import AdminDashboard from "@/pages/admin-dashboard";
 
 function Router() {
   return (
@@ -63,6 +64,7 @@ function Router() {
       <Route path="/edit-structure" component={EditStructurePage} />
       <Route path="/use-structure" component={UseStructurePage} />
       <Route path="/create-structure" component={CreateStructurePage} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
