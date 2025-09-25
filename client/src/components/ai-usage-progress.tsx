@@ -150,8 +150,8 @@ export function AIUsageProgress({
           </TooltipTrigger>
           <TooltipContent side="bottom" className="max-w-xs">
             <div className="text-xs space-y-1">
-              <div className="font-medium">Uso Semanal de IA</div>
-              <div>{usageStats.formattedUsage.currentBRL} de {usageStats.formattedUsage.limitBRL}</div>
+              <div className="font-medium">Uso de IA</div>
+              <div>{usageStats.usagePercentage.toFixed(0)}% do limite usado</div>
               <div className="text-gray-500">
                 {usageStats.daysUntilReset} dias até renovar
               </div>
@@ -162,14 +162,14 @@ export function AIUsageProgress({
     );
   }
 
-  // Default variant with progress bar
+  // Default variant with progress bar - now shows only percentage
   if (variant === "default") {
     return (
       <div className={cn("space-y-2", className)}>
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center space-x-1">
             <Zap className="w-3 h-3 text-bright-blue" />
-            <span className="font-medium text-gray-700">Uso Semanal de IA</span>
+            <span className="font-medium text-gray-700">Uso de IA</span>
             {showDetails && (
               <TooltipProvider>
                 <Tooltip>
@@ -178,7 +178,7 @@ export function AIUsageProgress({
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-xs">
                     <div className="text-xs space-y-1">
-                      <div>Limite unificado de R$11,25 por semana</div>
+                      <div>Limite semanal de IA</div>
                       <div>Funcionalidades incluídas: busca, geração, chat, correção</div>
                       <div>Reset toda segunda-feira às 00:00</div>
                     </div>
@@ -189,7 +189,7 @@ export function AIUsageProgress({
           </div>
           <div className="text-right">
             <div className="font-medium">
-              {usageStats.formattedUsage.currentBRL} / {usageStats.formattedUsage.limitBRL}
+              {usageStats.usagePercentage.toFixed(0)}%
             </div>
             {showDetails && (
               <div className="text-gray-500 flex items-center space-x-1">
@@ -226,9 +226,9 @@ export function AIUsageProgress({
             <Zap className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">Uso Semanal de IA</h3>
+            <h3 className="font-semibold text-sm">Uso de IA</h3>
             <p className="text-xs text-gray-500">
-              {usageStats.formattedUsage.currentBRL} de {usageStats.formattedUsage.limitBRL} usado
+              {usageStats.usagePercentage.toFixed(0)}% do limite usado
             </p>
           </div>
         </div>
@@ -264,7 +264,6 @@ export function AIUsageProgress({
                     <span className="text-gray-600">{getOperationName(operation)}</span>
                     <div className="flex items-center space-x-2">
                       <span className="text-gray-500">{count}x</span>
-                      <span className="font-medium">R$ {(cost / 100).toFixed(2)}</span>
                       <span className="text-gray-400">({percentage.toFixed(0)}%)</span>
                     </div>
                   </div>
@@ -277,7 +276,7 @@ export function AIUsageProgress({
       <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
         <span className="text-gray-500">Disponível</span>
         <span className="font-medium text-green-600">
-          {usageStats.formattedUsage.remainingBRL}
+          {usageStats.remainingPercentage.toFixed(0)}%
         </span>
       </div>
     </Card>
