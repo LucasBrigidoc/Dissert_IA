@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -36,6 +36,12 @@ export interface IStorage {
   
   // Rate limiting operations
   checkRateLimit(identifier: string, maxRequests?: number, windowMinutes?: number): Promise<{ allowed: boolean; remaining: number }>;
+  
+  // Weekly usage operations for unified cost limiting
+  findWeeklyUsage(identifier: string, weekStart: Date): Promise<WeeklyUsage | undefined>;
+  insertWeeklyUsage(usage: InsertWeeklyUsage): Promise<WeeklyUsage>;
+  updateWeeklyUsage(id: string, usage: Partial<WeeklyUsage>): Promise<WeeklyUsage>;
+  getWeeklyUsageHistory(identifier: string, weeks: number): Promise<WeeklyUsage[]>;
   
   // Saved repertoires operations
   saveRepertoire(userId: string, repertoireId: string): Promise<SavedRepertoire>;
@@ -164,6 +170,7 @@ export class MemStorage implements IStorage {
   private repertoires: Map<string, Repertoire>;
   private searchCaches: Map<string, SearchCache>;
   private rateLimits: Map<string, RateLimit>;
+  private weeklyUsages: Map<string, WeeklyUsage>;
   private savedRepertoires: Map<string, SavedRepertoire>;
   private proposals: Map<string, Proposal>;
   private savedProposals: Map<string, SavedProposal>;
@@ -182,6 +189,7 @@ export class MemStorage implements IStorage {
     this.repertoires = new Map();
     this.searchCaches = new Map();
     this.rateLimits = new Map();
+    this.weeklyUsages = new Map();
     this.savedRepertoires = new Map();
     this.proposals = new Map();
     this.savedProposals = new Map();
@@ -1520,6 +1528,55 @@ export class MemStorage implements IStorage {
       averageOperations: data.users > 0 ? Math.round(data.totalOperations / data.users) : 0,
       averageCost: data.users > 0 ? Math.round(data.totalCost / data.users) : 0,
     }));
+  }
+
+  // Weekly usage operations for unified cost limiting
+  async findWeeklyUsage(identifier: string, weekStart: Date): Promise<WeeklyUsage | undefined> {
+    return Array.from(this.weeklyUsages.values()).find(
+      usage => usage.identifier === identifier && 
+      usage.weekStart.getTime() === weekStart.getTime()
+    );
+  }
+
+  async insertWeeklyUsage(usage: InsertWeeklyUsage): Promise<WeeklyUsage> {
+    const id = randomUUID();
+    const weeklyUsage: WeeklyUsage = {
+      ...usage,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.weeklyUsages.set(id, weeklyUsage);
+    return weeklyUsage;
+  }
+
+  async updateWeeklyUsage(id: string, usage: Partial<WeeklyUsage>): Promise<WeeklyUsage> {
+    const existing = this.weeklyUsages.get(id);
+    if (!existing) {
+      throw new Error("Weekly usage not found");
+    }
+
+    const updated: WeeklyUsage = {
+      ...existing,
+      ...usage,
+      updatedAt: new Date(),
+    };
+
+    this.weeklyUsages.set(id, updated);
+    return updated;
+  }
+
+  async getWeeklyUsageHistory(identifier: string, weeks: number): Promise<WeeklyUsage[]> {
+    const now = new Date();
+    const weeksAgo = new Date(now);
+    weeksAgo.setDate(weeksAgo.getDate() - (weeks * 7));
+
+    return Array.from(this.weeklyUsages.values())
+      .filter(usage => 
+        usage.identifier === identifier && 
+        usage.weekStart >= weeksAgo
+      )
+      .sort((a, b) => b.weekStart.getTime() - a.weekStart.getTime());
   }
 
 }

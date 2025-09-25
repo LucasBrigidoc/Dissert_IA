@@ -82,6 +82,20 @@ export const rateLimits = pgTable("rate_limits", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Weekly cost tracking for unified AI usage limits
+export const weeklyUsage = pgTable("weekly_usage", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  identifier: text("identifier").notNull(), // IP address or user ID
+  weekStart: timestamp("week_start").notNull(), // Start of the week (Monday 00:00)
+  totalCostCentavos: integer("total_cost_centavos").default(0), // Total cost in centavos
+  operationCount: integer("operation_count").default(0), // Total operations count
+  operationBreakdown: json("operation_breakdown").default({}), // Count by operation type
+  costBreakdown: json("cost_breakdown").default({}), // Cost by operation type
+  lastOperation: timestamp("last_operation").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Saved repertoires for user's personal library
 export const savedRepertoires = pgTable("saved_repertoires", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -406,6 +420,15 @@ export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Conversation = typeof conversations.$inferSelect;
 
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
+
+export const insertWeeklyUsageSchema = createInsertSchema(weeklyUsage).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type WeeklyUsage = typeof weeklyUsage.$inferSelect;
+export type InsertWeeklyUsage = z.infer<typeof insertWeeklyUsageSchema>;
 
 export type ProposalSearchQuery = z.infer<typeof proposalSearchQuerySchema>;
 export type GenerateProposal = z.infer<typeof generateProposalSchema>;

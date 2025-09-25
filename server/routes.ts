@@ -7,7 +7,11 @@ import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
 import { geminiService } from "./gemini-service";
+import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
 import bcrypt from "bcrypt";
+
+// Initialize services
+const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Newsletter signup endpoint
@@ -1699,6 +1703,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error converting currency:', error);
       res.status(500).json({ message: 'Failed to convert currency' });
+    }
+  });
+
+  // Weekly usage endpoints for unified AI cost limiting
+  
+  // Get current weekly usage stats
+  app.get("/api/weekly-usage/stats", async (req, res) => {
+    try {
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const identifier = `weekly_usage_${clientIP}`;
+      
+      const stats = await weeklyCostLimitingService.getWeeklyUsageStats(identifier);
+      
+      res.json({
+        success: true,
+        stats
+      });
+    } catch (error) {
+      console.error("Error fetching weekly usage stats:", error);
+      res.status(500).json({ message: "Failed to fetch usage stats" });
+    }
+  });
+
+  // Check if operation is allowed within weekly limits
+  app.post("/api/weekly-usage/check", async (req, res) => {
+    try {
+      const { estimatedInputTokens = 1000, estimatedOutputTokens = 500 } = req.body;
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const identifier = `weekly_usage_${clientIP}`;
+      
+      // Estimate cost for the operation
+      const costEstimate = await weeklyCostLimitingService.estimateOperationCost(
+        estimatedInputTokens, 
+        estimatedOutputTokens
+      );
+      
+      // Check if operation is allowed
+      const limitCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(
+        identifier,
+        costEstimate.estimatedCostCentavos
+      );
+      
+      res.json({
+        success: true,
+        allowed: limitCheck.allowed,
+        costEstimate,
+        usageStats: {
+          currentUsageCentavos: limitCheck.currentUsageCentavos,
+          limitCentavos: limitCheck.limitCentavos,
+          remainingCentavos: limitCheck.remainingCentavos,
+          usagePercentage: 100 - limitCheck.remainingPercentage,
+          daysUntilReset: limitCheck.daysUntilReset
+        }
+      });
+    } catch (error) {
+      console.error("Error checking weekly usage limit:", error);
+      res.status(500).json({ message: "Failed to check usage limit" });
+    }
+  });
+
+  // Record AI operation usage (called after successful AI operations)
+  app.post("/api/weekly-usage/record", async (req, res) => {
+    try {
+      const { operation, costCentavos } = req.body;
+      
+      if (!operation || !costCentavos || costCentavos < 0) {
+        return res.status(400).json({ 
+          message: "Valid operation and cost are required" 
+        });
+      }
+      
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const identifier = `weekly_usage_${clientIP}`;
+      
+      const result = await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        operation,
+        costCentavos
+      );
+      
+      res.json({
+        success: result.success,
+        usageStats: result.usageStats
+      });
+    } catch (error) {
+      console.error("Error recording AI operation:", error);
+      res.status(500).json({ message: "Failed to record operation" });
+    }
+  });
+
+  // Get usage analytics for monitoring
+  app.get("/api/weekly-usage/analytics", async (req, res) => {
+    try {
+      const { weeks = 4 } = req.query;
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const identifier = `weekly_usage_${clientIP}`;
+      
+      const analytics = await weeklyCostLimitingService.getUsageAnalytics(
+        identifier, 
+        parseInt(weeks as string) || 4
+      );
+      
+      res.json({
+        success: true,
+        analytics
+      });
+    } catch (error) {
+      console.error("Error fetching usage analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
 
