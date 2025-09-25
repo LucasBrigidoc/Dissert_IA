@@ -1,33 +1,41 @@
 import { IStorage } from "./storage";
 import { InsertUserCost, InsertUserDailyUsage, InsertBusinessMetric, UserCost } from "@shared/schema";
+import { currencyService } from "./currency-service";
 
 /**
  * Cost Tracking Service for DissertAI
- * Monitors AI usage costs and generates business metrics
+ * Monitors AI usage costs and generates business metrics with dynamic pricing
  */
 export class CostTrackingService {
   constructor(private storage: IStorage) {}
 
   /**
-   * Token costs in BRL per 1000 tokens for Gemini 1.5 Flash
-   * Based on current pricing: Input $0.075, Output $0.30 per 1M tokens
-   * USD to BRL conversion: ~5.2 BRL per USD (approximate)
+   * Gemini 2.5 Flash-Lite pricing in USD per million tokens
+   * Updated: December 2025 - More cost-effective model
    */
-  private static readonly TOKEN_COSTS = {
-    input: 0.000039, // BRL per token (0.075 * 5.2 / 1000000)
-    output: 0.000156, // BRL per token (0.30 * 5.2 / 1000000)
+  private static readonly GEMINI_PRICING_USD = {
+    input: 0.10,   // $0.10 per million tokens
+    output: 0.40,  // $0.40 per million tokens
   };
 
   /**
-   * Calculate cost in centavos (1/100 BRL) for AI operation
+   * Calculate cost in centavos (1/100 BRL) for AI operation using dynamic exchange rates
    */
-  private calculateCostCentavos(inputTokens: number, outputTokens: number): number {
-    const inputCost = inputTokens * CostTrackingService.TOKEN_COSTS.input;
-    const outputCost = outputTokens * CostTrackingService.TOKEN_COSTS.output;
-    const totalCostBrl = inputCost + outputCost;
+  private async calculateCostCentavos(inputTokens: number, outputTokens: number): Promise<number> {
+    // Calculate cost in USD first
+    const inputCostUSD = (inputTokens / 1_000_000) * CostTrackingService.GEMINI_PRICING_USD.input;
+    const outputCostUSD = (outputTokens / 1_000_000) * CostTrackingService.GEMINI_PRICING_USD.output;
+    const totalCostUSD = inputCostUSD + outputCostUSD;
+    
+    // Convert to BRL using current exchange rate
+    const totalCostBRL = await currencyService.convertUSDtoBRL(totalCostUSD);
     
     // Convert to centavos (R$ 0.01 = 1 centavo)
-    return Math.ceil(totalCostBrl * 100);
+    const centavos = Math.ceil(totalCostBRL * 100);
+    
+    console.log(`💰 Cost calculation: ${inputTokens} in + ${outputTokens} out = $${totalCostUSD.toFixed(4)} USD = R$ ${totalCostBRL.toFixed(4)} BRL = ${centavos} centavos`);
+    
+    return centavos;
   }
 
   /**
@@ -43,7 +51,7 @@ export class CostTrackingService {
     source: "ai" | "cache" | "fallback";
     processingTime?: number;
   }): Promise<UserCost> {
-    const costCentavos = this.calculateCostCentavos(params.tokensInput, params.tokensOutput);
+    const costCentavos = await this.calculateCostCentavos(params.tokensInput, params.tokensOutput);
     
     const costRecord: InsertUserCost = {
       userId: params.userId || null,
@@ -52,7 +60,7 @@ export class CostTrackingService {
       tokensInput: params.tokensInput,
       tokensOutput: params.tokensOutput,
       costBrl: costCentavos,
-      modelUsed: params.modelUsed || "gemini-1.5-flash",
+      modelUsed: params.modelUsed || "gemini-2.5-flash-lite",
       source: params.source,
       processingTime: params.processingTime || 0,
     };
@@ -216,5 +224,112 @@ export class CostTrackingService {
     startDate.setDate(endDate.getDate() - days);
 
     return await this.storage.getTopCostUsers(startDate, endDate, limit);
+  }
+
+  /**
+   * Get current pricing information for monitoring
+   */
+  async getCurrentPricing(): Promise<{
+    model: string;
+    pricing: {
+      inputUSD: number;
+      outputUSD: number;
+      inputBRL: number;
+      outputBRL: number;
+    };
+    exchangeRate: {
+      rate: number;
+      source: string;
+      date: string;
+      cached: boolean;
+      age: number;
+    };
+    costExamples: {
+      small: { tokens: { input: number; output: number }; costUSD: number; costBRL: number; costCentavos: number };
+      medium: { tokens: { input: number; output: number }; costUSD: number; costBRL: number; costCentavos: number };
+      large: { tokens: { input: number; output: number }; costUSD: number; costBRL: number; costCentavos: number };
+    };
+  }> {
+    const rateInfo = await currencyService.getRateInfo();
+    
+    // Calculate BRL costs per million tokens
+    const inputBRL = await currencyService.convertUSDtoBRL(CostTrackingService.GEMINI_PRICING_USD.input);
+    const outputBRL = await currencyService.convertUSDtoBRL(CostTrackingService.GEMINI_PRICING_USD.output);
+
+    // Cost examples for different operation sizes
+    const examples = [
+      { name: 'small', input: 500, output: 200 },    // Small chat response
+      { name: 'medium', input: 2000, output: 800 },  // Essay generation
+      { name: 'large', input: 5000, output: 2000 }   // Large repertoire generation
+    ];
+
+    const costExamples: any = {};
+    for (const example of examples) {
+      const costUSD = (example.input / 1_000_000) * CostTrackingService.GEMINI_PRICING_USD.input + 
+                     (example.output / 1_000_000) * CostTrackingService.GEMINI_PRICING_USD.output;
+      const costBRL = await currencyService.convertUSDtoBRL(costUSD);
+      const costCentavos = Math.ceil(costBRL * 100);
+      
+      costExamples[example.name] = {
+        tokens: { input: example.input, output: example.output },
+        costUSD: parseFloat(costUSD.toFixed(6)),
+        costBRL: parseFloat(costBRL.toFixed(4)),
+        costCentavos
+      };
+    }
+
+    return {
+      model: "gemini-2.5-flash-lite",
+      pricing: {
+        inputUSD: CostTrackingService.GEMINI_PRICING_USD.input,
+        outputUSD: CostTrackingService.GEMINI_PRICING_USD.output,
+        inputBRL: parseFloat(inputBRL.toFixed(4)),
+        outputBRL: parseFloat(outputBRL.toFixed(4))
+      },
+      exchangeRate: rateInfo,
+      costExamples
+    };
+  }
+
+  /**
+   * Estimate cost for a planned operation
+   */
+  async estimateOperationCost(inputTokens: number, outputTokens: number): Promise<{
+    tokens: { input: number; output: number };
+    costs: {
+      usd: number;
+      brl: number;
+      centavos: number;
+    };
+    breakdown: {
+      inputUSD: number;
+      outputUSD: number;
+      inputBRL: number;
+      outputBRL: number;
+    };
+  }> {
+    const inputCostUSD = (inputTokens / 1_000_000) * CostTrackingService.GEMINI_PRICING_USD.input;
+    const outputCostUSD = (outputTokens / 1_000_000) * CostTrackingService.GEMINI_PRICING_USD.output;
+    const totalCostUSD = inputCostUSD + outputCostUSD;
+    
+    const inputCostBRL = await currencyService.convertUSDtoBRL(inputCostUSD);
+    const outputCostBRL = await currencyService.convertUSDtoBRL(outputCostUSD);
+    const totalCostBRL = await currencyService.convertUSDtoBRL(totalCostUSD);
+    const totalCostCentavos = Math.ceil(totalCostBRL * 100);
+
+    return {
+      tokens: { input: inputTokens, output: outputTokens },
+      costs: {
+        usd: parseFloat(totalCostUSD.toFixed(6)),
+        brl: parseFloat(totalCostBRL.toFixed(4)),
+        centavos: totalCostCentavos
+      },
+      breakdown: {
+        inputUSD: parseFloat(inputCostUSD.toFixed(6)),
+        outputUSD: parseFloat(outputCostUSD.toFixed(6)),
+        inputBRL: parseFloat(inputCostBRL.toFixed(4)),
+        outputBRL: parseFloat(outputCostBRL.toFixed(4))
+      }
+    };
   }
 }

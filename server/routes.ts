@@ -1502,6 +1502,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== PRICING & CURRENCY MONITORING ROUTES =====================
+
+  // Get current pricing information with real-time exchange rates
+  app.get('/api/pricing/current', async (req, res) => {
+    try {
+      const { CostTrackingService } = await import('./cost-tracking-service');
+      const costTracker = new CostTrackingService(storage);
+      
+      const pricing = await costTracker.getCurrentPricing();
+      
+      res.json({
+        success: true,
+        ...pricing,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error getting current pricing:', error);
+      res.status(500).json({ message: 'Failed to get pricing information' });
+    }
+  });
+
+  // Estimate cost for planned operation
+  app.post('/api/pricing/estimate', async (req, res) => {
+    try {
+      const { inputTokens, outputTokens } = req.body;
+      
+      if (!inputTokens || !outputTokens || inputTokens < 0 || outputTokens < 0) {
+        return res.status(400).json({ 
+          message: 'Valid inputTokens and outputTokens are required' 
+        });
+      }
+
+      const { CostTrackingService } = await import('./cost-tracking-service');
+      const costTracker = new CostTrackingService(storage);
+      
+      const estimate = await costTracker.estimateOperationCost(inputTokens, outputTokens);
+      
+      res.json({
+        success: true,
+        ...estimate,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error estimating operation cost:', error);
+      res.status(500).json({ message: 'Failed to estimate operation cost' });
+    }
+  });
+
+  // Get current USD/BRL exchange rate information
+  app.get('/api/currency/usd-brl', async (req, res) => {
+    try {
+      const { currencyService } = await import('./currency-service');
+      
+      const rateInfo = await currencyService.getRateInfo();
+      
+      res.json({
+        success: true,
+        ...rateInfo,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error getting exchange rate:', error);
+      res.status(500).json({ message: 'Failed to get exchange rate' });
+    }
+  });
+
+  // Force refresh exchange rate (useful for testing)
+  app.post('/api/currency/refresh', async (req, res) => {
+    try {
+      const { currencyService } = await import('./currency-service');
+      
+      const newRate = await currencyService.forceRefresh();
+      const rateInfo = await currencyService.getRateInfo();
+      
+      res.json({
+        success: true,
+        message: 'Exchange rate refreshed successfully',
+        ...rateInfo,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error refreshing exchange rate:', error);
+      res.status(500).json({ message: 'Failed to refresh exchange rate' });
+    }
+  });
+
+  // Convert USD amount to BRL
+  app.post('/api/currency/convert', async (req, res) => {
+    try {
+      const { amount } = req.body;
+      
+      if (!amount || amount < 0) {
+        return res.status(400).json({ 
+          message: 'Valid amount in USD is required' 
+        });
+      }
+
+      const { currencyService } = await import('./currency-service');
+      
+      const brlAmount = await currencyService.convertUSDtoBRL(amount);
+      const rateInfo = await currencyService.getRateInfo();
+      
+      res.json({
+        success: true,
+        conversion: {
+          usd: amount,
+          brl: parseFloat(brlAmount.toFixed(4)),
+          rate: rateInfo.rate
+        },
+        exchangeRate: rateInfo,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error converting currency:', error);
+      res.status(500).json({ message: 'Failed to convert currency' });
+    }
+  });
+
 
   const httpServer = createServer(app);
   return httpServer;
