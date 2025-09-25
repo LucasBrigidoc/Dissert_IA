@@ -4,17 +4,17 @@ DissertAI is a comprehensive SaaS educational platform designed to revolutionize
 
 # Recent Changes
 
-- **September 25, 2025**: AI Rate Limiting Enhancement - 3-Day Period Implementation
-  - **Enhanced Flexibility**: Migrated all AI rate limiting from daily periods to 3-day windows for improved user experience
-    - **Propostas**: Busca 45 a cada 3 dias, Geração 40 a cada 3 dias, Detecção de provas futuras 30 a cada 3 dias
-    - **Redações**: Geração 18 a cada 3 dias, Análise de estruturas 45 a cada 3 dias
-    - **Repertórios**: Busca 50 a cada 3 dias, Geração 18 a cada 3 dias
-    - **Chat com IA**: 15 conversas a cada 3 dias
-    - **Correção**: Correção de redações 10 a cada 3 dias, Modificação de textos 45 a cada 3 dias
-  - **User Experience**: Updated all error messages to clearly indicate 3-day limits with 72-hour retry periods
-  - **Technical Implementation**: Extended rate limiting windows from 1440 minutes (24h) to 4320 minutes (72h) for better usage distribution
-  - **Cost Optimization**: Reduced estimated maximum user cost from R$75.60 to R$15.86 per month (79% reduction) while maintaining generous usage limits
-  - **Flexibility Impact**: Users can now distribute their AI usage across 3-day periods instead of being restricted to daily quotas, improving accessibility for non-daily users
+- **September 25, 2025**: AI Rate Limiting Optimization - Final Implementation R$ 45/mês
+  - **Cost Optimization**: Implementação final dos limites de IA para custo máximo de R$ 45/mês por usuário
+    - **Propostas**: Busca 14 a cada 3 dias, Geração 11 a cada 3 dias, Detecção de provas futuras 5 a cada 3 dias
+    - **Redações**: Geração 8 a cada 3 dias, Análise de estruturas 6 a cada 3 dias
+    - **Repertórios**: Busca 19 a cada 3 dias, Geração 8 a cada 3 dias
+    - **Chat com IA**: 12 conversas a cada 3 dias
+    - **Correção**: Correção de redações 5 a cada 3 dias, Modificação de textos 9 a cada 3 dias
+  - **Custo Calculado**: R$ 44,80 por mês máximo com uso total dos limites (dentro do orçamento de R$ 45)
+  - **Tokens por Operação**: Baseado em análise real do código - Input/Output tokens calculados precisamente
+  - **Preços API Gemini**: $0.075 input + $0.30 output por 1M tokens (convertido para BRL)
+  - **Flexibilidade**: Períodos de 3 dias permitem distribuição inteligente do uso sem restrições diárias
 - **September 23, 2025**: AI Rate Limiting Optimization - Daily Limits Implementation
   - **Cost Optimization**: Implemented comprehensive daily rate limiting across all AI-powered features for improved cost control
     - **Propostas**: Busca 20/dia, Geração 7/dia, Detecção de provas futuras 10/dia
