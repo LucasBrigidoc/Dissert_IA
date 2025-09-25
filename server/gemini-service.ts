@@ -12,7 +12,7 @@ export class GeminiService {
     if (apiKey) {
       try {
         this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
       } catch (error) {
         console.warn("⚠️ Failed to initialize Gemini AI in GeminiService:", error);
         this.hasApiKey = false;
