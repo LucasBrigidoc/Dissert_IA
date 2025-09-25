@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CreateStructure } from "@/pages/create-structure";
 import { apiRequest } from "@/lib/queryClient";
 import type { EssayStructure, Section } from "@shared/schema";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 export function EstruturaCuringa() {
   const [selectedMode, setSelectedMode] = useState<'create' | 'use' | null>(null);
@@ -96,6 +97,11 @@ export function EstruturaCuringa() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
       <div className="container mx-auto px-4 py-8">
+        {/* AI Usage Progress */}
+        <div className="mb-4">
+          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
+        </div>
+        
         {/* Header */}
         <div className="mb-8">
           <Link href={backUrl}>

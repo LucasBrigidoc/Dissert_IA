@@ -3,6 +3,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Save, MessageSquare, BookOpen, Home, RefreshCw, User, Bot, Clock, Target } from "lucide-react";
 import { useLocation } from "wouter";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 interface ConversationData {
   conversationId: string;
@@ -131,8 +132,15 @@ export default function VisualizadorConversa() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* AI Usage Progress */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 sm:px-6 py-2">
+          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
+        </div>
+      </div>
+      
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+      <div className="fixed top-14 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

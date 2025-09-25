@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Repertoire } from "@shared/schema";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 interface SearchResult {
   results: Repertoire[];
@@ -495,9 +496,16 @@ export default function Repertorio() {
           </div>
         </div>
       </div>
+      
+      {/* AI Usage Progress */}
+      <div className="fixed top-20 sm:top-24 left-0 right-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 sm:px-6 py-2">
+          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
+        </div>
+      </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-16 sm:pt-24">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-20 sm:pt-28">
         {/* Search Bar - Mobile Optimized */}
         <div className="mb-6 sm:mb-8">
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">

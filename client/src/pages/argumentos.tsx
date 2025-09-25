@@ -8,6 +8,7 @@ import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCir
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 export default function Argumentos() {
   const [location] = useLocation();
@@ -695,8 +696,16 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           </div>
         </div>
       </div>
+      
+      {/* AI Usage Progress */}
+      <div className="fixed top-20 sm:top-24 left-0 right-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 sm:px-6 py-2">
+          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
+        </div>
+      </div>
+      
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-3 pt-16 sm:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 py-3 pt-20 sm:pt-28">
         <div className="flex flex-col gap-2 h-[calc(100vh-4rem)] sm:h-auto">
           
           {/* Chat Principal - Altura Adaptável - Maior em Mobile */}

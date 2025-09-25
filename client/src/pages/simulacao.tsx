@@ -30,6 +30,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { AIUsageProgress } from '@/components/ai-usage-progress';
 
 export default function SimulacaoPage() {
   const [, setLocation] = useLocation();
@@ -428,6 +429,11 @@ export default function SimulacaoPage() {
             Voltar
           </Button>
         </div>
+      </div>
+      
+      {/* AI Usage Progress */}
+      <div className="max-w-7xl mx-auto mb-4">
+        <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
       </div>
       
       {/* First Row - Topic/Proposal Section */}

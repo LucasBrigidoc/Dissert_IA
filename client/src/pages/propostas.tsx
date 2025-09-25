@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Proposal } from "@shared/schema";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 interface SearchResult {
   results: Proposal[];
@@ -336,8 +337,15 @@ export default function Propostas() {
         </div>
       </div>
       
+      {/* AI Usage Progress */}
+      <div className="fixed top-20 sm:top-24 left-0 right-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 sm:px-6 py-2">
+          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
+        </div>
+      </div>
+      
       {/* Main Content */}
-      <div className="pt-16 sm:pt-24 container mx-auto px-4 py-4 sm:py-8">
+      <div className="pt-20 sm:pt-28 container mx-auto px-4 py-4 sm:py-8">
 
         {/* Search Section */}
         <LiquidGlassCard className="mb-6 sm:mb-8 p-4 sm:p-6">
