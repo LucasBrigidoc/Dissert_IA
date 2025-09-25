@@ -1502,6 +1502,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get usage patterns by hour of day
+  app.get('/api/admin/usage-patterns', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 7;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - days);
+
+      const hourlyPatterns = await storage.getHourlyUsagePatterns(startDate, endDate);
+      
+      res.json({
+        patterns: hourlyPatterns,
+        timeRange: { start: startDate, end: endDate },
+        analysisDate: new Date()
+      });
+    } catch (error) {
+      console.error('Error getting usage patterns:', error);
+      res.status(500).json({ message: 'Failed to get usage patterns' });
+    }
+  });
+
+  // Get detailed user list with metrics
+  app.get('/api/admin/users-detailed', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const limit = parseInt(req.query.limit as string) || 50;
+      
+      const detailedUsers = await storage.getDetailedUsersList(days, limit);
+      
+      res.json({
+        users: detailedUsers,
+        totalUsers: detailedUsers.length,
+        analysisDate: new Date()
+      });
+    } catch (error) {
+      console.error('Error getting detailed users:', error);
+      res.status(500).json({ message: 'Failed to get detailed users' });
+    }
+  });
+
+  // Get tools ranking by usage
+  app.get('/api/admin/tools-ranking', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - days);
+
+      const toolsRanking = await storage.getToolsRankingByUsage(startDate, endDate);
+      
+      res.json({
+        ranking: toolsRanking,
+        timeRange: { start: startDate, end: endDate },
+        analysisDate: new Date()
+      });
+    } catch (error) {
+      console.error('Error getting tools ranking:', error);
+      res.status(500).json({ message: 'Failed to get tools ranking' });
+    }
+  });
+
+  // Get user access frequency
+  app.get('/api/admin/access-frequency', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - days);
+
+      const accessFrequency = await storage.getUserAccessFrequency(startDate, endDate);
+      
+      res.json({
+        frequency: accessFrequency,
+        timeRange: { start: startDate, end: endDate },
+        analysisDate: new Date()
+      });
+    } catch (error) {
+      console.error('Error getting access frequency:', error);
+      res.status(500).json({ message: 'Failed to get access frequency' });
+    }
+  });
+
   // ===================== PRICING & CURRENCY MONITORING ROUTES =====================
 
   // Get current pricing information with real-time exchange rates

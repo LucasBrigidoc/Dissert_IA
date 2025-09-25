@@ -117,6 +117,43 @@ export interface IStorage {
     topOperation: string;
   }>>;
   
+  // Advanced analytics operations
+  getHourlyUsagePatterns(startDate: Date, endDate: Date): Promise<Array<{
+    hour: number;
+    totalOperations: number;
+    totalCost: number;
+    averageOperations: number;
+    peakDay: string;
+  }>>;
+  getDetailedUsersList(days: number, limit: number): Promise<Array<{
+    userId?: string;
+    ipAddress: string;
+    userType?: string;
+    totalCost: number;
+    totalOperations: number;
+    firstSeen: Date;
+    lastSeen: Date;
+    daysSinceFirst: number;
+    accessFrequency: number;
+    topOperation: string;
+    plan: string;
+  }>>;
+  getToolsRankingByUsage(startDate: Date, endDate: Date): Promise<Array<{
+    operation: string;
+    operationName: string;
+    totalCount: number;
+    totalCost: number;
+    averageCost: number;
+    uniqueUsers: number;
+    rank: number;
+  }>>;
+  getUserAccessFrequency(startDate: Date, endDate: Date): Promise<Array<{
+    frequency: string;
+    userCount: number;
+    averageOperations: number;
+    averageCost: number;
+  }>>;
+  
 }
 
 export class MemStorage implements IStorage {
@@ -1238,6 +1275,251 @@ export class MemStorage implements IStorage {
       }))
       .sort((a, b) => b.totalCost - a.totalCost)
       .slice(0, limit);
+  }
+
+  // Advanced analytics implementations
+  async getHourlyUsagePatterns(startDate: Date, endDate: Date) {
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt || new Date());
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    const hourlyStats: Record<number, {
+      operations: number;
+      cost: number;
+      days: Set<string>;
+    }> = {};
+
+    // Initialize all hours
+    for (let hour = 0; hour < 24; hour++) {
+      hourlyStats[hour] = { operations: 0, cost: 0, days: new Set() };
+    }
+
+    costs.forEach(cost => {
+      const hour = new Date(cost.createdAt || new Date()).getHours();
+      const day = new Date(cost.createdAt || new Date()).toDateString();
+      
+      hourlyStats[hour].operations++;
+      hourlyStats[hour].cost += cost.costBrl;
+      hourlyStats[hour].days.add(day);
+    });
+
+    return Array.from({ length: 24 }, (_, hour) => {
+      const stats = hourlyStats[hour];
+      const daysWithActivity = stats.days.size;
+      
+      return {
+        hour,
+        totalOperations: stats.operations,
+        totalCost: stats.cost,
+        averageOperations: daysWithActivity > 0 ? Math.round(stats.operations / daysWithActivity) : 0,
+        peakDay: Array.from(stats.days)[0] || '',
+      };
+    });
+  }
+
+  async getDetailedUsersList(days: number, limit: number) {
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - days);
+
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt || new Date());
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    const rateLimitData = Array.from(this.rateLimits.values()).filter(limit => {
+      const limitDate = new Date(limit.createdAt || new Date());
+      return limitDate >= startDate && limitDate <= endDate;
+    });
+
+    const userStats: Record<string, {
+      userId?: string;
+      ipAddress: string;
+      userType?: string;
+      totalCost: number;
+      totalOperations: number;
+      firstSeen: Date;
+      lastSeen: Date;
+      operations: Record<string, number>;
+      accessCount: number;
+    }> = {};
+
+    // Process cost data
+    costs.forEach(cost => {
+      const key = cost.userId || cost.ipAddress;
+      const costDate = new Date(cost.createdAt || new Date());
+      
+      if (!userStats[key]) {
+        userStats[key] = {
+          userId: cost.userId || undefined,
+          ipAddress: cost.ipAddress,
+          userType: 'visitor', // Default since we don't have user data linked
+          totalCost: 0,
+          totalOperations: 0,
+          firstSeen: costDate,
+          lastSeen: costDate,
+          operations: {},
+          accessCount: 0,
+        };
+      }
+      
+      userStats[key].totalCost += cost.costBrl;
+      userStats[key].totalOperations++;
+      userStats[key].operations[cost.operation] = (userStats[key].operations[cost.operation] || 0) + 1;
+      
+      if (costDate < userStats[key].firstSeen) userStats[key].firstSeen = costDate;
+      if (costDate > userStats[key].lastSeen) userStats[key].lastSeen = costDate;
+    });
+
+    // Process access frequency from rate limits
+    rateLimitData.forEach(rateLimit => {
+      const ipAddress = rateLimit.identifier.split('_')[1] || rateLimit.identifier;
+      const key = Object.keys(userStats).find(k => 
+        userStats[k].ipAddress === ipAddress
+      ) || ipAddress;
+      
+      if (userStats[key]) {
+        userStats[key].accessCount += rateLimit.requestCount || 1;
+      }
+    });
+
+    return Object.values(userStats)
+      .map(stats => {
+        const daysSinceFirst = Math.max(1, Math.ceil((endDate.getTime() - stats.firstSeen.getTime()) / (1000 * 60 * 60 * 24)));
+        const topOperation = Object.entries(stats.operations)
+          .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none';
+        
+        return {
+          userId: stats.userId,
+          ipAddress: stats.ipAddress,
+          userType: stats.userType,
+          totalCost: stats.totalCost,
+          totalOperations: stats.totalOperations,
+          firstSeen: stats.firstSeen,
+          lastSeen: stats.lastSeen,
+          daysSinceFirst,
+          accessFrequency: Math.round(stats.accessCount / daysSinceFirst * 10) / 10,
+          topOperation,
+          plan: stats.totalCost > 1000 ? 'Premium' : 'Free', // Mock plan based on usage
+        };
+      })
+      .sort((a, b) => b.totalCost - a.totalCost)
+      .slice(0, limit);
+  }
+
+  async getToolsRankingByUsage(startDate: Date, endDate: Date) {
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt || new Date());
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    const toolStats: Record<string, {
+      count: number;
+      cost: number;
+      users: Set<string>;
+    }> = {};
+
+    costs.forEach(cost => {
+      const operation = cost.operation;
+      const userKey = cost.userId || cost.ipAddress;
+      
+      if (!toolStats[operation]) {
+        toolStats[operation] = { count: 0, cost: 0, users: new Set() };
+      }
+      
+      toolStats[operation].count++;
+      toolStats[operation].cost += cost.costBrl;
+      toolStats[operation].users.add(userKey);
+    });
+
+    const operationNames: Record<string, string> = {
+      structure_analysis: "Análise de Estrutura",
+      essay_generation: "Geração de Redação", 
+      essay_correction: "Correção de Redação",
+      proposal_generation: "Geração de Proposta",
+      proposal_search: "Busca de Proposta",
+      future_exam_detection: "Detecção de Provas Futuras",
+      repertoire_search: "Busca de Repertório",
+      repertoire_generation: "Geração de Repertório",
+      ai_chat: "Chat com IA",
+      text_modification: "Modificação de Texto"
+    };
+
+    return Object.entries(toolStats)
+      .map(([operation, stats]) => ({
+        operation,
+        operationName: operationNames[operation] || operation,
+        totalCount: stats.count,
+        totalCost: stats.cost,
+        averageCost: Math.round(stats.cost / stats.count),
+        uniqueUsers: stats.users.size,
+        rank: 0, // Will be set after sorting
+      }))
+      .sort((a, b) => b.totalCount - a.totalCount)
+      .map((item, index) => ({ ...item, rank: index + 1 }));
+  }
+
+  async getUserAccessFrequency(startDate: Date, endDate: Date) {
+    const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt || new Date());
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    const userActivityDays: Record<string, Set<string>> = {};
+    const userOperations: Record<string, number> = {};
+    const userCosts: Record<string, number> = {};
+
+    costs.forEach(cost => {
+      const userKey = cost.userId || cost.ipAddress;
+      const day = new Date(cost.createdAt || new Date()).toDateString();
+      
+      if (!userActivityDays[userKey]) {
+        userActivityDays[userKey] = new Set();
+        userOperations[userKey] = 0;
+        userCosts[userKey] = 0;
+      }
+      
+      userActivityDays[userKey].add(day);
+      userOperations[userKey]++;
+      userCosts[userKey] += cost.costBrl;
+    });
+
+    const frequencyBuckets: Record<string, {
+      users: number;
+      totalOperations: number;
+      totalCost: number;
+    }> = {
+      'Diário': { users: 0, totalOperations: 0, totalCost: 0 },
+      'Semanal': { users: 0, totalOperations: 0, totalCost: 0 },
+      'Esporádico': { users: 0, totalOperations: 0, totalCost: 0 },
+      'Único': { users: 0, totalOperations: 0, totalCost: 0 },
+    };
+
+    Object.entries(userActivityDays).forEach(([userKey, activeDays]) => {
+      const dayCount = activeDays.size;
+      const operations = userOperations[userKey];
+      const cost = userCosts[userKey];
+      
+      let frequency: string;
+      if (dayCount >= totalDays * 0.8) frequency = 'Diário';
+      else if (dayCount >= totalDays * 0.3) frequency = 'Semanal';
+      else if (dayCount >= 2) frequency = 'Esporádico';
+      else frequency = 'Único';
+      
+      frequencyBuckets[frequency].users++;
+      frequencyBuckets[frequency].totalOperations += operations;
+      frequencyBuckets[frequency].totalCost += cost;
+    });
+
+    return Object.entries(frequencyBuckets).map(([frequency, data]) => ({
+      frequency,
+      userCount: data.users,
+      averageOperations: data.users > 0 ? Math.round(data.totalOperations / data.users) : 0,
+      averageCost: data.users > 0 ? Math.round(data.totalCost / data.users) : 0,
+    }));
   }
 
 }
