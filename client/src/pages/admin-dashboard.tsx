@@ -65,13 +65,13 @@ export default function AdminDashboard() {
 
   // Query for business overview
   const { data: overview, isLoading: overviewLoading, refetch: refetchOverview } = useQuery<BusinessOverview>({
-    queryKey: ['/api/admin/overview', timeRange],
+    queryKey: [`/api/admin/overview?days=${timeRange}`],
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   // Query for top users
   const { data: topUsers, isLoading: topUsersLoading, refetch: refetchTopUsers } = useQuery<TopUser[]>({
-    queryKey: ['/api/admin/top-users', { days: 7, limit: 20 }],
+    queryKey: [`/api/admin/top-users?days=7&limit=20`],
     refetchInterval: 60000, // Refresh every minute
   });
 
