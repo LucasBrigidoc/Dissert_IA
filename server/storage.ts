@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -70,6 +70,53 @@ export interface IStorage {
   updateConversationData(conversationId: string, brainstormData: any, currentSection: string): Promise<Conversation>;
   getRecentConversations(userId?: string, sessionId?: string, limit?: number): Promise<Conversation[]>;
   
+  // Admin operations
+  createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
+  getAdminUser(userId: string): Promise<AdminUser | undefined>;
+  
+  // Cost tracking operations
+  insertUserCost(cost: InsertUserCost): Promise<UserCost>;
+  insertUserDailyUsage(usage: InsertUserDailyUsage): Promise<UserDailyUsage>;
+  findUserDailyUsage(userId: string | null, ipAddress: string, date: Date): Promise<UserDailyUsage | undefined>;
+  updateUserDailyUsage(id: string, updates: Partial<UserDailyUsage>): Promise<UserDailyUsage>;
+  
+  // Business metrics operations
+  insertBusinessMetric(metric: InsertBusinessMetric): Promise<BusinessMetric>;
+  getDailyOperationStats(startDate: Date, endDate: Date): Promise<{
+    totalOperations: number;
+    totalCost: number;
+    cacheHitRate: number;
+    topOperation: string;
+  }>;
+  getUserActivityStats(days: number): Promise<{
+    totalUsers: number;
+    activeUsers: number;
+  }>;
+  getUserCostSummary(identifier: { userId?: string; ipAddress?: string }, startDate: Date, endDate: Date): Promise<{
+    totalCost: number;
+    totalOperations: number;
+    operationBreakdown: Record<string, number>;
+    costBreakdown: Record<string, number>;
+  }>;
+  getBusinessOverview(startDate: Date, endDate: Date): Promise<{
+    totalUsers: number;
+    activeUsers: number;
+    totalOperations: number;
+    totalCostBrl: number;
+    averageCostPerUser: number;
+    topOperations: Array<{ operation: string; count: number; cost: number }>;
+    dailyTrends: Array<{ date: string; operations: number; cost: number; users: number }>;
+    cacheEfficiency: number;
+  }>;
+  getTopCostUsers(startDate: Date, endDate: Date, limit: number): Promise<Array<{
+    userId?: string;
+    ipAddress: string;
+    totalCost: number;
+    totalOperations: number;
+    averageOperationCost: number;
+    topOperation: string;
+  }>>;
+  
 }
 
 export class MemStorage implements IStorage {
@@ -85,6 +132,10 @@ export class MemStorage implements IStorage {
   private savedProposals: Map<string, SavedProposal>;
   private simulations: Map<string, Simulation>;
   private conversations: Map<string, Conversation>;
+  private adminUsers: Map<string, AdminUser>;
+  private userCosts: Map<string, UserCost>;
+  private businessMetrics: Map<string, BusinessMetric>;
+  private userDailyUsage: Map<string, UserDailyUsage>;
 
   constructor() {
     this.users = new Map();
@@ -99,6 +150,10 @@ export class MemStorage implements IStorage {
     this.savedProposals = new Map();
     this.simulations = new Map();
     this.conversations = new Map();
+    this.adminUsers = new Map();
+    this.userCosts = new Map();
+    this.businessMetrics = new Map();
+    this.userDailyUsage = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -877,6 +932,312 @@ export class MemStorage implements IStorage {
     });
 
     return conversations.slice(0, limit);
+  }
+
+  // Admin operations
+  async createAdminUser(admin: InsertAdminUser): Promise<AdminUser> {
+    const id = randomUUID();
+    const adminUser: AdminUser = {
+      ...admin,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.adminUsers.set(id, adminUser);
+    return adminUser;
+  }
+
+  async getAdminUser(userId: string): Promise<AdminUser | undefined> {
+    return Array.from(this.adminUsers.values()).find(admin => admin.userId === userId);
+  }
+
+  // Cost tracking operations
+  async insertUserCost(cost: InsertUserCost): Promise<UserCost> {
+    const id = randomUUID();
+    const userCost: UserCost = {
+      ...cost,
+      id,
+      createdAt: new Date(),
+    };
+    this.userCosts.set(id, userCost);
+    return userCost;
+  }
+
+  async insertUserDailyUsage(usage: InsertUserDailyUsage): Promise<UserDailyUsage> {
+    const id = randomUUID();
+    const dailyUsage: UserDailyUsage = {
+      ...usage,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userDailyUsage.set(id, dailyUsage);
+    return dailyUsage;
+  }
+
+  async findUserDailyUsage(userId: string | null, ipAddress: string, date: Date): Promise<UserDailyUsage | undefined> {
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0);
+    
+    return Array.from(this.userDailyUsage.values()).find(usage => {
+      const usageDate = new Date(usage.usageDate);
+      usageDate.setHours(0, 0, 0, 0);
+      
+      return usage.userId === userId && 
+             usage.ipAddress === ipAddress && 
+             usageDate.getTime() === targetDate.getTime();
+    });
+  }
+
+  async updateUserDailyUsage(id: string, updates: Partial<UserDailyUsage>): Promise<UserDailyUsage> {
+    const existing = this.userDailyUsage.get(id);
+    if (!existing) {
+      throw new Error(`UserDailyUsage with id ${id} not found`);
+    }
+    
+    const updated: UserDailyUsage = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date(),
+    };
+    
+    this.userDailyUsage.set(id, updated);
+    return updated;
+  }
+
+  // Business metrics operations
+  async insertBusinessMetric(metric: InsertBusinessMetric): Promise<BusinessMetric> {
+    const id = randomUUID();
+    const businessMetric: BusinessMetric = {
+      ...metric,
+      id,
+      createdAt: new Date(),
+    };
+    this.businessMetrics.set(id, businessMetric);
+    return businessMetric;
+  }
+
+  async getDailyOperationStats(startDate: Date, endDate: Date): Promise<{
+    totalOperations: number;
+    totalCost: number;
+    cacheHitRate: number;
+    topOperation: string;
+  }> {
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt);
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    const totalOperations = costs.length;
+    const totalCost = costs.reduce((sum, cost) => sum + cost.costBrl, 0);
+    
+    // Calculate cache hit rate
+    const aiOperations = costs.filter(cost => cost.source === 'ai').length;
+    const cacheHits = costs.filter(cost => cost.source === 'cache').length;
+    const cacheHitRate = totalOperations > 0 ? cacheHits / totalOperations : 0;
+
+    // Find top operation
+    const operationCounts: Record<string, number> = {};
+    costs.forEach(cost => {
+      operationCounts[cost.operation] = (operationCounts[cost.operation] || 0) + 1;
+    });
+    
+    const topOperation = Object.entries(operationCounts)
+      .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none';
+
+    return {
+      totalOperations,
+      totalCost,
+      cacheHitRate,
+      topOperation,
+    };
+  }
+
+  async getUserActivityStats(days: number): Promise<{
+    totalUsers: number;
+    activeUsers: number;
+  }> {
+    const totalUsers = this.users.size;
+    
+    // Calculate active users (users who made requests in the last N days)
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    const activeUserIds = new Set(
+      Array.from(this.userCosts.values())
+        .filter(cost => new Date(cost.createdAt) >= cutoffDate && cost.userId)
+        .map(cost => cost.userId!)
+    );
+    
+    return {
+      totalUsers,
+      activeUsers: activeUserIds.size,
+    };
+  }
+
+  async getUserCostSummary(identifier: { userId?: string; ipAddress?: string }, startDate: Date, endDate: Date): Promise<{
+    totalCost: number;
+    totalOperations: number;
+    operationBreakdown: Record<string, number>;
+    costBreakdown: Record<string, number>;
+  }> {
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt);
+      const dateMatch = costDate >= startDate && costDate <= endDate;
+      
+      if (identifier.userId) {
+        return dateMatch && cost.userId === identifier.userId;
+      } else if (identifier.ipAddress) {
+        return dateMatch && cost.ipAddress === identifier.ipAddress;
+      }
+      
+      return false;
+    });
+
+    const totalCost = costs.reduce((sum, cost) => sum + cost.costBrl, 0);
+    const totalOperations = costs.length;
+    
+    const operationBreakdown: Record<string, number> = {};
+    const costBreakdown: Record<string, number> = {};
+    
+    costs.forEach(cost => {
+      operationBreakdown[cost.operation] = (operationBreakdown[cost.operation] || 0) + 1;
+      costBreakdown[cost.operation] = (costBreakdown[cost.operation] || 0) + cost.costBrl;
+    });
+
+    return {
+      totalCost,
+      totalOperations,
+      operationBreakdown,
+      costBreakdown,
+    };
+  }
+
+  async getBusinessOverview(startDate: Date, endDate: Date): Promise<{
+    totalUsers: number;
+    activeUsers: number;
+    totalOperations: number;
+    totalCostBrl: number;
+    averageCostPerUser: number;
+    topOperations: Array<{ operation: string; count: number; cost: number }>;
+    dailyTrends: Array<{ date: string; operations: number; cost: number; users: number }>;
+    cacheEfficiency: number;
+  }> {
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt);
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    const totalUsers = this.users.size;
+    const activeUserIds = new Set(costs.filter(c => c.userId).map(c => c.userId!));
+    const activeUsers = activeUserIds.size;
+    const totalOperations = costs.length;
+    const totalCostBrl = costs.reduce((sum, cost) => sum + cost.costBrl, 0);
+    const averageCostPerUser = activeUsers > 0 ? Math.round(totalCostBrl / activeUsers) : 0;
+
+    // Top operations
+    const operationStats: Record<string, { count: number; cost: number }> = {};
+    costs.forEach(cost => {
+      if (!operationStats[cost.operation]) {
+        operationStats[cost.operation] = { count: 0, cost: 0 };
+      }
+      operationStats[cost.operation].count++;
+      operationStats[cost.operation].cost += cost.costBrl;
+    });
+
+    const topOperations = Object.entries(operationStats)
+      .map(([operation, stats]) => ({ operation, ...stats }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    // Daily trends
+    const dailyData: Record<string, { operations: number; cost: number; users: Set<string> }> = {};
+    costs.forEach(cost => {
+      const date = new Date(cost.createdAt).toISOString().split('T')[0];
+      if (!dailyData[date]) {
+        dailyData[date] = { operations: 0, cost: 0, users: new Set() };
+      }
+      dailyData[date].operations++;
+      dailyData[date].cost += cost.costBrl;
+      if (cost.userId) dailyData[date].users.add(cost.userId);
+    });
+
+    const dailyTrends = Object.entries(dailyData)
+      .map(([date, data]) => ({
+        date,
+        operations: data.operations,
+        cost: data.cost,
+        users: data.users.size,
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    // Cache efficiency
+    const cacheHits = costs.filter(c => c.source === 'cache').length;
+    const cacheEfficiency = totalOperations > 0 ? (cacheHits / totalOperations) * 100 : 0;
+
+    return {
+      totalUsers,
+      activeUsers,
+      totalOperations,
+      totalCostBrl,
+      averageCostPerUser,
+      topOperations,
+      dailyTrends,
+      cacheEfficiency,
+    };
+  }
+
+  async getTopCostUsers(startDate: Date, endDate: Date, limit: number): Promise<Array<{
+    userId?: string;
+    ipAddress: string;
+    totalCost: number;
+    totalOperations: number;
+    averageOperationCost: number;
+    topOperation: string;
+  }>> {
+    const costs = Array.from(this.userCosts.values()).filter(cost => {
+      const costDate = new Date(cost.createdAt);
+      return costDate >= startDate && costDate <= endDate;
+    });
+
+    // Group by user/IP
+    const userStats: Record<string, {
+      userId?: string;
+      ipAddress: string;
+      totalCost: number;
+      totalOperations: number;
+      operations: Record<string, number>;
+    }> = {};
+
+    costs.forEach(cost => {
+      const key = cost.userId || cost.ipAddress;
+      if (!userStats[key]) {
+        userStats[key] = {
+          userId: cost.userId || undefined,
+          ipAddress: cost.ipAddress,
+          totalCost: 0,
+          totalOperations: 0,
+          operations: {},
+        };
+      }
+      
+      userStats[key].totalCost += cost.costBrl;
+      userStats[key].totalOperations++;
+      userStats[key].operations[cost.operation] = (userStats[key].operations[cost.operation] || 0) + 1;
+    });
+
+    return Object.values(userStats)
+      .map(stats => ({
+        userId: stats.userId,
+        ipAddress: stats.ipAddress,
+        totalCost: stats.totalCost,
+        totalOperations: stats.totalOperations,
+        averageOperationCost: Math.round(stats.totalCost / stats.totalOperations),
+        topOperation: Object.entries(stats.operations)
+          .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none',
+      }))
+      .sort((a, b) => b.totalCost - a.totalCost)
+      .slice(0, limit);
   }
 
 }
