@@ -232,15 +232,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { essayText, userId } = validationResult.data;
 
-      // Rate limiting check (15 analyses per day per IP)
+      // Rate limiting check (45 analyses every 3 days per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`structure_analysis_${clientIP}`, 15, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`structure_analysis_${clientIP}`, 45, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can analyze 15 essays per day.", 
-          retryAfter: 86400,
+          message: "Rate limit exceeded. You can analyze 45 essays every 3 days.", 
+          retryAfter: 259200,
           rateLimitType: "structure_analysis"
         });
       }
@@ -312,15 +312,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { structureName, sections, topic, additionalInstructions } = validationResult.data;
 
-      // Rate limiting check (6 essay generations per day per IP)
+      // Rate limiting check (18 essay generations every 3 days per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 6, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 18, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can generate 6 essays per day.", 
-          retryAfter: 86400,
+          message: "Rate limit exceeded. You can generate 18 essays every 3 days.", 
+          retryAfter: 259200,
           rateLimitType: "essay_generation"
         });
       }
@@ -371,15 +371,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedQuery = searchQuerySchema.parse(req.body);
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
-      // Rate limiting check (20 AI searches per day per IP)
+      // Rate limiting check (50 AI searches every 3 days per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`repertoire_search_${clientIP}`, 20, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`repertoire_search_${clientIP}`, 50, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can make 20 AI searches per day.", 
-          retryAfter: 86400 
+          message: "Rate limit exceeded. You can make 50 AI searches every 3 days.", 
+          retryAfter: 259200 
         });
       }
       
@@ -488,13 +488,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (results.length < 4) {
         console.log(`🚀 OPTIMIZED: Generating batch of repertoires for: "${query}" (current: ${results.length}, excluded: ${excludeIds.length})`);
         
-        // Rate limiting check for repertoire generation (6 per day per IP)
-        const generateLimitCheck = await storage.checkRateLimit(`repertoire_generate_${clientIP}`, 6, 1440);
+        // Rate limiting check for repertoire generation (18 every 3 days per IP)
+        const generateLimitCheck = await storage.checkRateLimit(`repertoire_generate_${clientIP}`, 18, 4320);
         if (!generateLimitCheck.allowed) {
-          res.set('Retry-After', '86400');
+          res.set('Retry-After', '259200');
           return res.status(429).json({ 
-            message: "Rate limit exceeded. You can generate 6 new repertoires per day.", 
-            retryAfter: 86400 
+            message: "Rate limit exceeded. You can generate 18 new repertoires every 3 days.", 
+            retryAfter: 259200 
           });
         }
         
@@ -716,23 +716,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let rateLimitCheck;
       
       if (futureExamDetection.isFuture) {
-        // Daily rate limit for future exam detection (10 searches per day)
-        rateLimitCheck = await storage.checkRateLimit(`future_exam_${clientIP}`, 10, 1440);
+        // Rate limit for future exam detection (30 searches every 3 days)
+        rateLimitCheck = await storage.checkRateLimit(`future_exam_${clientIP}`, 30, 4320);
         if (!rateLimitCheck.allowed) {
-          res.set('Retry-After', '86400');
+          res.set('Retry-After', '259200');
           return res.status(429).json({ 
-            message: "Rate limit exceeded. You can search for future exams 10 times per day.", 
-            retryAfter: 86400 // 24 hours
+            message: "Rate limit exceeded. You can search for future exams 30 times every 3 days.", 
+            retryAfter: 259200 // 72 hours
           });
         }
       } else {
-        // Regular rate limiting (20 searches per day per IP)
-        rateLimitCheck = await storage.checkRateLimit(`proposal_search_${clientIP}`, 20, 1440);
+        // Regular rate limiting (45 searches every 3 days per IP)
+        rateLimitCheck = await storage.checkRateLimit(`proposal_search_${clientIP}`, 45, 4320);
         if (!rateLimitCheck.allowed) {
-          res.set('Retry-After', '86400');
+          res.set('Retry-After', '259200');
           return res.status(429).json({ 
-            message: "Rate limit exceeded. You can make 20 searches per day.", 
-            retryAfter: 86400 
+            message: "Rate limit exceeded. You can make 45 searches every 3 days.", 
+            retryAfter: 259200 
           });
         }
       }
@@ -844,15 +844,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = generateProposalSchema.parse(req.body);
       
-      // Rate limiting check (7 generations per day per IP)
+      // Rate limiting check (40 generations every 3 days per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`proposal_generate_${clientIP}`, 7, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`proposal_generate_${clientIP}`, 40, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can generate 7 proposals per day.", 
-          retryAfter: 86400 
+          message: "Rate limit exceeded. You can generate 40 proposals every 3 days.", 
+          retryAfter: 259200 
         });
       }
       
@@ -982,15 +982,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = chatMessageSchema.parse(req.body);
       const { conversationId, messageId, message, section, context } = validatedData;
       
-      // Rate limiting check (7 AI chats per day per IP)
+      // Rate limiting check (15 AI chats every 3 days per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${clientIP}`, 7, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${clientIP}`, 15, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can make 7 AI chat requests per day.", 
-          retryAfter: 86400 
+          message: "Rate limit exceeded. You can make 15 AI chat requests every 3 days.", 
+          retryAfter: 259200 
         });
       }
       
@@ -1120,16 +1120,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = textModificationRequestSchema.parse(req.body);
       const { text, type, config } = validatedData;
       
-      // Per-type rate limiting (15 modifications per day per IP per type)
+      // Per-type rate limiting (45 modifications every 3 days per IP per type)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
       const perTypeIdentifier = `${clientIP}_text_${type}`;
-      const rateLimitCheck = await storage.checkRateLimit(perTypeIdentifier, 15, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(perTypeIdentifier, 45, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: `Rate limit exceeded for ${type} modifications. You can make 15 ${type} modifications per day.`, 
-          retryAfter: 86400,
+          message: `Rate limit exceeded for ${type} modifications. You can make 45 ${type} modifications every 3 days.`, 
+          retryAfter: 259200,
           type: type
         });
       }
@@ -1193,15 +1193,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Essay too short for correction (minimum 100 characters)" });
       }
       
-      // Rate limiting check (8 corrections per day per IP)
+      // Rate limiting check (10 corrections every 3 days per IP)
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`correction_${clientIP}`, 8, 1440);
+      const rateLimitCheck = await storage.checkRateLimit(`correction_${clientIP}`, 10, 4320);
       
       if (!rateLimitCheck.allowed) {
-        res.set('Retry-After', '86400');
+        res.set('Retry-After', '259200');
         return res.status(429).json({ 
-          message: "Rate limit exceeded. You can correct 8 essays per day.", 
-          retryAfter: 86400 
+          message: "Rate limit exceeded. You can correct 10 essays every 3 days.", 
+          retryAfter: 259200 
         });
       }
       
