@@ -8,7 +8,7 @@ import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCir
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
 
 export default function Argumentos() {
   const [location] = useLocation();
@@ -207,6 +207,9 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
       // Atualizar dados conforme a conversa progride
       updateBrainstormFromChat(data.response, data.section);
+      
+      // Atualizar barra de progresso de IA após uso de tokens
+      refreshAIUsageStats();
     },
     onError: (error) => {
       console.error('Erro ao enviar mensagem:', error);
@@ -701,7 +704,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       </div>
       
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-3 pt-20 sm:pt-28">
+      <div className="container mx-auto px-4 sm:px-6 py-3 pt-16 sm:pt-20">
         <div className="flex flex-col gap-2 h-[calc(100vh-4rem)] sm:h-auto">
           
           {/* Chat Principal - Altura Adaptável - Maior em Mobile */}

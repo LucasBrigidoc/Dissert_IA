@@ -32,6 +32,15 @@ interface AIUsageProgressProps {
   variant?: "default" | "minimal" | "detailed" | "header";
 }
 
+// Criar uma função global para refresh das estatísticas de uso
+let refreshUsageStats: (() => void) | null = null;
+
+export function refreshAIUsageStats() {
+  if (refreshUsageStats) {
+    refreshUsageStats();
+  }
+}
+
 export function AIUsageProgress({ 
   className, 
   showDetails = true, 
@@ -66,6 +75,9 @@ export function AIUsageProgress({
   };
 
   useEffect(() => {
+    // Atribuir a função de refresh para acesso global
+    refreshUsageStats = fetchUsageStats;
+    
     fetchUsageStats();
     
     // Refresh stats every 30 seconds when on visible page
@@ -75,7 +87,13 @@ export function AIUsageProgress({
       }
     }, 30000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      // Limpar a referência global quando o componente é desmontado
+      if (refreshUsageStats === fetchUsageStats) {
+        refreshUsageStats = null;
+      }
+    };
   }, []);
 
   // Determine progress bar color based on usage
@@ -125,7 +143,7 @@ export function AIUsageProgress({
     return names[operation] || operation;
   };
 
-  // Header variant - Padronizado para integração com cabeçalho das páginas
+  // Header variant - Padronizado para integração com cabeçalho das páginas (altura reduzida)
   if (variant === "header") {
     return (
       <div className={cn(
@@ -133,19 +151,19 @@ export function AIUsageProgress({
         "supports-[backdrop-filter]:bg-white/60",
         className
       )}>
-        <div className="container mx-auto px-4 sm:px-6 py-3">
+        <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center justify-center sm:justify-between">
                   {/* Mobile: Centered layout */}
-                  <div className="flex items-center space-x-3 sm:hidden">
-                    <div className="flex items-center space-x-2">
-                      <Zap className="w-4 h-4 text-bright-blue" />
+                  <div className="flex items-center space-x-2 sm:hidden">
+                    <div className="flex items-center space-x-1.5">
+                      <Zap className="w-3.5 h-3.5 text-bright-blue" />
                       <span className="text-xs font-medium text-gray-700">IA</span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="flex items-center space-x-1.5">
+                      <div className="w-12 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                         <div 
                           className={cn("h-full transition-all duration-300", getProgressColor(usageStats.usagePercentage))}
                           style={{ width: `${Math.min(100, usageStats.usagePercentage)}%` }}
@@ -154,19 +172,25 @@ export function AIUsageProgress({
                       <span className="text-xs font-semibold text-gray-800">
                         {usageStats.usagePercentage.toFixed(0)}%
                       </span>
+                      {/* Só mostra dias restantes quando uso está 100% */}
+                      {usageStats.usagePercentage >= 100 && (
+                        <span className="text-xs text-gray-500">
+                          {usageStats.daysUntilReset}d restantes
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   {/* Desktop: Full layout */}
                   <div className="hidden sm:flex items-center justify-between w-full">
                     <div className="flex items-center space-x-2">
-                      <Zap className="w-4 h-4 text-bright-blue" />
+                      <Zap className="w-3.5 h-3.5 text-bright-blue" />
                       <span className="text-sm font-medium text-gray-700">Uso de IA</span>
                     </div>
                     
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3">
                       <div className="flex items-center space-x-2">
-                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                           <div 
                             className={cn("h-full transition-all duration-300", getProgressColor(usageStats.usagePercentage))}
                             style={{ width: `${Math.min(100, usageStats.usagePercentage)}%` }}
@@ -177,10 +201,13 @@ export function AIUsageProgress({
                         </span>
                       </div>
                       
-                      <div className="text-xs text-gray-500 flex items-center space-x-1">
-                        <Calendar className="w-3 h-3" />
-                        <span>{usageStats.daysUntilReset}d restantes</span>
-                      </div>
+                      {/* Só mostra dias restantes quando uso está 100% */}
+                      {usageStats.usagePercentage >= 100 && (
+                        <div className="text-xs text-gray-500 flex items-center space-x-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>{usageStats.daysUntilReset}d restantes</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
