@@ -525,36 +525,67 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-3 md:px-4 py-4 md:py-8 pt-24 md:pt-28">
-        {/* Header */}
-        <div className="mb-4 md:mb-8">
-          <Button 
-            variant="outline" 
-            onClick={onBack} 
-            size="sm"
-            className="mb-3 md:mb-4 border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hover:border-bright-blue backdrop-blur-sm bg-white/60 transition-all duration-200 shadow-sm text-sm md:text-base h-8 md:h-10" 
-            data-testid="button-voltar"
-          >
-            <ArrowLeft className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
-            Voltar
-          </Button>
-          
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-dark-blue mb-1 md:mb-2">
-              Usar Estrutura Existente
-            </h1>
-            <p className="text-sm md:text-base text-soft-gray">
-              Selecione uma estrutura salva e gere redações seguindo esse modelo
-            </p>
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <Button 
+              variant="outline" 
+              onClick={onBack} 
+              size="sm"
+              className="flex items-center space-x-1 h-8 px-2 text-xs"
+              data-testid="button-voltar"
+            >
+              <ArrowLeft size={14} />
+              <span>Voltar</span>
+            </Button>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center">
+                <FileText className="text-white" size={14} />
+              </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Usar Estrutura</h1>
+            </div>
           </div>
           
-          {/* AI Usage Progress - Integrado no header */}
-          <div className="border-t border-white/10">
-            <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
-              <AIUsageProgress variant="inline" />
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <Button 
+                variant="outline" 
+                onClick={onBack} 
+                size="sm"
+                className="flex items-center space-x-2"
+                data-testid="button-voltar"
+              >
+                <ArrowLeft size={16} />
+                <span>Voltar</span>
+              </Button>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center">
+                  <FileText className="text-white" size={20} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-dark-blue">Usar Estrutura Existente</h1>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p className="text-soft-gray">Selecione uma estrutura salva e gere redações seguindo esse modelo</p>
             </div>
           </div>
         </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
+      </div>
+
+      {/* Conteúdo principal com espaçamento para header fixo */}
+      <div className="container mx-auto px-3 md:px-4 py-4 md:py-8 pt-32 md:pt-36">
 
         <div className="space-y-3 md:space-y-6">
           {/* Proposta de Redação - PRIMEIRO ELEMENTO */}
