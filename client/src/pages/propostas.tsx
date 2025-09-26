@@ -335,13 +335,17 @@ export default function Propostas() {
             </div>
           </div>
         </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
       </div>
       
-      {/* AI Usage Progress - Padronizado no topo */}
-      <AIUsageProgress variant="header" />
-      
       {/* Main Content */}
-      <div className="pt-20 sm:pt-28 container mx-auto px-4 py-4 sm:py-8">
+      <div className="pt-24 sm:pt-32 container mx-auto px-4 py-4 sm:py-8">
 
         {/* Search Section */}
         <LiquidGlassCard className="mb-6 sm:mb-8 p-4 sm:p-6">

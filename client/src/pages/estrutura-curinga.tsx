@@ -96,27 +96,42 @@ export function EstruturaCuringa() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      {/* AI Usage Progress - Padronizado no topo */}
-      <AIUsageProgress variant="header" />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Link href={backUrl}>
-            <Button variant="ghost" className="mb-4" data-testid="button-voltar">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {fromPage === 'functionalities' ? 'Voltar às Funcionalidades' : 'Voltar ao Dashboard'}
-            </Button>
-          </Link>
-          
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-dark-blue mb-4">
-              Estrutura Curinga
-            </h1>
-            <p className="text-lg text-soft-gray max-w-2xl mx-auto">
-              Crie modelos de estrutura reutilizáveis e gere redações personalizadas seguindo sua metodologia preferida
-            </p>
+      {/* Header com AI Usage integrado */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
+        <div className="container mx-auto px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <Link href={backUrl}>
+              <Button variant="ghost" className="flex items-center space-x-2" data-testid="button-voltar">
+                <ArrowLeft className="h-4 w-4" />
+                <span>{fromPage === 'functionalities' ? 'Voltar às Funcionalidades' : 'Voltar ao Dashboard'}</span>
+              </Button>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Edit3 className="text-white" size={20} />
+              </div>
+              <h1 className="text-2xl font-bold text-dark-blue">Estrutura Curinga</h1>
+            </div>
           </div>
+        </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
+      </div>
+      
+      <div className="container mx-auto px-4 py-8 pt-20 sm:pt-28">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-dark-blue mb-4">
+            Estrutura Curinga
+          </h1>
+          <p className="text-lg text-soft-gray max-w-2xl mx-auto">
+            Crie modelos de estrutura reutilizáveis e gere redações personalizadas seguindo sua metodologia preferida
+          </p>
         </div>
 
         {/* Main Options */}

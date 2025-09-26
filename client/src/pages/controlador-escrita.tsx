@@ -567,11 +567,8 @@ ${recommendations}`);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* AI Usage Progress - Padronizado no topo */}
-      <AIUsageProgress variant="header" />
-      
-      {/* Main Header - Offset para não conflitar com progress bar */}
-      <div className="sticky top-14 z-20 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 mb-4">
+      {/* Header com AI Usage integrado */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
@@ -616,9 +613,16 @@ ${recommendations}`);
             <p className="text-soft-gray">Refine seu texto com os controles de estilo</p>
           </div>
         </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
       </div>
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-16 sm:pt-24 min-h-[calc(100vh-200px)] flex flex-col">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-24 sm:pt-32 min-h-[calc(100vh-200px)] flex flex-col">
         {/* Área de Texto Original */}
         <div className="mb-4 sm:mb-6">
           <LiquidGlassCard className="p-4 sm:p-6">

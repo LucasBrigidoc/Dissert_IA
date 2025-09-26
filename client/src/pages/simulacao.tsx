@@ -19,7 +19,8 @@ import {
   Award,
   BookOpen,
   Lightbulb,
-  X
+  X,
+  Edit3
 } from 'lucide-react';
 import {
   Dialog,
@@ -416,13 +417,10 @@ export default function SimulacaoPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-bright-blue/10 via-white to-dark-blue/10">
-      {/* AI Usage Progress - Padronizado no topo */}
-      <AIUsageProgress variant="header" />
-      
-      <div className="p-4">
-        {/* Header with Back Button */}
-        <div className="max-w-7xl mx-auto mb-6">
-          <div className="flex justify-start">
+      {/* Header com AI Usage integrado */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
+        <div className="container mx-auto px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
             <Button 
               variant="outline" 
               onClick={handleBack}
@@ -432,8 +430,24 @@ export default function SimulacaoPage() {
               <ArrowLeft className="mr-2" size={16} />
               Voltar
             </Button>
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <Edit3 className="text-white" size={20} />
+              </div>
+              <h1 className="text-2xl font-bold text-dark-blue">Simulação</h1>
+            </div>
           </div>
         </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
+      </div>
+      
+      <div className="p-4 pt-24 sm:pt-32">
       
       {/* First Row - Topic/Proposal Section */}
       <div className="max-w-7xl mx-auto mb-6">
