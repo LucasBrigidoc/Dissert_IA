@@ -1232,7 +1232,7 @@ export default function Dashboard() {
 
         {/* Schedule Edit Modal */}
         <Dialog open={showScheduleEdit} onOpenChange={setShowScheduleEdit}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" data-testid="dialog-schedule-edit">
+          <DialogContent className="max-w-[95vw] sm:max-w-2xl lg:max-w-4xl max-h-[85vh] overflow-y-auto mx-4 sm:mx-auto" data-testid="dialog-schedule-edit">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
                 <Timer className="mr-3 text-bright-blue" size={20} />
@@ -1241,19 +1241,19 @@ export default function Dashboard() {
               <div className="text-sm text-soft-gray">Cronograma semanal de estudos</div>
             </DialogHeader>
             
-            <div className="grid gap-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {editingSchedule.map((day, index) => (
-                  <div key={day.day} className="p-4 rounded-lg border-2 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/30" data-testid={`schedule-edit-${day.day.toLowerCase()}`}>
-                    <div className="text-center mb-4">
-                      <div className="text-lg font-bold text-dark-blue mb-2">{day.day}</div>
+                  <div key={day.day} className="p-3 sm:p-4 rounded-lg border-2 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/30" data-testid={`schedule-edit-${day.day.toLowerCase()}`}>
+                    <div className="text-center mb-3 sm:mb-4">
+                      <div className="text-base sm:text-lg font-bold text-dark-blue">{day.day}</div>
                     </div>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-3 sm:space-y-4">
                       <div>
-                        <Label className="text-sm font-medium text-dark-blue">Tempo de Estudo</Label>
-                        <div className="flex space-x-2 mt-1">
-                          <div className="flex-1">
+                        <Label className="text-sm font-medium text-dark-blue mb-2 block">Tempo de Estudo</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1">
                             <Input
                               type="number"
                               value={day.hours}
@@ -1264,9 +1264,9 @@ export default function Dashboard() {
                               className="text-center"
                               data-testid={`input-hours-${day.day.toLowerCase()}`}
                             />
-                            <div className="text-xs text-center text-soft-gray mt-1">Horas</div>
+                            <div className="text-xs text-center text-soft-gray">Horas</div>
                           </div>
-                          <div className="flex-1">
+                          <div className="space-y-1">
                             <Input
                               type="number"
                               value={day.minutes}
@@ -1278,18 +1278,18 @@ export default function Dashboard() {
                               className="text-center"
                               data-testid={`input-minutes-${day.day.toLowerCase()}`}
                             />
-                            <div className="text-xs text-center text-soft-gray mt-1">Minutos</div>
+                            <div className="text-xs text-center text-soft-gray">Minutos</div>
                           </div>
                         </div>
                       </div>
                       
                       <div>
-                        <Label className="text-sm font-medium text-dark-blue">Atividades</Label>
+                        <Label className="text-sm font-medium text-dark-blue mb-2 block">Atividades</Label>
                         <Textarea
                           value={day.activities.join('\n')}
                           onChange={(e) => updateScheduleDay(index, 'activities', e.target.value)}
                           placeholder="Uma atividade por linha..."
-                          className="mt-1 min-h-[100px]"
+                          className="min-h-[80px] sm:min-h-[100px] resize-none"
                           data-testid={`textarea-activities-${day.day.toLowerCase()}`}
                         />
                       </div>
@@ -1298,11 +1298,11 @@ export default function Dashboard() {
                 ))}
               </div>
               
-              <div className="flex justify-end space-x-3 pt-4 border-t">
+              <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4 border-t">
                 <Button 
                   variant="outline" 
                   onClick={handleCancelScheduleEdit}
-                  className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10"
+                  className="text-soft-gray border-soft-gray/30 hover:bg-soft-gray/10 sm:flex-none order-2 sm:order-1"
                   data-testid="button-cancel-schedule"
                 >
                   <X className="mr-2" size={12} />
@@ -1310,7 +1310,7 @@ export default function Dashboard() {
                 </Button>
                 <Button 
                   onClick={handleSaveSchedule}
-                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 order-1 sm:order-2"
                   data-testid="button-save-schedule"
                 >
                   <Save className="mr-2" size={12} />
