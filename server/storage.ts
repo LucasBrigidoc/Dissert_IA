@@ -1017,7 +1017,7 @@ export class MemStorage implements IStorage {
       tokensInput: cost.tokensInput ?? 0,
       tokensOutput: cost.tokensOutput ?? 0,
       costBrl: cost.costBrl ?? 0,
-      modelUsed: cost.modelUsed ?? "gemini-1.5-flash",
+      modelUsed: cost.modelUsed ?? "gemini-2.5-flash-lite",
       processingTime: cost.processingTime ?? null,
       id,
       createdAt: new Date(),
