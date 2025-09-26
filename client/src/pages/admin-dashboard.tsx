@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon } from "lucide-react";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface BusinessOverview {
@@ -34,6 +34,126 @@ interface CurrentCosts {
   topOperation: string;
   date: string;
   realTime: boolean;
+}
+
+// ===== FASE 1: RECEITA + IA COST TRACKING =====
+interface RevenueOverview {
+  mrr: number;
+  arr: number;
+  totalActiveSubscriptions: number;
+  paidUsers: number;
+  trialUsers: number;
+  arpu: number;
+  grossMarginPercent: number;
+  mrrGrowthRate: number;
+  churnRate: number;
+}
+
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  description: string | null;
+  priceMonthly: number;
+  priceYearly: number | null;
+  features: unknown;
+  maxOperationsPerMonth: number | null;
+  maxAICostPerMonth: number | null;
+  isActive: boolean | null;
+}
+
+interface SubscriptionsSummary {
+  totalActive: number;
+  totalTrial: number;
+  totalCancelled: number;
+  subscriptionsByPlan: Record<string, number>;
+}
+
+interface Transaction {
+  id: string;
+  type: string;
+  status: string;
+  amount: number;
+  currency: string;
+  description: string | null;
+  createdAt: string;
+}
+
+// ===== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES =====
+interface ConversionStep {
+  stepName: string;
+  stepNumber: number;
+  conversionRate: number;
+  usersEntered: number;
+  usersCompleted: number;
+  averageTimeToComplete: number;
+}
+
+interface SessionMetrics {
+  totalSessions: number;
+  averageDuration: number;
+  bounceRate: number;
+  averagePageViews: number;
+  topSources: Array<{ source: string; count: number }>;
+  deviceBreakdown: Array<{ device: string; count: number; percentage: number }>;
+}
+
+interface TaskCompletionRate {
+  taskType: string;
+  taskName: string;
+  totalStarted: number;
+  totalCompleted: number;
+  completionRate: number;
+  averageTimeToComplete: number;
+  averageSatisfactionScore: number;
+  averageNpsScore: number;
+}
+
+interface UserEventsAnalytics {
+  totalEvents: number;
+  eventsByType: Record<string, number>;
+  eventsByDay: Record<string, number>;
+  recentEvents: any[];
+}
+
+// ===== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS =====
+interface CohortAnalysis {
+  cohortMonth: string;
+  totalUsers: number;
+  activeUsers: number;
+  churnedUsers: number;
+  retentionRate: number;
+  currentMrr: number;
+  averageLtv: number;
+  averageLifetimeDays: number;
+}
+
+interface RevenueBySource {
+  source: string;
+  totalRevenue: number;
+  totalUsers: number;
+  averageRevenue: number;
+  percentage: number;
+}
+
+interface HighRiskUser {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  churnProbability: number;
+  riskLevel: string;
+  daysToChurn: number;
+  riskFactors: string[];
+  recommendedActions: string[];
+}
+
+interface PredictiveMetric {
+  id: string;
+  metricType: string;
+  timeHorizon: string;
+  predictedValue: number;
+  confidenceScore: number | null;
+  actualValue: number | null;
+  metricDate: string;
 }
 
 const formatCurrency = (centavos: number) => {
@@ -81,19 +201,95 @@ export default function AdminDashboard() {
     refetchInterval: 10000, // Refresh every 10 seconds for real-time
   });
 
-  // Manual metrics generation
+  // ===== FASE 1: RECEITA + IA COST TRACKING QUERIES =====
+  const { data: revenueOverview, isLoading: revenueLoading, refetch: refetchRevenue } = useQuery<{data: RevenueOverview}>({
+    queryKey: [`/api/admin/revenue-overview?days=${timeRange}`],
+    refetchInterval: 60000,
+  });
+
+  const { data: subscriptionPlans, isLoading: plansLoading } = useQuery<{data: SubscriptionPlan[]}>({
+    queryKey: ['/api/admin/subscription-plans?activeOnly=true'],
+    refetchInterval: 300000, // 5 minutes
+  });
+
+  const { data: subscriptionsSummary, isLoading: subscriptionsLoading } = useQuery<{data: SubscriptionsSummary}>({
+    queryKey: ['/api/admin/subscriptions-summary'],
+    refetchInterval: 120000, // 2 minutes
+  });
+
+  const { data: recentTransactions, isLoading: transactionsLoading } = useQuery<{data: Transaction[]}>({
+    queryKey: [`/api/admin/recent-transactions?days=7&limit=20`],
+    refetchInterval: 60000,
+  });
+
+  // ===== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES QUERIES =====
+  const { data: conversionFunnels, isLoading: funnelsLoading } = useQuery<{data: ConversionStep[]}>({
+    queryKey: [`/api/admin/conversion-funnels?funnelName=signup_to_paid&days=${timeRange}`],
+    refetchInterval: 300000,
+  });
+
+  const { data: sessionMetrics, isLoading: sessionsLoading } = useQuery<{data: SessionMetrics}>({
+    queryKey: [`/api/admin/session-metrics?days=${timeRange}`],
+    refetchInterval: 300000,
+  });
+
+  const { data: taskCompletionRates, isLoading: tasksLoading } = useQuery<{data: TaskCompletionRate[]}>({
+    queryKey: [`/api/admin/task-completion-rates?days=${timeRange}`],
+    refetchInterval: 300000,
+  });
+
+  const { data: userEventsAnalytics, isLoading: eventsLoading } = useQuery<{data: UserEventsAnalytics}>({
+    queryKey: [`/api/admin/user-events?days=${timeRange}`],
+    refetchInterval: 300000,
+  });
+
+  // ===== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS QUERIES =====
+  const { data: cohortAnalysis, isLoading: cohortsLoading } = useQuery<{data: CohortAnalysis[]}>({
+    queryKey: ['/api/admin/cohort-analysis'],
+    refetchInterval: 600000, // 10 minutes
+  });
+
+  const { data: revenueBySource, isLoading: revenueSourceLoading } = useQuery<{data: RevenueBySource[]}>({
+    queryKey: [`/api/admin/revenue-by-source?days=${timeRange}`],
+    refetchInterval: 600000,
+  });
+
+  const { data: highRiskUsers, isLoading: riskUsersLoading } = useQuery<{data: HighRiskUser[]}>({
+    queryKey: ['/api/admin/high-risk-users?limit=20'],
+    refetchInterval: 1800000, // 30 minutes
+  });
+
+  const { data: predictiveMetrics, isLoading: predictiveLoading } = useQuery<{data: PredictiveMetric[]}>({
+    queryKey: ['/api/admin/predictive-metrics?metricType=churn_prediction'],
+    refetchInterval: 1800000,
+  });
+
+  // Manual metrics generation with sample data for all phases
   const generateMetrics = async () => {
     setIsGeneratingMetrics(true);
     try {
-      const response = await fetch('/api/admin/generate-metrics', {
+      // Generate legacy metrics
+      const legacyResponse = await fetch('/api/admin/generate-metrics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: new Date().toISOString() })
       });
+
+      // Generate sample data for all phases  
+      const sampleDataResponse = await fetch('/api/admin/generate-sample-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataType: 'all' })
+      });
       
-      if (response.ok) {
+      if (legacyResponse.ok && sampleDataResponse.ok) {
         // Refetch all data after generating metrics
-        await Promise.all([refetchOverview(), refetchTopUsers(), refetchCurrentCosts()]);
+        await Promise.all([
+          refetchOverview(), 
+          refetchTopUsers(), 
+          refetchCurrentCosts(),
+          refetchRevenue()
+        ]);
       }
     } catch (error) {
       console.error('Error generating metrics:', error);
@@ -102,7 +298,10 @@ export default function AdminDashboard() {
     }
   };
 
-  if (overviewLoading || topUsersLoading || currentCostsLoading) {
+  // Check if any critical data is loading
+  const isLoading = overviewLoading || topUsersLoading || currentCostsLoading;
+
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen" data-testid="loading-admin-dashboard">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -210,11 +409,14 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview" data-testid="tab-overview">Visão Geral</TabsTrigger>
           <TabsTrigger value="trends" data-testid="tab-trends">Tendências</TabsTrigger>
           <TabsTrigger value="operations" data-testid="tab-operations">Operações</TabsTrigger>
           <TabsTrigger value="users" data-testid="tab-users">Usuários</TabsTrigger>
+          <TabsTrigger value="revenue" data-testid="tab-revenue">Receita</TabsTrigger>
+          <TabsTrigger value="conversion" data-testid="tab-conversion">Conversão</TabsTrigger>
+          <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -402,6 +604,344 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 )) || <div className="text-center text-gray-500 py-8">Nenhum dado disponível</div>}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ===== FASE 1: RECEITA TAB ===== */}
+        <TabsContent value="revenue">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+            {/* Revenue KPI Cards */}
+            <Card data-testid="card-mrr">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">MRR</CardTitle>
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-mrr">
+                  {formatCurrency(revenueOverview?.data?.mrr || 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  ARR: {formatCurrency(revenueOverview?.data?.arr || 0)}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-active-subscriptions">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Assinaturas Ativas</CardTitle>
+                <UsersIcon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-active-subscriptions">
+                  {subscriptionsSummary?.data?.totalActive || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {subscriptionsSummary?.data?.totalTrial || 0} em trial
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-arpu">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">ARPU</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-arpu">
+                  {formatCurrency(revenueOverview?.data?.arpu || 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Revenue por usuário
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-mrr-growth">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Crescimento MRR</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-mrr-growth">
+                  {(revenueOverview?.data?.mrrGrowthRate || 0).toFixed(1)}%
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Últimos {timeRange} dias
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Subscription Plans */}
+            <Card data-testid="card-subscription-plans">
+              <CardHeader>
+                <CardTitle>Planos de Assinatura</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {(subscriptionPlans?.data || []).map((plan) => (
+                    <div key={plan.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <h4 className="font-medium">{plan.name}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{plan.description}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold">{formatCurrency(plan.priceMonthly)}/mês</div>
+                        {plan.priceYearly && (
+                          <div className="text-sm text-gray-600">{formatCurrency(plan.priceYearly)}/ano</div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Transactions */}
+            <Card data-testid="card-recent-transactions">
+              <CardHeader>
+                <CardTitle>Transações Recentes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {(recentTransactions?.data || []).slice(0, 5).map((transaction) => (
+                    <div key={transaction.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <div className="font-medium capitalize">{transaction.type}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-300">
+                          {new Date(transaction.createdAt).toLocaleDateString('pt-BR')}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold">{formatCurrency(transaction.amount)}</div>
+                        <Badge variant={transaction.status === 'completed' ? 'default' : 'secondary'}>
+                          {transaction.status}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* ===== FASE 2: CONVERSÃO TAB ===== */}
+        <TabsContent value="conversion">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+            {/* Session Metrics Cards */}
+            <Card data-testid="card-total-sessions">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Sessões Totais</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-total-sessions">
+                  {sessionMetrics?.data?.totalSessions || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Últimos {timeRange} dias
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-bounce-rate">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Taxa de Rejeição</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-bounce-rate">
+                  {(sessionMetrics?.data?.bounceRate || 0).toFixed(1)}%
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Duração média: {Math.round(sessionMetrics?.data?.averageDuration || 0)}s
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-page-views">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Páginas/Sessão</CardTitle>
+                <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-page-views">
+                  {(sessionMetrics?.data?.averagePageViews || 0).toFixed(1)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Páginas por sessão
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-events-total">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Eventos Totais</CardTitle>
+                <Target className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" data-testid="text-events-total">
+                  {userEventsAnalytics?.data?.totalEvents || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Últimos {timeRange} dias
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Conversion Funnel */}
+            <Card data-testid="card-conversion-funnel">
+              <CardHeader>
+                <CardTitle>Funil de Conversão (Signup → Pagamento)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={conversionFunnels?.data || []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="stepName" angle={-45} textAnchor="end" height={80} />
+                    <YAxis />
+                    <Tooltip formatter={(value: any, name: string) => [
+                      name === 'conversionRate' ? `${value.toFixed(1)}%` : value,
+                      name === 'conversionRate' ? 'Taxa de Conversão' : 'Usuários'
+                    ]} />
+                    <Bar dataKey="conversionRate" fill="#5087ff" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Task Completion Rates */}
+            <Card data-testid="card-task-completion">
+              <CardHeader>
+                <CardTitle>Taxa de Conclusão de Tarefas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {(taskCompletionRates?.data || []).slice(0, 5).map((task, index) => (
+                    <div key={`${task.taskType}-${index}`} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <h4 className="font-medium">{task.taskName}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                          {task.totalStarted} iniciadas | {task.totalCompleted} concluídas
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold">{task.completionRate.toFixed(1)}%</div>
+                        <div className="text-sm text-gray-600">
+                          Satisfação: {task.averageSatisfactionScore.toFixed(1)}/5
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* ===== FASE 3: ANALYTICS TAB ===== */}
+        <TabsContent value="analytics">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Cohort Analysis */}
+            <Card data-testid="card-cohort-analysis">
+              <CardHeader>
+                <CardTitle>Análise de Coorte por Mês</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={cohortAnalysis?.data || []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="cohortMonth" />
+                    <YAxis />
+                    <Tooltip formatter={(value: any, name: string) => [
+                      name === 'retentionRate' ? `${value.toFixed(1)}%` : value,
+                      name === 'retentionRate' ? 'Taxa de Retenção' : 
+                      name === 'totalUsers' ? 'Total de Usuários' : 
+                      name === 'activeUsers' ? 'Usuários Ativos' : name
+                    ]} />
+                    <Bar dataKey="retentionRate" fill="#5087ff" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Revenue by Source */}
+            <Card data-testid="card-revenue-by-source">
+              <CardHeader>
+                <CardTitle>Receita por Fonte</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={revenueBySource?.data?.map(source => ({
+                        name: source.source,
+                        value: source.totalRevenue,
+                        percentage: source.percentage
+                      })) || []}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={120}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {(revenueBySource?.data || []).map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: any) => formatCurrency(value)} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* High Risk Users */}
+          <Card data-testid="card-high-risk-users">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                Usuários com Alto Risco de Churn
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {(highRiskUsers?.data || []).slice(0, 5).map((user, index) => (
+                  <div key={user.userId} className="flex items-center justify-between p-4 border rounded-lg" data-testid={`high-risk-user-${index}`}>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={user.riskLevel === 'critical' ? 'destructive' : 'secondary'}>
+                          {user.riskLevel === 'critical' ? 'Crítico' : 'Alto Risco'}
+                        </Badge>
+                        <span className="font-medium">{user.userName}</span>
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                        {user.userEmail}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        Fatores: {user.riskFactors.slice(0, 2).join(', ')}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-red-600">{(user.churnProbability * 100).toFixed(1)}%</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        {user.daysToChurn} dias para churn
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {!highRiskUsers?.data?.length && (
+                  <div className="text-center text-gray-500 py-8">
+                    Nenhum usuário de alto risco encontrado
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

@@ -1815,6 +1815,344 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== FASE 1: RECEITA + IA COST TRACKING APIs =====================
+
+  // Get revenue overview
+  app.get("/api/admin/revenue-overview", async (req, res) => {
+    try {
+      const { days = '30' } = req.query;
+      const revenueOverview = await storage.getRevenueOverview(parseInt(days as string));
+      
+      res.json({
+        success: true,
+        data: revenueOverview,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error fetching revenue overview:", error);
+      res.status(500).json({ message: "Failed to fetch revenue overview" });
+    }
+  });
+
+  // Get subscription plans
+  app.get("/api/admin/subscription-plans", async (req, res) => {
+    try {
+      const { activeOnly } = req.query;
+      const plans = await storage.getSubscriptionPlans(activeOnly === 'true');
+      
+      res.json({
+        success: true,
+        data: plans
+      });
+    } catch (error) {
+      console.error("Error fetching subscription plans:", error);
+      res.status(500).json({ message: "Failed to fetch subscription plans" });
+    }
+  });
+
+  // Get active subscriptions summary
+  app.get("/api/admin/subscriptions-summary", async (req, res) => {
+    try {
+      const activeSubscriptions = await storage.getActiveSubscriptions();
+      const trialSubscriptions = await storage.getSubscriptionsByStatus('trial');
+      const cancelledSubscriptions = await storage.getSubscriptionsByStatus('cancelled');
+      
+      const summary = {
+        totalActive: activeSubscriptions.length,
+        totalTrial: trialSubscriptions.length,
+        totalCancelled: cancelledSubscriptions.length,
+        subscriptionsByPlan: {} as Record<string, number>
+      };
+
+      // Group by plan
+      for (const sub of activeSubscriptions) {
+        const plan = await storage.getSubscriptionPlan(sub.planId);
+        const planName = plan?.name || 'Unknown Plan';
+        summary.subscriptionsByPlan[planName] = (summary.subscriptionsByPlan[planName] || 0) + 1;
+      }
+      
+      res.json({
+        success: true,
+        data: summary
+      });
+    } catch (error) {
+      console.error("Error fetching subscriptions summary:", error);
+      res.status(500).json({ message: "Failed to fetch subscriptions summary" });
+    }
+  });
+
+  // Get recent transactions
+  app.get("/api/admin/recent-transactions", async (req, res) => {
+    try {
+      const { days = '7', limit = '50' } = req.query;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      const transactions = await storage.getTransactionsByDateRange(startDate, new Date());
+      const limitedTransactions = transactions.slice(0, parseInt(limit as string));
+      
+      res.json({
+        success: true,
+        data: limitedTransactions,
+        total: transactions.length
+      });
+    } catch (error) {
+      console.error("Error fetching recent transactions:", error);
+      res.status(500).json({ message: "Failed to fetch recent transactions" });
+    }
+  });
+
+  // ===================== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES APIs =====================
+
+  // Get conversion funnel data
+  app.get("/api/admin/conversion-funnels", async (req, res) => {
+    try {
+      const { funnelName, days = '30' } = req.query;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      const conversionRates = await storage.getConversionRates(
+        funnelName as string || 'signup_to_paid',
+        startDate,
+        endDate
+      );
+      
+      res.json({
+        success: true,
+        data: conversionRates,
+        period: { startDate, endDate }
+      });
+    } catch (error) {
+      console.error("Error fetching conversion funnels:", error);
+      res.status(500).json({ message: "Failed to fetch conversion funnel data" });
+    }
+  });
+
+  // Get session metrics
+  app.get("/api/admin/session-metrics", async (req, res) => {
+    try {
+      const { days = '7' } = req.query;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      const sessionMetrics = await storage.getSessionMetrics(startDate, endDate);
+      
+      res.json({
+        success: true,
+        data: sessionMetrics,
+        period: { startDate, endDate }
+      });
+    } catch (error) {
+      console.error("Error fetching session metrics:", error);
+      res.status(500).json({ message: "Failed to fetch session metrics" });
+    }
+  });
+
+  // Get task completion rates
+  app.get("/api/admin/task-completion-rates", async (req, res) => {
+    try {
+      const { taskType, days = '30' } = req.query;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      const taskCompletionRates = await storage.getTaskCompletionRates(
+        taskType as string,
+        startDate,
+        endDate
+      );
+      
+      res.json({
+        success: true,
+        data: taskCompletionRates,
+        period: { startDate, endDate }
+      });
+    } catch (error) {
+      console.error("Error fetching task completion rates:", error);
+      res.status(500).json({ message: "Failed to fetch task completion rates" });
+    }
+  });
+
+  // Get user events analytics
+  app.get("/api/admin/user-events", async (req, res) => {
+    try {
+      const { eventType, days = '7' } = req.query;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      const events = await storage.getEventsByDateRange(startDate, endDate, eventType as string);
+      
+      // Group events by type for analytics
+      const eventsByType: Record<string, number> = {};
+      const eventsByDay: Record<string, number> = {};
+      
+      events.forEach(event => {
+        // Count by type
+        eventsByType[event.eventType] = (eventsByType[event.eventType] || 0) + 1;
+        
+        // Count by day
+        if (event.createdAt) {
+          const day = event.createdAt.toISOString().split('T')[0];
+          eventsByDay[day] = (eventsByDay[day] || 0) + 1;
+        }
+      });
+      
+      res.json({
+        success: true,
+        data: {
+          totalEvents: events.length,
+          eventsByType,
+          eventsByDay,
+          recentEvents: events.slice(0, 20) // Last 20 events
+        },
+        period: { startDate, endDate }
+      });
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+      res.status(500).json({ message: "Failed to fetch user events" });
+    }
+  });
+
+  // ===================== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS APIs =====================
+
+  // Get cohort analysis
+  app.get("/api/admin/cohort-analysis", async (req, res) => {
+    try {
+      const { cohortMonth } = req.query;
+      
+      let cohortDate: Date | undefined;
+      if (cohortMonth) {
+        cohortDate = new Date(cohortMonth as string);
+      }
+      
+      const cohortAnalysis = await storage.getCohortAnalysis(cohortDate);
+      
+      res.json({
+        success: true,
+        data: cohortAnalysis
+      });
+    } catch (error) {
+      console.error("Error fetching cohort analysis:", error);
+      res.status(500).json({ message: "Failed to fetch cohort analysis" });
+    }
+  });
+
+  // Get revenue by source
+  app.get("/api/admin/revenue-by-source", async (req, res) => {
+    try {
+      const { days = '30' } = req.query;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      const revenueBySource = await storage.getRevenueBySource(startDate, endDate);
+      
+      res.json({
+        success: true,
+        data: revenueBySource,
+        period: { startDate, endDate }
+      });
+    } catch (error) {
+      console.error("Error fetching revenue by source:", error);
+      res.status(500).json({ message: "Failed to fetch revenue by source" });
+    }
+  });
+
+  // Get high risk users (churn predictions)
+  app.get("/api/admin/high-risk-users", async (req, res) => {
+    try {
+      const { limit = '20' } = req.query;
+      const highRiskUsers = await storage.getHighRiskUsers(parseInt(limit as string));
+      
+      res.json({
+        success: true,
+        data: highRiskUsers,
+        total: highRiskUsers.length
+      });
+    } catch (error) {
+      console.error("Error fetching high risk users:", error);
+      res.status(500).json({ message: "Failed to fetch high risk users" });
+    }
+  });
+
+  // Get predictive metrics
+  app.get("/api/admin/predictive-metrics", async (req, res) => {
+    try {
+      const { metricType = 'churn_prediction', timeHorizon } = req.query;
+      
+      const predictions = await storage.getLatestPredictions(metricType as string);
+      
+      res.json({
+        success: true,
+        data: predictions,
+        metricType,
+        timeHorizon
+      });
+    } catch (error) {
+      console.error("Error fetching predictive metrics:", error);
+      res.status(500).json({ message: "Failed to fetch predictive metrics" });
+    }
+  });
+
+  // Generate sample metrics data for testing
+  app.post("/api/admin/generate-sample-data", async (req, res) => {
+    try {
+      const { dataType = 'all' } = req.body;
+      
+      // Generate sample revenue metrics
+      if (dataType === 'all' || dataType === 'revenue') {
+        await storage.createRevenueMetric({
+          metricDate: new Date(),
+          mrr: 15000, // R$ 150.00
+          arr: 180000, // R$ 1,800.00
+          totalActiveSubscriptions: 25,
+          paidUsers: 20,
+          trialUsers: 5,
+          arpu: 7500, // R$ 75.00
+          grossMarginPercent: 8500, // 85%
+        });
+      }
+
+      // Generate sample user events
+      if (dataType === 'all' || dataType === 'events') {
+        const sessionId = `session_${Date.now()}`;
+        await storage.createUserEvent({
+          sessionId,
+          eventType: 'signup',
+          eventName: 'User Registration',
+          properties: { source: 'organic', campaign: 'landing_page' },
+          source: 'organic',
+        });
+      }
+
+      // Generate sample task completion
+      if (dataType === 'all' || dataType === 'tasks') {
+        const sessionId = `session_${Date.now()}`;
+        await storage.createTaskCompletion({
+          sessionId,
+          taskType: 'essay_creation',
+          taskName: 'Create First Essay',
+          status: 'completed',
+          timeToComplete: 300, // 5 minutes
+          satisfactionScore: 4,
+          npsScore: 8,
+        });
+      }
+
+      res.json({
+        success: true,
+        message: `Sample data generated for: ${dataType}`,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error generating sample data:", error);
+      res.status(500).json({ message: "Failed to generate sample data" });
+    }
+  });
+
 
   const httpServer = createServer(app);
   return httpServer;

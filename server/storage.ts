@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -160,6 +160,136 @@ export interface IStorage {
     averageCost: number;
   }>>;
   
+  // ===================== FASE 1: RECEITA + IA COST TRACKING =====================
+  
+  // Subscription plans operations
+  createSubscriptionPlan(plan: InsertSubscriptionPlan): Promise<SubscriptionPlan>;
+  getSubscriptionPlans(activeOnly?: boolean): Promise<SubscriptionPlan[]>;
+  getSubscriptionPlan(id: string): Promise<SubscriptionPlan | undefined>;
+  updateSubscriptionPlan(id: string, plan: Partial<SubscriptionPlan>): Promise<SubscriptionPlan>;
+  
+  // User subscriptions operations
+  createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription>;
+  getUserSubscription(userId: string): Promise<UserSubscription | undefined>;
+  getUserSubscriptions(userId: string): Promise<UserSubscription[]>;
+  updateUserSubscription(id: string, subscription: Partial<UserSubscription>): Promise<UserSubscription>;
+  getActiveSubscriptions(): Promise<UserSubscription[]>;
+  getSubscriptionsByStatus(status: string): Promise<UserSubscription[]>;
+  
+  // Transactions operations
+  createTransaction(transaction: InsertTransaction): Promise<Transaction>;
+  getTransaction(id: string): Promise<Transaction | undefined>;
+  getUserTransactions(userId: string): Promise<Transaction[]>;
+  updateTransaction(id: string, transaction: Partial<Transaction>): Promise<Transaction>;
+  getTransactionsByDateRange(startDate: Date, endDate: Date): Promise<Transaction[]>;
+  
+  // Revenue metrics operations
+  createRevenueMetric(metric: InsertRevenueMetric): Promise<RevenueMetric>;
+  getRevenueMetrics(startDate: Date, endDate: Date): Promise<RevenueMetric[]>;
+  getLatestRevenueMetric(): Promise<RevenueMetric | undefined>;
+  getRevenueOverview(days: number): Promise<{
+    mrr: number;
+    arr: number;
+    totalActiveSubscriptions: number;
+    paidUsers: number;
+    trialUsers: number;
+    arpu: number;
+    grossMarginPercent: number;
+    mrrGrowthRate: number;
+    churnRate: number;
+  }>;
+  
+  // ===================== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES =====================
+  
+  // User events operations
+  createUserEvent(event: InsertUserEvent): Promise<UserEvent>;
+  getUserEvents(userId?: string, sessionId?: string, eventType?: string): Promise<UserEvent[]>;
+  getEventsByDateRange(startDate: Date, endDate: Date, eventType?: string): Promise<UserEvent[]>;
+  
+  // Conversion funnels operations
+  createConversionFunnel(funnel: InsertConversionFunnel): Promise<ConversionFunnel>;
+  getConversionFunnels(funnelName?: string, metricDate?: Date): Promise<ConversionFunnel[]>;
+  getConversionRates(funnelName: string, startDate: Date, endDate: Date): Promise<Array<{
+    stepName: string;
+    stepNumber: number;
+    conversionRate: number;
+    usersEntered: number;
+    usersCompleted: number;
+    averageTimeToComplete: number;
+  }>>;
+  
+  // User sessions operations
+  createUserSession(session: InsertUserSession): Promise<UserSession>;
+  updateUserSession(id: string, session: Partial<UserSession>): Promise<UserSession>;
+  getUserSessions(userId?: string, startDate?: Date, endDate?: Date): Promise<UserSession[]>;
+  getSessionMetrics(startDate: Date, endDate: Date): Promise<{
+    totalSessions: number;
+    averageDuration: number;
+    bounceRate: number;
+    averagePageViews: number;
+    topSources: Array<{ source: string; count: number }>;
+    deviceBreakdown: Array<{ device: string; count: number; percentage: number }>;
+  }>;
+  
+  // Task completions operations
+  createTaskCompletion(task: InsertTaskCompletion): Promise<TaskCompletion>;
+  updateTaskCompletion(id: string, task: Partial<TaskCompletion>): Promise<TaskCompletion>;
+  getTaskCompletions(userId?: string, taskType?: string, status?: string): Promise<TaskCompletion[]>;
+  getTaskCompletionRates(taskType?: string, startDate?: Date, endDate?: Date): Promise<Array<{
+    taskType: string;
+    taskName: string;
+    totalStarted: number;
+    totalCompleted: number;
+    completionRate: number;
+    averageTimeToComplete: number;
+    averageSatisfactionScore: number;
+    averageNpsScore: number;
+  }>>;
+  
+  // ===================== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS =====================
+  
+  // User cohorts operations
+  createUserCohort(cohort: InsertUserCohort): Promise<UserCohort>;
+  updateUserCohort(id: string, cohort: Partial<UserCohort>): Promise<UserCohort>;
+  getUserCohort(userId: string): Promise<UserCohort | undefined>;
+  getCohortAnalysis(cohortMonth?: Date): Promise<Array<{
+    cohortMonth: string;
+    totalUsers: number;
+    activeUsers: number;
+    churnedUsers: number;
+    retentionRate: number;
+    currentMrr: number;
+    averageLtv: number;
+    averageLifetimeDays: number;
+  }>>;
+  getRevenueBySource(startDate: Date, endDate: Date): Promise<Array<{
+    source: string;
+    totalRevenue: number;
+    totalUsers: number;
+    averageRevenue: number;
+    percentage: number;
+  }>>;
+  
+  // Predictive metrics operations
+  createPredictiveMetric(metric: InsertPredictiveMetric): Promise<PredictiveMetric>;
+  getPredictiveMetrics(metricType?: string, timeHorizon?: string): Promise<PredictiveMetric[]>;
+  getLatestPredictions(metricType: string): Promise<PredictiveMetric[]>;
+  
+  // Churn predictions operations
+  createChurnPrediction(prediction: InsertChurnPrediction): Promise<ChurnPrediction>;
+  updateChurnPrediction(id: string, prediction: Partial<ChurnPrediction>): Promise<ChurnPrediction>;
+  getChurnPredictions(riskLevel?: string, userId?: string): Promise<ChurnPrediction[]>;
+  getHighRiskUsers(limit?: number): Promise<Array<{
+    userId: string;
+    userName: string;
+    userEmail: string;
+    churnProbability: number;
+    riskLevel: string;
+    daysToChurn: number;
+    riskFactors: string[];
+    recommendedActions: string[];
+  }>>;
+  
 }
 
 // Helper function to remove undefined values from objects
@@ -190,6 +320,23 @@ export class MemStorage implements IStorage {
   private userCosts: Map<string, UserCost>;
   private businessMetrics: Map<string, BusinessMetric>;
   private userDailyUsage: Map<string, UserDailyUsage>;
+  
+  // FASE 1: Receita + IA cost tracking
+  private subscriptionPlans: Map<string, SubscriptionPlan>;
+  private userSubscriptions: Map<string, UserSubscription>;
+  private transactions: Map<string, Transaction>;
+  private revenueMetrics: Map<string, RevenueMetric>;
+  
+  // FASE 2: Funil de conversão + UX completion rates
+  private userEvents: Map<string, UserEvent>;
+  private conversionFunnels: Map<string, ConversionFunnel>;
+  private userSessions: Map<string, UserSession>;
+  private taskCompletions: Map<string, TaskCompletion>;
+  
+  // FASE 3: Advanced cohort analysis + predictive metrics
+  private userCohorts: Map<string, UserCohort>;
+  private predictiveMetrics: Map<string, PredictiveMetric>;
+  private churnPredictions: Map<string, ChurnPrediction>;
 
   constructor() {
     this.users = new Map();
@@ -210,10 +357,29 @@ export class MemStorage implements IStorage {
     this.businessMetrics = new Map();
     this.userDailyUsage = new Map();
     
+    // FASE 1: Receita + IA cost tracking
+    this.subscriptionPlans = new Map();
+    this.userSubscriptions = new Map();
+    this.transactions = new Map();
+    this.revenueMetrics = new Map();
+    
+    // FASE 2: Funil de conversão + UX completion rates
+    this.userEvents = new Map();
+    this.conversionFunnels = new Map();
+    this.userSessions = new Map();
+    this.taskCompletions = new Map();
+    
+    // FASE 3: Advanced cohort analysis + predictive metrics
+    this.userCohorts = new Map();
+    this.predictiveMetrics = new Map();
+    this.churnPredictions = new Map();
+    
     // Initialize with basic repertoires
     this.initializeRepertoires();
     // Initialize with basic proposals
     this.initializeProposals();
+    // Initialize subscription plans
+    this.initializeSubscriptionPlans();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -1621,6 +1787,815 @@ export class MemStorage implements IStorage {
         usage.weekStart >= weeksAgo
       )
       .sort((a, b) => b.weekStart.getTime() - a.weekStart.getTime());
+  }
+
+  // ===================== FASE 1: RECEITA + IA COST TRACKING =====================
+
+  // Subscription plans operations
+  async createSubscriptionPlan(plan: InsertSubscriptionPlan): Promise<SubscriptionPlan> {
+    const id = randomUUID();
+    const subscriptionPlan: SubscriptionPlan = {
+      ...plan,
+      id,
+      description: plan.description || null,
+      priceYearly: plan.priceYearly || null,
+      features: plan.features || [],
+      maxOperationsPerMonth: plan.maxOperationsPerMonth || null,
+      maxAICostPerMonth: plan.maxAICostPerMonth || null,
+      isActive: plan.isActive ?? true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.subscriptionPlans.set(id, subscriptionPlan);
+    return subscriptionPlan;
+  }
+
+  async getSubscriptionPlans(activeOnly?: boolean): Promise<SubscriptionPlan[]> {
+    const plans = Array.from(this.subscriptionPlans.values());
+    return activeOnly ? plans.filter(p => p.isActive) : plans;
+  }
+
+  async getSubscriptionPlan(id: string): Promise<SubscriptionPlan | undefined> {
+    return this.subscriptionPlans.get(id);
+  }
+
+  async updateSubscriptionPlan(id: string, plan: Partial<SubscriptionPlan>): Promise<SubscriptionPlan> {
+    const existing = this.subscriptionPlans.get(id);
+    if (!existing) throw new Error("Subscription plan not found");
+    
+    const updated: SubscriptionPlan = {
+      ...existing,
+      ...removeUndefined(plan),
+      updatedAt: new Date(),
+    };
+    this.subscriptionPlans.set(id, updated);
+    return updated;
+  }
+
+  // User subscriptions operations
+  async createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription> {
+    const id = randomUUID();
+    const userSubscription: UserSubscription = {
+      ...subscription,
+      id,
+      billingCycle: subscription.billingCycle || 'monthly',
+      endDate: subscription.endDate || null,
+      trialEndDate: subscription.trialEndDate || null,
+      nextBillingDate: subscription.nextBillingDate || null,
+      cancelledAt: subscription.cancelledAt || null,
+      cancellationReason: subscription.cancellationReason || null,
+      isAutoRenew: subscription.isAutoRenew ?? true,
+      paymentMethodId: subscription.paymentMethodId || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userSubscriptions.set(id, userSubscription);
+    return userSubscription;
+  }
+
+  async getUserSubscription(userId: string): Promise<UserSubscription | undefined> {
+    return Array.from(this.userSubscriptions.values())
+      .find(sub => sub.userId === userId && sub.status === 'active');
+  }
+
+  async getUserSubscriptions(userId: string): Promise<UserSubscription[]> {
+    return Array.from(this.userSubscriptions.values())
+      .filter(sub => sub.userId === userId);
+  }
+
+  async updateUserSubscription(id: string, subscription: Partial<UserSubscription>): Promise<UserSubscription> {
+    const existing = this.userSubscriptions.get(id);
+    if (!existing) throw new Error("User subscription not found");
+    
+    const updated: UserSubscription = {
+      ...existing,
+      ...removeUndefined(subscription),
+      updatedAt: new Date(),
+    };
+    this.userSubscriptions.set(id, updated);
+    return updated;
+  }
+
+  async getActiveSubscriptions(): Promise<UserSubscription[]> {
+    return Array.from(this.userSubscriptions.values())
+      .filter(sub => sub.status === 'active');
+  }
+
+  async getSubscriptionsByStatus(status: string): Promise<UserSubscription[]> {
+    return Array.from(this.userSubscriptions.values())
+      .filter(sub => sub.status === status);
+  }
+
+  // Transactions operations
+  async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
+    const id = randomUUID();
+    const newTransaction: Transaction = {
+      ...transaction,
+      id,
+      userId: transaction.userId || null,
+      subscriptionId: transaction.subscriptionId || null,
+      currency: transaction.currency || 'BRL',
+      paymentMethod: transaction.paymentMethod || null,
+      paymentProcessorId: transaction.paymentProcessorId || null,
+      description: transaction.description || null,
+      metadata: transaction.metadata || {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.transactions.set(id, newTransaction);
+    return newTransaction;
+  }
+
+  async getTransaction(id: string): Promise<Transaction | undefined> {
+    return this.transactions.get(id);
+  }
+
+  async getUserTransactions(userId: string): Promise<Transaction[]> {
+    return Array.from(this.transactions.values())
+      .filter(tx => tx.userId === userId);
+  }
+
+  async updateTransaction(id: string, transaction: Partial<Transaction>): Promise<Transaction> {
+    const existing = this.transactions.get(id);
+    if (!existing) throw new Error("Transaction not found");
+    
+    const updated: Transaction = {
+      ...existing,
+      ...removeUndefined(transaction),
+      updatedAt: new Date(),
+    };
+    this.transactions.set(id, updated);
+    return updated;
+  }
+
+  async getTransactionsByDateRange(startDate: Date, endDate: Date): Promise<Transaction[]> {
+    return Array.from(this.transactions.values())
+      .filter(tx => tx.createdAt && tx.createdAt >= startDate && tx.createdAt <= endDate);
+  }
+
+  // Revenue metrics operations
+  async createRevenueMetric(metric: InsertRevenueMetric): Promise<RevenueMetric> {
+    const id = randomUUID();
+    const revenueMetric: RevenueMetric = {
+      ...metric,
+      id,
+      mrr: metric.mrr || null,
+      arr: metric.arr || null,
+      newMrrThisMonth: metric.newMrrThisMonth || null,
+      churnedMrrThisMonth: metric.churnedMrrThisMonth || null,
+      expansionMrrThisMonth: metric.expansionMrrThisMonth || null,
+      contractionMrrThisMonth: metric.contractionMrrThisMonth || null,
+      totalActiveSubscriptions: metric.totalActiveSubscriptions || null,
+      trialUsers: metric.trialUsers || null,
+      paidUsers: metric.paidUsers || null,
+      arpu: metric.arpu || null,
+      ltv: metric.ltv || null,
+      cac: metric.cac || null,
+      paybackPeriodDays: metric.paybackPeriodDays || null,
+      grossMarginPercent: metric.grossMarginPercent || null,
+      createdAt: new Date(),
+    };
+    this.revenueMetrics.set(id, revenueMetric);
+    return revenueMetric;
+  }
+
+  async getRevenueMetrics(startDate: Date, endDate: Date): Promise<RevenueMetric[]> {
+    return Array.from(this.revenueMetrics.values())
+      .filter(metric => metric.metricDate >= startDate && metric.metricDate <= endDate)
+      .sort((a, b) => b.metricDate.getTime() - a.metricDate.getTime());
+  }
+
+  async getLatestRevenueMetric(): Promise<RevenueMetric | undefined> {
+    const metrics = Array.from(this.revenueMetrics.values());
+    return metrics.sort((a, b) => b.metricDate.getTime() - a.metricDate.getTime())[0];
+  }
+
+  async getRevenueOverview(days: number): Promise<{
+    mrr: number;
+    arr: number;
+    totalActiveSubscriptions: number;
+    paidUsers: number;
+    trialUsers: number;
+    arpu: number;
+    grossMarginPercent: number;
+    mrrGrowthRate: number;
+    churnRate: number;
+  }> {
+    const latest = await this.getLatestRevenueMetric();
+    const activeSubscriptions = await this.getActiveSubscriptions();
+    const trialSubs = await this.getSubscriptionsByStatus('trial');
+    
+    // Calculate MRR growth rate (mock calculation)
+    const previousPeriod = new Date();
+    previousPeriod.setDate(previousPeriod.getDate() - days);
+    const previousMetrics = await this.getRevenueMetrics(previousPeriod, new Date());
+    const previousMrr = previousMetrics.length > 1 ? (previousMetrics[1].mrr || 0) : (latest?.mrr || 0);
+    const currentMrr = latest?.mrr || 0;
+    const mrrGrowthRate = previousMrr > 0 ? ((currentMrr - previousMrr) / previousMrr) * 100 : 0;
+    
+    return {
+      mrr: latest?.mrr || 0,
+      arr: latest?.arr || 0,
+      totalActiveSubscriptions: activeSubscriptions.length,
+      paidUsers: latest?.paidUsers || 0,
+      trialUsers: trialSubs.length,
+      arpu: latest?.arpu || 0,
+      grossMarginPercent: latest?.grossMarginPercent || 0,
+      mrrGrowthRate,
+      churnRate: 0, // Would be calculated from cohort data
+    };
+  }
+
+  // ===================== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES =====================
+
+  // User events operations
+  async createUserEvent(event: InsertUserEvent): Promise<UserEvent> {
+    const id = randomUUID();
+    const userEvent: UserEvent = {
+      ...event,
+      id,
+      userId: event.userId || null,
+      properties: event.properties || {},
+      source: event.source || null,
+      medium: event.medium || null,
+      campaign: event.campaign || null,
+      ipAddress: event.ipAddress || null,
+      userAgent: event.userAgent || null,
+      createdAt: new Date(),
+    };
+    this.userEvents.set(id, userEvent);
+    return userEvent;
+  }
+
+  async getUserEvents(userId?: string, sessionId?: string, eventType?: string): Promise<UserEvent[]> {
+    return Array.from(this.userEvents.values()).filter(event => 
+      (!userId || event.userId === userId) &&
+      (!sessionId || event.sessionId === sessionId) &&
+      (!eventType || event.eventType === eventType)
+    );
+  }
+
+  async getEventsByDateRange(startDate: Date, endDate: Date, eventType?: string): Promise<UserEvent[]> {
+    return Array.from(this.userEvents.values()).filter(event => 
+      event.createdAt && event.createdAt >= startDate && 
+      event.createdAt && event.createdAt <= endDate &&
+      (!eventType || event.eventType === eventType)
+    );
+  }
+
+  // Conversion funnels operations
+  async createConversionFunnel(funnel: InsertConversionFunnel): Promise<ConversionFunnel> {
+    const id = randomUUID();
+    const conversionFunnel: ConversionFunnel = {
+      ...funnel,
+      id,
+      conversionRate: funnel.conversionRate || null,
+      usersEntered: funnel.usersEntered || null,
+      usersCompleted: funnel.usersCompleted || null,
+      averageTimeToComplete: funnel.averageTimeToComplete || null,
+      createdAt: new Date(),
+    };
+    this.conversionFunnels.set(id, conversionFunnel);
+    return conversionFunnel;
+  }
+
+  async getConversionFunnels(funnelName?: string, metricDate?: Date): Promise<ConversionFunnel[]> {
+    return Array.from(this.conversionFunnels.values()).filter(funnel => 
+      (!funnelName || funnel.funnelName === funnelName) &&
+      (!metricDate || funnel.metricDate.toDateString() === metricDate.toDateString())
+    );
+  }
+
+  async getConversionRates(funnelName: string, startDate: Date, endDate: Date): Promise<Array<{
+    stepName: string;
+    stepNumber: number;
+    conversionRate: number;
+    usersEntered: number;
+    usersCompleted: number;
+    averageTimeToComplete: number;
+  }>> {
+    const funnels = Array.from(this.conversionFunnels.values()).filter(funnel => 
+      funnel.funnelName === funnelName &&
+      funnel.metricDate >= startDate && 
+      funnel.metricDate <= endDate
+    );
+
+    // Group by step and calculate averages
+    const stepGroups = new Map();
+    funnels.forEach(funnel => {
+      const key = `${funnel.stepNumber}-${funnel.stepName}`;
+      if (!stepGroups.has(key)) {
+        stepGroups.set(key, {
+          stepName: funnel.stepName,
+          stepNumber: funnel.stepNumber,
+          totalConversionRate: 0,
+          totalUsersEntered: 0,
+          totalUsersCompleted: 0,
+          totalTime: 0,
+          count: 0
+        });
+      }
+      const group = stepGroups.get(key);
+      group.totalConversionRate += funnel.conversionRate;
+      group.totalUsersEntered += funnel.usersEntered;
+      group.totalUsersCompleted += funnel.usersCompleted;
+      group.totalTime += funnel.averageTimeToComplete;
+      group.count++;
+    });
+
+    return Array.from(stepGroups.values()).map(group => ({
+      stepName: group.stepName,
+      stepNumber: group.stepNumber,
+      conversionRate: group.count > 0 ? group.totalConversionRate / group.count : 0,
+      usersEntered: group.totalUsersEntered,
+      usersCompleted: group.totalUsersCompleted,
+      averageTimeToComplete: group.count > 0 ? group.totalTime / group.count : 0,
+    })).sort((a, b) => a.stepNumber - b.stepNumber);
+  }
+
+  // User sessions operations
+  async createUserSession(session: InsertUserSession): Promise<UserSession> {
+    const id = randomUUID();
+    const userSession: UserSession = {
+      ...session,
+      id,
+      userId: session.userId || null,
+      startTime: session.startTime || new Date(),
+      endTime: session.endTime || null,
+      duration: session.duration || null,
+      pageViews: session.pageViews || null,
+      bounced: session.bounced ?? false,
+      source: session.source || null,
+      medium: session.medium || null,
+      campaign: session.campaign || null,
+      device: session.device || null,
+      browser: session.browser || null,
+      os: session.os || null,
+      country: session.country || null,
+      city: session.city || null,
+      createdAt: new Date(),
+    };
+    this.userSessions.set(id, userSession);
+    return userSession;
+  }
+
+  async updateUserSession(id: string, session: Partial<UserSession>): Promise<UserSession> {
+    const existing = this.userSessions.get(id);
+    if (!existing) throw new Error("User session not found");
+    
+    const updated: UserSession = {
+      ...existing,
+      ...removeUndefined(session),
+    };
+    this.userSessions.set(id, updated);
+    return updated;
+  }
+
+  async getUserSessions(userId?: string, startDate?: Date, endDate?: Date): Promise<UserSession[]> {
+    return Array.from(this.userSessions.values()).filter(session => 
+      (!userId || session.userId === userId) &&
+      (!startDate || (session.startTime && session.startTime >= startDate)) &&
+      (!endDate || (session.startTime && session.startTime <= endDate))
+    );
+  }
+
+  async getSessionMetrics(startDate: Date, endDate: Date): Promise<{
+    totalSessions: number;
+    averageDuration: number;
+    bounceRate: number;
+    averagePageViews: number;
+    topSources: Array<{ source: string; count: number }>;
+    deviceBreakdown: Array<{ device: string; count: number; percentage: number }>;
+  }> {
+    const sessions = await this.getUserSessions(undefined, startDate, endDate);
+    const totalSessions = sessions.length;
+    
+    if (totalSessions === 0) {
+      return {
+        totalSessions: 0,
+        averageDuration: 0,
+        bounceRate: 0,
+        averagePageViews: 0,
+        topSources: [],
+        deviceBreakdown: []
+      };
+    }
+
+    const totalDuration = sessions.reduce((sum, s) => sum + (s.duration || 0), 0);
+    const totalPageViews = sessions.reduce((sum, s) => sum + (s.pageViews || 0), 0);
+    const bouncedSessions = sessions.filter(s => s.bounced).length;
+
+    // Source analysis
+    const sourceCount = new Map();
+    sessions.forEach(s => {
+      if (s.source) {
+        sourceCount.set(s.source, (sourceCount.get(s.source) || 0) + 1);
+      }
+    });
+
+    // Device analysis
+    const deviceCount = new Map();
+    sessions.forEach(s => {
+      if (s.device) {
+        deviceCount.set(s.device, (deviceCount.get(s.device) || 0) + 1);
+      }
+    });
+
+    return {
+      totalSessions,
+      averageDuration: totalDuration / totalSessions,
+      bounceRate: (bouncedSessions / totalSessions) * 100,
+      averagePageViews: totalPageViews / totalSessions,
+      topSources: Array.from(sourceCount.entries())
+        .map(([source, count]) => ({ source, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5),
+      deviceBreakdown: Array.from(deviceCount.entries())
+        .map(([device, count]) => ({ 
+          device, 
+          count, 
+          percentage: (count / totalSessions) * 100 
+        }))
+        .sort((a, b) => b.count - a.count)
+    };
+  }
+
+  // Task completions operations
+  async createTaskCompletion(task: InsertTaskCompletion): Promise<TaskCompletion> {
+    const id = randomUUID();
+    const taskCompletion: TaskCompletion = {
+      ...task,
+      id,
+      userId: task.userId || null,
+      startTime: task.startTime || new Date(),
+      completionTime: task.completionTime || null,
+      timeToComplete: task.timeToComplete || null,
+      steps: task.steps || [],
+      errors: task.errors || [],
+      satisfactionScore: task.satisfactionScore || null,
+      npsScore: task.npsScore || null,
+      feedback: task.feedback || null,
+      createdAt: new Date(),
+    };
+    this.taskCompletions.set(id, taskCompletion);
+    return taskCompletion;
+  }
+
+  async updateTaskCompletion(id: string, task: Partial<TaskCompletion>): Promise<TaskCompletion> {
+    const existing = this.taskCompletions.get(id);
+    if (!existing) throw new Error("Task completion not found");
+    
+    const updated: TaskCompletion = {
+      ...existing,
+      ...removeUndefined(task),
+    };
+    this.taskCompletions.set(id, updated);
+    return updated;
+  }
+
+  async getTaskCompletions(userId?: string, taskType?: string, status?: string): Promise<TaskCompletion[]> {
+    return Array.from(this.taskCompletions.values()).filter(task => 
+      (!userId || task.userId === userId) &&
+      (!taskType || task.taskType === taskType) &&
+      (!status || task.status === status)
+    );
+  }
+
+  async getTaskCompletionRates(taskType?: string, startDate?: Date, endDate?: Date): Promise<Array<{
+    taskType: string;
+    taskName: string;
+    totalStarted: number;
+    totalCompleted: number;
+    completionRate: number;
+    averageTimeToComplete: number;
+    averageSatisfactionScore: number;
+    averageNpsScore: number;
+  }>> {
+    const tasks = Array.from(this.taskCompletions.values()).filter(task => 
+      (!taskType || task.taskType === taskType) &&
+      (!startDate || (task.startTime && task.startTime >= startDate)) &&
+      (!endDate || (task.startTime && task.startTime <= endDate))
+    );
+
+    // Group by task type and name
+    const taskGroups = new Map();
+    tasks.forEach(task => {
+      const key = `${task.taskType}-${task.taskName}`;
+      if (!taskGroups.has(key)) {
+        taskGroups.set(key, {
+          taskType: task.taskType,
+          taskName: task.taskName,
+          started: 0,
+          completed: 0,
+          totalTime: 0,
+          completedTasks: 0,
+          totalSatisfaction: 0,
+          satisfactionCount: 0,
+          totalNps: 0,
+          npsCount: 0
+        });
+      }
+      const group = taskGroups.get(key);
+      group.started++;
+      if (task.status === 'completed') {
+        group.completed++;
+        group.totalTime += task.timeToComplete || 0;
+        group.completedTasks++;
+      }
+      if (task.satisfactionScore) {
+        group.totalSatisfaction += task.satisfactionScore;
+        group.satisfactionCount++;
+      }
+      if (task.npsScore !== null && task.npsScore !== undefined) {
+        group.totalNps += task.npsScore;
+        group.npsCount++;
+      }
+    });
+
+    return Array.from(taskGroups.values()).map(group => ({
+      taskType: group.taskType,
+      taskName: group.taskName,
+      totalStarted: group.started,
+      totalCompleted: group.completed,
+      completionRate: group.started > 0 ? (group.completed / group.started) * 100 : 0,
+      averageTimeToComplete: group.completedTasks > 0 ? group.totalTime / group.completedTasks : 0,
+      averageSatisfactionScore: group.satisfactionCount > 0 ? group.totalSatisfaction / group.satisfactionCount : 0,
+      averageNpsScore: group.npsCount > 0 ? group.totalNps / group.npsCount : 0,
+    }));
+  }
+
+  // ===================== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS =====================
+
+  // User cohorts operations
+  async createUserCohort(cohort: InsertUserCohort): Promise<UserCohort> {
+    const id = randomUUID();
+    const userCohort: UserCohort = {
+      ...cohort,
+      id,
+      firstPaymentDate: cohort.firstPaymentDate || null,
+      source: cohort.source || null,
+      campaign: cohort.campaign || null,
+      initialPlan: cohort.initialPlan || null,
+      currentMrr: cohort.currentMrr || null,
+      totalRevenue: cohort.totalRevenue || null,
+      lifetimeDays: cohort.lifetimeDays || null,
+      churnDate: cohort.churnDate || null,
+      churnReason: cohort.churnReason || null,
+      lastActivityDate: cohort.lastActivityDate || null,
+      totalOperations: cohort.totalOperations || null,
+      totalAiCost: cohort.totalAiCost || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userCohorts.set(id, userCohort);
+    return userCohort;
+  }
+
+  async updateUserCohort(id: string, cohort: Partial<UserCohort>): Promise<UserCohort> {
+    const existing = this.userCohorts.get(id);
+    if (!existing) throw new Error("User cohort not found");
+    
+    const updated: UserCohort = {
+      ...existing,
+      ...removeUndefined(cohort),
+      updatedAt: new Date(),
+    };
+    this.userCohorts.set(id, updated);
+    return updated;
+  }
+
+  async getUserCohort(userId: string): Promise<UserCohort | undefined> {
+    return Array.from(this.userCohorts.values()).find(cohort => cohort.userId === userId);
+  }
+
+  async getCohortAnalysis(cohortMonth?: Date): Promise<Array<{
+    cohortMonth: string;
+    totalUsers: number;
+    activeUsers: number;
+    churnedUsers: number;
+    retentionRate: number;
+    currentMrr: number;
+    averageLtv: number;
+    averageLifetimeDays: number;
+  }>> {
+    const cohorts = Array.from(this.userCohorts.values()).filter(cohort => 
+      !cohortMonth || cohort.cohortMonth.toDateString() === cohortMonth.toDateString()
+    );
+
+    // Group by cohort month
+    const cohortGroups = new Map();
+    cohorts.forEach(cohort => {
+      const monthKey = cohort.cohortMonth.toISOString().substring(0, 7); // YYYY-MM
+      if (!cohortGroups.has(monthKey)) {
+        cohortGroups.set(monthKey, {
+          cohortMonth: monthKey,
+          totalUsers: 0,
+          activeUsers: 0,
+          churnedUsers: 0,
+          totalMrr: 0,
+          totalLtv: 0,
+          totalLifetimeDays: 0
+        });
+      }
+      const group = cohortGroups.get(monthKey);
+      group.totalUsers++;
+      if (cohort.currentStatus === 'active') group.activeUsers++;
+      if (cohort.currentStatus === 'churned') group.churnedUsers++;
+      group.totalMrr += cohort.currentMrr || 0;
+      group.totalLtv += cohort.totalRevenue || 0;
+      group.totalLifetimeDays += cohort.lifetimeDays || 0;
+    });
+
+    return Array.from(cohortGroups.values()).map(group => ({
+      cohortMonth: group.cohortMonth,
+      totalUsers: group.totalUsers,
+      activeUsers: group.activeUsers,
+      churnedUsers: group.churnedUsers,
+      retentionRate: group.totalUsers > 0 ? (group.activeUsers / group.totalUsers) * 100 : 0,
+      currentMrr: group.totalMrr,
+      averageLtv: group.totalUsers > 0 ? group.totalLtv / group.totalUsers : 0,
+      averageLifetimeDays: group.totalUsers > 0 ? group.totalLifetimeDays / group.totalUsers : 0,
+    })).sort((a, b) => a.cohortMonth.localeCompare(b.cohortMonth));
+  }
+
+  async getRevenueBySource(startDate: Date, endDate: Date): Promise<Array<{
+    source: string;
+    totalRevenue: number;
+    totalUsers: number;
+    averageRevenue: number;
+    percentage: number;
+  }>> {
+    const cohorts = Array.from(this.userCohorts.values()).filter(cohort => 
+      cohort.signupDate >= startDate && cohort.signupDate <= endDate
+    );
+
+    const sourceGroups = new Map();
+    let totalRevenue = 0;
+
+    cohorts.forEach(cohort => {
+      const source = cohort.source || 'unknown';
+      if (!sourceGroups.has(source)) {
+        sourceGroups.set(source, { totalRevenue: 0, totalUsers: 0 });
+      }
+      const group = sourceGroups.get(source);
+      group.totalRevenue += cohort.totalRevenue || 0;
+      group.totalUsers++;
+      totalRevenue += cohort.totalRevenue || 0;
+    });
+
+    return Array.from(sourceGroups.entries()).map(([source, data]) => ({
+      source,
+      totalRevenue: data.totalRevenue,
+      totalUsers: data.totalUsers,
+      averageRevenue: data.totalUsers > 0 ? data.totalRevenue / data.totalUsers : 0,
+      percentage: totalRevenue > 0 ? (data.totalRevenue / totalRevenue) * 100 : 0,
+    })).sort((a, b) => b.totalRevenue - a.totalRevenue);
+  }
+
+  // Predictive metrics operations
+  async createPredictiveMetric(metric: InsertPredictiveMetric): Promise<PredictiveMetric> {
+    const id = randomUUID();
+    const predictiveMetric: PredictiveMetric = {
+      ...metric,
+      id,
+      confidenceScore: metric.confidenceScore || null,
+      actualValue: metric.actualValue || null,
+      features: metric.features || {},
+      createdAt: new Date(),
+    };
+    this.predictiveMetrics.set(id, predictiveMetric);
+    return predictiveMetric;
+  }
+
+  async getPredictiveMetrics(metricType?: string, timeHorizon?: string): Promise<PredictiveMetric[]> {
+    return Array.from(this.predictiveMetrics.values()).filter(metric => 
+      (!metricType || metric.metricType === metricType) &&
+      (!timeHorizon || metric.timeHorizon === timeHorizon)
+    );
+  }
+
+  async getLatestPredictions(metricType: string): Promise<PredictiveMetric[]> {
+    const metrics = Array.from(this.predictiveMetrics.values())
+      .filter(metric => metric.metricType === metricType)
+      .sort((a, b) => b.metricDate.getTime() - a.metricDate.getTime());
+    
+    // Group by time horizon and get latest for each
+    const latestByHorizon = new Map();
+    metrics.forEach(metric => {
+      if (!latestByHorizon.has(metric.timeHorizon)) {
+        latestByHorizon.set(metric.timeHorizon, metric);
+      }
+    });
+    
+    return Array.from(latestByHorizon.values());
+  }
+
+  // Churn predictions operations
+  async createChurnPrediction(prediction: InsertChurnPrediction): Promise<ChurnPrediction> {
+    const id = randomUUID();
+    const churnPrediction: ChurnPrediction = {
+      ...prediction,
+      id,
+      daysToChurn: prediction.daysToChurn || null,
+      riskFactors: prediction.riskFactors || [],
+      recommendedActions: prediction.recommendedActions || [],
+      isActual: prediction.isActual ?? false,
+      actualChurnDate: prediction.actualChurnDate || null,
+      interventionTaken: prediction.interventionTaken || null,
+      createdAt: new Date(),
+    };
+    this.churnPredictions.set(id, churnPrediction);
+    return churnPrediction;
+  }
+
+  async updateChurnPrediction(id: string, prediction: Partial<ChurnPrediction>): Promise<ChurnPrediction> {
+    const existing = this.churnPredictions.get(id);
+    if (!existing) throw new Error("Churn prediction not found");
+    
+    const updated: ChurnPrediction = {
+      ...existing,
+      ...removeUndefined(prediction),
+    };
+    this.churnPredictions.set(id, updated);
+    return updated;
+  }
+
+  async getChurnPredictions(riskLevel?: string, userId?: string): Promise<ChurnPrediction[]> {
+    return Array.from(this.churnPredictions.values()).filter(prediction => 
+      (!riskLevel || prediction.riskLevel === riskLevel) &&
+      (!userId || prediction.userId === userId)
+    );
+  }
+
+  async getHighRiskUsers(limit?: number): Promise<Array<{
+    userId: string;
+    userName: string;
+    userEmail: string;
+    churnProbability: number;
+    riskLevel: string;
+    daysToChurn: number;
+    riskFactors: string[];
+    recommendedActions: string[];
+  }>> {
+    const highRiskPredictions = Array.from(this.churnPredictions.values())
+      .filter(prediction => ['high', 'critical'].includes(prediction.riskLevel))
+      .sort((a, b) => b.churnProbability - a.churnProbability);
+      
+    const results = [];
+    for (const prediction of highRiskPredictions) {
+      const user = await this.getUser(prediction.userId);
+      if (user) {
+        results.push({
+          userId: prediction.userId,
+          userName: user.name,
+          userEmail: user.email,
+          churnProbability: prediction.churnProbability,
+          riskLevel: prediction.riskLevel,
+          daysToChurn: prediction.daysToChurn || 0,
+          riskFactors: (prediction.riskFactors as string[]) || [],
+          recommendedActions: (prediction.recommendedActions as string[]) || [],
+        });
+      }
+    }
+    
+    return limit ? results.slice(0, limit) : results;
+  }
+
+  // Initialize subscription plans with sample data
+  private initializeSubscriptionPlans() {
+    const plans = [
+      {
+        name: "Básico",
+        description: "Plano básico para estudantes",
+        priceMonthly: 2900, // R$ 29.00
+        priceYearly: 29000, // R$ 290.00
+        features: ["5 redações por mês", "Chat com IA limitado", "Estruturas básicas"],
+        maxOperationsPerMonth: 50,
+        maxAICostPerMonth: 500, // R$ 5.00
+        isActive: true
+      },
+      {
+        name: "Premium",
+        description: "Plano completo para vestibulandos",
+        priceMonthly: 4900, // R$ 49.00
+        priceYearly: 49000, // R$ 490.00
+        features: ["Redações ilimitadas", "Chat com IA completo", "Todas as estruturas", "Correções detalhadas"],
+        maxOperationsPerMonth: -1, // ilimitado
+        maxAICostPerMonth: 2000, // R$ 20.00
+        isActive: true
+      }
+    ];
+
+    plans.forEach(plan => {
+      const id = randomUUID();
+      const subscriptionPlan: SubscriptionPlan = {
+        ...plan,
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      this.subscriptionPlans.set(id, subscriptionPlan);
+    });
   }
 
 }

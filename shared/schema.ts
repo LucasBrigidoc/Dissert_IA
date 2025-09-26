@@ -508,6 +508,231 @@ export const insertUserCostSchema = createInsertSchema(userCosts);
 export const insertBusinessMetricSchema = createInsertSchema(businessMetrics);
 export const insertUserDailyUsageSchema = createInsertSchema(userDailyUsage);
 
+// ===================== FASE 1: RECEITA + IA COST TRACKING =====================
+
+// Subscription plans table
+export const subscriptionPlans = pgTable("subscription_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  priceMonthly: integer("price_monthly").notNull(), // Price in centavos
+  priceYearly: integer("price_yearly"), // Price in centavos
+  features: json("features").notNull().default([]),
+  maxOperationsPerMonth: integer("max_operations_per_month").default(-1), // -1 = unlimited
+  maxAICostPerMonth: integer("max_ai_cost_per_month").default(-1), // -1 = unlimited, in centavos
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User subscriptions table
+export const userSubscriptions = pgTable("user_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  planId: varchar("plan_id").notNull().references(() => subscriptionPlans.id),
+  status: varchar("status", { enum: ["active", "cancelled", "paused", "expired", "trial"] }).notNull(),
+  billingCycle: varchar("billing_cycle", { enum: ["monthly", "yearly"] }).notNull().default("monthly"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  trialEndDate: timestamp("trial_end_date"),
+  nextBillingDate: timestamp("next_billing_date"),
+  cancelledAt: timestamp("cancelled_at"),
+  cancellationReason: text("cancellation_reason"),
+  isAutoRenew: boolean("is_auto_renew").default(true),
+  paymentMethodId: text("payment_method_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Transactions table for financial tracking
+export const transactions = pgTable("transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  subscriptionId: varchar("subscription_id").references(() => userSubscriptions.id),
+  type: varchar("type", { enum: ["subscription", "upgrade", "downgrade", "refund", "chargeback"] }).notNull(),
+  amount: integer("amount").notNull(), // Amount in centavos
+  currency: text("currency").notNull().default("BRL"),
+  status: varchar("status", { enum: ["pending", "completed", "failed", "refunded"] }).notNull(),
+  paymentMethod: varchar("payment_method", { enum: ["credit_card", "pix", "boleto", "paypal"] }),
+  paymentProcessorId: text("payment_processor_id"), // External payment ID
+  description: text("description"),
+  metadata: json("metadata").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Revenue metrics table for aggregated financial data
+export const revenueMetrics = pgTable("revenue_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  metricDate: timestamp("metric_date").notNull(),
+  mrr: integer("mrr").default(0), // Monthly Recurring Revenue in centavos
+  arr: integer("arr").default(0), // Annual Recurring Revenue in centavos
+  newMrrThisMonth: integer("new_mrr_this_month").default(0),
+  churnedMrrThisMonth: integer("churned_mrr_this_month").default(0),
+  expansionMrrThisMonth: integer("expansion_mrr_this_month").default(0),
+  contractionMrrThisMonth: integer("contraction_mrr_this_month").default(0),
+  totalActiveSubscriptions: integer("total_active_subscriptions").default(0),
+  trialUsers: integer("trial_users").default(0),
+  paidUsers: integer("paid_users").default(0),
+  arpu: integer("arpu").default(0), // Average Revenue Per User in centavos
+  ltv: integer("ltv").default(0), // Lifetime Value in centavos
+  cac: integer("cac").default(0), // Customer Acquisition Cost in centavos
+  paybackPeriodDays: integer("payback_period_days").default(0),
+  grossMarginPercent: integer("gross_margin_percent").default(0), // Percentage * 100
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ===================== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES =====================
+
+// User events for conversion funnel tracking
+export const userEvents = pgTable("user_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  sessionId: text("session_id").notNull(),
+  eventType: varchar("event_type", { 
+    enum: ["page_view", "signup", "login", "trial_start", "subscription_start", "feature_used", 
+           "essay_created", "essay_completed", "structure_created", "chat_started", "task_completed",
+           "upgrade", "downgrade", "churn", "reactivation"] 
+  }).notNull(),
+  eventName: text("event_name").notNull(),
+  properties: json("properties").default({}),
+  source: varchar("source", { enum: ["organic", "paid", "social", "email", "referral", "direct"] }),
+  medium: varchar("medium"),
+  campaign: text("campaign"),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Conversion funnels for tracking user journey
+export const conversionFunnels = pgTable("conversion_funnels", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  funnelName: text("funnel_name").notNull(),
+  stepNumber: integer("step_number").notNull(),
+  stepName: text("step_name").notNull(),
+  eventType: text("event_type").notNull(),
+  conversionRate: integer("conversion_rate").default(0), // Percentage * 100
+  usersEntered: integer("users_entered").default(0),
+  usersCompleted: integer("users_completed").default(0),
+  averageTimeToComplete: integer("average_time_to_complete").default(0), // seconds
+  metricDate: timestamp("metric_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User sessions for detailed UX tracking
+export const userSessions = pgTable("user_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  sessionId: text("session_id").notNull(),
+  startTime: timestamp("start_time").defaultNow(),
+  endTime: timestamp("end_time"),
+  duration: integer("duration").default(0), // seconds
+  pageViews: integer("page_views").default(0),
+  bounced: boolean("bounced").default(false),
+  source: varchar("source"),
+  medium: varchar("medium"),
+  campaign: text("campaign"),
+  device: varchar("device", { enum: ["desktop", "mobile", "tablet"] }),
+  browser: text("browser"),
+  os: text("os"),
+  country: text("country"),
+  city: text("city"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Task completions for UX metrics
+export const taskCompletions = pgTable("task_completions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  sessionId: text("session_id").notNull(),
+  taskType: varchar("task_type", { 
+    enum: ["essay_creation", "structure_creation", "repertoire_search", "chat_completion", 
+           "correction_review", "signup_completion", "subscription_signup"] 
+  }).notNull(),
+  taskName: text("task_name").notNull(),
+  status: varchar("status", { enum: ["started", "completed", "abandoned", "failed"] }).notNull(),
+  startTime: timestamp("start_time").defaultNow(),
+  completionTime: timestamp("completion_time"),
+  timeToComplete: integer("time_to_complete").default(0), // seconds
+  steps: json("steps").default([]), // Array of step tracking
+  errors: json("errors").default([]), // Array of errors encountered
+  satisfactionScore: integer("satisfaction_score"), // 1-5 rating
+  npsScore: integer("nps_score"), // 0-10 NPS rating
+  feedback: text("feedback"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ===================== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS =====================
+
+// User cohorts for cohort analysis
+export const userCohorts = pgTable("user_cohorts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  cohortMonth: timestamp("cohort_month").notNull(), // First day of signup month
+  userId: varchar("user_id").notNull().references(() => users.id),
+  signupDate: timestamp("signup_date").notNull(),
+  firstPaymentDate: timestamp("first_payment_date"),
+  source: varchar("source"),
+  campaign: text("campaign"),
+  initialPlan: text("initial_plan"),
+  currentStatus: varchar("current_status", { enum: ["active", "churned", "paused", "trial"] }).notNull(),
+  currentMrr: integer("current_mrr").default(0), // in centavos
+  totalRevenue: integer("total_revenue").default(0), // in centavos
+  lifetimeDays: integer("lifetime_days").default(0),
+  churnDate: timestamp("churn_date"),
+  churnReason: text("churn_reason"),
+  lastActivityDate: timestamp("last_activity_date"),
+  totalOperations: integer("total_operations").default(0),
+  totalAiCost: integer("total_ai_cost").default(0), // in centavos
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Predictive metrics table
+export const predictiveMetrics = pgTable("predictive_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  metricDate: timestamp("metric_date").notNull(),
+  metricType: varchar("metric_type", { 
+    enum: ["churn_prediction", "ltv_prediction", "upgrade_likelihood", "revenue_forecast"] 
+  }).notNull(),
+  timeHorizon: varchar("time_horizon", { enum: ["1_month", "3_months", "6_months", "12_months"] }).notNull(),
+  predictedValue: integer("predicted_value").notNull(),
+  confidenceScore: integer("confidence_score").default(0), // Percentage * 100
+  actualValue: integer("actual_value"), // For model validation
+  modelVersion: text("model_version").notNull(),
+  features: json("features").default({}), // Features used for prediction
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Churn predictions for specific users
+export const churnPredictions = pgTable("churn_predictions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  predictionDate: timestamp("prediction_date").notNull(),
+  churnProbability: integer("churn_probability").notNull(), // Percentage * 100
+  riskLevel: varchar("risk_level", { enum: ["low", "medium", "high", "critical"] }).notNull(),
+  daysToChurn: integer("days_to_churn"),
+  riskFactors: json("risk_factors").default([]), // Array of risk factors
+  recommendedActions: json("recommended_actions").default([]), // Array of suggested interventions
+  modelVersion: text("model_version").notNull(),
+  isActual: boolean("is_actual").default(false), // True if user actually churned
+  actualChurnDate: timestamp("actual_churn_date"),
+  interventionTaken: text("intervention_taken"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Insert schemas for all new tables
+export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUserSubscriptionSchema = createInsertSchema(userSubscriptions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertTransactionSchema = createInsertSchema(transactions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertRevenueMetricSchema = createInsertSchema(revenueMetrics).omit({ id: true, createdAt: true });
+export const insertUserEventSchema = createInsertSchema(userEvents).omit({ id: true, createdAt: true });
+export const insertConversionFunnelSchema = createInsertSchema(conversionFunnels).omit({ id: true, createdAt: true });
+export const insertUserSessionSchema = createInsertSchema(userSessions).omit({ id: true, createdAt: true });
+export const insertTaskCompletionSchema = createInsertSchema(taskCompletions).omit({ id: true, createdAt: true });
+export const insertUserCohortSchema = createInsertSchema(userCohorts).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPredictiveMetricSchema = createInsertSchema(predictiveMetrics).omit({ id: true, createdAt: true });
+export const insertChurnPredictionSchema = createInsertSchema(churnPredictions).omit({ id: true, createdAt: true });
+
 // Admin and cost tracking types
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
@@ -517,3 +742,31 @@ export type BusinessMetric = typeof businessMetrics.$inferSelect;
 export type InsertBusinessMetric = z.infer<typeof insertBusinessMetricSchema>;
 export type UserDailyUsage = typeof userDailyUsage.$inferSelect;
 export type InsertUserDailyUsage = z.infer<typeof insertUserDailyUsageSchema>;
+
+// Fase 1 types
+export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
+export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
+export type UserSubscription = typeof userSubscriptions.$inferSelect;
+export type InsertUserSubscription = z.infer<typeof insertUserSubscriptionSchema>;
+export type Transaction = typeof transactions.$inferSelect;
+export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
+export type RevenueMetric = typeof revenueMetrics.$inferSelect;
+export type InsertRevenueMetric = z.infer<typeof insertRevenueMetricSchema>;
+
+// Fase 2 types
+export type UserEvent = typeof userEvents.$inferSelect;
+export type InsertUserEvent = z.infer<typeof insertUserEventSchema>;
+export type ConversionFunnel = typeof conversionFunnels.$inferSelect;
+export type InsertConversionFunnel = z.infer<typeof insertConversionFunnelSchema>;
+export type UserSession = typeof userSessions.$inferSelect;
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
+export type TaskCompletion = typeof taskCompletions.$inferSelect;
+export type InsertTaskCompletion = z.infer<typeof insertTaskCompletionSchema>;
+
+// Fase 3 types
+export type UserCohort = typeof userCohorts.$inferSelect;
+export type InsertUserCohort = z.infer<typeof insertUserCohortSchema>;
+export type PredictiveMetric = typeof predictiveMetrics.$inferSelect;
+export type InsertPredictiveMetric = z.infer<typeof insertPredictiveMetricSchema>;
+export type ChurnPrediction = typeof churnPredictions.$inferSelect;
+export type InsertChurnPrediction = z.infer<typeof insertChurnPredictionSchema>;
