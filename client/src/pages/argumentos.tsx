@@ -695,11 +695,9 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
             <p className="text-soft-gray">Desenvolva sua estrutura argumentativa com IA</p>
           </div>
         </div>
-      </div>
-      
-      {/* AI Usage Progress */}
-      <div className="fixed top-20 sm:top-24 left-0 right-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-        <div className="container mx-auto px-4 sm:px-6 py-2">
+        
+        {/* AI Usage Progress integrated with header */}
+        <div className="container mx-auto px-4 sm:px-6 py-2 border-t border-gray-100/50">
           <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
         </div>
       </div>

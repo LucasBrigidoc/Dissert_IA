@@ -132,15 +132,14 @@ export default function VisualizadorConversa() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* AI Usage Progress */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-        <div className="container mx-auto px-4 sm:px-6 py-2">
+      {/* Unified Header with AI Usage Progress */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 mb-4">
+        {/* AI Usage Progress */}
+        <div className="container mx-auto px-4 sm:px-6 py-2 border-b border-gray-100/50">
           <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
         </div>
-      </div>
-      
-      {/* Header */}
-      <div className="fixed top-14 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+        
+        {/* Main Header */}
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

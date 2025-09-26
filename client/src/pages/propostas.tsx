@@ -337,8 +337,8 @@ export default function Propostas() {
         </div>
       </div>
       
-      {/* AI Usage Progress */}
-      <div className="fixed top-20 sm:top-24 left-0 right-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+      {/* AI Usage Progress - Better positioned for UX */}
+      <div className="relative top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 mb-3">
         <div className="container mx-auto px-4 sm:px-6 py-2">
           <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
         </div>
