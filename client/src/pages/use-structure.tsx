@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X, HelpCircle, Info, Lightbulb } from "lucide-react";
+import { ArrowLeft, FileText, Play, Search, Edit3, PenTool, Loader2, Save, X, HelpCircle, Info, Lightbulb, BookOpen } from "lucide-react";
 import { EssayResult } from "@/pages/essay-result";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -541,8 +541,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
               <span>Voltar</span>
             </Button>
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center">
-                <FileText className="text-white" size={14} />
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-full flex items-center justify-center">
+                <BookOpen className="text-green-600" size={14} />
               </div>
               <h1 className="text-sm font-bold text-dark-blue truncate">Usar Estrutura</h1>
             </div>
@@ -562,8 +562,8 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 <span>Voltar</span>
               </Button>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center">
-                  <FileText className="text-white" size={20} />
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500/10 to-green-500/20 rounded-full flex items-center justify-center">
+                  <BookOpen className="text-green-600" size={20} />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-dark-blue">Usar Estrutura Existente</h1>
