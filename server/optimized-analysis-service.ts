@@ -37,10 +37,16 @@ export class OptimizedAnalysisService {
       const cachedResult = intelligentCache.getTextModification(essayText, 'structure-analysis', {}, 'anonymous');
       if (cachedResult) {
         console.log("📦 Cache hit for essay structure analysis");
-        return {
-          ...cachedResult,
-          source: 'cache'
-        };
+        try {
+          const structureData = JSON.parse(cachedResult.modifiedText);
+          return {
+            ...structureData,
+            source: 'cache'
+          };
+        } catch (error) {
+          console.warn("Failed to parse cached structure data, regenerating...");
+          // Continue to regenerate if cache is corrupted
+        }
       }
 
       // 3. Compress existing structures context using ContextCompressor
@@ -61,7 +67,18 @@ export class OptimizedAnalysisService {
       const structureData = this.parseStructureResponse(response);
       
       // 7. Store in intelligent cache for future use
-      intelligentCache.setTextModification(essayText, 'structure-analysis', {}, structureData, 'anonymous');
+      intelligentCache.setTextModification(
+        essayText, 
+        'structure-analysis', 
+        {}, 
+        {
+          modifiedText: JSON.stringify(structureData),
+          modificationType: 'argumentativo',
+          source: 'optimized_ai',
+          tokensUsed: this.estimateTokens(optimizedPrompt)
+        }, 
+        'anonymous'
+      );
       
       console.log("✅ Successfully analyzed essay structure with optimized AI");
       return {
@@ -255,7 +272,12 @@ INSTRUÇÕES ESPECÍFICAS:
         `${topic}_${structureName}`, 
         'essay-generation', 
         { additionalInstructions },
-        { modifiedText: response, source: 'optimized_ai', tokensUsed: this.estimateTokens(optimizedPrompt) },
+        { 
+          modifiedText: response, 
+          modificationType: 'argumentativo',
+          source: 'optimized_ai', 
+          tokensUsed: this.estimateTokens(optimizedPrompt) 
+        },
         'anonymous'
       );
       
@@ -288,26 +310,43 @@ INSTRUÇÕES ESPECÍFICAS:
   }
 
   private buildOptimizedEssayPrompt(topic: string, sections: any[], additionalInstructions?: string): string {
-    // Reduced prompt - 60% token reduction while maintaining quality
+    // Enhanced essay generation prompt with detailed pedagogical guidance
     const sectionsPrompt = sections.map((section, index) => 
-      `${index + 1}. ${section.title}: ${section.description.substring(0, 150)}`
-    ).join('\n');
+      `${index + 1}. **${section.title}**: ${section.description}`
+    ).join('\n\n');
 
-    return `Redação ENEM sobre: "${topic}"
+    return `Você é um especialista em redação ENEM e deve produzir uma redação dissertativo-argumentativa exemplar sobre o tema: "${topic}"
 
-Estrutura:
+ESTRUTURA OBRIGATÓRIA A SEGUIR:
 ${sectionsPrompt}
 
-${additionalInstructions ? `Extras: ${additionalInstructions.substring(0, 100)}` : ''}
+${additionalInstructions ? `\nINSTRUÇÕES ESPECÍFICAS ADICIONAIS:\n${additionalInstructions}` : ''}
 
-Requisitos:
-- 150-250 palavras/parágrafo
-- Linguagem formal
-- Argumentação sólida
-- Coesão entre parágrafos
-- Siga estrutura exata
+CRITÉRIOS DE EXCELÊNCIA ENEM:
+✅ **Competência 1** - Norma culta: Use linguagem formal, sem erros gramaticais, com precisão vocabular
+✅ **Competência 2** - Repertório sociocultural: Inclua referências válidas (leis, filósofos, dados, obras)
+✅ **Competência 3** - Organização das ideias: Estruture argumentos de forma lógica e progressiva
+✅ **Competência 4** - Coesão textual: Use conectivos apropriados para ligar ideias e parágrafos
+✅ **Competência 5** - Proposta de intervenção: Apresente solução completa (o quê, quem, como, para quê)
 
-Apenas a redação:`;
+DIRETRIZES DE ESCRITA:
+- Cada parágrafo deve ter 4-6 períodos (120-180 palavras)
+- Use repertórios socioculturais legitimadores em argumentos
+- Empregue conectivos variados e precisos
+- Mantenha progressão temática clara
+- Desenvolva argumentos com causa, consequência e exemplificação
+- Evite clichês e chavões
+- Garanta interdisciplinaridade quando possível
+
+ESTRUTURA DETALHADA:
+📝 **INTRODUÇÃO**: Contextualização + apresentação da tese + preview dos argumentos
+📝 **DESENVOLVIMENTO 1**: Tópico frasal + argumentação + repertório + exemplificação + fechamento
+📝 **DESENVOLVIMENTO 2**: Nova perspectiva + argumentação + fundamentação + conexão com D1 + fechamento  
+📝 **CONCLUSÃO**: Retomada da tese + síntese dos argumentos + proposta de intervenção completa
+
+IMPORTANTE: Produza uma redação de alta qualidade que serviria como modelo para estudantes, seguindo rigorosamente a estrutura fornecida e demonstrando excelência em todas as competências avaliadas pelo ENEM.
+
+REDAÇÃO COMPLETA:`;
   }
 
   private generateFallbackEssay(
@@ -442,7 +481,12 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
         `chat_${section}_${lastUserMessage.substring(0, 50)}`, 
         'chat-response', 
         { section, context },
-        { modifiedText: response, source: 'optimized_ai', tokensUsed: this.estimateTokens(optimizedPrompt) },
+        { 
+          modifiedText: response, 
+          modificationType: 'argumentativo',
+          source: 'optimized_ai', 
+          tokensUsed: this.estimateTokens(optimizedPrompt) 
+        },
         'anonymous'
       );
       
@@ -471,34 +515,64 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
   }
 
   private buildOptimizedChatPrompt(compressedContext: string, section: string, context: any): string {
-    // Ultra-compressed prompt - 70% token reduction while maintaining pedagogical quality
+    // Enhanced pedagogical prompt with better structure and guidance
     const sectionMap: Record<string, string> = {
-      'tema': 'Desenvolvimento temático ENEM',
-      'tese': 'Construção de tese argumentativa',
-      'introducao': 'Estruturação de introdução',
-      'desenvolvimento1': '1º argumento c/ repertório',
-      'desenvolvimento2': '2º argumento complementar',
-      'conclusao': 'Síntese + proposta intervenção',
-      'optimization': 'Refinamento de ideias'
+      'tema': 'Desenvolvimento e Compreensão Temática ENEM',
+      'tese': 'Construção de Tese Argumentativa Sólida',
+      'introducao': 'Estruturação de Introdução Persuasiva',
+      'desenvolvimento1': 'Primeiro Argumento com Repertório Sociocultural',
+      'desenvolvimento2': 'Segundo Argumento Complementar e Aprofundamento',
+      'conclusao': 'Síntese Eficaz e Proposta de Intervenção',
+      'optimization': 'Refinamento e Aprimoramento de Ideias'
     };
 
     const currentMessage = compressedContext.split('ATUAL:')[1] || compressedContext;
+    const sectionTitle = sectionMap[section] || section;
 
-    return `Professor ENEM especialista. Seção: ${sectionMap[section] || section}
+    return `Você é um Professor de Redação ENEM especialista e mentor pedagógico. 
 
+CONTEXTO ATUAL:
 ${compressedContext}
 
-${context.proposta ? `Tema: "${context.proposta.substring(0, 80)}..."` : ''}
-${context.tese ? `Tese: "${context.tese.substring(0, 60)}..."` : ''}
+INFORMAÇÕES DA REDAÇÃO:
+${context.proposta ? `📋 TEMA DA PROPOSTA: "${context.proposta}"` : ''}
+${context.tese ? `💭 TESE DESENVOLVIDA: "${context.tese}"` : ''}
 
-Resposta pedagógica direta:
-🎯 [SEÇÃO]
-💡 [Análise 1-2 frases]
-📝 [Sugestão prática] 
-🔧 [3 dicas objetivas]
-❓ [Próximo passo]
+SEÇÃO EM FOCO: ${sectionTitle}
 
-Didático, encorajador, específico:`;
+MISSÃO PEDAGÓGICA:
+Forneça orientação educativa clara, motivadora e prática que ajude o estudante a desenvolver habilidades de redação argumentativa de acordo com os critérios do ENEM. Seja específico, didático e encorajador.
+
+ESTRUTURA DE RESPOSTA OBRIGATÓRIA:
+
+🎯 **FOCO DA SEÇÃO:**
+[Explique brevemente o objetivo específico desta seção na estrutura ENEM]
+
+💡 **ANÁLISE PEDAGÓGICA:**
+[Analise a questão/dúvida do estudante com 2-3 frases claras e construtivas]
+
+📝 **ORIENTAÇÃO PRÁTICA:**
+[Dê uma sugestão específica e aplicável sobre como melhorar ou desenvolver esta seção]
+
+🔧 **DICAS ESTRATÉGICAS:**
+• [Dica prática 1 relacionada aos critérios ENEM]
+• [Dica prática 2 sobre técnicas de escrita]
+• [Dica prática 3 sobre conectivos, repertórios ou estrutura]
+
+✨ **EXEMPLO/MODELO:**
+[Quando apropriado, forneça um exemplo breve de como aplicar a orientação]
+
+❓ **PRÓXIMO PASSO:**
+[Indique claramente qual deve ser o próximo foco do estudante]
+
+PRINCÍPIOS PEDAGÓGICOS:
+- Use linguagem acessível mas academicamente precisa
+- Seja motivador e construtivo em todos os comentários
+- Conecte sempre com os 5 critérios de avaliação do ENEM
+- Forneça feedback específico e acionável
+- Mantenha foco na competência comunicativa
+
+Responda de forma completa e pedagogicamente rica:`;
   }
 
   private getFallbackChatSuggestion(recentMessages: any[], section: string, context: any): string {
@@ -576,12 +650,20 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
         { userFilters, batchSize }, 
         'anonymous'
       );
-      if (cachedResult && Array.isArray(cachedResult.modifiedText)) {
+      if (cachedResult) {
         console.log("📦 Cache hit for repertoire batch");
-        return {
-          repertoires: cachedResult.modifiedText,
-          source: 'cache'
-        };
+        try {
+          const repertoires = JSON.parse(cachedResult.modifiedText);
+          if (Array.isArray(repertoires)) {
+            return {
+              repertoires: repertoires,
+              source: 'cache'
+            };
+          }
+        } catch (error) {
+          console.warn("Failed to parse cached repertoire data, regenerating...");
+          // Continue to regenerate if cache is corrupted
+        }
       }
 
       // 3. Build ultra-compressed prompt (75% token reduction)
@@ -596,12 +678,17 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
       // 5. Parse and validate repertoires
       const repertoires = this.parseRepertoireResponse(response, userFilters);
       
-      // 6. Store in intelligent cache
+      // 6. Store in intelligent cache with proper format
       intelligentCache.setTextModification(
         `repertoires_${query.substring(0, 50)}`, 
         'repertoire-batch', 
         { userFilters, batchSize },
-        { modifiedText: repertoires, source: 'optimized_ai', tokensUsed: this.estimateTokens(optimizedPrompt) },
+        { 
+          modifiedText: JSON.stringify(repertoires), 
+          modificationType: 'argumentativo',
+          source: 'optimized_ai', 
+          tokensUsed: this.estimateTokens(optimizedPrompt) 
+        },
         'anonymous'
       );
       
@@ -629,40 +716,54 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
   }
 
   private buildOptimizedRepertoirePrompt(query: string, userFilters: any, batchSize: number): string {
-    // Ultra-compressed prompt - 75% token reduction while maintaining quality
+    // Enhanced prompt for higher quality repertoires with detailed pedagogical context
     const typeFilter = userFilters.type && userFilters.type !== 'all' 
-      ? `Tipo: "${userFilters.type}" (OBRIGATÓRIO)`
-      : 'Tipos: movies,laws,books,series,data,research';
+      ? `Tipo OBRIGATÓRIO: "${userFilters.type}"`
+      : 'Tipos disponíveis: movies, laws, books, series, data, research';
     
     const categoryFilter = userFilters.category && userFilters.category !== 'all'
-      ? `Categoria: "${userFilters.category}"`
-      : 'Categorias: education,technology,social,politics,culture';
+      ? `Categoria OBRIGATÓRIA: "${userFilters.category}"`
+      : 'Categorias disponíveis: education, technology, social, politics, culture, environment, health, economy';
     
-    return `Gere ${batchSize} repertórios ENEM para: "${query}"
+    return `Você é um especialista em repertórios socioculturais para redações ENEM. Gere ${batchSize} repertórios de alta qualidade e relevância pedagógica para o tema: "${query}"
 
+CONFIGURAÇÕES DE BUSCA:
 ${typeFilter}
 ${categoryFilter}
-Popularidade: popular/very-popular
+Nível de popularidade: Conhecimentos amplamente reconhecidos e validados academicamente
 
-JSON exato:
+INSTRUÇÕES PEDAGÓGICAS:
+- Priorize repertórios que os estudantes realmente conhecem ou podem facilmente pesquisar
+- Forneça conexões claras e diretas com argumentação dissertativa
+- Inclua contextualização histórica, social ou científica quando relevante
+- Explique especificamente COMO usar cada repertório na estrutura argumentativa
+- Foque em aplicabilidade prática para a competência 2 do ENEM (repertório sociocultural)
+
+FORMATO JSON OBRIGATÓRIO:
 [
   {
-    "title": "Nome específico (não genérico)",
-    "description": "Como usar na redação + argumento (80-120 chars)", 
+    "title": "Nome completo e específico (obra, lei, evento, teoria, etc.)",
+    "description": "Descrição detalhada: contexto histórico/social + como aplicar na redação + exemplo de argumento (150-250 caracteres)",
+    "applicationExample": "Exemplo prático: 'Esse repertório fortalece o argumento sobre [tema] porque demonstra que [explicação específica e conexão direta com a tese]'",
     "type": "${userFilters.type || 'books'}",
     "category": "${userFilters.category || 'education'}",
     "popularity": "popular",
-    "year": "2020",
-    "rating": 42,
-    "keywords": ["palavra1","palavra2","palavra3"]
+    "year": "Ano relevante",
+    "rating": 45,
+    "keywords": ["palavra-chave1", "palavra-chave2", "palavra-chave3", "palavra-chave4"],
+    "pedagogicalTips": "Dica específica sobre quando e como usar este repertório de forma mais eficaz na redação"
   }
 ]
 
-REGRAS:
-- Títulos específicos (não "Livros sobre X")
-- Descrição: como aplicar na redação
-- Repertórios reais e conhecidos
-- JSON válido apenas:`;
+CRITÉRIOS DE QUALIDADE:
+✅ Repertórios reais, verificáveis e reconhecidos academicamente
+✅ Conexão direta e clara com o tema solicitado
+✅ Aplicabilidade pedagógica evidente para estudantes de ensino médio
+✅ Diversidade de tipos e perspectivas quando aplicável
+✅ Linguagem acessível mas tecnicamente precisa
+✅ Foco na competência 2 do ENEM (demonstrar conhecimento de mundo)
+
+IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada repertório deve ser genuinamente útil para argumentação em redações do ENEM sobre o tema "${query}".`;
   }
 
   private parseRepertoireResponse(response: string, userFilters: any): any[] {
@@ -683,9 +784,26 @@ REGRAS:
 
       const repertoires = JSON.parse(cleanedResponse);
       
-      // Validate and filter
+      // Validate and enhance repertoires
       const validRepertoires = (Array.isArray(repertoires) ? repertoires : [])
         .filter(rep => rep && rep.title && rep.description && rep.type)
+        .map(rep => ({
+          // Existing fields
+          title: rep.title,
+          description: rep.description,
+          type: rep.type,
+          category: rep.category,
+          popularity: rep.popularity || 'popular',
+          year: rep.year || '2020',
+          rating: rep.rating || 42,
+          keywords: Array.isArray(rep.keywords) ? rep.keywords : [],
+          // Enhanced fields
+          applicationExample: rep.applicationExample || `Este repertório pode ser usado para fortalecer argumentos sobre ${rep.title}.`,
+          pedagogicalTips: rep.pedagogicalTips || `Use este repertório quando precisar de fundamentação teórica ou histórica sobre o tema.`,
+          // Computed enhancement fields
+          relevanceScore: this.calculateRelevanceScore(rep, userFilters),
+          usageContext: this.generateUsageContext(rep)
+        }))
         .filter(rep => {
           // Apply user filters
           if (userFilters.type && userFilters.type !== 'all' && rep.type !== userFilters.type) {
@@ -702,46 +820,122 @@ REGRAS:
       
     } catch (error) {
       console.warn("Failed to parse repertoire response, using fallback");
-      return this.generateFallbackRepertoires('', userFilters, 3);
+      return this.generateEnhancedFallbackRepertoires('', userFilters, 3);
     }
   }
 
+  private calculateRelevanceScore(repertoire: any, filters: any): number {
+    let score = 50; // Base score
+    
+    // Boost for specific type match
+    if (filters.type && repertoire.type === filters.type) score += 20;
+    
+    // Boost for specific category match
+    if (filters.category && repertoire.category === filters.category) score += 15;
+    
+    // Boost for more keywords
+    if (repertoire.keywords && repertoire.keywords.length > 3) score += 10;
+    
+    // Boost for recent years
+    const year = parseInt(repertoire.year) || 2000;
+    if (year > 2010) score += 5;
+    
+    return Math.min(100, score);
+  }
+
+  private generateUsageContext(repertoire: any): string {
+    const contexts: Record<string, string> = {
+      'movies': 'Use no desenvolvimento para exemplificar questões sociais através da arte cinematográfica',
+      'books': 'Aplique na fundamentação teórica ou como exemplo literário no desenvolvimento',
+      'laws': 'Utilize na proposta de intervenção ou para fundamentar direitos e deveres',
+      'series': 'Empregue como reflexo de questões contemporâneas no desenvolvimento',
+      'research': 'Use para dados estatísticos e fundamentação científica',
+      'data': 'Aplique para quantificar problemas e validar argumentos com números'
+    };
+    
+    return contexts[repertoire.type] || 'Use como fundamentação no desenvolvimento da redação';
+  }
+
   private generateFallbackRepertoires(query: string, userFilters: any, count: number): any[] {
-    // Generate fallback repertoires based on query and filters
+    return this.generateEnhancedFallbackRepertoires(query, userFilters, count);
+  }
+
+  private generateEnhancedFallbackRepertoires(query: string, userFilters: any, count: number): any[] {
+    // Enhanced fallback repertoires with detailed pedagogical information
     const fallbackRepertoires = [
       {
         title: "Constituição Federal de 1988",
-        description: "Art. 205: educação como direito fundamental. Use para defender políticas educacionais inclusivas.",
+        description: "Artigo 205 estabelece educação como direito de todos e dever do Estado. Fundamental para argumentar sobre políticas educacionais inclusivas e acessibilidade ao ensino.",
+        applicationExample: "Este repertório fortalece argumentos sobre educação porque demonstra que o acesso ao ensino é um direito constitucional garantido, legitimando políticas de inclusão educacional.",
         type: "laws",
         category: "education",
         popularity: "very-popular",
         year: "1988",
         rating: 45,
-        keywords: ["constituição", "educação", "direito", "fundamental"]
+        keywords: ["constituição", "educação", "direito", "fundamental", "estado"],
+        pedagogicalTips: "Use para fundamentar propostas de políticas públicas educacionais ou quando discutir responsabilidades do Estado na educação.",
+        relevanceScore: 85,
+        usageContext: "Utilize na proposta de intervenção ou para fundamentar direitos e deveres"
       },
       {
-        title: "Estatuto da Criança e do Adolescente",
-        description: "Lei 8.069/90 sobre direitos infanto-juvenis. Aplique em temas de proteção e políticas sociais.",
+        title: "Estatuto da Criança e do Adolescente (ECA)",
+        description: "Lei 8.069/90 que garante proteção integral a crianças e adolescentes. Essencial para temas sobre políticas sociais, proteção infanto-juvenil e responsabilidade social.",
+        applicationExample: "Este repertório fortalece argumentos sobre proteção social porque demonstra que existe marco legal específico para defender direitos de menores, validando políticas de proteção.",
         type: "laws", 
         category: "social",
         popularity: "popular",
         year: "1990",
         rating: 43,
-        keywords: ["eca", "criança", "adolescente", "proteção"]
+        keywords: ["eca", "criança", "adolescente", "proteção", "direitos"],
+        pedagogicalTips: "Aplique quando discutir vulnerabilidade social, políticas de proteção ou responsabilidades familiares e estatais.",
+        relevanceScore: 80,
+        usageContext: "Utilize na proposta de intervenção ou para fundamentar direitos e deveres"
       },
       {
         title: "Marco Civil da Internet",
-        description: "Lei 12.965/2014 sobre neutralidade de rede. Use em temas de tecnologia e regulamentação digital.",
+        description: "Lei 12.965/2014 que estabelece princípios para uso da internet no Brasil, incluindo neutralidade de rede e proteção de dados. Crucial para debates sobre tecnologia e regulamentação digital.",
+        applicationExample: "Este repertório fortalece argumentos sobre tecnologia porque demonstra que existe legislação específica para o ambiente digital, legitimando discussões sobre regulamentação da internet.",
         type: "laws",
         category: "technology", 
         popularity: "moderate",
         year: "2014",
         rating: 40,
-        keywords: ["internet", "neutralidade", "digital", "regulação"]
+        keywords: ["internet", "neutralidade", "digital", "regulação", "dados"],
+        pedagogicalTips: "Use em temas sobre tecnologia, privacidade digital, regulamentação de redes sociais ou democratização do acesso à internet.",
+        relevanceScore: 75,
+        usageContext: "Utilize na proposta de intervenção ou para fundamentar direitos e deveres"
+      },
+      {
+        title: "Declaração Universal dos Direitos Humanos",
+        description: "Documento de 1948 da ONU que estabelece direitos fundamentais. Base para argumentação sobre dignidade humana, igualdade e justiça social em qualquer contexto.",
+        applicationExample: "Este repertório fortalece argumentos sobre direitos porque demonstra consenso mundial sobre dignidade humana, legitimando lutas por igualdade e justiça social.",
+        type: "laws",
+        category: "social", 
+        popularity: "very-popular",
+        year: "1948",
+        rating: 48,
+        keywords: ["direitos", "humanos", "onu", "dignidade", "igualdade"],
+        pedagogicalTips: "Aplicável em praticamente qualquer tema social. Use para dar fundamento universal aos seus argumentos.",
+        relevanceScore: 90,
+        usageContext: "Utilize na proposta de intervenção ou para fundamentar direitos e deveres"
+      },
+      {
+        title: "Agenda 2030 - ODS",
+        description: "Objetivos de Desenvolvimento Sustentável da ONU com 17 metas globais. Excelente para temas ambientais, sociais e econômicos, demonstrando compromisso internacional.",
+        applicationExample: "Este repertório fortalece argumentos sobre sustentabilidade porque demonstra que existe plano global coordenado, legitimando políticas ambientais e sociais integradas.",
+        type: "research",
+        category: "environment", 
+        popularity: "popular",
+        year: "2015",
+        rating: 44,
+        keywords: ["ods", "sustentabilidade", "onu", "desenvolvimento", "metas"],
+        pedagogicalTips: "Use em temas ambientais, sociais ou econômicos para mostrar perspectiva global e coordenação internacional.",
+        relevanceScore: 85,
+        usageContext: "Use para dados estatísticos e fundamentação científica"
       }
     ];
 
-    // Filter by user preferences
+    // Filter by user preferences with enhanced matching
     let filtered = fallbackRepertoires.filter(rep => {
       if (userFilters.type && userFilters.type !== 'all' && rep.type !== userFilters.type) {
         return false;
@@ -752,17 +946,21 @@ REGRAS:
       return true;
     });
 
-    // If no matches after filtering, provide generic educational repertoires
+    // If no matches after filtering, provide versatile universal repertoires
     if (filtered.length === 0) {
       filtered = [{
-        title: "Lei de Diretrizes e Bases da Educação",
-        description: "LDB 9.394/96 estabelece princípios educacionais. Use para argumentar sobre reformas no ensino.",
+        title: "Lei de Diretrizes e Bases da Educação Nacional (LDB)",
+        description: "Lei 9.394/96 que estabelece diretrizes e bases da educação nacional. Fundamental para discussões sobre reformas educacionais, inclusão e qualidade do ensino.",
+        applicationExample: "Este repertório fortalece argumentos sobre educação porque demonstra que existe marco legal específico para o sistema educacional, legitimando reformas e políticas educacionais.",
         type: userFilters.type || "laws",
         category: userFilters.category || "education", 
         popularity: "popular",
         year: "1996",
         rating: 42,
-        keywords: ["ldb", "educação", "ensino", "diretrizes"]
+        keywords: ["ldb", "educação", "ensino", "diretrizes", "nacional"],
+        pedagogicalTips: "Use para fundamentar argumentos sobre reformas educacionais, democratização do ensino ou políticas pedagógicas.",
+        relevanceScore: 78,
+        usageContext: "Utilize na proposta de intervenção ou para fundamentar direitos e deveres"
       }];
     }
 
