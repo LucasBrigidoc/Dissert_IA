@@ -29,7 +29,7 @@ interface AIUsageProgressProps {
   className?: string;
   showDetails?: boolean;
   compact?: boolean;
-  variant?: "default" | "minimal" | "detailed";
+  variant?: "default" | "minimal" | "detailed" | "header";
 }
 
 export function AIUsageProgress({ 
@@ -124,6 +124,85 @@ export function AIUsageProgress({
     };
     return names[operation] || operation;
   };
+
+  // Header variant - Padronizado para integração com cabeçalho das páginas
+  if (variant === "header") {
+    return (
+      <div className={cn(
+        "sticky top-0 z-40 w-full border-b border-white/20 backdrop-blur-md bg-white/80 shadow-sm",
+        "supports-[backdrop-filter]:bg-white/60",
+        className
+      )}>
+        <div className="container mx-auto px-4 sm:px-6 py-3">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center justify-center sm:justify-between">
+                  {/* Mobile: Centered layout */}
+                  <div className="flex items-center space-x-3 sm:hidden">
+                    <div className="flex items-center space-x-2">
+                      <Zap className="w-4 h-4 text-bright-blue" />
+                      <span className="text-xs font-medium text-gray-700">IA</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className={cn("h-full transition-all duration-300", getProgressColor(usageStats.usagePercentage))}
+                          style={{ width: `${Math.min(100, usageStats.usagePercentage)}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-semibold text-gray-800">
+                        {usageStats.usagePercentage.toFixed(0)}%
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Desktop: Full layout */}
+                  <div className="hidden sm:flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-2">
+                      <Zap className="w-4 h-4 text-bright-blue" />
+                      <span className="text-sm font-medium text-gray-700">Uso de IA</span>
+                    </div>
+                    
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className={cn("h-full transition-all duration-300", getProgressColor(usageStats.usagePercentage))}
+                            style={{ width: `${Math.min(100, usageStats.usagePercentage)}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-semibold text-gray-800 min-w-[3rem]">
+                          {usageStats.usagePercentage.toFixed(0)}%
+                        </span>
+                      </div>
+                      
+                      <div className="text-xs text-gray-500 flex items-center space-x-1">
+                        <Calendar className="w-3 h-3" />
+                        <span>{usageStats.daysUntilReset}d restantes</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-xs">
+                <div className="text-xs space-y-1">
+                  <div className="font-medium">Limite de IA</div>
+                  <div>{usageStats.usagePercentage.toFixed(1)}% do limite usado</div>
+                  <div className="text-gray-500">
+                    Reset em {usageStats.daysUntilReset} dias
+                  </div>
+                  <div className="text-gray-500">
+                    {usageStats.operationCount} operações esta semana
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+    );
+  }
 
   // Minimal variant for mobile or small spaces
   if (variant === "minimal" || compact) {

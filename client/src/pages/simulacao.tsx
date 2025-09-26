@@ -415,26 +415,25 @@ export default function SimulacaoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bright-blue/10 via-white to-dark-blue/10 p-4">
-      {/* Header with Back Button */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="flex justify-start">
-          <Button 
-            variant="outline" 
-            onClick={handleBack}
-            className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
-            data-testid="button-back-to-simulator"
-          >
-            <ArrowLeft className="mr-2" size={16} />
-            Voltar
-          </Button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-bright-blue/10 via-white to-dark-blue/10">
+      {/* AI Usage Progress - Padronizado no topo */}
+      <AIUsageProgress variant="header" />
       
-      {/* AI Usage Progress */}
-      <div className="max-w-7xl mx-auto mb-4">
-        <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
-      </div>
+      <div className="p-4">
+        {/* Header with Back Button */}
+        <div className="max-w-7xl mx-auto mb-6">
+          <div className="flex justify-start">
+            <Button 
+              variant="outline" 
+              onClick={handleBack}
+              className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+              data-testid="button-back-to-simulator"
+            >
+              <ArrowLeft className="mr-2" size={16} />
+              Voltar
+            </Button>
+          </div>
+        </div>
       
       {/* First Row - Topic/Proposal Section */}
       <div className="max-w-7xl mx-auto mb-6">
@@ -939,6 +938,7 @@ export default function SimulacaoPage() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }

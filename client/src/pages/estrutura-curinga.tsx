@@ -96,12 +96,10 @@ export function EstruturaCuringa() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
+      {/* AI Usage Progress - Padronizado no topo */}
+      <AIUsageProgress variant="header" />
+      
       <div className="container mx-auto px-4 py-8">
-        {/* AI Usage Progress */}
-        <div className="mb-4">
-          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
-        </div>
-        
         {/* Header */}
         <div className="mb-8">
           <Link href={backUrl}>

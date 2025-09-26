@@ -696,10 +696,8 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           </div>
         </div>
         
-        {/* AI Usage Progress integrated with header */}
-        <div className="container mx-auto px-4 sm:px-6 py-2 border-t border-gray-100/50">
-          <AIUsageProgress variant="minimal" compact={true} showDetails={false} />
-        </div>
+        {/* AI Usage Progress - Padronizado no topo */}
+        <AIUsageProgress variant="header" />
       </div>
       
       {/* Main Content */}
