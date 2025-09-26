@@ -275,8 +275,8 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         
         {/* AI Usage Progress - Integrado no header */}
         <div className="border-t border-white/30 bg-white/20 backdrop-blur-sm">
-          <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
-            <div className="bg-white/40 backdrop-blur-md rounded-lg p-3 shadow-sm border border-white/50">
+          <div className="container mx-auto px-3 md:px-6 py-1.5 md:py-2">
+            <div className="bg-white/40 backdrop-blur-md rounded-lg p-2 shadow-sm border border-white/50">
               <AIUsageProgress variant="inline" />
             </div>
           </div>
@@ -284,7 +284,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-32 sm:pt-36 md:pt-40 pb-6 sm:pb-8 md:pb-16">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-28 sm:pt-32 md:pt-36 pb-6 sm:pb-8 md:pb-16">
         <div className="space-y-6 sm:space-y-8 md:space-y-12">
           {/* Formulário de criação */}
           <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-bright-blue w-full shadow-lg">
