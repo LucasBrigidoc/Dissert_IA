@@ -1425,7 +1425,7 @@ export default function Dashboard() {
 
         {/* Goals Management Modal */}
         <Dialog open={showGoalsManagement} onOpenChange={setShowGoalsManagement}>
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" data-testid="dialog-goals-management">
+          <DialogContent className="max-w-[95vw] sm:max-w-2xl lg:max-w-3xl max-h-[85vh] overflow-y-auto mx-4 sm:mx-auto" data-testid="dialog-goals-management">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
                 <Target className="mr-3 text-bright-blue" size={20} />
@@ -1440,25 +1440,25 @@ export default function Dashboard() {
                 <h3 className="text-lg font-semibold text-dark-blue mb-4">Metas Atuais</h3>
                 <div className="space-y-3">
                   {goals.map((goal) => (
-                    <div key={goal.id} className={`p-4 rounded-lg border-2 ${
+                    <div key={goal.id} className={`p-3 sm:p-4 rounded-lg border-2 ${
                       goal.completed 
                         ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-300'
                         : 'bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 border-bright-blue/30'
                     }`} data-testid={`goal-item-${goal.id}`}>
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                         <div className="flex items-center space-x-3 flex-1">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                             goal.completed ? 'bg-green-500' : 'bg-bright-blue'
                           }`}>
                             <CheckCircle2 className="text-white" size={16} />
                           </div>
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <div className={`font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
                               {goal.title}
                             </div>
-                            <div className="flex items-center space-x-4 mt-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 space-y-2 sm:space-y-0">
                               <div className="flex items-center space-x-2">
-                                <label className="text-sm text-soft-gray">Progresso:</label>
+                                <label className="text-sm text-soft-gray flex-shrink-0">Progresso:</label>
                                 <input
                                   type="number"
                                   value={goal.current}
@@ -1474,12 +1474,12 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 sm:ml-4 flex-shrink-0">
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => toggleGoalCompletion(goal.id)}
-                            className={`${
+                            className={`text-xs sm:text-sm ${
                               goal.completed 
                                 ? 'bg-green-500 text-white hover:bg-green-600 border-green-500'
                                 : 'text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10'
