@@ -133,7 +133,7 @@ export default function VisualizadorConversa() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Principal */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
+      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
         {/* Main Header */}
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
