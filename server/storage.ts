@@ -162,6 +162,16 @@ export interface IStorage {
   
 }
 
+// Helper function to remove undefined values from objects
+function removeUndefined<T extends object>(obj: Partial<T>): Partial<{ [K in keyof T]: Exclude<T[K], undefined> }> {
+  const out: any = {};
+  for (const k in obj) {
+    const v = (obj as any)[k];
+    if (v !== undefined) out[k] = v;
+  }
+  return out;
+}
+
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private userProgress: Map<string, UserProgress>;
@@ -984,6 +994,8 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const adminUser: AdminUser = {
       ...admin,
+      adminLevel: admin.adminLevel ?? "admin",
+      permissions: admin.permissions ?? [],
       id,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -1001,6 +1013,12 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const userCost: UserCost = {
       ...cost,
+      userId: cost.userId ?? null,
+      tokensInput: cost.tokensInput ?? 0,
+      tokensOutput: cost.tokensOutput ?? 0,
+      costBrl: cost.costBrl ?? 0,
+      modelUsed: cost.modelUsed ?? "gemini-1.5-flash",
+      processingTime: cost.processingTime ?? null,
       id,
       createdAt: new Date(),
     };
@@ -1012,6 +1030,11 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const dailyUsage: UserDailyUsage = {
       ...usage,
+      userId: usage.userId ?? null,
+      totalOperations: usage.totalOperations ?? 0,
+      totalCostBrl: usage.totalCostBrl ?? 0,
+      operationBreakdown: usage.operationBreakdown ?? {},
+      costBreakdown: usage.costBreakdown ?? {},
       id,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -1040,9 +1063,11 @@ export class MemStorage implements IStorage {
       throw new Error(`UserDailyUsage with id ${id} not found`);
     }
     
+    const cleaned = removeUndefined(updates);
     const updated: UserDailyUsage = {
       ...existing,
-      ...updates,
+      ...cleaned,
+      userId: (cleaned as any).userId ?? existing.userId,
       updatedAt: new Date(),
     };
     
@@ -1055,6 +1080,14 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const businessMetric: BusinessMetric = {
       ...metric,
+      totalUsers: metric.totalUsers ?? null,
+      activeUsers: metric.activeUsers ?? null,
+      totalOperations: metric.totalOperations ?? null,
+      totalCostBrl: metric.totalCostBrl ?? null,
+      avgCostPerUser: metric.avgCostPerUser ?? null,
+      cacheHitRate: metric.cacheHitRate ?? null,
+      topOperation: metric.topOperation ?? null,
+      totalRevenue: metric.totalRevenue ?? null,
       id,
       createdAt: new Date(),
     };
@@ -1069,6 +1102,7 @@ export class MemStorage implements IStorage {
     topOperation: string;
   }> {
     const costs = Array.from(this.userCosts.values()).filter(cost => {
+      if (!cost.createdAt) return false;
       const costDate = new Date(cost.createdAt);
       return costDate >= startDate && costDate <= endDate;
     });
@@ -1110,7 +1144,7 @@ export class MemStorage implements IStorage {
     
     const activeUserIds = new Set(
       Array.from(this.userCosts.values())
-        .filter(cost => new Date(cost.createdAt) >= cutoffDate && cost.userId)
+        .filter(cost => cost.createdAt && new Date(cost.createdAt) >= cutoffDate && cost.userId)
         .map(cost => cost.userId!)
     );
     
@@ -1127,6 +1161,7 @@ export class MemStorage implements IStorage {
     costBreakdown: Record<string, number>;
   }> {
     const costs = Array.from(this.userCosts.values()).filter(cost => {
+      if (!cost.createdAt) return false;
       const costDate = new Date(cost.createdAt);
       const dateMatch = costDate >= startDate && costDate <= endDate;
       
@@ -1169,6 +1204,7 @@ export class MemStorage implements IStorage {
     cacheEfficiency: number;
   }> {
     const costs = Array.from(this.userCosts.values()).filter(cost => {
+      if (!cost.createdAt) return false;
       const costDate = new Date(cost.createdAt);
       return costDate >= startDate && costDate <= endDate;
     });
@@ -1198,6 +1234,7 @@ export class MemStorage implements IStorage {
     // Daily trends
     const dailyData: Record<string, { operations: number; cost: number; users: Set<string> }> = {};
     costs.forEach(cost => {
+      if (!cost.createdAt) return;
       const date = new Date(cost.createdAt).toISOString().split('T')[0];
       if (!dailyData[date]) {
         dailyData[date] = { operations: 0, cost: 0, users: new Set() };
@@ -1241,6 +1278,7 @@ export class MemStorage implements IStorage {
     topOperation: string;
   }>> {
     const costs = Array.from(this.userCosts.values()).filter(cost => {
+      if (!cost.createdAt) return false;
       const costDate = new Date(cost.createdAt);
       return costDate >= startDate && costDate <= endDate;
     });
@@ -1542,6 +1580,11 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const weeklyUsage: WeeklyUsage = {
       ...usage,
+      totalCostCentavos: usage.totalCostCentavos ?? null,
+      operationCount: usage.operationCount ?? null,
+      operationBreakdown: usage.operationBreakdown ?? {},
+      costBreakdown: usage.costBreakdown ?? {},
+      lastOperation: usage.lastOperation ?? null,
       id,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -1556,9 +1599,10 @@ export class MemStorage implements IStorage {
       throw new Error("Weekly usage not found");
     }
 
+    const cleaned = removeUndefined(usage);
     const updated: WeeklyUsage = {
       ...existing,
-      ...usage,
+      ...cleaned,
       updatedAt: new Date(),
     };
 
