@@ -495,13 +495,17 @@ export default function Repertorio() {
             <p className="text-soft-gray">Descubra referências para enriquecer suas redações</p>
           </div>
         </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
       </div>
-      
-      {/* AI Usage Progress - Padronizado no topo */}
-      <AIUsageProgress variant="header" />
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-20 sm:pt-28">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pt-24 sm:pt-32">
         {/* Search Bar - Mobile Optimized */}
         <div className="mb-6 sm:mb-8">
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
