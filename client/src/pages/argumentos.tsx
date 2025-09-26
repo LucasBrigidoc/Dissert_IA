@@ -641,7 +641,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
@@ -699,12 +699,16 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           </div>
         </div>
         
-        {/* AI Usage Progress - Padronizado no topo */}
-        <AIUsageProgress variant="header" />
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
       </div>
       
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-3 pt-16 sm:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 py-3 pt-20 sm:pt-24">
         <div className="flex flex-col gap-2 h-[calc(100vh-4rem)] sm:h-auto">
           
           {/* Chat Principal - Altura Adaptável - Maior em Mobile */}

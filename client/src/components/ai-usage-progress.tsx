@@ -29,7 +29,7 @@ interface AIUsageProgressProps {
   className?: string;
   showDetails?: boolean;
   compact?: boolean;
-  variant?: "default" | "minimal" | "detailed" | "header";
+  variant?: "default" | "minimal" | "detailed" | "header" | "inline";
 }
 
 // Criar uma função global para refresh das estatísticas de uso
@@ -228,6 +228,86 @@ export function AIUsageProgress({
           </TooltipProvider>
         </div>
       </div>
+    );
+  }
+
+  // Inline variant - Apenas o conteúdo para integração em outros componentes
+  if (variant === "inline") {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className={cn("flex items-center justify-center sm:justify-between", className)}>
+              {/* Mobile: Centered layout */}
+              <div className="flex items-center space-x-2 sm:hidden">
+                <div className="flex items-center space-x-1.5">
+                  <Zap className="w-3.5 h-3.5 text-bright-blue" />
+                  <span className="text-xs font-medium text-gray-700">IA</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <div className="w-12 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className={cn("h-full transition-all duration-300", getProgressColor(usageStats.usagePercentage))}
+                      style={{ width: `${Math.min(100, usageStats.usagePercentage)}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-800">
+                    {usageStats.usagePercentage.toFixed(0)}%
+                  </span>
+                  {/* Só mostra dias restantes quando uso está 100% */}
+                  {usageStats.usagePercentage >= 100 && (
+                    <span className="text-xs text-gray-500">
+                      {usageStats.daysUntilReset}d restantes
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Desktop: Full layout */}
+              <div className="hidden sm:flex items-center justify-between w-full">
+                <div className="flex items-center space-x-2">
+                  <Zap className="w-3.5 h-3.5 text-bright-blue" />
+                  <span className="text-sm font-medium text-gray-700">Uso de IA</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={cn("h-full transition-all duration-300", getProgressColor(usageStats.usagePercentage))}
+                        style={{ width: `${Math.min(100, usageStats.usagePercentage)}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-800 min-w-[3rem]">
+                      {usageStats.usagePercentage.toFixed(0)}%
+                    </span>
+                  </div>
+                  
+                  {/* Só mostra dias restantes quando uso está 100% */}
+                  {usageStats.usagePercentage >= 100 && (
+                    <div className="text-xs text-gray-500 flex items-center space-x-1">
+                      <Calendar className="w-3 h-3" />
+                      <span>{usageStats.daysUntilReset}d restantes</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="max-w-xs">
+            <div className="text-xs space-y-1">
+              <div className="font-medium">Limite de IA</div>
+              <div>{usageStats.usagePercentage.toFixed(1)}% do limite usado</div>
+              <div className="text-gray-500">
+                Reset em {usageStats.daysUntilReset} dias
+              </div>
+              <div className="text-gray-500">
+                {usageStats.operationCount} operações esta semana
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 
