@@ -156,7 +156,7 @@ export default function Estilo() {
         </div>
       </div>
       {/* Content */}
-      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 pt-20 md:pt-24">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 pt-24 md:pt-28">
         {/* Introduction Section */}
         <div className="max-w-4xl mx-auto mb-8 md:mb-12">
           <div className="text-center mb-8 md:mb-12">

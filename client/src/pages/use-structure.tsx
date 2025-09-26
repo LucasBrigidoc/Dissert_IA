@@ -525,7 +525,7 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-3 md:px-4 py-4 md:py-8">
+      <div className="container mx-auto px-3 md:px-4 py-4 md:py-8 pt-24 md:pt-28">
         {/* Header */}
         <div className="mb-4 md:mb-8">
           <Button 

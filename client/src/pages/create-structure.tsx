@@ -274,15 +274,15 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         </div>
         
         {/* AI Usage Progress - Integrado no header */}
-        <div className="border-t border-white/10">
-          <div className="container mx-auto px-3 md:px-6 py-1.5 md:py-2">
+        <div className="border-t border-white/20 bg-gradient-to-r from-bright-blue/10 to-purple-600/10">
+          <div className="container mx-auto px-3 md:px-6 py-2 md:py-3">
             <AIUsageProgress variant="inline" />
           </div>
         </div>
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-16 sm:pt-20 md:pt-28 pb-6 sm:pb-8 md:pb-16">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-20 sm:pt-24 md:pt-32 pb-6 sm:pb-8 md:pb-16">
         <div className="space-y-6 sm:space-y-8 md:space-y-12">
           {/* Formulário de criação */}
           <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-bright-blue w-full shadow-lg">
