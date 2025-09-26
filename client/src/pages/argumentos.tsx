@@ -11,7 +11,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
 
 export default function Argumentos() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [backUrl, setBackUrl] = useState('/dashboard');
   const [showMindMap, setShowMindMap] = useState(false);
 
@@ -646,13 +646,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
             <Button
-              onClick={() => {
-                if (window.history.length > 1 && document.referrer) {
-                  window.history.back();
-                } else {
-                  window.location.href = backUrl;
-                }
-              }}
+              onClick={() => setLocation('/functionalities')}
               variant="outline"
               size="sm"
               className="flex items-center space-x-1 h-8 px-2 text-xs"
@@ -673,13 +667,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
           <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Button
-                onClick={() => {
-                  if (window.history.length > 1 && document.referrer) {
-                    window.history.back();
-                  } else {
-                    window.location.href = backUrl;
-                  }
-                }}
+                onClick={() => setLocation('/functionalities')}
                 variant="outline"
                 size="sm"
                 className="flex items-center space-x-2"
