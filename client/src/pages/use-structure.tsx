@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { EssayStructure, Section } from "@shared/schema";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 interface StructureGuide {
   whenToUse: string[];
@@ -545,6 +546,13 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
             <p className="text-sm md:text-base text-soft-gray">
               Selecione uma estrutura salva e gere redações seguindo esse modelo
             </p>
+          </div>
+          
+          {/* AI Usage Progress - Integrado no header */}
+          <div className="border-t border-white/10">
+            <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+              <AIUsageProgress variant="inline" />
+            </div>
           </div>
         </div>
 

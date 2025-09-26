@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CreateStructure } from "@/pages/create-structure";
 import { apiRequest } from "@/lib/queryClient";
 import type { EssayStructure, Section } from "@shared/schema";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 export default function Estilo() {
   const [location, setLocation] = useLocation();
@@ -144,6 +145,13 @@ export default function Estilo() {
             <div className="hidden md:block">
               <p className="text-sm text-soft-gray">Gere redações personalizadas seguindo sua metodologia preferida</p>
             </div>
+          </div>
+        </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
           </div>
         </div>
       </div>

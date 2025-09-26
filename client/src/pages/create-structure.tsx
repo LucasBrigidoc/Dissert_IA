@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Section, InsertEssayStructure, EssayStructure } from "@shared/schema";
 import { insertEssayStructureSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 interface CreateStructureProps {
   onBack: () => void;
@@ -269,6 +270,13 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                 <span className="hidden sm:inline">Nova </span>Estrutura
               </Badge>
             </div>
+          </div>
+        </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-3 md:px-6 py-1.5 md:py-2">
+            <AIUsageProgress variant="inline" />
           </div>
         </div>
       </div>
