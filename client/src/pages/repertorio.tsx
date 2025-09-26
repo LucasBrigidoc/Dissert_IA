@@ -450,7 +450,7 @@ export default function Repertorio() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header - Mobile Optimized */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
