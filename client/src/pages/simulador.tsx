@@ -11,6 +11,7 @@ import { Link, useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 export default function Simulador() {
   const [location] = useLocation();
@@ -220,6 +221,13 @@ export default function Simulador() {
             <div>
               <p className="text-soft-gray">Pratique em condições reais de exame</p>
             </div>
+          </div>
+        </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
           </div>
         </div>
       </div>
