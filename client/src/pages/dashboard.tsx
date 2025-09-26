@@ -1034,7 +1034,7 @@ export default function Dashboard() {
 
         {/* Add Score Dialog */}
         <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-[95vw] sm:max-w-lg lg:max-w-2xl max-h-[85vh] overflow-y-auto mx-4 sm:mx-auto">
             <DialogHeader>
               <DialogTitle className="text-dark-blue flex items-center">
                 <Plus className="mr-2" size={12} />
@@ -1042,8 +1042,8 @@ export default function Dashboard() {
               </DialogTitle>
             </DialogHeader>
             
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm text-dark-blue">Nome da Prova/Simulado</Label>
                   <Input
@@ -1083,7 +1083,7 @@ export default function Dashboard() {
               
               <div>
                 <Label className="text-sm text-dark-blue font-medium mb-3 block">Pontuação por Competência (opcional)</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
                   {[
                     { key: 'competence1', label: 'Comp. 1', desc: 'Norma Culta' },
                     { key: 'competence2', label: 'Comp. 2', desc: 'Compreensão' },
@@ -1091,25 +1091,25 @@ export default function Dashboard() {
                     { key: 'competence4', label: 'Comp. 4', desc: 'Coesão' },
                     { key: 'competence5', label: 'Comp. 5', desc: 'Proposta' }
                   ].map((comp) => (
-                    <div key={comp.key}>
-                      <Label className="text-xs text-soft-gray">{comp.label}</Label>
+                    <div key={comp.key} className="space-y-2">
+                      <Label className="text-xs text-soft-gray font-medium">{comp.label}</Label>
                       <Input
                         type="number"
                         value={newScore[comp.key as keyof typeof newScore]}
                         onChange={(e) => setNewScore({...newScore, [comp.key]: e.target.value})}
                         placeholder="0-200"
-                        className="mt-1 text-sm"
+                        className="text-sm"
                         max="200"
                         min="0"
                         data-testid={`input-${comp.key}`}
                       />
-                      <div className="text-xs text-soft-gray mt-1">{comp.desc}</div>
+                      <div className="text-xs text-soft-gray">{comp.desc}</div>
                     </div>
                   ))}
                 </div>
               </div>
               
-              <div className="flex space-x-3 pt-4">
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 pt-4 border-t">
                 <Button
                   onClick={handleAddScore}
                   className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 flex-1"
@@ -1120,6 +1120,7 @@ export default function Dashboard() {
                 <Button
                   variant="outline"
                   onClick={() => setShowAddScore(false)}
+                  className="sm:flex-none"
                   data-testid="button-cancel-score"
                 >
                   Cancelar
