@@ -151,12 +151,17 @@ export class IntelligentCache {
     let score = 50; // Base score
     
     if (result.modifiedText) {
-      const length = result.modifiedText.length;
+      // Ensure modifiedText is a string before calling string methods
+      const textContent = typeof result.modifiedText === 'string' 
+        ? result.modifiedText 
+        : JSON.stringify(result.modifiedText);
+        
+      const length = textContent.length;
       if (length > 50 && length < 500) score += 20;
-      if (result.modifiedText.includes('ademais') || 
-          result.modifiedText.includes('outrossim') ||
-          result.modifiedText.includes('conquanto')) score += 15;
-      if (result.modifiedText.split('.').length > 2) score += 10;
+      if (textContent.includes('ademais') || 
+          textContent.includes('outrossim') ||
+          textContent.includes('conquanto')) score += 15;
+      if (textContent.split('.').length > 2) score += 10;
     }
     
     return Math.min(100, score);

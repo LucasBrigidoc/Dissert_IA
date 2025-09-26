@@ -104,11 +104,14 @@ export class OptimizedAnalysisService {
   }
 
   private buildOptimizedAnalysisPrompt(essayText: string, compressedContext: string): string {
-    // Reduced prompt - 70% token reduction while maintaining quality
+    // Reduced prompt - 70% token reduction while maintaining quality  
+    // Remove arbitrary text truncation to ensure complete AI responses
+    const truncatedText = essayText.length > 2000 ? essayText.substring(0, 2000) + "..." : essayText;
+    
     return `Especialista ENEM. Analise redação e crie estrutura dissertativa.
 
 ${compressedContext ? `Contexto: ${compressedContext}\n` : ''}
-REDAÇÃO: "${essayText.substring(0, 800)}..."
+REDAÇÃO: "${truncatedText}"
 
 ESTRUTURA ENEM:
 1. INTRO: Contextualização + Tese + Argumentos
