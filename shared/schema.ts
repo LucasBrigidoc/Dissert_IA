@@ -442,6 +442,64 @@ export type TextModificationConfig = z.infer<typeof textModificationConfigSchema
 export type TextModificationResult = z.infer<typeof textModificationResultSchema>;
 export type TextModificationRequest = z.infer<typeof textModificationRequestSchema>;
 
+
+// ===================== NEWSLETTER MANAGEMENT TABLES =====================
+
+// Newsletter subscribers table
+export const newsletterSubscribers = pgTable("newsletter_subscribers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull().unique(),
+  name: text("name"), // Optional name if provided
+  status: varchar("status", { enum: ["active", "unsubscribed", "bounced"] }).notNull().default("active"),
+  subscriptionSource: varchar("subscription_source", { enum: ["footer", "landing", "popup", "manual"] }).default("footer"),
+  confirmedAt: timestamp("confirmed_at"),
+  unsubscribedAt: timestamp("unsubscribed_at"),
+  unsubscribeToken: varchar("unsubscribe_token").unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Newsletters table
+export const newsletters = pgTable("newsletters", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // HTML content
+  plainTextContent: text("plain_text_content"), // Plain text version
+  subject: text("subject").notNull(),
+  previewText: text("preview_text"), // Email preview text
+  status: varchar("status", { enum: ["draft", "scheduled", "sent", "cancelled"] }).notNull().default("draft"),
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  sentCount: integer("sent_count").default(0),
+  deliveredCount: integer("delivered_count").default(0),
+  openedCount: integer("opened_count").default(0),
+  clickedCount: integer("clicked_count").default(0),
+  bounceCount: integer("bounce_count").default(0),
+  unsubscribeCount: integer("unsubscribe_count").default(0),
+  tags: json("tags").default([]), // Newsletter tags for organization
+  authorId: varchar("author_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Newsletter sends tracking table (for tracking individual sends)
+export const newsletterSends = pgTable("newsletter_sends", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  newsletterId: varchar("newsletter_id").notNull().references(() => newsletters.id),
+  subscriberId: varchar("subscriber_id").notNull().references(() => newsletterSubscribers.id),
+  status: varchar("status", { enum: ["sent", "delivered", "bounced", "opened", "clicked", "unsubscribed"] }).notNull(),
+  sentAt: timestamp("sent_at").defaultNow(),
+  deliveredAt: timestamp("delivered_at"),
+  openedAt: timestamp("opened_at"),
+  firstClickedAt: timestamp("first_clicked_at"),
+  unsubscribedAt: timestamp("unsubscribed_at"),
+  bounceReason: text("bounce_reason"),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // ===================== ADMIN & COST TRACKING TABLES =====================
 
 // Admin users table for administrative access
@@ -770,3 +828,73 @@ export type PredictiveMetric = typeof predictiveMetrics.$inferSelect;
 export type InsertPredictiveMetric = z.infer<typeof insertPredictiveMetricSchema>;
 export type ChurnPrediction = typeof churnPredictions.$inferSelect;
 export type InsertChurnPrediction = z.infer<typeof insertChurnPredictionSchema>;
+
+// ===================== NEWSLETTER SCHEMAS =====================
+
+// Newsletter insert schemas
+export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  unsubscribeToken: true,
+  confirmedAt: true,
+  unsubscribedAt: true,
+});
+
+export const insertNewsletterSchema = createInsertSchema(newsletters).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  sentAt: true,
+  sentCount: true,
+  deliveredCount: true,
+  openedCount: true,
+  clickedCount: true,
+  bounceCount: true,
+  unsubscribeCount: true,
+});
+
+export const insertNewsletterSendSchema = createInsertSchema(newsletterSends).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Newsletter management schemas
+export const newsletterSubscriptionSchema = z.object({
+  email: z.string().email("Email inválido"),
+  name: z.string().optional(),
+});
+
+export const createNewsletterSchema = z.object({
+  title: z.string().min(1, "Título é obrigatório"),
+  subject: z.string().min(1, "Assunto é obrigatório"),
+  content: z.string().min(1, "Conteúdo é obrigatório"),
+  previewText: z.string().optional(),
+  plainTextContent: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  scheduledAt: z.date().optional(),
+});
+
+export const updateNewsletterSchema = createNewsletterSchema.partial();
+
+export const sendNewsletterSchema = z.object({
+  newsletterId: z.string(),
+  sendImmediately: z.boolean().optional(),
+  scheduledAt: z.date().optional(),
+});
+
+// Newsletter type definitions
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
+
+export type Newsletter = typeof newsletters.$inferSelect;
+export type InsertNewsletter = z.infer<typeof insertNewsletterSchema>;
+
+export type NewsletterSend = typeof newsletterSends.$inferSelect;
+export type InsertNewsletterSend = z.infer<typeof insertNewsletterSendSchema>;
+
+export type NewsletterSubscription = z.infer<typeof newsletterSubscriptionSchema>;
+export type CreateNewsletter = z.infer<typeof createNewsletterSchema>;
+export type UpdateNewsletter = z.infer<typeof updateNewsletterSchema>;
+export type SendNewsletter = z.infer<typeof sendNewsletterSchema>;

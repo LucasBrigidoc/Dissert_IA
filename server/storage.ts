@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -289,6 +289,42 @@ export interface IStorage {
     riskFactors: string[];
     recommendedActions: string[];
   }>>;
+
+  // ===================== NEWSLETTER OPERATIONS =====================
+  
+  // Newsletter subscriber operations
+  createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
+  getNewsletterSubscriber(id: string): Promise<NewsletterSubscriber | undefined>;
+  getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
+  updateNewsletterSubscriber(id: string, subscriber: Partial<NewsletterSubscriber>): Promise<NewsletterSubscriber>;
+  deleteNewsletterSubscriber(id: string): Promise<void>;
+  getAllNewsletterSubscribers(status?: string): Promise<NewsletterSubscriber[]>;
+  getActiveNewsletterSubscribers(): Promise<NewsletterSubscriber[]>;
+  unsubscribeByToken(token: string): Promise<boolean>;
+  
+  // Newsletter operations
+  createNewsletter(newsletter: InsertNewsletter): Promise<Newsletter>;
+  getNewsletter(id: string): Promise<Newsletter | undefined>;
+  getAllNewsletters(status?: string): Promise<Newsletter[]>;
+  updateNewsletter(id: string, newsletter: Partial<Newsletter>): Promise<Newsletter>;
+  deleteNewsletter(id: string): Promise<void>;
+  getNewslettersByAuthor(authorId: string): Promise<Newsletter[]>;
+  
+  // Newsletter send operations
+  createNewsletterSend(send: InsertNewsletterSend): Promise<NewsletterSend>;
+  getNewsletterSends(newsletterId: string): Promise<NewsletterSend[]>;
+  updateNewsletterSend(id: string, send: Partial<NewsletterSend>): Promise<NewsletterSend>;
+  getNewsletterStats(newsletterId: string): Promise<{
+    totalSent: number;
+    totalDelivered: number;
+    totalOpened: number;
+    totalClicked: number;
+    totalBounced: number;
+    totalUnsubscribed: number;
+    openRate: number;
+    clickRate: number;
+    bounceRate: number;
+  }>;
   
 }
 
@@ -337,6 +373,11 @@ export class MemStorage implements IStorage {
   private userCohorts: Map<string, UserCohort>;
   private predictiveMetrics: Map<string, PredictiveMetric>;
   private churnPredictions: Map<string, ChurnPrediction>;
+  
+  // Newsletter storage
+  private newsletterSubscribers: Map<string, NewsletterSubscriber>;
+  private newsletters: Map<string, Newsletter>;
+  private newsletterSends: Map<string, NewsletterSend>;
 
   constructor() {
     this.users = new Map();
@@ -373,6 +414,11 @@ export class MemStorage implements IStorage {
     this.userCohorts = new Map();
     this.predictiveMetrics = new Map();
     this.churnPredictions = new Map();
+    
+    // Newsletter storage initialization
+    this.newsletterSubscribers = new Map();
+    this.newsletters = new Map();
+    this.newsletterSends = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -2596,6 +2642,222 @@ export class MemStorage implements IStorage {
       };
       this.subscriptionPlans.set(id, subscriptionPlan);
     });
+  }
+
+  // ===================== NEWSLETTER OPERATIONS IMPLEMENTATION =====================
+  
+  // Newsletter subscriber operations
+  async createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
+    const id = randomUUID();
+    const unsubscribeToken = randomUUID();
+    const newsletterSubscriber: NewsletterSubscriber = {
+      ...subscriber,
+      id,
+      status: "active",
+      subscriptionSource: subscriber.subscriptionSource || "footer",
+      unsubscribeToken,
+      name: subscriber.name || null,
+      confirmedAt: null,
+      unsubscribedAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.newsletterSubscribers.set(id, newsletterSubscriber);
+    return newsletterSubscriber;
+  }
+
+  async getNewsletterSubscriber(id: string): Promise<NewsletterSubscriber | undefined> {
+    return this.newsletterSubscribers.get(id);
+  }
+
+  async getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined> {
+    return Array.from(this.newsletterSubscribers.values()).find(
+      subscriber => subscriber.email === email
+    );
+  }
+
+  async updateNewsletterSubscriber(id: string, subscriber: Partial<NewsletterSubscriber>): Promise<NewsletterSubscriber> {
+    const existing = this.newsletterSubscribers.get(id);
+    if (!existing) throw new Error("Newsletter subscriber not found");
+    
+    const updated: NewsletterSubscriber = {
+      ...existing,
+      ...removeUndefined(subscriber),
+      updatedAt: new Date(),
+    };
+    this.newsletterSubscribers.set(id, updated);
+    return updated;
+  }
+
+  async deleteNewsletterSubscriber(id: string): Promise<void> {
+    const exists = this.newsletterSubscribers.has(id);
+    if (!exists) throw new Error("Newsletter subscriber not found");
+    this.newsletterSubscribers.delete(id);
+  }
+
+  async getAllNewsletterSubscribers(status?: string): Promise<NewsletterSubscriber[]> {
+    const subscribers = Array.from(this.newsletterSubscribers.values());
+    return status ? subscribers.filter(s => s.status === status) : subscribers;
+  }
+
+  async getActiveNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+    return Array.from(this.newsletterSubscribers.values()).filter(
+      subscriber => subscriber.status === "active"
+    );
+  }
+
+  async unsubscribeByToken(token: string): Promise<boolean> {
+    const subscriber = Array.from(this.newsletterSubscribers.values()).find(
+      s => s.unsubscribeToken === token
+    );
+    if (!subscriber) return false;
+    
+    await this.updateNewsletterSubscriber(subscriber.id, {
+      status: "unsubscribed",
+      unsubscribedAt: new Date(),
+    });
+    return true;
+  }
+
+  // Newsletter operations
+  async createNewsletter(newsletter: InsertNewsletter): Promise<Newsletter> {
+    const id = randomUUID();
+    const newsletterItem: Newsletter = {
+      ...newsletter,
+      id,
+      status: "draft",
+      plainTextContent: newsletter.plainTextContent || null,
+      previewText: newsletter.previewText || null,
+      scheduledAt: newsletter.scheduledAt || null,
+      sentAt: null,
+      sentCount: 0,
+      deliveredCount: 0,
+      openedCount: 0,
+      clickedCount: 0,
+      bounceCount: 0,
+      unsubscribeCount: 0,
+      tags: newsletter.tags || [],
+      authorId: newsletter.authorId || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.newsletters.set(id, newsletterItem);
+    return newsletterItem;
+  }
+
+  async getNewsletter(id: string): Promise<Newsletter | undefined> {
+    return this.newsletters.get(id);
+  }
+
+  async getAllNewsletters(status?: string): Promise<Newsletter[]> {
+    const newsletters = Array.from(this.newsletters.values()).sort(
+      (a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
+    );
+    return status ? newsletters.filter(n => n.status === status) : newsletters;
+  }
+
+  async updateNewsletter(id: string, newsletter: Partial<Newsletter>): Promise<Newsletter> {
+    const existing = this.newsletters.get(id);
+    if (!existing) throw new Error("Newsletter not found");
+    
+    const updated: Newsletter = {
+      ...existing,
+      ...removeUndefined(newsletter),
+      updatedAt: new Date(),
+    };
+    this.newsletters.set(id, updated);
+    return updated;
+  }
+
+  async deleteNewsletter(id: string): Promise<void> {
+    const exists = this.newsletters.has(id);
+    if (!exists) throw new Error("Newsletter not found");
+    this.newsletters.delete(id);
+    
+    // Also delete related sends
+    const sends = Array.from(this.newsletterSends.values()).filter(
+      send => send.newsletterId === id
+    );
+    sends.forEach(send => this.newsletterSends.delete(send.id));
+  }
+
+  async getNewslettersByAuthor(authorId: string): Promise<Newsletter[]> {
+    return Array.from(this.newsletters.values()).filter(
+      newsletter => newsletter.authorId === authorId
+    ).sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  // Newsletter send operations
+  async createNewsletterSend(send: InsertNewsletterSend): Promise<NewsletterSend> {
+    const id = randomUUID();
+    const newsletterSend: NewsletterSend = {
+      ...send,
+      id,
+      sentAt: send.sentAt || new Date(),
+      deliveredAt: null,
+      openedAt: null,
+      firstClickedAt: null,
+      unsubscribedAt: null,
+      bounceReason: send.bounceReason || null,
+      userAgent: send.userAgent || null,
+      ipAddress: send.ipAddress || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.newsletterSends.set(id, newsletterSend);
+    return newsletterSend;
+  }
+
+  async getNewsletterSends(newsletterId: string): Promise<NewsletterSend[]> {
+    return Array.from(this.newsletterSends.values()).filter(
+      send => send.newsletterId === newsletterId
+    );
+  }
+
+  async updateNewsletterSend(id: string, send: Partial<NewsletterSend>): Promise<NewsletterSend> {
+    const existing = this.newsletterSends.get(id);
+    if (!existing) throw new Error("Newsletter send not found");
+    
+    const updated: NewsletterSend = {
+      ...existing,
+      ...removeUndefined(send),
+      updatedAt: new Date(),
+    };
+    this.newsletterSends.set(id, updated);
+    return updated;
+  }
+
+  async getNewsletterStats(newsletterId: string): Promise<{
+    totalSent: number;
+    totalDelivered: number;
+    totalOpened: number;
+    totalClicked: number;
+    totalBounced: number;
+    totalUnsubscribed: number;
+    openRate: number;
+    clickRate: number;
+    bounceRate: number;
+  }> {
+    const sends = await this.getNewsletterSends(newsletterId);
+    
+    const totalSent = sends.length;
+    const totalDelivered = sends.filter(s => s.status === "delivered" || s.openedAt || s.firstClickedAt).length;
+    const totalOpened = sends.filter(s => s.openedAt).length;
+    const totalClicked = sends.filter(s => s.firstClickedAt).length;
+    const totalBounced = sends.filter(s => s.status === "bounced").length;
+    const totalUnsubscribed = sends.filter(s => s.unsubscribedAt).length;
+    
+    return {
+      totalSent,
+      totalDelivered,
+      totalOpened,
+      totalClicked,
+      totalBounced,
+      totalUnsubscribed,
+      openRate: totalDelivered > 0 ? (totalOpened / totalDelivered) * 100 : 0,
+      clickRate: totalDelivered > 0 ? (totalClicked / totalDelivered) * 100 : 0,
+      bounceRate: totalSent > 0 ? (totalBounced / totalSent) * 100 : 0,
+    };
   }
 
 }

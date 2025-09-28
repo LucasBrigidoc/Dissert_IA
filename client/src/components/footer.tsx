@@ -1,7 +1,48 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { Sparkles, Facebook, Instagram, Twitter, ArrowRight } from "lucide-react";
+import { Sparkles, Facebook, Instagram, Twitter, ArrowRight, Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const { toast } = useToast();
+
+  const subscribeNewsletter = useMutation({
+    mutationFn: (email: string) => apiRequest("/api/newsletter", {
+      method: "POST",
+      body: { email },
+    }),
+    onSuccess: () => {
+      setEmail("");
+      toast({
+        title: "Sucesso! 🎉",
+        description: "Inscrição realizada com sucesso! Verifique seu email.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao inscrever",
+        description: error?.message || "Tente novamente em alguns minutos.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast({
+        title: "Email obrigatório",
+        description: "Por favor, insira um email válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+    subscribeNewsletter.mutate(email);
+  };
+
   return (
     <footer className="bg-dark-blue text-white py-8 md:py-12">
       <div className="container mx-auto px-6">
@@ -36,17 +77,29 @@ export function Footer() {
           <div className="max-w-full md:order-last">
             <h4 className="font-semibold mb-3 md:mb-4">Newsletter</h4>
             <p className="text-white/70 mb-3 md:mb-4 text-sm md:text-base">Receba dicas semanais de redação</p>
-            <div className="flex w-full max-w-full overflow-hidden">
+            <form onSubmit={handleSubmit} className="flex w-full max-w-full overflow-hidden">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Seu email"
                 className="flex-1 min-w-0 px-3 py-2 bg-white/10 rounded-l-lg border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-bright-blue text-sm md:text-base"
                 data-testid="input-newsletter-email"
+                disabled={subscribeNewsletter.isPending}
               />
-              <button className="bg-bright-blue px-3 py-2 rounded-r-lg hover:bg-blue-600 smooth-transition flex-shrink-0" data-testid="button-newsletter-submit">
-                <ArrowRight size={16} />
+              <button 
+                type="submit"
+                disabled={subscribeNewsletter.isPending}
+                className="bg-bright-blue px-3 py-2 rounded-r-lg hover:bg-blue-600 smooth-transition flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" 
+                data-testid="button-newsletter-submit"
+              >
+                {subscribeNewsletter.isPending ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <ArrowRight size={16} />
+                )}
               </button>
-            </div>
+            </form>
           </div>
           
           {/* Company Links */}

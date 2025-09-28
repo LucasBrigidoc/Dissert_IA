@@ -2,33 +2,250 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
 import { geminiService } from "./gemini-service";
 import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
+import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
 
 // Initialize services
 const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Newsletter signup endpoint
+  // ===================== NEWSLETTER MANAGEMENT ENDPOINTS =====================
+  
+  // Newsletter subscription endpoint (updated to save to database)
   app.post("/api/newsletter", async (req, res) => {
     try {
-      const { email } = req.body;
+      const validatedData = newsletterSubscriptionSchema.parse(req.body);
       
-      if (!email) {
-        return res.status(400).json({ message: "Email is required" });
+      // Check if already subscribed
+      const existing = await storage.getNewsletterSubscriberByEmail(validatedData.email);
+      if (existing) {
+        if (existing.status === "active") {
+          return res.status(400).json({ message: "Email já está cadastrado em nossa newsletter" });
+        } else {
+          // Reactivate subscription
+          await storage.updateNewsletterSubscriber(existing.id, {
+            status: "active",
+            unsubscribedAt: null,
+            updatedAt: new Date(),
+          });
+          return res.json({ message: "Inscrição reativada com sucesso!" });
+        }
       }
       
-      // In a real app, this would save to a newsletter database table
-      // For now, just return success
-      res.json({ message: "Successfully subscribed to newsletter" });
+      // Create new subscription
+      const subscriber = await storage.createNewsletterSubscriber(validatedData);
+      
+      // Send welcome email
+      await sendWelcomeEmail(subscriber);
+      
+      res.json({ message: "Inscrição realizada com sucesso! Verifique seu email." });
     } catch (error) {
       console.error("Newsletter signup error:", error);
-      res.status(500).json({ message: "Failed to subscribe to newsletter" });
+      res.status(500).json({ message: "Erro ao inscrever na newsletter" });
+    }
+  });
+
+  // Unsubscribe endpoint
+  app.get("/api/newsletter/unsubscribe/:token", async (req, res) => {
+    try {
+      const { token } = req.params;
+      const success = await storage.unsubscribeByToken(token);
+      
+      if (success) {
+        res.send(`
+          <html>
+            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+              <h2>✅ Inscrição cancelada com sucesso</h2>
+              <p>Você foi removido da nossa lista de newsletter.</p>
+              <p>Sentiremos sua falta! 😊</p>
+              <a href="/" style="color: #5087ff; text-decoration: none;">Voltar ao site</a>
+            </body>
+          </html>
+        `);
+      } else {
+        res.status(404).send(`
+          <html>
+            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+              <h2>❌ Link inválido</h2>
+              <p>Este link de cancelamento é inválido ou já foi usado.</p>
+              <a href="/" style="color: #5087ff; text-decoration: none;">Voltar ao site</a>
+            </body>
+          </html>
+        `);
+      }
+    } catch (error) {
+      console.error("Unsubscribe error:", error);
+      res.status(500).send(`
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2>❌ Erro interno</h2>
+            <p>Ocorreu um erro ao processar sua solicitação.</p>
+            <a href="/" style="color: #5087ff; text-decoration: none;">Voltar ao site</a>
+          </body>
+        </html>
+      `);
+    }
+  });
+
+  // ===================== ADMIN NEWSLETTER ENDPOINTS =====================
+  
+  // Get all subscribers (admin only)
+  app.get("/api/admin/newsletter/subscribers", async (req, res) => {
+    try {
+      const { status } = req.query;
+      const subscribers = await storage.getAllNewsletterSubscribers(status as string);
+      res.json(subscribers);
+    } catch (error) {
+      console.error("Get subscribers error:", error);
+      res.status(500).json({ message: "Erro ao buscar inscritos" });
+    }
+  });
+
+  // Delete subscriber (admin only)
+  app.delete("/api/admin/newsletter/subscribers/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteNewsletterSubscriber(id);
+      res.json({ message: "Inscrito removido com sucesso" });
+    } catch (error) {
+      console.error("Delete subscriber error:", error);
+      res.status(500).json({ message: "Erro ao remover inscrito" });
+    }
+  });
+
+  // Get all newsletters (admin only)
+  app.get("/api/admin/newsletter/newsletters", async (req, res) => {
+    try {
+      const { status } = req.query;
+      const newsletters = await storage.getAllNewsletters(status as string);
+      res.json(newsletters);
+    } catch (error) {
+      console.error("Get newsletters error:", error);
+      res.status(500).json({ message: "Erro ao buscar newsletters" });
+    }
+  });
+
+  // Create newsletter (admin only)
+  app.post("/api/admin/newsletter/newsletters", async (req, res) => {
+    try {
+      const validatedData = createNewsletterSchema.parse(req.body);
+      const newsletter = await storage.createNewsletter(validatedData);
+      res.status(201).json(newsletter);
+    } catch (error) {
+      console.error("Create newsletter error:", error);
+      res.status(400).json({ message: "Erro ao criar newsletter" });
+    }
+  });
+
+  // Get single newsletter (admin only)
+  app.get("/api/admin/newsletter/newsletters/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const newsletter = await storage.getNewsletter(id);
+      if (!newsletter) {
+        return res.status(404).json({ message: "Newsletter não encontrada" });
+      }
+      res.json(newsletter);
+    } catch (error) {
+      console.error("Get newsletter error:", error);
+      res.status(500).json({ message: "Erro ao buscar newsletter" });
+    }
+  });
+
+  // Update newsletter (admin only)
+  app.put("/api/admin/newsletter/newsletters/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = updateNewsletterSchema.parse(req.body);
+      const newsletter = await storage.updateNewsletter(id, validatedData);
+      res.json(newsletter);
+    } catch (error) {
+      console.error("Update newsletter error:", error);
+      res.status(400).json({ message: "Erro ao atualizar newsletter" });
+    }
+  });
+
+  // Delete newsletter (admin only)
+  app.delete("/api/admin/newsletter/newsletters/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteNewsletter(id);
+      res.json({ message: "Newsletter removida com sucesso" });
+    } catch (error) {
+      console.error("Delete newsletter error:", error);
+      res.status(500).json({ message: "Erro ao remover newsletter" });
+    }
+  });
+
+  // Send newsletter (admin only)
+  app.post("/api/admin/newsletter/newsletters/:id/send", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Get newsletter
+      const newsletter = await storage.getNewsletter(id);
+      if (!newsletter) {
+        return res.status(404).json({ message: "Newsletter não encontrada" });
+      }
+
+      if (newsletter.status === "sent") {
+        return res.status(400).json({ message: "Esta newsletter já foi enviada" });
+      }
+
+      // Get active subscribers
+      const subscribers = await storage.getActiveNewsletterSubscribers();
+      if (subscribers.length === 0) {
+        return res.status(400).json({ message: "Nenhum inscrito ativo encontrado" });
+      }
+
+      // Send newsletter
+      const sendResult = await sendNewsletter(newsletter, subscribers);
+      
+      // Update newsletter status
+      await storage.updateNewsletter(id, {
+        status: "sent",
+        sentAt: new Date(),
+        sentCount: sendResult.sent,
+      });
+
+      // Create send records
+      for (const result of sendResult.results) {
+        const subscriber = subscribers.find(s => s.email === result.email);
+        if (subscriber) {
+          await storage.createNewsletterSend({
+            newsletterId: id,
+            subscriberId: subscriber.id,
+            status: result.success ? "sent" : "bounced",
+            bounceReason: result.error || null,
+          });
+        }
+      }
+
+      res.json({
+        message: `Newsletter enviada! ${sendResult.sent} enviados, ${sendResult.failed} falharam`,
+        stats: sendResult,
+      });
+    } catch (error) {
+      console.error("Send newsletter error:", error);
+      res.status(500).json({ message: "Erro ao enviar newsletter" });
+    }
+  });
+
+  // Get newsletter statistics (admin only)
+  app.get("/api/admin/newsletter/newsletters/:id/stats", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const stats = await storage.getNewsletterStats(id);
+      res.json(stats);
+    } catch (error) {
+      console.error("Get newsletter stats error:", error);
+      res.status(500).json({ message: "Erro ao buscar estatísticas" });
     }
   });
 
