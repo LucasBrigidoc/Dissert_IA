@@ -1,21 +1,27 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Plus, Archive, ArrowRight, Eye, Menu, Newspaper, BookOpen } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Plus, Archive, ArrowRight, Eye, Menu, Newspaper, BookOpen, Loader2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { mockNewsletters } from "@/lib/mock-data";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { Newsletter } from "@shared/schema";
 
 export default function NewsletterPage() {
   const [, setLocation] = useLocation();
-  const [selectedNewsletter, setSelectedNewsletter] = useState<number | null>(null);
+  const [selectedNewsletter, setSelectedNewsletter] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Fetch newsletters from API
+  const { data: newsletters = [], isLoading: loadingNewsletters } = useQuery<Newsletter[]>({
+    queryKey: ["/api/admin/newsletter/newsletters"],
+  });
 
   const handleLogout = () => {
     setLocation("/");
   };
 
-  const handleReadNewsletter = (newsletterId: number) => {
+  const handleReadNewsletter = (newsletterId: string) => {
     setSelectedNewsletter(newsletterId);
   };
 
@@ -23,9 +29,26 @@ export default function NewsletterPage() {
     setSelectedNewsletter(null);
   };
 
-  const currentNewsletter = selectedNewsletter ? mockNewsletters.find(n => n.id === selectedNewsletter) : null;
-  const latestNewsletter = mockNewsletters.find(n => n.isNew) || mockNewsletters[0];
-  const previousNewsletters = mockNewsletters.filter(n => !n.isNew);
+  // Filter newsletters to only show sent ones
+  const sentNewsletters = newsletters.filter(n => n.status === "sent");
+  
+  // Get the latest newsletter (marked as new) or the most recently published
+  const latestNewsletter = sentNewsletters.find(n => n.isNew) || 
+    sentNewsletters.sort((a, b) => new Date(b.publishDate || b.createdAt!).getTime() - new Date(a.publishDate || a.createdAt!).getTime())[0];
+  
+  // Get previous newsletters (not marked as new and not the latest)
+  const previousNewsletters = sentNewsletters.filter(n => n.id !== latestNewsletter?.id && !n.isNew);
+  
+  const currentNewsletter = selectedNewsletter ? sentNewsletters.find(n => n.id === selectedNewsletter) : null;
+
+  // Loading state
+  if (loadingNewsletters) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-bright-blue" size={32} />
+      </div>
+    );
+  }
 
   // Se uma newsletter específica foi selecionada, mostra a visualização completa
   if (currentNewsletter) {
@@ -189,11 +212,11 @@ export default function NewsletterPage() {
             <div className="flex items-center space-x-6 mb-8 text-sm text-soft-gray">
               <div className="flex items-center">
                 <Calendar className="mr-2" size={16} />
-                <span>{new Date(currentNewsletter.publishDate).toLocaleDateString('pt-BR')}</span>
+                <span>{new Date(currentNewsletter.publishDate || currentNewsletter.createdAt!).toLocaleDateString('pt-BR')}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="mr-2" size={16} />
-                <span>{currentNewsletter.readTime} de leitura</span>
+                <span>{currentNewsletter.readTime || "5 min"} de leitura</span>
               </div>
             </div>
             
@@ -362,33 +385,45 @@ export default function NewsletterPage() {
             </div>
           </div>
           
-          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200" data-testid={`card-newsletter-${latestNewsletter.id}`}>
-            <div className="flex items-start justify-between mb-3 md:mb-4">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <Badge className="bg-green-500 text-white text-xs">Nova</Badge>
-                <Badge className="bg-bright-blue/20 text-bright-blue text-xs">{latestNewsletter.category}</Badge>
+          {latestNewsletter ? (
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 hover:border-bright-blue/40 transition-all duration-200" data-testid={`card-newsletter-${latestNewsletter.id}`}>
+              <div className="flex items-start justify-between mb-3 md:mb-4">
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <Badge className="bg-green-500 text-white text-xs">Nova</Badge>
+                  <Badge className="bg-bright-blue/20 text-bright-blue text-xs">{latestNewsletter.category || "Newsletter"}</Badge>
+                </div>
+                <div className="text-xs md:text-sm text-soft-gray">{latestNewsletter.readTime || "5 min"} de leitura</div>
               </div>
-              <div className="text-xs md:text-sm text-soft-gray">{latestNewsletter.readTime} de leitura</div>
-            </div>
-            
-            <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">{latestNewsletter.title}</h3>
-            <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 leading-relaxed">{latestNewsletter.excerpt}</p>
-            
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
-              <div className="flex items-center text-xs md:text-sm text-soft-gray">
-                <Calendar className="mr-2" size={14} />
-                <span>Publicada em {new Date(latestNewsletter.publishDate).toLocaleDateString('pt-BR')}</span>
+              
+              <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">{latestNewsletter.title}</h3>
+              <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 leading-relaxed">{latestNewsletter.excerpt || latestNewsletter.previewText || "Confira o conteúdo desta newsletter."}</p>
+              
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+                <div className="flex items-center text-xs md:text-sm text-soft-gray">
+                  <Calendar className="mr-2" size={14} />
+                  <span>Publicada em {new Date(latestNewsletter.publishDate || latestNewsletter.createdAt!).toLocaleDateString('pt-BR')}</span>
+                </div>
+                <Button 
+                  onClick={() => handleReadNewsletter(latestNewsletter.id)}
+                  className="w-full md:w-auto bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  data-testid={`button-read-newsletter-${latestNewsletter.id}`}
+                >
+                  <Eye className="mr-2" size={14} />
+                  <span className="text-sm md:text-base">Ler Newsletter Completa</span>
+                </Button>
               </div>
-              <Button 
-                onClick={() => handleReadNewsletter(latestNewsletter.id)}
-                className="w-full md:w-auto bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
-                data-testid={`button-read-newsletter-${latestNewsletter.id}`}
-              >
-                <Eye className="mr-2" size={14} />
-                <span className="text-sm md:text-base">Ler Newsletter Completa</span>
-              </Button>
-            </div>
-          </LiquidGlassCard>
+            </LiquidGlassCard>
+          ) : (
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+              <div className="text-center py-12">
+                <Newspaper className="mx-auto mb-4 text-soft-gray" size={48} />
+                <h3 className="text-lg font-semibold mb-2 text-dark-blue">Nenhuma newsletter publicada ainda</h3>
+                <p className="text-soft-gray">
+                  Aguarde pela primeira newsletter! Quando publicada, ela aparecerá aqui.
+                </p>
+              </div>
+            </LiquidGlassCard>
+          )}
         </div>
 
         {/* Previous Newsletters Section */}
@@ -404,33 +439,47 @@ export default function NewsletterPage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {previousNewsletters.map((newsletter) => (
-              <LiquidGlassCard key={newsletter.id} className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid={`card-newsletter-${newsletter.id}`}>
-                <div className="flex items-start justify-between mb-3 md:mb-4">
-                  <Badge className="bg-soft-gray/20 text-dark-blue text-xs">{newsletter.category}</Badge>
-                  <div className="text-xs md:text-sm text-soft-gray">{newsletter.readTime}</div>
-                </div>
-                
-                <h3 className="text-base md:text-lg font-semibold text-dark-blue mb-2 md:mb-3 group-hover:text-bright-blue transition-colors">{newsletter.title}</h3>
-                <p className="text-soft-gray text-xs md:text-sm mb-3 md:mb-4 leading-relaxed line-clamp-3">{newsletter.excerpt}</p>
-                
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
-                  <div className="text-xs text-soft-gray">
-                    {new Date(newsletter.publishDate).toLocaleDateString('pt-BR')}
+            {previousNewsletters.length > 0 ? (
+              previousNewsletters.map((newsletter) => (
+                <LiquidGlassCard key={newsletter.id} className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 hover:border-bright-blue/40 transition-all duration-200 cursor-pointer group" data-testid={`card-newsletter-${newsletter.id}`}>
+                  <div className="flex items-start justify-between mb-3 md:mb-4">
+                    <Badge className="bg-soft-gray/20 text-dark-blue text-xs">{newsletter.category || "Newsletter"}</Badge>
+                    <div className="text-xs md:text-sm text-soft-gray">{newsletter.readTime || "5 min"}</div>
                   </div>
-                  <Button 
-                    onClick={() => handleReadNewsletter(newsletter.id)}
-                    variant="outline"
-                    size="sm"
-                    className="w-full md:w-auto text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 group-hover:border-bright-blue/50"
-                    data-testid={`button-read-newsletter-${newsletter.id}`}
-                  >
-                    <Eye className="mr-2" size={12} />
-                    <span className="text-xs md:text-sm">Ler</span>
-                  </Button>
-                </div>
-              </LiquidGlassCard>
-            ))}
+                  
+                  <h3 className="text-base md:text-lg font-semibold text-dark-blue mb-2 md:mb-3 group-hover:text-bright-blue transition-colors">{newsletter.title}</h3>
+                  <p className="text-soft-gray text-xs md:text-sm mb-3 md:mb-4 leading-relaxed line-clamp-3">{newsletter.excerpt || newsletter.previewText || "Confira o conteúdo desta newsletter."}</p>
+                  
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+                    <div className="text-xs text-soft-gray">
+                      {new Date(newsletter.publishDate || newsletter.createdAt!).toLocaleDateString('pt-BR')}
+                    </div>
+                    <Button 
+                      onClick={() => handleReadNewsletter(newsletter.id)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full md:w-auto text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 group-hover:border-bright-blue/50"
+                      data-testid={`button-read-newsletter-${newsletter.id}`}
+                    >
+                      <Eye className="mr-2" size={12} />
+                      <span className="text-xs md:text-sm">Ler</span>
+                    </Button>
+                  </div>
+                </LiquidGlassCard>
+              ))
+            ) : (
+              <div className="col-span-full">
+                <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+                  <div className="text-center py-12">
+                    <Archive className="mx-auto mb-4 text-soft-gray" size={48} />
+                    <h3 className="text-lg font-semibold mb-2 text-dark-blue">Nenhuma newsletter anterior ainda</h3>
+                    <p className="text-soft-gray">
+                      Quando novas newsletters forem publicadas, as anteriores aparecerão aqui.
+                    </p>
+                  </div>
+                </LiquidGlassCard>
+              </div>
+            )}
           </div>
         </div>
 

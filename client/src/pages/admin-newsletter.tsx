@@ -46,6 +46,11 @@ export default function AdminNewsletter() {
     subject: "",
     content: "",
     previewText: "",
+    excerpt: "",
+    readTime: "",
+    category: "",
+    isNew: false,
+    publishDate: "",
     tags: [] as string[],
   });
 
@@ -53,12 +58,12 @@ export default function AdminNewsletter() {
   const queryClient = useQueryClient();
 
   // Fetch newsletters
-  const { data: newsletters = [], isLoading: loadingNewsletters } = useQuery({
+  const { data: newsletters = [], isLoading: loadingNewsletters } = useQuery<Newsletter[]>({
     queryKey: ["/api/admin/newsletter/newsletters"],
   });
 
   // Fetch subscribers
-  const { data: subscribers = [], isLoading: loadingSubscribers } = useQuery({
+  const { data: subscribers = [], isLoading: loadingSubscribers } = useQuery<NewsletterSubscriber[]>({
     queryKey: ["/api/admin/newsletter/subscribers"],
   });
 
@@ -161,6 +166,11 @@ export default function AdminNewsletter() {
       subject: "",
       content: "",
       previewText: "",
+      excerpt: "",
+      readTime: "",
+      category: "",
+      isNew: false,
+      publishDate: "",
       tags: [],
     });
     setSelectedNewsletter(null);
@@ -188,6 +198,11 @@ export default function AdminNewsletter() {
       subject: newsletter.subject,
       content: newsletter.content,
       previewText: newsletter.previewText || "",
+      excerpt: newsletter.excerpt || "",
+      readTime: newsletter.readTime || "",
+      category: newsletter.category || "",
+      isNew: newsletter.isNew || false,
+      publishDate: newsletter.publishDate ? new Date(newsletter.publishDate).toISOString().split('T')[0] : "",
       tags: Array.isArray(newsletter.tags) ? newsletter.tags : [],
     });
     setShowEditDialog(true);
@@ -327,6 +342,31 @@ export default function AdminNewsletter() {
                       />
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="category">Categoria</Label>
+                      <Input
+                        id="category"
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        placeholder="Ex: Atualidades, Educação, Meio Ambiente"
+                        required
+                        data-testid="input-newsletter-category"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="readTime">Tempo de Leitura</Label>
+                      <Input
+                        id="readTime"
+                        value={formData.readTime}
+                        onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                        placeholder="Ex: 8 min"
+                        required
+                        data-testid="input-newsletter-readtime"
+                      />
+                    </div>
+                  </div>
                   
                   <div>
                     <Label htmlFor="previewText">Texto de Prévia</Label>
@@ -337,6 +377,42 @@ export default function AdminNewsletter() {
                       placeholder="Texto que aparece na prévia do email"
                       data-testid="input-newsletter-preview"
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="excerpt">Resumo da Newsletter</Label>
+                    <Textarea
+                      id="excerpt"
+                      value={formData.excerpt}
+                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                      placeholder="Breve resumo que aparecerá na página pública da newsletter..."
+                      className="min-h-[80px]"
+                      required
+                      data-testid="textarea-newsletter-excerpt"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="publishDate">Data de Publicação</Label>
+                      <Input
+                        id="publishDate"
+                        type="date"
+                        value={formData.publishDate}
+                        onChange={(e) => setFormData({ ...formData, publishDate: e.target.value })}
+                        data-testid="input-newsletter-publishdate"
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2 pt-8">
+                      <input
+                        type="checkbox"
+                        id="isNew"
+                        checked={formData.isNew}
+                        onChange={(e) => setFormData({ ...formData, isNew: e.target.checked })}
+                        data-testid="checkbox-newsletter-isnew"
+                      />
+                      <Label htmlFor="isNew">Marcar como "Newsletter da Semana"</Label>
+                    </div>
                   </div>
 
                   <div>
@@ -530,6 +606,27 @@ export default function AdminNewsletter() {
                 />
               </div>
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-category">Categoria</Label>
+                <Input
+                  id="edit-category"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-readTime">Tempo de Leitura</Label>
+                <Input
+                  id="edit-readTime"
+                  value={formData.readTime}
+                  onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
             
             <div>
               <Label htmlFor="edit-previewText">Texto de Prévia</Label>
@@ -538,6 +635,38 @@ export default function AdminNewsletter() {
                 value={formData.previewText}
                 onChange={(e) => setFormData({ ...formData, previewText: e.target.value })}
               />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-excerpt">Resumo da Newsletter</Label>
+              <Textarea
+                id="edit-excerpt"
+                value={formData.excerpt}
+                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                className="min-h-[80px]"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-publishDate">Data de Publicação</Label>
+                <Input
+                  id="edit-publishDate"
+                  type="date"
+                  value={formData.publishDate}
+                  onChange={(e) => setFormData({ ...formData, publishDate: e.target.value })}
+                />
+              </div>
+              <div className="flex items-center space-x-2 pt-8">
+                <input
+                  type="checkbox"
+                  id="edit-isNew"
+                  checked={formData.isNew}
+                  onChange={(e) => setFormData({ ...formData, isNew: e.target.checked })}
+                />
+                <Label htmlFor="edit-isNew">Marcar como "Newsletter da Semana"</Label>
+              </div>
             </div>
 
             <div>

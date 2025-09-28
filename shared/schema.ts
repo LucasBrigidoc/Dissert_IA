@@ -467,6 +467,11 @@ export const newsletters = pgTable("newsletters", {
   plainTextContent: text("plain_text_content"), // Plain text version
   subject: text("subject").notNull(),
   previewText: text("preview_text"), // Email preview text
+  excerpt: text("excerpt"), // Short description for newsletter preview
+  readTime: text("read_time"), // Reading time (e.g., "8 min")
+  category: text("category"), // Newsletter category
+  isNew: boolean("is_new").default(false), // Whether this is the featured newsletter
+  publishDate: timestamp("publish_date"), // Date when newsletter should be published
   status: varchar("status", { enum: ["draft", "scheduled", "sent", "cancelled"] }).notNull().default("draft"),
   scheduledAt: timestamp("scheduled_at"),
   sentAt: timestamp("sent_at"),
@@ -872,6 +877,11 @@ export const createNewsletterSchema = z.object({
   content: z.string().min(1, "Conteúdo é obrigatório"),
   previewText: z.string().optional(),
   plainTextContent: z.string().optional(),
+  excerpt: z.string().min(1, "Resumo é obrigatório"),
+  readTime: z.string().min(1, "Tempo de leitura é obrigatório"),
+  category: z.string().min(1, "Categoria é obrigatória"),
+  isNew: z.boolean().optional(),
+  publishDate: z.date().optional(),
   tags: z.array(z.string()).optional(),
   scheduledAt: z.date().optional(),
 });
