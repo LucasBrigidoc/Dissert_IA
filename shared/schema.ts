@@ -917,10 +917,9 @@ export const materiaisComplementares = pgTable("materiais_complementares", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   content: text("content").notNull(), // Conteúdo completo do material
-  category: varchar("category", { 
-    enum: ["Fundamental", "Técnico", "Avançado", "ENEM", "Gramática", "Exemplos"] 
-  }).notNull().default("Fundamental"),
-  readTime: text("read_time").notNull(), // Ex: "12 min"
+  category: text("category").notNull().default("Fundamental"), // Permite categorias personalizadas
+  readTime: text("read_time"), // Opcional - permite ocultar tempo de leitura
+  pdfUrl: text("pdf_url"), // URL do PDF para download (opcional)
   icon: varchar("icon", { 
     enum: ["FileText", "Target", "BookOpen", "Lightbulb", "PenTool", "Eye"] 
   }).notNull().default("FileText"),
@@ -945,8 +944,9 @@ export const createMaterialComplementarSchema = z.object({
   title: z.string().min(1, "Título é obrigatório"),
   description: z.string().min(1, "Descrição é obrigatória"),
   content: z.string().min(1, "Conteúdo é obrigatório"),
-  category: z.enum(["Fundamental", "Técnico", "Avançado", "ENEM", "Gramática", "Exemplos"]),
-  readTime: z.string().min(1, "Tempo de leitura é obrigatório"),
+  category: z.string().min(1, "Categoria é obrigatória"), // Permite categorias personalizadas
+  readTime: z.string().optional(), // Opcional - permite não mostrar tempo de leitura
+  pdfUrl: z.string().url("URL do PDF deve ser válida").optional(), // URL do PDF (opcional)
   icon: z.enum(["FileText", "Target", "BookOpen", "Lightbulb", "PenTool", "Eye"]).default("FileText"),
   colorScheme: z.enum(["green", "blue", "purple", "orange", "indigo", "amber"]).default("green"),
   isPublished: z.boolean().default(true),

@@ -2889,6 +2889,8 @@ export class MemStorage implements IStorage {
       ...material,
       id,
       category: material.category || "Fundamental",
+      readTime: material.readTime || null,
+      pdfUrl: material.pdfUrl || null,
       icon: material.icon || "FileText",
       colorScheme: material.colorScheme || "green",
       isPublished: material.isPublished ?? true,
