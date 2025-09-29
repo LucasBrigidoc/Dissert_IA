@@ -313,7 +313,7 @@ export default function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-8" data-testid="admin-dashboard">
       <div className="mb-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               Dashboard Administrativo
@@ -322,38 +322,47 @@ export default function AdminDashboard() {
               Monitoramento de custos e métricas de negócio em tempo real
             </p>
           </div>
-          <div className="flex gap-3">
-            <Button asChild variant="default" data-testid="button-admin-newsletter">
-              <Link href="/admin/newsletter">
-                <Mail className="h-4 w-4 mr-2" />
-                Newsletter
-              </Link>
-            </Button>
-            <Button asChild variant="default" data-testid="button-admin-materiais">
-              <Link href="/admin/materiais">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Material
-              </Link>
-            </Button>
-            <Button
-              onClick={generateMetrics}
-              disabled={isGeneratingMetrics}
-              variant="outline"
-              data-testid="button-generate-metrics"
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isGeneratingMetrics ? 'animate-spin' : ''}`} />
-              {isGeneratingMetrics ? 'Gerando...' : 'Gerar Métricas'}
-            </Button>
-            <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-              className="px-3 py-2 border rounded-lg bg-white dark:bg-gray-800"
-              data-testid="select-time-range"
-            >
-              <option value="7">Últimos 7 dias</option>
-              <option value="30">Últimos 30 dias</option>
-              <option value="90">Últimos 90 dias</option>
-            </select>
+          
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
+            {/* Admin Actions */}
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm" data-testid="button-admin-newsletter">
+                <Link href="/admin/newsletter">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Newsletter
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" data-testid="button-admin-materiais">
+                <Link href="/admin/materiais">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Material
+                </Link>
+              </Button>
+            </div>
+            
+            {/* Metrics Controls */}
+            <div className="flex gap-2">
+              <Button
+                onClick={generateMetrics}
+                disabled={isGeneratingMetrics}
+                variant="default"
+                size="sm"
+                data-testid="button-generate-metrics"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${isGeneratingMetrics ? 'animate-spin' : ''}`} />
+                {isGeneratingMetrics ? 'Gerando...' : 'Gerar Métricas'}
+              </Button>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className="px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 text-sm"
+                data-testid="select-time-range"
+              >
+                <option value="7">Últimos 7 dias</option>
+                <option value="30">Últimos 30 dias</option>
+                <option value="90">Últimos 90 dias</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
