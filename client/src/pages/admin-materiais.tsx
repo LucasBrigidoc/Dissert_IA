@@ -15,7 +15,10 @@ import {
   Loader2,
   Book,
   Download,
-  TrendingUp
+  TrendingUp,
+  BarChart3,
+  Mail,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { Link } from "wouter";
 import type { MaterialComplementar } from "@shared/schema";
 
 const iconMap = {
@@ -269,6 +273,28 @@ export default function AdminMateriais() {
         <p className="text-muted-foreground text-sm md:text-base">
           Crie, gerencie e publique materiais complementares para seus usuários
         </p>
+      </div>
+
+      {/* Admin Navigation */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin-dashboard">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-dashboard">
+              <BarChart3 size={16} />
+              Admin Principal
+            </Button>
+          </Link>
+          <Link href="/admin-newsletter">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-newsletter">
+              <Mail size={16} />
+              Admin Newsletter
+            </Button>
+          </Link>
+          <Button variant="default" className="gap-2" data-testid="button-admin-materiais">
+            <Settings size={16} />
+            Admin Materiais
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
