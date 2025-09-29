@@ -310,7 +310,7 @@ export default function AdminNewsletter() {
                   Nova Newsletter
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Criar Nova Newsletter</DialogTitle>
                   <DialogDescription>
@@ -318,7 +318,7 @@ export default function AdminNewsletter() {
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreateSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="title">Título</Label>
                       <Input
@@ -343,7 +343,7 @@ export default function AdminNewsletter() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="category">Categoria</Label>
                       <Input
@@ -392,7 +392,7 @@ export default function AdminNewsletter() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="publishDate">Data de Publicação</Label>
                       <Input
@@ -578,7 +578,7 @@ export default function AdminNewsletter() {
 
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Newsletter</DialogTitle>
             <DialogDescription>
@@ -586,7 +586,7 @@ export default function AdminNewsletter() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleUpdateSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-title">Título</Label>
                 <Input
@@ -607,7 +607,7 @@ export default function AdminNewsletter() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-category">Categoria</Label>
                 <Input
@@ -648,7 +648,7 @@ export default function AdminNewsletter() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-publishDate">Data de Publicação</Label>
                 <Input
