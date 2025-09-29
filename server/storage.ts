@@ -335,6 +335,10 @@ export interface IStorage {
   updateMaterialComplementar(id: string, material: Partial<MaterialComplementar>): Promise<MaterialComplementar>;
   deleteMaterialComplementar(id: string): Promise<void>;
   
+  // Analytics operations
+  incrementMaterialView(id: string): Promise<void>;
+  incrementMaterialPdfDownload(id: string): Promise<void>;
+  
 }
 
 // Helper function to remove undefined values from objects
@@ -2895,6 +2899,8 @@ export class MemStorage implements IStorage {
       colorScheme: material.colorScheme || "green",
       isPublished: material.isPublished ?? true,
       sortOrder: material.sortOrder || 0,
+      views: 0,
+      pdfDownloads: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -2933,6 +2939,25 @@ export class MemStorage implements IStorage {
     const exists = this.materiaisComplementares.has(id);
     if (!exists) throw new Error("Material complementar not found");
     this.materiaisComplementares.delete(id);
+  }
+
+  // Analytics operations
+  async incrementMaterialView(id: string): Promise<void> {
+    const material = this.materiaisComplementares.get(id);
+    if (!material) throw new Error("Material complementar not found");
+    
+    material.views = (material.views || 0) + 1;
+    material.updatedAt = new Date();
+    this.materiaisComplementares.set(id, material);
+  }
+
+  async incrementMaterialPdfDownload(id: string): Promise<void> {
+    const material = this.materiaisComplementares.get(id);
+    if (!material) throw new Error("Material complementar not found");
+    
+    material.pdfDownloads = (material.pdfDownloads || 0) + 1;
+    material.updatedAt = new Date();
+    this.materiaisComplementares.set(id, material);
   }
 
 }
