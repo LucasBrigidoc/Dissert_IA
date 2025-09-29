@@ -59,27 +59,30 @@ export default function Pricing() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto mb-8 sm:mb-12">
-          {mockPricingPlans.map((plan, index) => (
-            <LiquidGlassCard 
-              key={plan.id} 
-              dark={plan.id === "free" || plan.id === "pro"}
-              className={`relative ${
-                plan.popular 
-                  ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6" 
-                  : "border border-gray-200/30 p-4 sm:p-6"
-              }`}
-              data-testid={`card-plan-${plan.id}`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <Badge className="bg-bright-blue text-white px-3 py-1 text-xs font-bold shadow-lg" data-testid="badge-most-popular">
-                    MAIS PROCURADO
-                  </Badge>
-                </div>
-              )}
+        <div className="flex justify-center items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto mb-8 sm:mb-12">
+            {mockPricingPlans.map((plan, index) => {
+              const showMostPopular = plan.id === "pro" && isAnnual;
+              return (
+                <LiquidGlassCard 
+                  key={plan.id} 
+                  dark={plan.id === "free" || plan.id === "pro"}
+                  className={`relative ${
+                    showMostPopular 
+                      ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6" 
+                      : "border border-gray-200/30 p-4 sm:p-6"
+                  }`}
+                  data-testid={`card-plan-${plan.id}`}
+                >
+                  {showMostPopular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-bright-blue text-white px-3 py-1 text-xs font-bold shadow-lg" data-testid="badge-most-popular">
+                        MAIS PROCURADO
+                      </Badge>
+                    </div>
+                  )}
               
-              <div className="text-center mb-4 sm:mb-6">
+                  <div className="text-center mb-4 sm:mb-6">
                 <div className={`text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
                   {plan.id === "base" && isAnnual 
                     ? "R$39,90" 
@@ -123,7 +126,7 @@ export default function Pricing() {
               <Button
                 asChild
                 className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base smooth-transition hover-scale ${
-                  plan.popular
+                  showMostPopular
                     ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
                     : plan.id === "free" 
                       ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
@@ -135,8 +138,10 @@ export default function Pricing() {
                   {plan.buttonText}
                 </Link>
               </Button>
-            </LiquidGlassCard>
-          ))}
+                </LiquidGlassCard>
+              );
+            })}
+          </div>
         </div>
 
         {/* Comparison Table */}
@@ -162,7 +167,9 @@ export default function Pricing() {
                       <div className="flex flex-col items-center">
                         <span>Pro</span>
                         <span className="text-xs font-normal text-white/90 mt-1">R$59,90/mês</span>
-                        <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">MAIS PROCURADO</Badge>
+                        {isAnnual && (
+                          <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">MAIS PROCURADO</Badge>
+                        )}
                       </div>
                     </th>
                   </tr>
