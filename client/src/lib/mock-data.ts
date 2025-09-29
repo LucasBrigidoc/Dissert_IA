@@ -91,7 +91,7 @@ export const mockPricingPlans = [
   {
     id: "pro",
     name: "Plano Pro",
-    price: "R$59,90",
+    price: "R$65,90",
     period: "/Mês",
     annualPrice: "R$599/Ano",
     features: [

@@ -191,7 +191,7 @@ export default function Pricing() {
                     <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white bg-gradient-to-b from-purple-500/20 to-violet-600/20">
                       <div className="flex flex-col items-center">
                         <span>Pro</span>
-                        <span className="text-xs font-normal text-white/90 mt-1">R$59,90/mês</span>
+                        <span className="text-xs font-normal text-white/90 mt-1">R$65,90/mês</span>
                         {isAnnual && (
                           <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">MAIS PROCURADO</Badge>
                         )}
