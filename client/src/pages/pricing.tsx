@@ -69,11 +69,14 @@ export default function Pricing() {
                   dark={plan.id === "free" || plan.id === "pro"}
                   className={`relative group w-full max-w-sm ${
                     plan.id === "pro"
-                      ? "border border-bright-blue/40 shadow-xl shadow-bright-blue/20 bg-gradient-to-br from-bright-blue/5 to-purple-500/5 p-4 sm:p-6 hover:border-bright-blue/60 transition-all duration-300" 
+                      ? "bg-gradient-to-br from-bright-blue/5 to-purple-500/5 p-4 sm:p-6 transition-all duration-300" 
                       : "border border-gray-200/30 p-4 sm:p-6"
                   }`}
                   data-testid={`card-plan-${plan.id}`}
                 >
+                  {plan.id === "pro" && (
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-bright-blue via-purple-500 to-bright-blue rounded-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                  )}
                   {showMostPopular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                       <Badge className="bg-gradient-to-r from-purple-600 via-bright-blue to-indigo-600 text-white px-4 py-1.5 text-xs font-bold shadow-xl border-2 border-white/30" data-testid="badge-most-popular">
