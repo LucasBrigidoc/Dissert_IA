@@ -67,25 +67,19 @@ export default function Pricing() {
                 <LiquidGlassCard 
                   key={plan.id} 
                   dark={plan.id === "free" || plan.id === "pro"}
-                  className={`relative group ${
+                  className={`relative group w-full max-w-sm ${
                     plan.id === "pro"
-                      ? "border-2 border-bright-blue shadow-2xl sm:scale-110 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6 bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-indigo-900/30 ring-2 ring-bright-blue/50" 
-                      : showMostPopular 
-                        ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6" 
-                        : "border border-gray-200/30 p-4 sm:p-6"
+                      ? "border border-white/20 shadow-lg p-4 sm:p-6" 
+                      : "border border-gray-200/30 p-4 sm:p-6"
                   }`}
                   data-testid={`card-plan-${plan.id}`}
                 >
-                  {plan.id === "pro" && (
-                    <>
-                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                        <Badge className="bg-gradient-to-r from-purple-600 via-bright-blue to-indigo-600 text-white px-4 py-1.5 text-xs font-bold shadow-xl border-2 border-white/30 animate-pulse" data-testid="badge-most-popular">
-                          ⭐ MAIS PROCURADO
-                        </Badge>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-bright-blue/5 via-purple-500/5 to-indigo-500/5 rounded-lg pointer-events-none -z-10"></div>
-                      <div className="absolute -inset-0.5 bg-gradient-to-r from-bright-blue via-purple-500 to-indigo-500 rounded-lg blur opacity-20 group-hover:opacity-30 transition duration-1000 pointer-events-none -z-20"></div>
-                    </>
+                  {showMostPopular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-gradient-to-r from-purple-600 via-bright-blue to-indigo-600 text-white px-4 py-1.5 text-xs font-bold shadow-xl border-2 border-white/30" data-testid="badge-most-popular">
+                        ⭐ MAIS PROCURADO
+                      </Badge>
+                    </div>
                   )}
               
                   <div className="text-center mb-4 sm:mb-6">
@@ -149,12 +143,10 @@ export default function Pricing() {
                 asChild
                 className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base smooth-transition hover-scale relative overflow-hidden ${
                   plan.id === "pro"
-                    ? "bg-gradient-to-r from-bright-blue via-purple-600 to-indigo-600 text-white hover:from-blue-600 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-bright-blue/50 border-2 border-white/20"
-                    : showMostPopular
-                      ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
-                      : plan.id === "free" 
-                        ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
-                        : "bg-bright-blue text-white hover:bg-blue-600"
+                    ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
+                    : plan.id === "free" 
+                      ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
+                      : "bg-bright-blue text-white hover:bg-blue-600"
                 }`}
                 data-testid={`button-plan-${plan.id}`}
               >
