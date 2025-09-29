@@ -69,7 +69,7 @@ export default function Pricing() {
                   dark={plan.id === "free" || plan.id === "pro"}
                   className={`relative group w-full max-w-sm ${
                     plan.id === "pro"
-                      ? "border border-white/20 shadow-lg p-4 sm:p-6" 
+                      ? "border border-bright-blue/40 shadow-xl shadow-bright-blue/20 bg-gradient-to-br from-bright-blue/5 to-purple-500/5 p-4 sm:p-6 hover:border-bright-blue/60 transition-all duration-300" 
                       : "border border-gray-200/30 p-4 sm:p-6"
                   }`}
                   data-testid={`card-plan-${plan.id}`}
@@ -103,7 +103,9 @@ export default function Pricing() {
                   </div>
                 )}
                 <h3 className={`text-lg sm:text-xl font-bold ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                  {plan.id === "pro" && <span className="mr-2">⚡</span>}
                   {plan.name}
+                  {plan.id === "pro" && <span className="ml-2 text-bright-blue">✨</span>}
                 </h3>
               </div>
               
@@ -122,7 +124,7 @@ export default function Pricing() {
                         {hasFeature ? (
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
                             plan.id === "pro" 
-                              ? "bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/50" 
+                              ? "bg-gradient-to-br from-bright-blue to-purple-500 shadow-lg shadow-bright-blue/50 ring-2 ring-bright-blue/30" 
                               : "bg-green-500"
                           }`}>
                             <Check className="text-white" size={12} />
@@ -143,7 +145,7 @@ export default function Pricing() {
                 asChild
                 className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base smooth-transition hover-scale relative overflow-hidden ${
                   plan.id === "pro"
-                    ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
+                    ? "bg-gradient-to-r from-bright-blue to-purple-500 text-white hover:from-bright-blue hover:to-purple-600 shadow-xl shadow-bright-blue/30 border border-bright-blue/50"
                     : plan.id === "free" 
                       ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
                       : "bg-bright-blue text-white hover:bg-blue-600"
@@ -151,8 +153,9 @@ export default function Pricing() {
                 data-testid={`button-plan-${plan.id}`}
               >
                 <Link href={plan.id === "free" ? "/signup" : "/signup"}>
-                  {plan.id === "pro" && <span className="mr-2">⚡</span>}
+                  {plan.id === "pro" && <span className="mr-2">🚀</span>}
                   {plan.buttonText}
+                  {plan.id === "pro" && <span className="ml-2">→</span>}
                 </Link>
               </Button>
                 </LiquidGlassCard>
