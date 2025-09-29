@@ -13,7 +13,9 @@ import {
   CheckCircle,
   Clock,
   Loader2,
-  Book
+  Book,
+  Download,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -270,7 +272,7 @@ export default function AdminMateriais() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -307,6 +309,34 @@ export default function AdminMateriais() {
                 </p>
               </div>
               <Clock className="text-amber-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total de Visualizações</p>
+                <p className="text-2xl font-bold">
+                  {materials?.reduce((total: number, m: MaterialComplementar) => total + (m.views || 0), 0) || 0}
+                </p>
+              </div>
+              <Eye className="text-purple-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Downloads de PDF</p>
+                <p className="text-2xl font-bold">
+                  {materials?.reduce((total: number, m: MaterialComplementar) => total + (m.pdfDownloads || 0), 0) || 0}
+                </p>
+              </div>
+              <Download className="text-orange-500" size={24} />
             </div>
           </CardContent>
         </Card>
@@ -560,6 +590,14 @@ export default function AdminMateriais() {
                     <span>Criado: {new Date(material.createdAt!).toLocaleDateString('pt-BR')}</span>
                     <span>Tempo: {material.readTime}</span>
                     <span>Ordem: {material.sortOrder}</span>
+                    <span className="flex items-center gap-1">
+                      <Eye size={14} />
+                      {material.views || 0} visualizações
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Download size={14} />
+                      {material.pdfDownloads || 0} downloads
+                    </span>
                   </div>
                 </div>
                 
