@@ -309,9 +309,7 @@ export default function Features() {
                   </div>
                   <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Newsletter e Material Educacional</h4>
                 </div>
-                <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">
-                  Receba semanalmente conteúdos exclusivos, dicas de redação, temas atuais e estratégias de estudo enviados diretamente para seu email.
-                </p>
+                <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">Receba semanalmente e tenha acesso a conteúdos exclusivos, dicas de redação, temas atuais e estratégias de estudo disponibilizadas no sistema e enviados diretamente para seu email.</p>
                 <ul className="text-xs sm:text-sm text-soft-gray space-y-0.5 sm:space-y-1">
                   <li>• Temas de redação semanais comentados</li>
                   <li>• receba um resumo das principais noticias</li>
