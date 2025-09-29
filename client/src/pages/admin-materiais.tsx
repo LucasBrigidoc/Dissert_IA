@@ -278,13 +278,13 @@ export default function AdminMateriais() {
       {/* Admin Navigation */}
       <div className="mb-6">
         <div className="flex flex-wrap gap-3">
-          <Link href="/admin-dashboard">
+          <Link href="/admin">
             <Button variant="outline" className="gap-2" data-testid="button-admin-dashboard">
               <BarChart3 size={16} />
               Admin Principal
             </Button>
           </Link>
-          <Link href="/admin-newsletter">
+          <Link href="/admin/newsletter">
             <Button variant="outline" className="gap-2" data-testid="button-admin-newsletter">
               <Mail size={16} />
               Admin Newsletter
