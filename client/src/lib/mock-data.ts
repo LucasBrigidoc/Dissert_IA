@@ -89,6 +89,24 @@ export const mockPricingPlans = [
     popular: false
   },
   {
+    id: "base",
+    name: "Plano Base",
+    price: "R$49,90",
+    period: "/Mês",
+    annualPrice: "R$479/Ano",
+    features: [
+      "Acesso a funcionalidades intermediárias",
+      "Newsletter educacional semanal",
+      "Dashboard personalizado avançado",
+      "Biblioteca pessoal ampliada (até 20 itens)",
+      "Uso moderado de IA (10 por dia)",
+      "Simulador completo de redação",
+      "Correções básicas de IA"
+    ],
+    buttonText: "Assinar Base",
+    popular: false
+  },
+  {
     id: "pro",
     name: "Plano Pro",
     price: "R$59,90",
