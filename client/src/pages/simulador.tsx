@@ -372,7 +372,9 @@ export default function Simulador() {
                 className="w-full justify-between p-3 h-auto text-left bg-soft-gray/5 hover:bg-soft-gray/10 border border-soft-gray/20"
                 data-testid="button-toggle-text-proposal"
               >
-                <span className="text-sm font-medium text-dark-blue">Proposta de Texto Personalizada (opcional)</span>
+                <span className="text-sm font-medium text-dark-blue">
+                  Proposta de Texto Personalizada<span className="hidden sm:inline"> (opcional)</span>
+                </span>
                 {showTextProposal ? (
                   <ChevronDown className="w-4 h-4 text-soft-gray" />
                 ) : (
