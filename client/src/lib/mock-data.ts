@@ -95,14 +95,14 @@ export const mockPricingPlans = [
     period: "/Mês",
     annualPrice: "R$599/Ano",
     features: [
-      "Acesso ilimitado a todas funcionalidades",
+      "Acesso a todas funcionalidades",
       "IA avançada com correção por competências ENEM",
       "Estrutura Curinga: crie e use modelos personalizados",
       "Repertório inteligente com milhares de referências",
       "Controlador de Escrita: ajuste tom e formalidade",
       "Simulador completo idêntico ao dia da prova",
-      "Biblioteca ilimitada + Material exclusivo",
-      "Uso ilimitado de IA + Suporte prioritário"
+      "Biblioteca completa + Material exclusivo",
+      "Uso completo de IA + Suporte prioritário"
     ],
     buttonText: "Assinar Pro",
     popular: true
@@ -137,7 +137,7 @@ export const mockFAQ = [
   {
     id: 1,
     question: "Qual a diferença entre o Plano Gratuito e Pro?",
-    answer: "O Plano Gratuito oferece acesso básico às funcionalidades principais com uso limitado (3 por dia) para você testar a plataforma. O Plano Pro inclui acesso total a todas funcionalidades, uso ilimitado de IA, correção avançada e material complementar exclusivo."
+    answer: "O Plano Gratuito oferece acesso básico às funcionalidades principais com uso limitado (3 por dia) para você testar a plataforma. O Plano Pro inclui acesso total a todas funcionalidades, uso completo de IA, correção avançada e material complementar exclusivo."
   },
   {
     id: 2,
@@ -147,7 +147,7 @@ export const mockFAQ = [
   {
     id: 3,
     question: "Como funciona o uso de IA?",
-    answer: "O uso determina quantas vezes você pode utilizar nossas ferramentas de IA por dia. Plano Gratuito: 3 usos por dia. Plano Pro: uso ilimitado de todas as funcionalidades de IA."
+    answer: "O uso determina quantas vezes você pode utilizar nossas ferramentas de IA por dia. Plano Gratuito: 3 usos por dia. Plano Pro: uso completo de todas as funcionalidades de IA."
   },
   {
     id: 4,
@@ -162,7 +162,7 @@ export const mockFAQ = [
   {
     id: 6,
     question: "Como funciona a biblioteca pessoal?",
-    answer: "No plano gratuito, você pode salvar até 5 itens na sua biblioteca pessoal. No Plano Pro, você tem espaço ilimitado para salvar todas suas redações, repertórios e acompanhar seu progresso completo."
+    answer: "No plano gratuito, você pode salvar até 5 itens na sua biblioteca pessoal. No Plano Pro, você tem espaço completo para salvar todas suas redações, repertórios e acompanhar seu progresso completo."
   },
   {
     id: 7,

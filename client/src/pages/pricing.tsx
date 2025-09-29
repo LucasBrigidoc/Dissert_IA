@@ -318,7 +318,7 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center">
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-1.5 py-0.5 shadow-md">
-                          Ilimitado
+                          Completo
                         </Badge>
                       </div>
                     </td>
