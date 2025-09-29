@@ -263,10 +263,10 @@ export default function AdminMateriais() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Gerenciamento de Materiais Complementares</h1>
-        <p className="text-muted-foreground">
+    <div className="container mx-auto p-4 md:p-6 max-w-7xl">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Gerenciamento de Materiais Complementares</h1>
+        <p className="text-muted-foreground text-sm md:text-base">
           Crie, gerencie e publique materiais complementares para seus usuários
         </p>
       </div>
@@ -342,11 +342,11 @@ export default function AdminMateriais() {
         </Card>
       </div>
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Todos os Materiais</h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h2 className="text-lg md:text-xl font-semibold">Todos os Materiais</h2>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
-            <Button className="gap-2" data-testid="button-create-material">
+            <Button className="gap-2 w-full sm:w-auto" data-testid="button-create-material">
               <Plus size={16} />
               Novo Material
             </Button>
@@ -570,45 +570,53 @@ export default function AdminMateriais() {
       <div className="grid gap-4">
         {materials?.map((material: MaterialComplementar) => (
           <Card key={material.id} data-testid={`material-card-${material.id}`}>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 bg-gradient-to-br ${colorSchemeMap[material.colorScheme as keyof typeof colorSchemeMap] || colorSchemeMap.green} rounded-full flex items-center justify-center flex-shrink-0`}>
-                      {getIconComponent(material.icon)}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <h3 className="text-lg font-semibold">{material.title}</h3>
-                      {getStatusBadge(material.isPublished)}
-                      <Badge className={`text-xs bg-${material.colorScheme}-100 text-${material.colorScheme}-800`}>
-                        {material.category}
-                      </Badge>
-                    </div>
+            <CardContent className="p-4 md:p-6">
+              <div className="space-y-4">
+                {/* Header with icon, title and badges */}
+                <div className="flex items-start space-x-3">
+                  <div className={`w-10 h-10 bg-gradient-to-br ${colorSchemeMap[material.colorScheme as keyof typeof colorSchemeMap] || colorSchemeMap.green} rounded-full flex items-center justify-center flex-shrink-0`}>
+                    {getIconComponent(material.icon)}
                   </div>
-                  <p className="text-muted-foreground">{material.description}</p>
-                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                    <span>Criado: {new Date(material.createdAt!).toLocaleDateString('pt-BR')}</span>
-                    <span>Tempo: {material.readTime}</span>
-                    <span>Ordem: {material.sortOrder}</span>
-                    <span className="flex items-center gap-1">
-                      <Eye size={14} />
-                      {material.views || 0} visualizações
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Download size={14} />
-                      {material.pdfDownloads || 0} downloads
-                    </span>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      <h3 className="text-lg font-semibold truncate">{material.title}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {getStatusBadge(material.isPublished)}
+                        <Badge className={`text-xs bg-${material.colorScheme}-100 text-${material.colorScheme}-800`}>
+                          {material.category}
+                        </Badge>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground text-sm">{material.description}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2">
+                {/* Analytics and details */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-sm text-muted-foreground">
+                  <span className="truncate">Criado: {new Date(material.createdAt!).toLocaleDateString('pt-BR')}</span>
+                  <span className="truncate">Tempo: {material.readTime || 'N/A'}</span>
+                  <span className="truncate">Ordem: {material.sortOrder}</span>
+                  <span className="flex items-center gap-1">
+                    <Eye size={14} />
+                    {material.views || 0}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Download size={14} />
+                    {material.pdfDownloads || 0}
+                  </span>
+                </div>
+                
+                {/* Action buttons */}
+                <div className="flex justify-end space-x-2 pt-2 border-t">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleEditClick(material)}
                     data-testid={`button-edit-${material.id}`}
+                    className="flex items-center gap-2"
                   >
                     <Edit size={16} />
+                    <span className="hidden sm:inline">Editar</span>
                   </Button>
                   <Button
                     variant="destructive"
@@ -616,8 +624,10 @@ export default function AdminMateriais() {
                     onClick={() => deleteMaterial.mutate(material.id)}
                     disabled={deleteMaterial.isPending}
                     data-testid={`button-delete-${material.id}`}
+                    className="flex items-center gap-2"
                   >
                     <Trash2 size={16} />
+                    <span className="hidden sm:inline">Excluir</span>
                   </Button>
                 </div>
               </div>
