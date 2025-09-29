@@ -291,7 +291,7 @@ export default function AdminMateriais() {
             </Button>
           </Link>
           <Button variant="default" className="gap-2" data-testid="button-admin-materiais">
-            <Settings size={16} />
+            <Book size={16} />
             Admin Materiais
           </Button>
         </div>

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -324,22 +324,6 @@ export default function AdminDashboard() {
           </div>
           
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 lg:flex-nowrap lg:ml-auto">
-            {/* Admin Actions */}
-            <div className="flex gap-2">
-              <Button asChild variant="outline" size="sm" data-testid="button-admin-newsletter">
-                <Link href="/admin/newsletter">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Newsletter
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="sm" data-testid="button-admin-materiais">
-                <Link href="/admin/materiais">
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Material
-                </Link>
-              </Button>
-            </div>
-            
             {/* Metrics Controls */}
             <div className="flex gap-2">
               <Button
@@ -365,6 +349,28 @@ export default function AdminDashboard() {
               </select>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Admin Navigation */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-3">
+          <Button variant="default" className="gap-2" data-testid="button-admin-dashboard">
+            <BarChart3 size={16} />
+            Admin Principal
+          </Button>
+          <Link href="/admin/newsletter">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-newsletter">
+              <Mail size={16} />
+              Admin Newsletter
+            </Button>
+          </Link>
+          <Link href="/admin/materiais">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-materiais">
+              <Book size={16} />
+              Admin Materiais
+            </Button>
+          </Link>
         </div>
       </div>
 

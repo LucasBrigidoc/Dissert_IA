@@ -16,7 +16,9 @@ import {
   TrendingUp,
   Loader2,
   ArrowLeft,
-  BookOpen
+  BookOpen,
+  BarChart3,
+  Book
 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -245,21 +247,28 @@ export default function AdminNewsletter() {
               Crie, gerencie e envie newsletters para seus assinantes
             </p>
           </div>
-          
-          <div className="flex gap-2 lg:ml-auto lg:flex-nowrap">
-            <Button asChild variant="outline" size="sm" data-testid="button-admin-dashboard">
-              <Link href="/admin">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Dashboard
-              </Link>
+        </div>
+      </div>
+
+      {/* Admin Navigation */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-dashboard">
+              <BarChart3 size={16} />
+              Admin Principal
             </Button>
-            <Button asChild variant="outline" size="sm" data-testid="button-admin-materiais">
-              <Link href="/admin/materiais">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Material
-              </Link>
+          </Link>
+          <Button variant="default" className="gap-2" data-testid="button-admin-newsletter">
+            <Mail size={16} />
+            Admin Newsletter
+          </Button>
+          <Link href="/admin/materiais">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-materiais">
+              <Book size={16} />
+              Admin Materiais
             </Button>
-          </div>
+          </Link>
         </div>
       </div>
 
