@@ -233,13 +233,13 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header fixo com gradiente e ícones */}
       <div className="fixed top-0 z-50 w-full bg-gradient-to-r from-bright-blue to-purple-600 shadow-xl">
-        <div className="container mx-auto px-3 md:px-6 py-2 sm:py-3 md:py-4">
+        <div className="container mx-auto px-3 md:px-6 py-1 sm:py-2 md:py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 md:gap-4">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-white/20 transition-all duration-200 h-8 md:h-12 px-2 sm:px-3 md:px-6 text-xs sm:text-sm md:text-base"
+                className="text-white hover:bg-white/20 transition-all duration-200 h-6 md:h-10 px-2 sm:px-3 md:px-6 text-xs sm:text-sm md:text-base"
                 onClick={onBack}
                 data-testid="button-voltar"
               >
@@ -247,7 +247,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                 <span className="hidden sm:inline">Voltar</span>
               </Button>
               <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
-                <div className="bg-white/20 p-1 sm:p-1.5 md:p-3 rounded-full">
+                <div className="bg-white/20 p-1 sm:p-1 md:p-2 rounded-full">
                   <Plus className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-white" />
                 </div>
                 <div>
@@ -275,7 +275,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
         
         {/* AI Usage Progress - Integrado no header */}
         <div className="border-t border-white/30 bg-white/20 backdrop-blur-sm">
-          <div className="container mx-auto px-3 md:px-6 py-1.5 md:py-2">
+          <div className="container mx-auto px-3 md:px-6 py-1 md:py-1.5">
             <div className="bg-white/40 backdrop-blur-md rounded-lg p-2 shadow-sm border border-white/50">
               <AIUsageProgress variant="inline" />
             </div>
@@ -284,7 +284,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-28 sm:pt-32 md:pt-36 pb-6 sm:pb-8 md:pb-16">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-20 sm:pt-24 md:pt-28 pb-6 sm:pb-8 md:pb-16">
         <div className="space-y-6 sm:space-y-8 md:space-y-12">
           {/* Formulário de criação */}
           <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-bright-blue w-full shadow-lg">
