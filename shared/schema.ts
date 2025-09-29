@@ -928,6 +928,8 @@ export const materiaisComplementares = pgTable("materiais_complementares", {
   }).notNull().default("green"),
   isPublished: boolean("is_published").default(true),
   sortOrder: integer("sort_order").default(0), // Para ordenação manual
+  views: integer("views").default(0), // Contador de visualizações
+  pdfDownloads: integer("pdf_downloads").default(0), // Contador de downloads de PDF
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
