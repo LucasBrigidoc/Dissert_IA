@@ -570,9 +570,6 @@ export function UseStructure({ structures, onBack, onSaveStructure }: UseStructu
                 </div>
               </div>
             </div>
-            <div>
-              <p className="text-soft-gray">Selecione uma estrutura salva e gere redações seguindo esse modelo</p>
-            </div>
           </div>
         </div>
         
