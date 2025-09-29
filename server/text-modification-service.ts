@@ -745,61 +745,204 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
 
   private buildEssayCorrectionPrompt(essayText: string, topic: string, examType: string): string {
     const competencies = examType === 'ENEM' ? [
-      "Competência 1: Demonstrar domínio da modalidade escrita formal da língua portuguesa (0-200 pontos)",
-      "Competência 2: Compreender a proposta de redação e aplicar conceitos das várias áreas de conhecimento (0-200 pontos)", 
-      "Competência 3: Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos (0-200 pontos)",
-      "Competência 4: Demonstrar conhecimento dos mecanismos linguísticos necessários para argumentação (0-200 pontos)",
-      "Competência 5: Elaborar proposta de intervenção para o problema abordado (0-200 pontos)"
+      {
+        name: "Competência 1: Demonstrar domínio da modalidade escrita formal da língua portuguesa",
+        maxPoints: 200,
+        criteria: [
+          "Convenções da escrita (grafia, acentuação, pontuação, separação silábica)",
+          "Morfossintaxe (concordância, regência, colocação pronominal)",
+          "Vocabulário (adequação, precisão, riqueza lexical)",
+          "Registro de linguagem adequado ao gênero textual"
+        ]
+      },
+      {
+        name: "Competência 2: Compreender a proposta de redação e aplicar conceitos das várias áreas de conhecimento",
+        maxPoints: 200,
+        criteria: [
+          "Compreensão plena do tema proposto",
+          "Aplicação de conceitos de diferentes áreas do conhecimento",
+          "Desenvolvimento do tema dentro dos limites estruturais do texto dissertativo-argumentativo",
+          "Articulação coerente de informações, fatos e opiniões"
+        ]
+      },
+      {
+        name: "Competência 3: Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos",
+        maxPoints: 200,
+        criteria: [
+          "Seleção de argumentos consistentes",
+          "Organização estratégica das informações",
+          "Progressão temática clara e coerente",
+          "Autoria e posicionamento crítico fundamentado"
+        ]
+      },
+      {
+        name: "Competência 4: Demonstrar conhecimento dos mecanismos linguísticos necessários para argumentação",
+        maxPoints: 200,
+        criteria: [
+          "Articulação entre parágrafos e períodos",
+          "Uso adequado de conectivos e operadores argumentativos",
+          "Construção da argumentação através de recursos coesivos",
+          "Variedade e adequação dos mecanismos linguísticos"
+        ]
+      },
+      {
+        name: "Competência 5: Elaborar proposta de intervenção para o problema abordado",
+        maxPoints: 200,
+        criteria: [
+          "Proposta específica e detalhada",
+          "Respeito aos direitos humanos",
+          "Articulação com a discussão desenvolvida no texto",
+          "Presença dos 5 elementos: AGENTE + AÇÃO + MODO/MEIO + FINALIDADE + DETALHAMENTO"
+        ]
+      }
     ] : [
-      "Competência 1: Adequação ao tema e ao tipo textual (0-250 pontos)",
-      "Competência 2: Organização textual e coerência (0-250 pontos)",
-      "Competência 3: Argumentação e desenvolvimento (0-250 pontos)",
-      "Competência 4: Domínio da norma culta e coesão (0-250 pontos)"
+      {
+        name: "Competência 1: Adequação ao tema e ao tipo textual",
+        maxPoints: 250,
+        criteria: [
+          "Compreensão adequada do tema proposto",
+          "Atendimento ao gênero dissertativo-argumentativo",
+          "Desenvolvimento dentro dos limites temáticos",
+          "Posicionamento claro sobre a questão"
+        ]
+      },
+      {
+        name: "Competência 2: Organização textual e coerência",
+        maxPoints: 250,
+        criteria: [
+          "Estrutura dissertativa clara (introdução, desenvolvimento, conclusão)",
+          "Progressão lógica das ideias",
+          "Unidade temática e coerência global",
+          "Articulação adequada entre parágrafos"
+        ]
+      },
+      {
+        name: "Competência 3: Argumentação e desenvolvimento",
+        maxPoints: 250,
+        criteria: [
+          "Qualidade e consistência dos argumentos",
+          "Uso adequado de exemplos e repertório",
+          "Fundamentação das ideias apresentadas",
+          "Capacidade de convencimento e persuasão"
+        ]
+      },
+      {
+        name: "Competência 4: Domínio da norma culta e coesão",
+        maxPoints: 250,
+        criteria: [
+          "Correção gramatical (sintaxe, morfologia, ortografia)",
+          "Adequação do registro linguístico",
+          "Uso eficiente de mecanismos coesivos",
+          "Clareza e precisão na expressão"
+        ]
+      }
     ];
 
-    return `Você é um corretor profissional especializado em redações de ${examType}. Analise esta redação de forma detalhada e profissional.
+    const detailedInstructions = examType === 'ENEM' ? `
+CRITÉRIOS ESPECÍFICOS DO ENEM:
+- Nota 0: Fuga ao tema, não atendimento ao tipo textual, texto com até 7 linhas, cópia dos textos motivadores, impropérios, desenhos
+- Nota 40: Demonstra conhecimento precário da norma-padrão, com muitos desvios gramaticais
+- Nota 80: Demonstra conhecimento razoável da norma-padrão, com poucos desvios gramaticais
+- Nota 120: Demonstra bom domínio da norma-padrão, com poucos desvios gramaticais leves
+- Nota 160: Demonstra muito bom domínio da norma-padrão, com eventuais deslizes
+- Nota 200: Demonstra excelente domínio da norma-padrão
 
+ANÁLISE OBRIGATÓRIA:
+1. ESTRUTURA: Verifique se há introdução (contextualização + tese), desenvolvimento (2+ argumentos com repertório) e conclusão (retomada + proposta)
+2. REPERTÓRIO: Avalie se há uso de dados, estatísticas, citações, exemplos históricos, referências culturais legitimadoras
+3. PROPOSTA DE INTERVENÇÃO: Deve conter agente (quem), ação (o que), modo/meio (como), finalidade (para que) e detalhamento
+4. DIREITOS HUMANOS: Verifique se a proposta respeita os direitos humanos fundamentais
+5. COESÃO: Analise o uso de conectivos, referenciação, substituições lexicais
+6. COERÊNCIA: Avalie a progressão temática, não contradição, adequação ao tema` : `
+CRITÉRIOS ESPECÍFICOS DE VESTIBULAR/CONCURSO:
+- Foque na consistência argumentativa e fundamentação teórica
+- Valorize o uso de repertório cultural e conhecimento interdisciplinar
+- Avalie a originalidade e criatividade na abordagem
+- Verifique a adequação do registro linguístico formal acadêmico`;
+
+    return `Você é um corretor profissional de redações com mais de 15 anos de experiência em ${examType}, especialista em bancas avaliadoras como INEP, VUNESP, FCC, CESPE. Analise esta redação com o rigor de uma correção oficial.
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 DADOS DA REDAÇÃO
+═══════════════════════════════════════════════════════════════════════════════
 TEMA: ${topic}
-TIPO DE EXAME: ${examType}
+EXAME: ${examType}
+CANDIDATO: Texto para avaliação oficial
 
-REDAÇÃO A SER CORRIGIDA:
+TEXTO DA REDAÇÃO:
 "${essayText}"
 
-CRITÉRIOS DE CORREÇÃO ${examType}:
-${competencies.join('\n')}
+═══════════════════════════════════════════════════════════════════════════════
+📊 COMPETÊNCIAS DE AVALIAÇÃO ${examType}
+═══════════════════════════════════════════════════════════════════════════════
+${competencies.map(comp => `
+🎯 ${comp.name} (0-${comp.maxPoints} pontos)
+${comp.criteria.map(criterion => `   • ${criterion}`).join('\n')}
+`).join('')}
 
-Forneça uma correção completa no seguinte formato JSON:
+${detailedInstructions}
+
+═══════════════════════════════════════════════════════════════════════════════
+⚖️ METODOLOGIA DE CORREÇÃO
+═══════════════════════════════════════════════════════════════════════════════
+1. LEIA o texto integralmente pelo menos 2 vezes
+2. IDENTIFIQUE problemas específicos com localização no texto
+3. AVALIE cada competência de forma independente e criteriosa
+4. PONTUE considerando a grade oficial (não seja condescendente nem rigoroso demais)
+5. FORNEÇA feedback construtivo e específico como um professor experiente
+6. USE exemplos extraídos do próprio texto do candidato
+7. SUGIRA melhorias práticas e realizáveis
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 FORMATO DE RESPOSTA (JSON RIGOROSO)
+═══════════════════════════════════════════════════════════════════════════════
 
 {
-  "totalScore": [nota total de 0-1000],
-  "overallFeedback": "[feedback geral em 1-2 frases]",
+  "totalScore": [soma exata das 5 competências para ENEM ou 4 para outros],
+  "overallFeedback": "[avaliação geral em 2-3 frases, destacando o nível da redação]",
   "competencies": [
     {
-      "name": "[nome da competência]",
-      "score": [pontuação obtida],
-      "maxScore": [pontuação máxima],
-      "criteria": "[critério avaliado]",
-      "feedback": "[feedback específico]"
+      "name": "[nome completo da competência]",
+      "score": [pontuação específica baseada na grade oficial],
+      "maxScore": [pontuação máxima possível],
+      "criteria": "[critério principal avaliado]",
+      "feedback": "[análise detalhada com exemplos específicos do texto, mencionando localização dos problemas/acertos]",
+      "level": "[Excelente/Muito Bom/Bom/Regular/Insuficiente/Nulo]"
     }
   ],
-  "strengths": ["[ponto forte 1]", "[ponto forte 2]", "[ponto forte 3]"],
-  "improvements": ["[melhoria 1]", "[melhoria 2]", "[melhoria 3]"],
-  "detailedAnalysis": "[análise detalhada da redação, estrutura, argumentação e linguagem]",
-  "recommendation": "[recomendação do professor para melhorar]",
+  "strengths": [
+    "[ponto forte específico com exemplo do texto]",
+    "[outro ponto forte específico]",
+    "[terceiro ponto forte específico]"
+  ],
+  "improvements": [
+    "[melhoria específica com sugestão prática]",
+    "[outra melhoria específica]", 
+    "[terceira melhoria específica]"
+  ],
+  "detailedAnalysis": "[análise minuciosa de 4-6 frases abordando: estrutura dissertativa, qualidade argumentativa, uso de repertório, coesão/coerência, adequação linguística, e cumprimento da proposta. Seja específico e mencione exemplos do texto]",
+  "recommendation": "[recomendação pedagógica específica de 2-3 frases para o próximo nível de desenvolvimento, incluindo estratégias de estudo]",
+  "structureAnalysis": {
+    "introduction": "[avaliação específica da introdução]",
+    "development": "[avaliação do desenvolvimento argumentativo]", 
+    "conclusion": "[avaliação da conclusão e proposta de intervenção]"
+  },
   "statistics": {
     "wordCount": ${essayText.split(/\s+/).length},
-    "averageWordsPerSentence": [média de palavras por frase],
-    "readingTime": "[tempo estimado de leitura]"
+    "paragraphCount": ${essayText.split(/\n\s*\n/).length},
+    "averageWordsPerSentence": [calcule baseado em pontos finais],
+    "readingTime": "[tempo em minutos]"
   }
 }
 
-INSTRUÇÕES ESPECÍFICAS:
-- Seja rigoroso mas construtivo na correção
-- Considere o nível adequado para ${examType}
-- Forneça feedback específico e acionável
-- Use linguagem profissional mas acessível
-- Destaque tanto pontos fortes quanto áreas de melhoria
-- Responda APENAS com o JSON válido, sem texto adicional`;
+⚠️ CRITÉRIOS DE QUALIDADE OBRIGATÓRIOS:
+- Seja PRECISO nas pontuações (use a grade oficial, não invente notas)
+- Seja ESPECÍFICO no feedback (cite trechos do texto quando relevante)
+- Seja CONSTRUTIVO (balance críticas com reconhecimento de qualidades)
+- Seja PROFISSIONAL (use linguagem técnica adequada de corretor)
+- JUSTIFIQUE cada nota atribuída com base nos critérios oficiais
+
+Responda EXCLUSIVAMENTE com o JSON válido, sem texto adicional antes ou depois.`;
   }
 
   private parseEssayCorrection(response: string, essayText: string): any {
@@ -813,21 +956,48 @@ INSTRUÇÕES ESPECÍFICAS:
       const jsonStr = jsonMatch[0];
       const parsed = JSON.parse(jsonStr);
       
-      // Validate and ensure required fields
+      // Calculate statistics if not provided
+      const wordCount = essayText.split(/\s+/).length;
+      const sentences = essayText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const paragraphs = essayText.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+      
+      // Validate and ensure required fields with enhanced structure
       const correction = {
         totalScore: parsed.totalScore || 600,
-        overallFeedback: parsed.overallFeedback || "Redação analisada com critérios profissionais.",
+        overallFeedback: parsed.overallFeedback || "Redação analisada com critérios profissionais de correção.",
         competencies: parsed.competencies || [],
-        strengths: parsed.strengths || [],
-        improvements: parsed.improvements || [],
-        detailedAnalysis: parsed.detailedAnalysis || "Análise detalhada da estrutura, argumentação e linguagem.",
-        recommendation: parsed.recommendation || "Continue praticando para aprimorar sua escrita.",
+        strengths: parsed.strengths || [
+          "Tentativa de abordar o tema proposto",
+          "Uso de estrutura dissertativa básica",
+          "Demonstração de conhecimento sobre o assunto"
+        ],
+        improvements: parsed.improvements || [
+          "Desenvolver argumentação mais consistente",
+          "Melhorar a coesão entre parágrafos",
+          "Aprimorar o domínio da norma culta"
+        ],
+        detailedAnalysis: parsed.detailedAnalysis || "Análise detalhada da estrutura, argumentação e linguagem conforme critérios oficiais de correção.",
+        recommendation: parsed.recommendation || "Continue praticando redação dissertativa-argumentativa, focando na estrutura e fundamentação dos argumentos.",
+        structureAnalysis: parsed.structureAnalysis || {
+          introduction: "Introdução identificada com apresentação do tema",
+          development: "Desenvolvimento com argumentos básicos",
+          conclusion: "Conclusão presente com tentativa de fechamento"
+        },
         statistics: {
-          wordCount: essayText.split(/\s+/).length,
-          averageWordsPerSentence: parsed.statistics?.averageWordsPerSentence || Math.round(essayText.split(/\s+/).length / essayText.split(/[.!?]+/).length),
-          readingTime: parsed.statistics?.readingTime || `${Math.ceil(essayText.split(/\s+/).length / 200)} min`
+          wordCount: wordCount,
+          paragraphCount: paragraphs.length,
+          averageWordsPerSentence: parsed.statistics?.averageWordsPerSentence || Math.round(wordCount / Math.max(sentences.length, 1)),
+          readingTime: parsed.statistics?.readingTime || `${Math.ceil(wordCount / 200)} min`
         }
       };
+      
+      // Ensure competencies have the required level field
+      if (correction.competencies.length > 0) {
+        correction.competencies = correction.competencies.map((comp: any) => ({
+          ...comp,
+          level: comp.level || this.getScoreLevel(comp.score, comp.maxScore)
+        }));
+      }
       
       return correction;
       
@@ -837,56 +1007,141 @@ INSTRUÇÕES ESPECÍFICAS:
     }
   }
 
+  private getScoreLevel(score: number, maxScore: number): string {
+    const percentage = (score / maxScore) * 100;
+    if (percentage >= 90) return "Excelente";
+    if (percentage >= 80) return "Muito Bom";
+    if (percentage >= 65) return "Bom";
+    if (percentage >= 50) return "Regular";
+    if (percentage >= 20) return "Insuficiente";
+    return "Nulo";
+  }
+
   private getFallbackEssayCorrection(essayText: string, topic: string, examType: string): any {
     const wordCount = essayText.split(/\s+/).length;
     const sentences = essayText.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const avgWordsPerSentence = Math.round(wordCount / sentences.length) || 15;
+    const paragraphs = essayText.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+    const avgWordsPerSentence = Math.round(wordCount / Math.max(sentences.length, 1)) || 15;
     
     // Generate a reasonable score based on text length and structure
     const baseScore = Math.min(800, Math.max(400, wordCount * 2.5));
     
     const competencies = examType === 'ENEM' ? [
-      { name: "Domínio da escrita formal", score: Math.round(baseScore * 0.18), maxScore: 200, criteria: "Modalidade escrita formal da língua", feedback: "Mantenha atenção à norma culta e evite marcas de oralidade." },
-      { name: "Compreensão da proposta", score: Math.round(baseScore * 0.19), maxScore: 200, criteria: "Compreensão do tema e aplicação de conhecimentos", feedback: "Demonstre conhecimento interdisciplinar sobre o tema." },
-      { name: "Organização das ideias", score: Math.round(baseScore * 0.21), maxScore: 200, criteria: "Seleção e organização de argumentos", feedback: "Organize melhor a progressão das ideias e argumentos." },
-      { name: "Mecanismos linguísticos", score: Math.round(baseScore * 0.20), maxScore: 200, criteria: "Articulação de argumentos e coesão", feedback: "Use conectivos variados para melhor articulação." },
-      { name: "Proposta de intervenção", score: Math.round(baseScore * 0.22), maxScore: 200, criteria: "Elaboração de proposta detalhada", feedback: "Detalhe mais sua proposta com agente, ação, meio e finalidade." }
+      { 
+        name: "Competência 1: Demonstrar domínio da modalidade escrita formal da língua portuguesa", 
+        score: Math.round(baseScore * 0.18), 
+        maxScore: 200, 
+        criteria: "Modalidade escrita formal da língua", 
+        feedback: "Mantenha atenção à norma culta e evite marcas de oralidade. Revise aspectos ortográficos e gramaticais.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.18), 200)
+      },
+      { 
+        name: "Competência 2: Compreender a proposta de redação e aplicar conceitos das várias áreas de conhecimento", 
+        score: Math.round(baseScore * 0.19), 
+        maxScore: 200, 
+        criteria: "Compreensão do tema e aplicação de conhecimentos", 
+        feedback: "Demonstre conhecimento interdisciplinar sobre o tema. Use repertórios socioculturais relevantes.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.19), 200)
+      },
+      { 
+        name: "Competência 3: Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos", 
+        score: Math.round(baseScore * 0.21), 
+        maxScore: 200, 
+        criteria: "Seleção e organização de argumentos", 
+        feedback: "Organize melhor a progressão das ideias e argumentos. Desenvolva cada argumento com profundidade.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.21), 200)
+      },
+      { 
+        name: "Competência 4: Demonstrar conhecimento dos mecanismos linguísticos necessários para argumentação", 
+        score: Math.round(baseScore * 0.20), 
+        maxScore: 200, 
+        criteria: "Articulação de argumentos e coesão", 
+        feedback: "Use conectivos variados para melhor articulação. Melhore a coesão entre parágrafos.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.20), 200)
+      },
+      { 
+        name: "Competência 5: Elaborar proposta de intervenção para o problema abordado", 
+        score: Math.round(baseScore * 0.22), 
+        maxScore: 200, 
+        criteria: "Elaboração de proposta detalhada", 
+        feedback: "Detalhe mais sua proposta com agente, ação, modo/meio, finalidade e detalhamento específico.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.22), 200)
+      }
     ] : [
-      { name: "Adequação ao tema", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Adequação temática e textual", feedback: "Mantenha foco no tema e no gênero dissertativo-argumentativo." },
-      { name: "Organização textual", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Estrutura e coerência", feedback: "Organize melhor a estrutura com introdução, desenvolvimento e conclusão." },
-      { name: "Argumentação", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Desenvolvimento argumentativo", feedback: "Desenvolva argumentos mais consistentes e persuasivos." },
-      { name: "Domínio da norma culta", score: Math.round(baseScore * 0.25), maxScore: 250, criteria: "Correção gramatical e coesão", feedback: "Revise aspectos gramaticais e conectivos de coesão." }
+      { 
+        name: "Competência 1: Adequação ao tema e ao tipo textual", 
+        score: Math.round(baseScore * 0.25), 
+        maxScore: 250, 
+        criteria: "Adequação temática e textual", 
+        feedback: "Mantenha foco no tema e no gênero dissertativo-argumentativo durante todo o desenvolvimento.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+      },
+      { 
+        name: "Competência 2: Organização textual e coerência", 
+        score: Math.round(baseScore * 0.25), 
+        maxScore: 250, 
+        criteria: "Estrutura e coerência", 
+        feedback: "Organize melhor a estrutura com introdução clara, desenvolvimento consistente e conclusão articulada.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+      },
+      { 
+        name: "Competência 3: Argumentação e desenvolvimento", 
+        score: Math.round(baseScore * 0.25), 
+        maxScore: 250, 
+        criteria: "Desenvolvimento argumentativo", 
+        feedback: "Desenvolva argumentos mais consistentes e persuasivos. Use exemplos concretos e dados quando possível.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+      },
+      { 
+        name: "Competência 4: Domínio da norma culta e coesão", 
+        score: Math.round(baseScore * 0.25), 
+        maxScore: 250, 
+        criteria: "Correção gramatical e coesão", 
+        feedback: "Revise aspectos gramaticais, ortográficos e conectivos de coesão para maior fluência textual.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+      }
     ];
 
     return {
       totalScore: Math.round(baseScore),
       overallFeedback: wordCount < 150 
-        ? "Redação muito curta. Desenvolva mais seus argumentos para atingir o mínimo esperado." 
+        ? "Redação muito curta para uma avaliação completa. Desenvolva mais seus argumentos para atingir o mínimo esperado." 
         : wordCount > 400 
-          ? "Boa extensão da redação. Foque na qualidade dos argumentos e estrutura."
-          : "Redação com extensão adequada. Continue desenvolvendo argumentação e estrutura.",
-      competencies,
+          ? "Boa extensão da redação. Foque na qualidade dos argumentos, estrutura dissertativa e correção linguística."
+          : "Redação com extensão adequada. Continue desenvolvendo argumentação consistente e estrutura dissertativa.",
+      competencies: competencies.map(comp => ({
+        ...comp,
+        level: comp.level || this.getScoreLevel(comp.score, comp.maxScore)
+      })),
       strengths: [
-        wordCount >= 200 ? "Extensão adequada do texto" : "Tentativa de desenvolvimento do tema",
-        sentences.length >= 8 ? "Variação nas estruturas frasais" : "Uso de períodos organizados",
-        "Tentativa de estruturação dissertativa"
+        wordCount >= 200 ? "Extensão adequada do texto demonstrando desenvolvimento temático" : "Tentativa de desenvolvimento do tema proposto",
+        sentences.length >= 8 ? "Variação nas estruturas frasais mostrando domínio sintático" : "Uso de períodos organizados na construção textual",
+        paragraphs.length >= 3 ? "Estruturação em parágrafos respeitando organização dissertativa" : "Tentativa de estruturação dissertativa"
       ],
       improvements: [
-        wordCount < 200 ? "Desenvolva mais os argumentos e exemplos" : "Aprofunde a argumentação com repertórios específicos",
-        "Revise aspectos gramaticais e ortográficos",
-        examType === 'ENEM' ? "Elabore proposta de intervenção mais detalhada" : "Fortaleça a conclusão argumentativa"
+        wordCount < 200 ? "Desenvolva mais os argumentos com exemplos e repertórios socioculturais específicos" : "Aprofunde a argumentação com repertórios mais diversificados e fundamentação teórica",
+        "Revise aspectos gramaticais, ortográficos e sintáticos para melhor fluência textual",
+        examType === 'ENEM' ? "Elabore proposta de intervenção mais detalhada com os 5 elementos obrigatórios" : "Fortaleça a conclusão argumentativa com síntese e posicionamento final"
       ],
-      detailedAnalysis: `Redação de ${wordCount} palavras com estrutura ${sentences.length <= 6 ? 'básica' : 'adequada'}. ${
-        wordCount < 150 ? 'Texto muito curto, necessita maior desenvolvimento. ' : ''
+      detailedAnalysis: `Redação de ${wordCount} palavras distribuídas em ${paragraphs.length} parágrafos com estrutura ${sentences.length <= 6 ? 'básica necessitando maior desenvolvimento' : 'adequada para o gênero dissertativo'}. ${
+        wordCount < 150 ? 'Texto muito curto, necessita maior desenvolvimento argumentativo e exemplificação. ' : ''
       }${
-        avgWordsPerSentence < 10 ? 'Períodos muito curtos, varie a construção frasal. ' : 
-        avgWordsPerSentence > 25 ? 'Períodos longos, cuidado com a clareza. ' : 'Períodos com extensão adequada. '
-      }Continue praticando a estrutura dissertativa-argumentativa.`,
+        avgWordsPerSentence < 10 ? 'Períodos muito curtos podem prejudicar a fluidez - varie a construção frasal. ' : 
+        avgWordsPerSentence > 25 ? 'Períodos longos podem comprometer a clareza - cuide da pontuação e estrutura sintática. ' : 'Períodos com extensão adequada facilitando a compreensão. '
+      }${
+        paragraphs.length < 3 ? 'Estruture melhor em parágrafos distintos (introdução, desenvolvimento, conclusão). ' : 'Organização paragráfica adequada ao gênero dissertativo. '
+      }Continue praticando a estrutura dissertativa-argumentativa com foco na fundamentação e coesão.`,
       recommendation: wordCount < 200 
-        ? "Foque em desenvolver mais seus argumentos. Busque atingir pelo menos 300 palavras com exemplos e repertórios socioculturais."
-        : "Sua redação está no caminho certo. Trabalhe na qualidade da argumentação e na correção linguística para pontuações mais altas.",
+        ? "Foque em desenvolver mais seus argumentos com exemplos concretos e repertórios socioculturais. Busque atingir pelo menos 300 palavras com estrutura dissertativa completa."
+        : "Sua redação está bem encaminhada. Trabalhe na qualidade da argumentação, correção linguística e uso de repertórios legitimadores para pontuações mais altas.",
+      structureAnalysis: {
+        introduction: paragraphs.length >= 1 ? "Introdução identificada com apresentação do tema" : "Necessário desenvolver introdução mais clara",
+        development: paragraphs.length >= 2 ? "Desenvolvimento presente com argumentos básicos" : "Desenvolvimento argumentativo precisa ser ampliado",
+        conclusion: paragraphs.length >= 3 ? "Conclusão presente com tentativa de fechamento" : "Conclusão precisa ser mais elaborada"
+      },
       statistics: {
         wordCount,
+        paragraphCount: paragraphs.length,
         averageWordsPerSentence: avgWordsPerSentence,
         readingTime: `${Math.ceil(wordCount / 200)} min`
       },

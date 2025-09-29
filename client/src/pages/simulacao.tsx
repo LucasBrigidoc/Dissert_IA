@@ -20,7 +20,8 @@ import {
   BookOpen,
   Lightbulb,
   X,
-  Edit3
+  Edit3,
+  BarChart3
 } from 'lucide-react';
 import {
   Dialog,
@@ -816,21 +817,41 @@ export default function SimulacaoPage() {
               </div>
 
               {/* Competencies Breakdown */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {correctionData.competencies?.map((comp: any, index: number) => (
                   <div key={index} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-semibold text-dark-blue text-sm">{comp.name}</h4>
+                      <div className="flex items-center space-x-2">
+                        <h4 className="font-semibold text-dark-blue text-sm">{comp.name}</h4>
+                        {comp.level && (
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                            comp.level === 'Excelente' ? 'bg-green-100 text-green-800' :
+                            comp.level === 'Muito Bom' ? 'bg-blue-100 text-blue-800' :
+                            comp.level === 'Bom' ? 'bg-yellow-100 text-yellow-800' :
+                            comp.level === 'Regular' ? 'bg-orange-100 text-orange-800' :
+                            comp.level === 'Insuficiente' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {comp.level}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-lg font-bold text-blue-600">{comp.score}/{comp.maxScore}</div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                    <div className="w-full bg-gray-200 rounded-full h-3 mb-3">
                       <div 
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                        className={`h-3 rounded-full transition-all duration-500 ${
+                          (comp.score / comp.maxScore) >= 0.9 ? 'bg-gradient-to-r from-green-500 to-green-600' :
+                          (comp.score / comp.maxScore) >= 0.8 ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
+                          (comp.score / comp.maxScore) >= 0.65 ? 'bg-gradient-to-r from-yellow-500 to-yellow-600' :
+                          (comp.score / comp.maxScore) >= 0.5 ? 'bg-gradient-to-r from-orange-500 to-orange-600' :
+                          'bg-gradient-to-r from-red-500 to-red-600'
+                        }`}
                         style={{ width: `${(comp.score / comp.maxScore) * 100}%` }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-600 mb-2">{comp.criteria}</p>
-                    <p className="text-xs text-gray-700 leading-relaxed">{comp.feedback}</p>
+                    <p className="text-xs text-gray-600 mb-2 font-medium">{comp.criteria}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{comp.feedback}</p>
                   </div>
                 ))}
               </div>
@@ -885,6 +906,60 @@ export default function SimulacaoPage() {
                 </div>
                 <p className="text-sm text-purple-700 leading-relaxed">{correctionData.recommendation}</p>
               </div>
+
+              {/* Structure Analysis */}
+              {correctionData.structureAnalysis && (
+                <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <div className="flex items-center mb-3">
+                    <FileText className="text-indigo-600 mr-2" size={18} />
+                    <h4 className="font-semibold text-indigo-800">Análise Estrutural</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-3 bg-white rounded-lg border border-indigo-100">
+                      <h5 className="font-medium text-indigo-900 text-xs mb-2">INTRODUÇÃO</h5>
+                      <p className="text-xs text-indigo-700">{correctionData.structureAnalysis.introduction}</p>
+                    </div>
+                    <div className="p-3 bg-white rounded-lg border border-indigo-100">
+                      <h5 className="font-medium text-indigo-900 text-xs mb-2">DESENVOLVIMENTO</h5>
+                      <p className="text-xs text-indigo-700">{correctionData.structureAnalysis.development}</p>
+                    </div>
+                    <div className="p-3 bg-white rounded-lg border border-indigo-100">
+                      <h5 className="font-medium text-indigo-900 text-xs mb-2">CONCLUSÃO</h5>
+                      <p className="text-xs text-indigo-700">{correctionData.structureAnalysis.conclusion}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Statistics */}
+              {correctionData.statistics && (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center mb-3">
+                    <BarChart3 className="text-gray-600 mr-2" size={18} />
+                    <h4 className="font-semibold text-gray-800">Estatísticas da Redação</h4>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
+                      <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.wordCount}</div>
+                      <div className="text-xs text-gray-500">Palavras</div>
+                    </div>
+                    {correctionData.statistics.paragraphCount && (
+                      <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
+                        <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.paragraphCount}</div>
+                        <div className="text-xs text-gray-500">Parágrafos</div>
+                      </div>
+                    )}
+                    <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
+                      <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.averageWordsPerSentence}</div>
+                      <div className="text-xs text-gray-500">Palavras/Frase</div>
+                    </div>
+                    <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
+                      <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.readingTime}</div>
+                      <div className="text-xs text-gray-500">Tempo Leitura</div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-4">

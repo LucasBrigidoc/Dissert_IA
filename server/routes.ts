@@ -1507,8 +1507,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Essay text and topic are required" });
       }
       
-      if (essayText.trim().length < 100) {
-        return res.status(400).json({ message: "Essay too short for correction (minimum 100 characters)" });
+      // Validate minimum length - equivalent to 10 lines of normal essay writing
+      const trimmedText = essayText.trim();
+      const lineCount = trimmedText.split('\n').length;
+      const estimatedLineCount = Math.max(lineCount, Math.ceil(trimmedText.length / 25)); // 25 chars per typical line
+      
+      if (estimatedLineCount < 10) {
+        return res.status(400).json({ 
+          message: "Redação muito curta para correção. Escreva pelo menos o equivalente a 10 linhas de uma redação normal para receber uma correção com IA.",
+          currentLines: estimatedLineCount,
+          minimumRequired: 10
+        });
       }
       
       // Rate limiting check (10 corrections every 3 days per IP)
