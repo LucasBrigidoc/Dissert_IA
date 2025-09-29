@@ -75,7 +75,9 @@ export default function Pricing() {
                   data-testid={`card-plan-${plan.id}`}
                 >
                   {plan.id === "pro" && (
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-bright-blue via-purple-500 to-bright-blue rounded-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                    <div className="absolute -inset-px bg-gradient-to-r from-bright-blue via-purple-500 to-bright-blue rounded-2xl p-px -z-10">
+                      <div className="w-full h-full bg-[rgba(13,11,58,0.9)] rounded-2xl"></div>
+                    </div>
                   )}
                   {showMostPopular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
