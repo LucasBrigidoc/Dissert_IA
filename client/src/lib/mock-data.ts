@@ -78,29 +78,15 @@ export const mockPricingPlans = [
     price: "R$0",
     period: "",
     features: [
-      "Acesso a algumas das funcionalidades",
-      "Acesso à Newsletter",
-      "Dashboard e Cronograma",
-      "biblioteca pessoal limitada",
-      "Uso mínimo das funcionalidades"
+      "Acesso a funcionalidades básicas",
+      "Newsletter educacional semanal",
+      "Dashboard personalizado",
+      "Biblioteca pessoal limitada (até 5 itens)",
+      "Uso limitado de IA (3 por dia)",
+      "Simulador básico de redação"
     ],
-    buttonText: "Testar Gratuitamente",
+    buttonText: "Começar Grátis",
     popular: false
-  },
-  {
-    id: "base",
-    name: "Plano Base",
-    price: "R$45,90",
-    period: "/Mês",
-    annualPrice: "R$479/Ano",
-    features: [
-      "Acesso a todas as funcionalidades",
-      "Dashboard e Cronograma",
-      "Resposta aprofundada",
-      "Uso intermediário das funcionalidades"
-    ],
-    buttonText: "Assine Agora",
-    popular: true
   },
   {
     id: "pro",
@@ -109,14 +95,16 @@ export const mockPricingPlans = [
     period: "/Mês",
     annualPrice: "R$599/Ano",
     features: [
-      "Acesso a todas as funcionalidades",
-      "Dashboard e Cronograma",
-      "Resposta aprofundada",
-      "Uso máximo das funcionalidades",
-      "Material complementar"
+      "Acesso total a todas funcionalidades",
+      "IA avançada para correção e sugestões",
+      "Biblioteca pessoal ilimitada",
+      "Uso irrestrito de todas ferramentas",
+      "Simulador completo com ambiente real",
+      "Material complementar exclusivo",
+      "Suporte prioritário"
     ],
-    buttonText: "Assine Agora",
-    popular: false
+    buttonText: "Assinar Pro",
+    popular: true
   }
 ];
 
@@ -147,23 +135,23 @@ export const mockTestimonials = [
 export const mockFAQ = [
   {
     id: 1,
-    question: "Qual a diferença entre o Plano Base e Pro?",
-    answer: "O Plano Base oferece acesso completo às funcionalidades com uso intermediário e resposta aprofundada da IA. O Plano Pro inclui tudo do Base, além de uso máximo das funcionalidades e material complementar exclusivo para maximizar seu desempenho."
+    question: "Qual a diferença entre o Plano Gratuito e Pro?",
+    answer: "O Plano Gratuito oferece acesso básico às funcionalidades principais com uso limitado (3 por dia) para você testar a plataforma. O Plano Pro inclui acesso total a todas funcionalidades, uso ilimitado de IA, correção avançada e material complementar exclusivo."
   },
   {
     id: 2,
     question: "O que está incluído no plano gratuito?",
-    answer: "O plano gratuito inclui acesso a algumas funcionalidades, newsletter educacional, dashboard básico, biblioteca pessoal limitada e uso mínimo das ferramentas para você experimentar a plataforma."
+    answer: "O plano gratuito inclui acesso a funcionalidades básicas, newsletter educacional semanal, dashboard personalizado, biblioteca pessoal limitada (até 5 itens), uso limitado de IA (3 por dia) e simulador básico de redação."
   },
   {
     id: 3,
-    question: "Como funciona o 'Uso das Funcionalidades'?",
-    answer: "O uso determina quantas vezes você pode utilizar nossas ferramentas de IA por mês. Plano Gratuito: uso mínimo (limitado), Base: uso intermediário (moderado), Pro: uso máximo (ilimitado)."
+    question: "Como funciona o uso de IA?",
+    answer: "O uso determina quantas vezes você pode utilizar nossas ferramentas de IA por dia. Plano Gratuito: 3 usos por dia. Plano Pro: uso ilimitado de todas as funcionalidades de IA."
   },
   {
     id: 4,
-    question: "O que é a 'Resposta Aprofundada da IA'?",
-    answer: "É nossa funcionalidade premium que oferece análises detalhadas, correções personalizadas e sugestões avançadas para suas redações. Disponível apenas nos planos Base e Pro."
+    question: "O que é a IA avançada para correção?",
+    answer: "É nossa funcionalidade premium que oferece análises detalhadas com critérios ENEM/vestibular, correções personalizadas por competência e sugestões avançadas. Disponível apenas no Plano Pro."
   },
   {
     id: 5,
@@ -172,8 +160,8 @@ export const mockFAQ = [
   },
   {
     id: 6,
-    question: "Como funciona a biblioteca pessoal limitada?",
-    answer: "No plano gratuito, você pode salvar até 5 redações na sua biblioteca pessoal. Nos planos pagos, você tem espaço ilimitado para salvar todas suas redações e acompanhar seu progresso."
+    question: "Como funciona a biblioteca pessoal?",
+    answer: "No plano gratuito, você pode salvar até 5 itens na sua biblioteca pessoal. No Plano Pro, você tem espaço ilimitado para salvar todas suas redações, repertórios e acompanhar seu progresso completo."
   },
   {
     id: 7,
@@ -188,7 +176,7 @@ export const mockFAQ = [
   {
     id: 9,
     question: "Os planos anuais têm desconto?",
-    answer: "Sim! Assinando anualmente você economiza: Plano Base de R$45,90/mês por R$439/ano (economia de 9%) e Plano Pro de R$59,90/mês por R$599/ano (economia de 17%)."
+    answer: "Sim! Assinando o Plano Pro anualmente você economiza: de R$59,90/mês por R$599/ano, garantindo economia de 17% e acesso completo a todas as funcionalidades."
   },
   {
     id: 10,

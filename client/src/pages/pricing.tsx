@@ -146,7 +146,7 @@ export default function Pricing() {
           </h3>
           <LiquidGlassCard className="p-0 overflow-hidden border-2 border-[#5087ff]/60" data-testid="table-comparison">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px] sm:min-w-[700px]">
+              <table className="w-full min-w-[500px] sm:min-w-[600px]">
                 <thead className="bg-gradient-to-r from-[#5087ff] to-[#4c7fff]">
                   <tr>
                     <th className="p-3 sm:p-4 text-left text-sm sm:text-base font-bold text-white border-r border-white/30">
@@ -158,17 +158,11 @@ export default function Pricing() {
                         <span className="text-xs font-normal text-white/90 mt-1">R$0</span>
                       </div>
                     </th>
-                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white border-r border-white/30 bg-gradient-to-b from-purple-500/20 to-violet-600/20">
-                      <div className="flex flex-col items-center">
-                        <span>Base</span>
-                        <span className="text-xs font-normal text-white/90 mt-1">R$45,90/mês</span>
-                        <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">POPULAR</Badge>
-                      </div>
-                    </th>
-                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white">
+                    <th className="p-3 sm:p-4 text-center text-sm sm:text-base font-bold text-white bg-gradient-to-b from-purple-500/20 to-violet-600/20">
                       <div className="flex flex-col items-center">
                         <span>Pro</span>
                         <span className="text-xs font-normal text-white/90 mt-1">R$59,90/mês</span>
+                        <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs mt-1 px-2 py-0.5 font-bold shadow-lg">MAIS PROCURADO</Badge>
                       </div>
                     </th>
                   </tr>
@@ -185,21 +179,14 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
-                          Algumas
-                        </Badge>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-1.5 py-0.5 shadow-md">
-                          Todas
+                          Básicas
                         </Badge>
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center">
                         <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-1.5 py-0.5 shadow-md">
-                          Todas
+                          Completas
                         </Badge>
                       </div>
                     </td>
@@ -208,13 +195,8 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <Mail className="text-cyan-400" size={16} />
-                        <span className="hidden sm:inline">Acesso à Newsletter Educacional</span>
+                        <span className="hidden sm:inline">Newsletter Educacional Semanal</span>
                         <span className="sm:hidden">Newsletter</span>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
@@ -232,13 +214,8 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <BarChart3 className="text-purple-400" size={16} />
-                        <span className="hidden sm:inline">Dashboard e Cronograma de Estudos</span>
+                        <span className="hidden sm:inline">Dashboard Personalizado</span>
                         <span className="sm:hidden">Dashboard</span>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
@@ -262,13 +239,8 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
-                          Limitada
+                          Até 5 itens
                         </Badge>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
@@ -281,18 +253,13 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <Brain className="text-violet-400" size={16} />
-                        <span className="hidden sm:inline">Resposta Aprofundada da IA</span>
-                        <span className="sm:hidden">Resposta IA</span>
+                        <span className="hidden sm:inline">IA Avançada para Correção</span>
+                        <span className="sm:hidden">IA Avançada</span>
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
                         <X className="text-red-400" size={14} />
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full">
-                        <Check className="text-green-400" size={14} />
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
@@ -305,29 +272,21 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <Gauge className="text-emerald-400" size={16} />
-                        <span className="hidden sm:inline">Uso das Funcionalidades</span>
-                        <span className="sm:hidden">Uso</span>
+                        <span className="hidden sm:inline">Uso de IA por Dia</span>
+                        <span className="sm:hidden">Uso IA</span>
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
-                        <Badge variant="outline" className="text-red-400 border-red-400/60 bg-red-500/20 text-xs px-1.5 py-0.5">
-                          Mínimo
-                        </Badge>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="flex items-center justify-center">
-                        <Badge className="bg-gradient-to-r from-[#5087ff] to-blue-500 text-white text-xs px-1.5 py-0.5 shadow-md">
-                          <span className="hidden sm:inline">Intermediário</span>
-                          <span className="sm:hidden">Médio</span>
+                        <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
+                          3 por dia
                         </Badge>
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center">
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-1.5 py-0.5 shadow-md">
-                          Máximo
+                          Ilimitado
                         </Badge>
                       </div>
                     </td>
@@ -336,13 +295,8 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-white border-r border-[#5087ff]/40">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <Gift className="text-yellow-400" size={16} />
-                        <span className="hidden sm:inline">Material Complementar Exclusivo</span>
-                        <span className="sm:hidden">Material Extra</span>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
-                      <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-red-500/30 to-pink-500/30 rounded-full">
-                        <X className="text-red-400" size={14} />
+                        <span className="hidden sm:inline">Material Exclusivo + Suporte</span>
+                        <span className="sm:hidden">Extras</span>
                       </div>
                     </td>
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
