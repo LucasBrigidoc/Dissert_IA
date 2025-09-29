@@ -254,12 +254,6 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
                   <h1 className="text-sm sm:text-lg md:text-2xl font-bold text-white">
                     {editingStructure ? 'Editor de Estruturas' : 'Criador de Estruturas'}
                   </h1>
-                  <p className="text-xs md:text-base text-blue-100 hidden md:block">
-                    {editingStructure 
-                      ? 'Personalize sua estrutura de redação'
-                      : 'Crie sua estrutura personalizada de redação'
-                    }
-                  </p>
                 </div>
               </div>
             </div>
@@ -284,7 +278,7 @@ export function CreateStructure({ onBack, editingStructure }: CreateStructurePro
       </div>
 
       {/* Conteúdo com espaçamento para header fixo */}
-      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-20 sm:pt-24 md:pt-28 pb-6 sm:pb-8 md:pb-16">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 pt-16 sm:pt-20 md:pt-20 pb-6 sm:pb-8 md:pb-16">
         <div className="space-y-6 sm:space-y-8 md:space-y-12">
           {/* Formulário de criação */}
           <LiquidGlassCard className="border-l-4 md:border-l-6 border-l-bright-blue w-full shadow-lg">
