@@ -323,6 +323,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analytics endpoints for materiais complementares
+  app.post("/api/materiais-complementares/:id/view", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.incrementMaterialView(id);
+      res.json({ message: "View registrada com sucesso" });
+    } catch (error) {
+      console.error("Increment material view error:", error);
+      res.status(500).json({ message: "Erro ao registrar visualização" });
+    }
+  });
+
+  app.post("/api/materiais-complementares/:id/download", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.incrementMaterialPdfDownload(id);
+      res.json({ message: "Download registrado com sucesso" });
+    } catch (error) {
+      console.error("Increment material PDF download error:", error);
+      res.status(500).json({ message: "Erro ao registrar download" });
+    }
+  });
+
   // User registration endpoint
   app.post("/api/auth/register", async (req, res) => {
     try {
