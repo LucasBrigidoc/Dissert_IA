@@ -69,7 +69,7 @@ export default function Pricing() {
                   dark={plan.id === "free" || plan.id === "pro"}
                   className={`relative group w-full max-w-sm ${
                     plan.id === "pro"
-                      ? "bg-gradient-to-br from-bright-blue/5 to-purple-500/5 p-4 sm:p-6 transition-all duration-300" 
+                      ? "p-4 sm:p-6 transition-all duration-300" 
                       : "border border-gray-200/30 p-4 sm:p-6"
                   }`}
                   data-testid={`card-plan-${plan.id}`}
