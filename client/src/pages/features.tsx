@@ -307,7 +307,7 @@ export default function Features() {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                     <Mail className="text-white" size={20} />
                   </div>
-                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Newsletter Educacional</h4>
+                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Newsletter e Material Educacional</h4>
                 </div>
                 <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">
                   Receba semanalmente conteúdos exclusivos, dicas de redação, temas atuais e estratégias de estudo enviados diretamente para seu email.
