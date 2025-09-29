@@ -60,7 +60,7 @@ export default function Pricing() {
         </div>
 
         <div className="flex justify-center items-center">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto mb-8 sm:mb-12">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 ${mockPricingPlans.length >= 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-4 sm:gap-6 max-w-5xl mx-auto mb-8 sm:mb-12 justify-items-center`}>
             {mockPricingPlans.map((plan, index) => {
               const showMostPopular = plan.id === "pro" && isAnnual;
               return (
