@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen } from "lucide-react";
+import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface BusinessOverview {
@@ -322,6 +323,18 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div className="flex gap-3">
+            <Button asChild variant="default" data-testid="button-admin-newsletter">
+              <Link href="/admin/newsletter">
+                <Mail className="h-4 w-4 mr-2" />
+                Newsletter
+              </Link>
+            </Button>
+            <Button asChild variant="default" data-testid="button-admin-materiais">
+              <Link href="/admin/materiais">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Material
+              </Link>
+            </Button>
             <Button
               onClick={generateMetrics}
               disabled={isGeneratingMetrics}
