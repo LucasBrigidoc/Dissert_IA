@@ -14,8 +14,11 @@ import {
   AlertCircle,
   BarChart,
   TrendingUp,
-  Loader2
+  Loader2,
+  ArrowLeft,
+  BookOpen
 } from "lucide-react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -235,10 +238,29 @@ export default function AdminNewsletter() {
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Gerenciamento de Newsletter</h1>
-        <p className="text-muted-foreground">
-          Crie, gerencie e envie newsletters para seus assinantes
-        </p>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Gerenciamento de Newsletter</h1>
+            <p className="text-muted-foreground">
+              Crie, gerencie e envie newsletters para seus assinantes
+            </p>
+          </div>
+          
+          <div className="flex gap-2 lg:ml-auto lg:flex-nowrap">
+            <Button asChild variant="outline" size="sm" data-testid="button-admin-dashboard">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Dashboard
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm" data-testid="button-admin-materiais">
+              <Link href="/admin/materiais">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Material
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}
