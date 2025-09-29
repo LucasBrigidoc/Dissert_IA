@@ -53,8 +53,12 @@ export default function AdminMateriais() {
     title: "",
     description: "",
     content: "",
-    category: "Fundamental" as "Fundamental" | "Técnico" | "Avançado" | "ENEM" | "Gramática" | "Exemplos",
+    category: "Fundamental", // Agora permite categorias personalizadas
+    isCustomCategory: false, // Controla se está usando categoria personalizada
+    customCategory: "", // Campo para nova categoria
     readTime: "",
+    hideReadTime: false, // Controla se oculta o tempo de leitura
+    pdfUrl: "", // URL do PDF para download
     icon: "FileText" as "FileText" | "Target" | "BookOpen" | "Lightbulb" | "PenTool" | "Eye",
     colorScheme: "green" as "green" | "blue" | "purple" | "orange" | "indigo" | "amber",
     isPublished: true,
@@ -149,7 +153,11 @@ export default function AdminMateriais() {
       description: "",
       content: "",
       category: "Fundamental",
+      isCustomCategory: false,
+      customCategory: "",
       readTime: "",
+      hideReadTime: false,
+      pdfUrl: "",
       icon: "FileText",
       colorScheme: "green",
       isPublished: true,
@@ -160,27 +168,63 @@ export default function AdminMateriais() {
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createMaterial.mutate(formData);
+    
+    // Preparar dados para envio
+    const submitData = {
+      ...formData,
+      category: formData.isCustomCategory ? formData.customCategory : formData.category,
+      readTime: formData.hideReadTime ? undefined : formData.readTime || undefined,
+      pdfUrl: formData.pdfUrl || undefined,
+    };
+    
+    // Remover campos de controle do UI
+    delete (submitData as any).isCustomCategory;
+    delete (submitData as any).customCategory;
+    delete (submitData as any).hideReadTime;
+    
+    createMaterial.mutate(submitData);
   };
 
   const handleUpdateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedMaterial) {
+      // Preparar dados para envio
+      const submitData = {
+        ...formData,
+        category: formData.isCustomCategory ? formData.customCategory : formData.category,
+        readTime: formData.hideReadTime ? undefined : formData.readTime || undefined,
+        pdfUrl: formData.pdfUrl || undefined,
+      };
+      
+      // Remover campos de controle do UI
+      delete (submitData as any).isCustomCategory;
+      delete (submitData as any).customCategory;
+      delete (submitData as any).hideReadTime;
+      
       updateMaterial.mutate({
         id: selectedMaterial.id,
-        data: formData,
+        data: submitData,
       });
     }
   };
 
   const handleEditClick = (material: MaterialComplementar) => {
     setSelectedMaterial(material);
+    
+    // Verificar se é categoria predefinida ou personalizada
+    const predefinedCategories = ["Fundamental", "Técnico", "Avançado", "ENEM", "Gramática", "Exemplos"];
+    const isCustomCategory = !predefinedCategories.includes(material.category);
+    
     setFormData({
       title: material.title,
       description: material.description,
       content: material.content,
-      category: material.category as any,
-      readTime: material.readTime,
+      category: isCustomCategory ? "Fundamental" : material.category,
+      isCustomCategory: isCustomCategory,
+      customCategory: isCustomCategory ? material.category : "",
+      readTime: material.readTime || "",
+      hideReadTime: !material.readTime, // Se não tem readTime, está oculto
+      pdfUrl: material.pdfUrl || "",
       icon: material.icon as any,
       colorScheme: material.colorScheme as any,
       isPublished: material.isPublished || false,
@@ -299,33 +343,77 @@ export default function AdminMateriais() {
                 </div>
                 <div>
                   <Label htmlFor="readTime">Tempo de Leitura</Label>
-                  <Input
-                    id="readTime"
-                    value={formData.readTime}
-                    onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
-                    placeholder="Ex: 12 min"
-                    required
-                    data-testid="input-material-readtime"
-                  />
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="hideReadTime"
+                        checked={formData.hideReadTime}
+                        onChange={(e) => setFormData({ ...formData, hideReadTime: e.target.checked })}
+                        data-testid="checkbox-hide-read-time"
+                      />
+                      <Label htmlFor="hideReadTime">Não mostrar tempo de leitura</Label>
+                    </div>
+                    {!formData.hideReadTime && (
+                      <Input
+                        id="readTime"
+                        value={formData.readTime}
+                        onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                        placeholder="Ex: 12 min"
+                        data-testid="input-material-readtime"
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="category">Categoria</Label>
-                  <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value as any })}>
-                    <SelectTrigger data-testid="select-material-category">
-                      <SelectValue placeholder="Selecione a categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Fundamental">Fundamental</SelectItem>
-                      <SelectItem value="Técnico">Técnico</SelectItem>
-                      <SelectItem value="Avançado">Avançado</SelectItem>
-                      <SelectItem value="ENEM">ENEM</SelectItem>
-                      <SelectItem value="Gramática">Gramática</SelectItem>
-                      <SelectItem value="Exemplos">Exemplos</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {!formData.isCustomCategory ? (
+                    <div className="space-y-2">
+                      <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                        <SelectTrigger data-testid="select-material-category">
+                          <SelectValue placeholder="Selecione a categoria" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Fundamental">Fundamental</SelectItem>
+                          <SelectItem value="Técnico">Técnico</SelectItem>
+                          <SelectItem value="Avançado">Avançado</SelectItem>
+                          <SelectItem value="ENEM">ENEM</SelectItem>
+                          <SelectItem value="Gramática">Gramática</SelectItem>
+                          <SelectItem value="Exemplos">Exemplos</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setFormData({ ...formData, isCustomCategory: true })}
+                        data-testid="button-create-custom-category"
+                      >
+                        + Criar Nova Categoria
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Input
+                        value={formData.customCategory}
+                        onChange={(e) => setFormData({ ...formData, customCategory: e.target.value })}
+                        placeholder="Digite o nome da nova categoria"
+                        data-testid="input-custom-category"
+                      />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setFormData({ ...formData, isCustomCategory: false, customCategory: "" })}
+                        data-testid="button-cancel-custom-category"
+                      >
+                        Usar Categorias Padrão
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="icon">Ícone</Label>
@@ -385,6 +473,21 @@ export default function AdminMateriais() {
                   required
                   data-testid="textarea-material-content"
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="pdfUrl">PDF para Download (Opcional)</Label>
+                <Input
+                  id="pdfUrl"
+                  value={formData.pdfUrl}
+                  onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+                  placeholder="Cole aqui a URL do PDF para download"
+                  type="url"
+                  data-testid="input-material-pdf"
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  Se fornecido, um botão de download aparecerá no material
+                </p>
               </div>
 
               <div className="flex items-center space-x-4">
@@ -525,33 +628,77 @@ export default function AdminMateriais() {
               </div>
               <div>
                 <Label htmlFor="edit-readTime">Tempo de Leitura</Label>
-                <Input
-                  id="edit-readTime"
-                  value={formData.readTime}
-                  onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
-                  placeholder="Ex: 12 min"
-                  required
-                  data-testid="input-edit-material-readtime"
-                />
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="edit-hideReadTime"
+                      checked={formData.hideReadTime}
+                      onChange={(e) => setFormData({ ...formData, hideReadTime: e.target.checked })}
+                      data-testid="checkbox-edit-hide-read-time"
+                    />
+                    <Label htmlFor="edit-hideReadTime">Não mostrar tempo de leitura</Label>
+                  </div>
+                  {!formData.hideReadTime && (
+                    <Input
+                      id="edit-readTime"
+                      value={formData.readTime}
+                      onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                      placeholder="Ex: 12 min"
+                      data-testid="input-edit-material-readtime"
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="edit-category">Categoria</Label>
-                <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value as any })}>
-                  <SelectTrigger data-testid="select-edit-material-category">
-                    <SelectValue placeholder="Selecione a categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Fundamental">Fundamental</SelectItem>
-                    <SelectItem value="Técnico">Técnico</SelectItem>
-                    <SelectItem value="Avançado">Avançado</SelectItem>
-                    <SelectItem value="ENEM">ENEM</SelectItem>
-                    <SelectItem value="Gramática">Gramática</SelectItem>
-                    <SelectItem value="Exemplos">Exemplos</SelectItem>
-                  </SelectContent>
-                </Select>
+                {!formData.isCustomCategory ? (
+                  <div className="space-y-2">
+                    <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                      <SelectTrigger data-testid="select-edit-material-category">
+                        <SelectValue placeholder="Selecione a categoria" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Fundamental">Fundamental</SelectItem>
+                        <SelectItem value="Técnico">Técnico</SelectItem>
+                        <SelectItem value="Avançado">Avançado</SelectItem>
+                        <SelectItem value="ENEM">ENEM</SelectItem>
+                        <SelectItem value="Gramática">Gramática</SelectItem>
+                        <SelectItem value="Exemplos">Exemplos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setFormData({ ...formData, isCustomCategory: true })}
+                      data-testid="button-edit-create-custom-category"
+                    >
+                      + Criar Nova Categoria
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Input
+                      value={formData.customCategory}
+                      onChange={(e) => setFormData({ ...formData, customCategory: e.target.value })}
+                      placeholder="Digite o nome da nova categoria"
+                      data-testid="input-edit-custom-category"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setFormData({ ...formData, isCustomCategory: false, customCategory: "" })}
+                      data-testid="button-edit-cancel-custom-category"
+                    >
+                      Usar Categorias Padrão
+                    </Button>
+                  </div>
+                )}
               </div>
               <div>
                 <Label htmlFor="edit-icon">Ícone</Label>
@@ -611,6 +758,21 @@ export default function AdminMateriais() {
                 required
                 data-testid="textarea-edit-material-content"
               />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-pdfUrl">PDF para Download (Opcional)</Label>
+              <Input
+                id="edit-pdfUrl"
+                value={formData.pdfUrl}
+                onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+                placeholder="Cole aqui a URL do PDF para download"
+                type="url"
+                data-testid="input-edit-material-pdf"
+              />
+              <p className="text-sm text-muted-foreground mt-1">
+                Se fornecido, um botão de download aparecerá no material
+              </p>
             </div>
 
             <div className="flex items-center space-x-4">
