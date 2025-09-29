@@ -377,7 +377,7 @@ export default function AdminMateriais() {
               Novo Material
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Criar Novo Material</DialogTitle>
               <DialogDescription>
@@ -385,7 +385,7 @@ export default function AdminMateriais() {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCreateSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="title">Título</Label>
                   <Input
@@ -408,7 +408,7 @@ export default function AdminMateriais() {
                         onChange={(e) => setFormData({ ...formData, hideReadTime: e.target.checked })}
                         data-testid="checkbox-hide-read-time"
                       />
-                      <Label htmlFor="hideReadTime">Não mostrar tempo de leitura</Label>
+                      <Label htmlFor="hideReadTime" className="text-sm">Não mostrar tempo de leitura</Label>
                     </div>
                     {!formData.hideReadTime && (
                       <Input
@@ -423,7 +423,7 @@ export default function AdminMateriais() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="category">Categoria</Label>
                   {!formData.isCustomCategory ? (
@@ -447,6 +447,7 @@ export default function AdminMateriais() {
                         size="sm" 
                         onClick={() => setFormData({ ...formData, isCustomCategory: true })}
                         data-testid="button-create-custom-category"
+                        className="w-full text-xs"
                       >
                         + Criar Nova Categoria
                       </Button>
@@ -465,6 +466,7 @@ export default function AdminMateriais() {
                         size="sm" 
                         onClick={() => setFormData({ ...formData, isCustomCategory: false, customCategory: "" })}
                         data-testid="button-cancel-custom-category"
+                        className="w-full text-xs"
                       >
                         Usar Categorias Padrão
                       </Button>
@@ -546,7 +548,7 @@ export default function AdminMateriais() {
                 </p>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -557,8 +559,8 @@ export default function AdminMateriais() {
                   />
                   <Label htmlFor="isPublished">Material publicado</Label>
                 </div>
-                <div>
-                  <Label htmlFor="sortOrder">Ordem</Label>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="sortOrder" className="whitespace-nowrap">Ordem:</Label>
                   <Input
                     id="sortOrder"
                     type="number"
@@ -571,11 +573,12 @@ export default function AdminMateriais() {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:justify-end pt-4">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setShowCreateDialog(false)}
+                  className="w-full sm:w-auto"
                 >
                   Cancelar
                 </Button>
@@ -583,6 +586,7 @@ export default function AdminMateriais() {
                   type="submit" 
                   disabled={createMaterial.isPending}
                   data-testid="button-save-material"
+                  className="w-full sm:w-auto"
                 >
                   {createMaterial.isPending && <Loader2 className="animate-spin mr-2" size={16} />}
                   Criar Material
@@ -680,7 +684,7 @@ export default function AdminMateriais() {
 
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Material</DialogTitle>
             <DialogDescription>
@@ -688,7 +692,7 @@ export default function AdminMateriais() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleUpdateSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-title">Título</Label>
                 <Input
@@ -711,7 +715,7 @@ export default function AdminMateriais() {
                       onChange={(e) => setFormData({ ...formData, hideReadTime: e.target.checked })}
                       data-testid="checkbox-edit-hide-read-time"
                     />
-                    <Label htmlFor="edit-hideReadTime">Não mostrar tempo de leitura</Label>
+                    <Label htmlFor="edit-hideReadTime" className="text-sm">Não mostrar tempo de leitura</Label>
                   </div>
                   {!formData.hideReadTime && (
                     <Input
@@ -726,7 +730,7 @@ export default function AdminMateriais() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="edit-category">Categoria</Label>
                 {!formData.isCustomCategory ? (
@@ -750,6 +754,7 @@ export default function AdminMateriais() {
                       size="sm" 
                       onClick={() => setFormData({ ...formData, isCustomCategory: true })}
                       data-testid="button-edit-create-custom-category"
+                      className="w-full text-xs"
                     >
                       + Criar Nova Categoria
                     </Button>
@@ -768,6 +773,7 @@ export default function AdminMateriais() {
                       size="sm" 
                       onClick={() => setFormData({ ...formData, isCustomCategory: false, customCategory: "" })}
                       data-testid="button-edit-cancel-custom-category"
+                      className="w-full text-xs"
                     >
                       Usar Categorias Padrão
                     </Button>
@@ -849,7 +855,7 @@ export default function AdminMateriais() {
               </p>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -860,8 +866,8 @@ export default function AdminMateriais() {
                 />
                 <Label htmlFor="edit-isPublished">Material publicado</Label>
               </div>
-              <div>
-                <Label htmlFor="edit-sortOrder">Ordem</Label>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="edit-sortOrder" className="whitespace-nowrap">Ordem:</Label>
                 <Input
                   id="edit-sortOrder"
                   type="number"
@@ -874,11 +880,12 @@ export default function AdminMateriais() {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:justify-end pt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setShowEditDialog(false)}
+                className="w-full sm:w-auto"
               >
                 Cancelar
               </Button>
@@ -886,6 +893,7 @@ export default function AdminMateriais() {
                 type="submit" 
                 disabled={updateMaterial.isPending}
                 data-testid="button-update-material"
+                className="w-full sm:w-auto"
               >
                 {updateMaterial.isPending && <Loader2 className="animate-spin mr-2" size={16} />}
                 Salvar Alterações
