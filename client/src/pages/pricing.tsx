@@ -67,23 +67,35 @@ export default function Pricing() {
                 <LiquidGlassCard 
                   key={plan.id} 
                   dark={plan.id === "free" || plan.id === "pro"}
-                  className={`relative ${
-                    showMostPopular 
-                      ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6" 
-                      : "border border-gray-200/30 p-4 sm:p-6"
+                  className={`relative group ${
+                    plan.id === "pro"
+                      ? "border-2 border-bright-blue shadow-2xl sm:scale-110 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6 bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-indigo-900/30 ring-2 ring-bright-blue/50" 
+                      : showMostPopular 
+                        ? "border-2 border-bright-blue shadow-lg sm:scale-105 transform pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6" 
+                        : "border border-gray-200/30 p-4 sm:p-6"
                   }`}
                   data-testid={`card-plan-${plan.id}`}
                 >
-                  {showMostPopular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                      <Badge className="bg-bright-blue text-white px-3 py-1 text-xs font-bold shadow-lg" data-testid="badge-most-popular">
-                        MAIS PROCURADO
-                      </Badge>
-                    </div>
+                  {plan.id === "pro" && (
+                    <>
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                        <Badge className="bg-gradient-to-r from-purple-600 via-bright-blue to-indigo-600 text-white px-4 py-1.5 text-xs font-bold shadow-xl border-2 border-white/30 animate-pulse" data-testid="badge-most-popular">
+                          ⭐ MAIS PROCURADO
+                        </Badge>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-bright-blue/5 via-purple-500/5 to-indigo-500/5 rounded-lg pointer-events-none -z-10"></div>
+                      <div className="absolute -inset-0.5 bg-gradient-to-r from-bright-blue via-purple-500 to-indigo-500 rounded-lg blur opacity-20 group-hover:opacity-30 transition duration-1000 pointer-events-none -z-20"></div>
+                    </>
                   )}
               
                   <div className="text-center mb-4 sm:mb-6">
-                <div className={`text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                <div className={`text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 ${
+                  plan.id === "pro" 
+                    ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-purple-200" 
+                    : plan.id === "free" 
+                      ? "text-white" 
+                      : "text-dark-blue"
+                }`}>
                   {plan.id === "base" && isAnnual 
                     ? "R$39,90" 
                     : plan.id === "pro" && isAnnual 
@@ -103,12 +115,22 @@ export default function Pricing() {
               
               <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 min-h-[120px] sm:min-h-[140px]">
                 {plan.features.map((feature, featureIndex) => {
-                  const hasFeature = !feature.includes("limitado") && !feature.includes("limitada") && !feature.includes("mínimo");
+                  const hasFeature = plan.id === "pro" ? true : !feature.includes("limitado") && !feature.includes("limitada") && !feature.includes("mínimo");
                   return (
-                    <li key={featureIndex} className={`flex items-start text-xs sm:text-sm ${plan.id === "free" || plan.id === "pro" ? "text-white" : "text-dark-blue"}`}>
+                    <li key={featureIndex} className={`flex items-start text-xs sm:text-sm ${
+                      plan.id === "pro" 
+                        ? "text-white font-medium" 
+                        : plan.id === "free" 
+                          ? "text-white" 
+                          : "text-dark-blue"
+                    }`}>
                       <div className="mr-3 mt-0.5">
                         {hasFeature ? (
-                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                          <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                            plan.id === "pro" 
+                              ? "bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/50" 
+                              : "bg-green-500"
+                          }`}>
                             <Check className="text-white" size={12} />
                           </div>
                         ) : (
@@ -125,16 +147,19 @@ export default function Pricing() {
               
               <Button
                 asChild
-                className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base smooth-transition hover-scale ${
-                  showMostPopular
-                    ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
-                    : plan.id === "free" 
-                      ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
-                      : "bg-bright-blue text-white hover:bg-blue-600"
+                className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base smooth-transition hover-scale relative overflow-hidden ${
+                  plan.id === "pro"
+                    ? "bg-gradient-to-r from-bright-blue via-purple-600 to-indigo-600 text-white hover:from-blue-600 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-bright-blue/50 border-2 border-white/20"
+                    : showMostPopular
+                      ? "bg-bright-blue text-white hover:bg-blue-600 shadow-lg"
+                      : plan.id === "free" 
+                        ? "bg-transparent text-white border-2 border-white/50 hover:bg-white/10" 
+                        : "bg-bright-blue text-white hover:bg-blue-600"
                 }`}
                 data-testid={`button-plan-${plan.id}`}
               >
                 <Link href={plan.id === "free" ? "/signup" : "/signup"}>
+                  {plan.id === "pro" && <span className="mr-2">⚡</span>}
                   {plan.buttonText}
                 </Link>
               </Button>

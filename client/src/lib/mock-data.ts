@@ -95,13 +95,14 @@ export const mockPricingPlans = [
     period: "/Mês",
     annualPrice: "R$599/Ano",
     features: [
-      "Acesso total a todas funcionalidades",
-      "IA avançada para correção e sugestões",
-      "Biblioteca pessoal ilimitada",
-      "Uso irrestrito de todas ferramentas",
-      "Simulador completo com ambiente real",
-      "Material complementar exclusivo",
-      "Suporte prioritário"
+      "Acesso ilimitado a todas funcionalidades",
+      "IA avançada com correção por competências ENEM",
+      "Estrutura Curinga: crie e use modelos personalizados",
+      "Repertório inteligente com milhares de referências",
+      "Controlador de Escrita: ajuste tom e formalidade",
+      "Simulador completo idêntico ao dia da prova",
+      "Biblioteca ilimitada + Material exclusivo",
+      "Uso ilimitado de IA + Suporte prioritário"
     ],
     buttonText: "Assinar Pro",
     popular: true
