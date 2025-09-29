@@ -34,6 +34,7 @@ import UseStructurePage from "@/pages/use-structure-page";
 import CreateStructurePage from "@/pages/create-structure-page";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminNewsletter from "@/pages/admin-newsletter";
+import AdminMateriais from "@/pages/admin-materiais";
 
 function Router() {
   return (
@@ -67,6 +68,7 @@ function Router() {
       <Route path="/create-structure" component={CreateStructurePage} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/newsletter" component={AdminNewsletter} />
+      <Route path="/admin/materiais" component={AdminMateriais} />
       <Route component={NotFound} />
     </Switch>
   );

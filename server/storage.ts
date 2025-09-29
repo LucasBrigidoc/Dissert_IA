@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -325,6 +325,15 @@ export interface IStorage {
     clickRate: number;
     bounceRate: number;
   }>;
+
+  // ===================== MATERIAL COMPLEMENTAR OPERATIONS =====================
+  
+  // Material complementar operations
+  createMaterialComplementar(material: InsertMaterialComplementar): Promise<MaterialComplementar>;
+  getMaterialComplementar(id: string): Promise<MaterialComplementar | undefined>;
+  getAllMateriaisComplementares(isPublished?: boolean): Promise<MaterialComplementar[]>;
+  updateMaterialComplementar(id: string, material: Partial<MaterialComplementar>): Promise<MaterialComplementar>;
+  deleteMaterialComplementar(id: string): Promise<void>;
   
 }
 
@@ -379,6 +388,9 @@ export class MemStorage implements IStorage {
   private newsletters: Map<string, Newsletter>;
   private newsletterSends: Map<string, NewsletterSend>;
 
+  // Material complementar storage
+  private materiaisComplementares: Map<string, MaterialComplementar>;
+
   constructor() {
     this.users = new Map();
     this.userProgress = new Map();
@@ -419,6 +431,9 @@ export class MemStorage implements IStorage {
     this.newsletterSubscribers = new Map();
     this.newsletters = new Map();
     this.newsletterSends = new Map();
+
+    // Material complementar storage initialization
+    this.materiaisComplementares = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -2728,6 +2743,11 @@ export class MemStorage implements IStorage {
       status: "draft",
       plainTextContent: newsletter.plainTextContent || null,
       previewText: newsletter.previewText || null,
+      category: newsletter.category || null,
+      readTime: newsletter.readTime || null,
+      excerpt: newsletter.excerpt || null,
+      isNew: newsletter.isNew || false,
+      publishDate: newsletter.publishDate || null,
       scheduledAt: newsletter.scheduledAt || null,
       sentAt: null,
       sentCount: 0,
@@ -2858,6 +2878,59 @@ export class MemStorage implements IStorage {
       clickRate: totalDelivered > 0 ? (totalClicked / totalDelivered) * 100 : 0,
       bounceRate: totalSent > 0 ? (totalBounced / totalSent) * 100 : 0,
     };
+  }
+
+  // ===================== MATERIAL COMPLEMENTAR OPERATIONS =====================
+  
+  // Material complementar operations
+  async createMaterialComplementar(material: InsertMaterialComplementar): Promise<MaterialComplementar> {
+    const id = randomUUID();
+    const materialComplementar: MaterialComplementar = {
+      ...material,
+      id,
+      category: material.category || "Fundamental",
+      icon: material.icon || "FileText",
+      colorScheme: material.colorScheme || "green",
+      isPublished: material.isPublished ?? true,
+      sortOrder: material.sortOrder || 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.materiaisComplementares.set(id, materialComplementar);
+    return materialComplementar;
+  }
+
+  async getMaterialComplementar(id: string): Promise<MaterialComplementar | undefined> {
+    return this.materiaisComplementares.get(id);
+  }
+
+  async getAllMateriaisComplementares(isPublished?: boolean): Promise<MaterialComplementar[]> {
+    let materials = Array.from(this.materiaisComplementares.values());
+    if (isPublished !== undefined) {
+      materials = materials.filter(m => m.isPublished === isPublished);
+    }
+    return materials.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  }
+
+  async updateMaterialComplementar(id: string, material: Partial<MaterialComplementar>): Promise<MaterialComplementar> {
+    const existing = this.materiaisComplementares.get(id);
+    if (!existing) throw new Error("Material complementar not found");
+    
+    const updated: MaterialComplementar = {
+      ...existing,
+      ...material,
+      id: existing.id,
+      createdAt: existing.createdAt,
+      updatedAt: new Date(),
+    };
+    this.materiaisComplementares.set(id, updated);
+    return updated;
+  }
+
+  async deleteMaterialComplementar(id: string): Promise<void> {
+    const exists = this.materiaisComplementares.has(id);
+    if (!exists) throw new Error("Material complementar not found");
+    this.materiaisComplementares.delete(id);
   }
 
 }

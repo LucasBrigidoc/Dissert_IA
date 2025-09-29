@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,62 +14,70 @@ import {
   Eye, 
   GraduationCap,
   Clock,
-  Download
+  Download,
+  Loader2
 } from "lucide-react";
 import { useLocation } from "wouter";
 import jsPDF from 'jspdf';
+import type { MaterialComplementar } from "@shared/schema";
 
-const materialContent = {
-  estrutura: {
-    title: "Guia de Estrutura Dissertativa",
-    category: "Fundamental",
-    readTime: "12 min de leitura",
-    content: "Manual completo sobre introdução, desenvolvimento e conclusão. Aprenda as técnicas fundamentais da estrutura dissertativa para conquistar a nota máxima."
-  },
-  conectivos: {
-    title: "Conectivos e Coesão Textual",
-    category: "Técnico", 
-    readTime: "8 min de leitura",
-    content: "Lista completa de conectivos por categoria com exemplos práticos para melhorar a fluidez do seu texto e garantir coesão argumentativa."
-  },
-  repertorio: {
-    title: "Como Usar Repertório Cultural",
-    category: "Avançado",
-    readTime: "15 min de leitura", 
-    content: "Estratégias para incorporar referências históricas, filosóficas e culturais de forma natural e produtiva em sua argumentação."
-  },
-  intervencao: {
-    title: "Proposta de Intervenção Eficaz",
-    category: "ENEM",
-    readTime: "10 min de leitura",
-    content: "Guia completo para elaborar propostas viáveis, detalhadas e que respeitem os direitos humanos conforme critérios do ENEM."
-  },
-  norma: {
-    title: "Domínio da Norma Culta", 
-    category: "Gramática",
-    readTime: "20 min de leitura",
-    content: "Principais regras gramaticais, concordância, regência e pontuação para redações nota máxima no ENEM e vestibulares."
-  },
-  analise: {
-    title: "Análise de Redações Nota 1000",
-    category: "Exemplos",
-    readTime: "25 min de leitura",
-    content: "Estudo detalhado de redações que obtiveram nota máxima no ENEM com comentários e técnicas aplicadas pelos candidatos."
-  }
+const iconMap = {
+  FileText: FileText,
+  Target: Target,
+  BookOpen: BookOpen,
+  Lightbulb: Lightbulb,
+  PenTool: PenTool,
+  Eye: Eye,
+};
+
+const colorSchemeMap = {
+  green: "from-green-50/80 to-green-100/50 border-green-200/50 hover:border-green-300/70",
+  blue: "from-blue-50/80 to-blue-100/50 border-blue-200/50 hover:border-blue-300/70",
+  purple: "from-purple-50/80 to-purple-100/50 border-purple-200/50 hover:border-purple-300/70",
+  orange: "from-orange-50/80 to-orange-100/50 border-orange-200/50 hover:border-orange-300/70",
+  indigo: "from-indigo-50/80 to-indigo-100/50 border-indigo-200/50 hover:border-indigo-300/70",
+  amber: "from-amber-50/80 to-amber-100/50 border-amber-200/50 hover:border-amber-300/70",
+};
+
+const iconColorMap = {
+  green: "from-green-500 to-green-600",
+  blue: "from-blue-500 to-blue-600",
+  purple: "from-purple-500 to-purple-600",
+  orange: "from-orange-500 to-orange-600",
+  indigo: "from-indigo-500 to-indigo-600",
+  amber: "from-amber-500 to-amber-600",
+};
+
+const categoryColorMap = {
+  Fundamental: "bg-green-100 text-green-800",
+  Técnico: "bg-blue-100 text-blue-800",
+  Avançado: "bg-purple-100 text-purple-800",
+  ENEM: "bg-orange-100 text-orange-800",
+  Gramática: "bg-indigo-100 text-indigo-800",
+  Exemplos: "bg-amber-100 text-amber-800",
 };
 
 export default function MaterialComplementarPage() {
   const [, setLocation] = useLocation();
-  const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialComplementar | null>(null);
   const [showMaterialModal, setShowMaterialModal] = useState(false);
 
-  const openMaterialModal = (materialKey: keyof typeof materialContent) => {
-    const material = materialContent[materialKey];
+  // Fetch published materials from API
+  const { data: materials = [], isLoading } = useQuery<MaterialComplementar[]>({
+    queryKey: ["/api/materiais-complementares"],
+  });
+
+  const openMaterialModal = (material: MaterialComplementar) => {
     setSelectedMaterial(material);
     setShowMaterialModal(true);
   };
 
-  const downloadAsPDF = (material: any) => {
+  const getIconComponent = (iconName: string) => {
+    const IconComponent = iconMap[iconName as keyof typeof iconMap] || FileText;
+    return <IconComponent size={18} className="text-white" />;
+  };
+
+  const downloadAsPDF = (material: MaterialComplementar) => {
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text(material.title, 20, 20);
@@ -144,135 +153,52 @@ export default function MaterialComplementarPage() {
         </div>
 
         {/* Materials Grid */}
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-          
-          {/* Estrutura Dissertativa */}
-          <div onClick={() => openMaterialModal('estrutura')} className="cursor-pointer">
-            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-green-50/80 to-green-100/50 border-green-200/50 hover:border-green-300/70">
-              <div className="flex items-start space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FileText className="text-white" size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Guia de Estrutura Dissertativa</h3>
-                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
-                    Manual completo sobre introdução, desenvolvimento e conclusão.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-green-100 text-green-800 text-xs">Fundamental</Badge>
-                    <span className="text-xs text-gray-500">12 min</span>
-                  </div>
-                </div>
-              </div>
-            </LiquidGlassCard>
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-[200px]">
+            <Loader2 className="animate-spin text-bright-blue" size={32} />
           </div>
-
-          {/* Conectivos */}
-          <div onClick={() => openMaterialModal('conectivos')} className="cursor-pointer">
-            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-blue-50/80 to-blue-100/50 border-blue-200/50 hover:border-blue-300/70">
-              <div className="flex items-start space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Target className="text-white" size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Conectivos e Coesão Textual</h3>
-                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
-                    Lista completa de conectivos por categoria com exemplos práticos.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-blue-100 text-blue-800 text-xs">Técnico</Badge>
-                    <span className="text-xs text-gray-500">8 min</span>
+        ) : (
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {materials?.map((material: MaterialComplementar) => (
+              <div 
+                key={material.id} 
+                onClick={() => openMaterialModal(material)} 
+                className="cursor-pointer"
+                data-testid={`material-card-${material.id}`}
+              >
+                <LiquidGlassCard className={`p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br ${colorSchemeMap[material.colorScheme as keyof typeof colorSchemeMap] || colorSchemeMap.green}`}>
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${iconColorMap[material.colorScheme as keyof typeof iconColorMap] || iconColorMap.green} rounded-full flex items-center justify-center flex-shrink-0`}>
+                      {getIconComponent(material.icon)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">{material.title}</h3>
+                      <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
+                        {material.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <Badge className={`${categoryColorMap[material.category as keyof typeof categoryColorMap] || categoryColorMap.Fundamental} text-xs`}>
+                          {material.category}
+                        </Badge>
+                        <span className="text-xs text-gray-500">{material.readTime}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </LiquidGlassCard>
               </div>
-            </LiquidGlassCard>
-          </div>
+            ))}
 
-          {/* Repertório Cultural */}
-          <div onClick={() => openMaterialModal('repertorio')} className="cursor-pointer">
-            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-purple-50/80 to-purple-100/50 border-purple-200/50 hover:border-purple-300/70">
-              <div className="flex items-start space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="text-white" size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Como Usar Repertório Cultural</h3>
-                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
-                    Estratégias para incorporar referências históricas e culturais.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-purple-100 text-purple-800 text-xs">Avançado</Badge>
-                    <span className="text-xs text-gray-500">15 min</span>
-                  </div>
-                </div>
+            {materials?.length === 0 && (
+              <div className="col-span-full text-center py-12">
+                <BookOpen className="mx-auto mb-4 text-muted-foreground" size={48} />
+                <h3 className="text-lg font-semibold mb-2">Nenhum material disponível</h3>
+                <p className="text-muted-foreground">
+                  Os materiais complementares estarão disponíveis em breve
+                </p>
               </div>
-            </LiquidGlassCard>
+            )}
           </div>
-
-          {/* Proposta de Intervenção */}
-          <div onClick={() => openMaterialModal('intervencao')} className="cursor-pointer">
-            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-orange-50/80 to-orange-100/50 border-orange-200/50 hover:border-orange-300/70">
-              <div className="flex items-start space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Lightbulb className="text-white" size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Proposta de Intervenção Eficaz</h3>
-                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
-                    Guia completo para elaborar propostas viáveis e detalhadas.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-orange-100 text-orange-800 text-xs">ENEM</Badge>
-                    <span className="text-xs text-gray-500">10 min</span>
-                  </div>
-                </div>
-              </div>
-            </LiquidGlassCard>
-          </div>
-
-          {/* Norma Culta */}
-          <div onClick={() => openMaterialModal('norma')} className="cursor-pointer">
-            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-indigo-50/80 to-indigo-100/50 border-indigo-200/50 hover:border-indigo-300/70">
-              <div className="flex items-start space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <PenTool className="text-white" size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Domínio da Norma Culta</h3>
-                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
-                    Principais regras gramaticais para redações nota máxima.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-indigo-100 text-indigo-800 text-xs">Gramática</Badge>
-                    <span className="text-xs text-gray-500">20 min</span>
-                  </div>
-                </div>
-              </div>
-            </LiquidGlassCard>
-          </div>
-
-          {/* Análise Redações */}
-          <div onClick={() => openMaterialModal('analise')} className="cursor-pointer">
-            <LiquidGlassCard className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-amber-50/80 to-amber-100/50 border-amber-200/50 hover:border-amber-300/70">
-              <div className="flex items-start space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Eye className="text-white" size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-semibold text-dark-blue mb-2">Análise de Redações Nota 1000</h3>
-                  <p className="text-xs sm:text-sm text-soft-gray mb-3 leading-relaxed">
-                    Estudo detalhado de redações que obtiveram nota máxima.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-amber-100 text-amber-800 text-xs">Exemplos</Badge>
-                    <span className="text-xs text-gray-500">25 min</span>
-                  </div>
-                </div>
-              </div>
-            </LiquidGlassCard>
-          </div>
-
-        </div>
+        )}
 
       </div>
 

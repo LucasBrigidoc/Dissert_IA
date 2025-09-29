@@ -1,0 +1,663 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { 
+  FileText, 
+  Target, 
+  BookOpen, 
+  Lightbulb, 
+  PenTool, 
+  Eye,
+  Plus, 
+  Edit, 
+  Trash2, 
+  CheckCircle,
+  Clock,
+  Loader2,
+  Book
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import type { MaterialComplementar } from "@shared/schema";
+
+const iconMap = {
+  FileText: FileText,
+  Target: Target,
+  BookOpen: BookOpen,
+  Lightbulb: Lightbulb,
+  PenTool: PenTool,
+  Eye: Eye,
+};
+
+const colorSchemeMap = {
+  green: "from-green-500 to-green-600",
+  blue: "from-blue-500 to-blue-600",
+  purple: "from-purple-500 to-purple-600",
+  orange: "from-orange-500 to-orange-600",
+  indigo: "from-indigo-500 to-indigo-600",
+  amber: "from-amber-500 to-amber-600",
+};
+
+export default function AdminMateriais() {
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialComplementar | null>(null);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    content: "",
+    category: "Fundamental" as "Fundamental" | "Técnico" | "Avançado" | "ENEM" | "Gramática" | "Exemplos",
+    readTime: "",
+    icon: "FileText" as "FileText" | "Target" | "BookOpen" | "Lightbulb" | "PenTool" | "Eye",
+    colorScheme: "green" as "green" | "blue" | "purple" | "orange" | "indigo" | "amber",
+    isPublished: true,
+    sortOrder: 0,
+  });
+
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch materiais complementares
+  const { data: materials = [], isLoading: loadingMaterials } = useQuery<MaterialComplementar[]>({
+    queryKey: ["/api/admin/materiais-complementares"],
+  });
+
+  // Create material mutation
+  const createMaterial = useMutation({
+    mutationFn: (data: any) => apiRequest("/api/admin/materiais-complementares", {
+      method: "POST",
+      body: data,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/materiais-complementares"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/materiais-complementares"] });
+      setShowCreateDialog(false);
+      resetForm();
+      toast({
+        title: "Material criado!",
+        description: "O material foi criado com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao criar material",
+        description: "Tente novamente em alguns minutos.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update material mutation
+  const updateMaterial = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => 
+      apiRequest(`/api/admin/materiais-complementares/${id}`, {
+        method: "PUT",
+        body: data,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/materiais-complementares"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/materiais-complementares"] });
+      setShowEditDialog(false);
+      resetForm();
+      toast({
+        title: "Material atualizado!",
+        description: "As alterações foram salvas com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao atualizar material",
+        description: "Tente novamente em alguns minutos.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete material mutation
+  const deleteMaterial = useMutation({
+    mutationFn: (id: string) => 
+      apiRequest(`/api/admin/materiais-complementares/${id}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/materiais-complementares"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/materiais-complementares"] });
+      toast({
+        title: "Material removido",
+        description: "O material foi removido com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao remover material",
+        description: "Tente novamente em alguns minutos.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      content: "",
+      category: "Fundamental",
+      readTime: "",
+      icon: "FileText",
+      colorScheme: "green",
+      isPublished: true,
+      sortOrder: 0,
+    });
+    setSelectedMaterial(null);
+  };
+
+  const handleCreateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createMaterial.mutate(formData);
+  };
+
+  const handleUpdateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedMaterial) {
+      updateMaterial.mutate({
+        id: selectedMaterial.id,
+        data: formData,
+      });
+    }
+  };
+
+  const handleEditClick = (material: MaterialComplementar) => {
+    setSelectedMaterial(material);
+    setFormData({
+      title: material.title,
+      description: material.description,
+      content: material.content,
+      category: material.category as any,
+      readTime: material.readTime,
+      icon: material.icon as any,
+      colorScheme: material.colorScheme as any,
+      isPublished: material.isPublished || false,
+      sortOrder: material.sortOrder || 0,
+    });
+    setShowEditDialog(true);
+  };
+
+  const getStatusBadge = (isPublished: boolean | null) => {
+    return isPublished ? (
+      <Badge variant="default" className="gap-1">
+        <CheckCircle size={12} />
+        Publicado
+      </Badge>
+    ) : (
+      <Badge variant="secondary" className="gap-1">
+        <Clock size={12} />
+        Rascunho
+      </Badge>
+    );
+  };
+
+  const getIconComponent = (iconName: string) => {
+    const IconComponent = iconMap[iconName as keyof typeof iconMap] || FileText;
+    return <IconComponent size={18} className="text-white" />;
+  };
+
+  if (loadingMaterials) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="animate-spin text-bright-blue" size={32} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-6 max-w-7xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Gerenciamento de Materiais Complementares</h1>
+        <p className="text-muted-foreground">
+          Crie, gerencie e publique materiais complementares para seus usuários
+        </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total de Materiais</p>
+                <p className="text-2xl font-bold">{materials?.length || 0}</p>
+              </div>
+              <Book className="text-bright-blue" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Materiais Publicados</p>
+                <p className="text-2xl font-bold">
+                  {materials?.filter((m: MaterialComplementar) => m.isPublished).length || 0}
+                </p>
+              </div>
+              <CheckCircle className="text-green-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Rascunhos</p>
+                <p className="text-2xl font-bold">
+                  {materials?.filter((m: MaterialComplementar) => !m.isPublished).length || 0}
+                </p>
+              </div>
+              <Clock className="text-amber-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold">Todos os Materiais</h2>
+        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+          <DialogTrigger asChild>
+            <Button className="gap-2" data-testid="button-create-material">
+              <Plus size={16} />
+              Novo Material
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Criar Novo Material</DialogTitle>
+              <DialogDescription>
+                Crie um novo material complementar para seus usuários
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleCreateSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Título</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="Ex: Guia de Estrutura Dissertativa"
+                    required
+                    data-testid="input-material-title"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="readTime">Tempo de Leitura</Label>
+                  <Input
+                    id="readTime"
+                    value={formData.readTime}
+                    onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                    placeholder="Ex: 12 min"
+                    required
+                    data-testid="input-material-readtime"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="category">Categoria</Label>
+                  <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value as any })}>
+                    <SelectTrigger data-testid="select-material-category">
+                      <SelectValue placeholder="Selecione a categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Fundamental">Fundamental</SelectItem>
+                      <SelectItem value="Técnico">Técnico</SelectItem>
+                      <SelectItem value="Avançado">Avançado</SelectItem>
+                      <SelectItem value="ENEM">ENEM</SelectItem>
+                      <SelectItem value="Gramática">Gramática</SelectItem>
+                      <SelectItem value="Exemplos">Exemplos</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="icon">Ícone</Label>
+                  <Select value={formData.icon} onValueChange={(value) => setFormData({ ...formData, icon: value as any })}>
+                    <SelectTrigger data-testid="select-material-icon">
+                      <SelectValue placeholder="Selecione o ícone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="FileText">Arquivo</SelectItem>
+                      <SelectItem value="Target">Alvo</SelectItem>
+                      <SelectItem value="BookOpen">Livro</SelectItem>
+                      <SelectItem value="Lightbulb">Lâmpada</SelectItem>
+                      <SelectItem value="PenTool">Caneta</SelectItem>
+                      <SelectItem value="Eye">Olho</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="colorScheme">Cor</Label>
+                  <Select value={formData.colorScheme} onValueChange={(value) => setFormData({ ...formData, colorScheme: value as any })}>
+                    <SelectTrigger data-testid="select-material-color">
+                      <SelectValue placeholder="Selecione a cor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="green">Verde</SelectItem>
+                      <SelectItem value="blue">Azul</SelectItem>
+                      <SelectItem value="purple">Roxo</SelectItem>
+                      <SelectItem value="orange">Laranja</SelectItem>
+                      <SelectItem value="indigo">Índigo</SelectItem>
+                      <SelectItem value="amber">Âmbar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="description">Descrição</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Breve descrição do material..."
+                  className="min-h-[80px]"
+                  required
+                  data-testid="textarea-material-description"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="content">Conteúdo do Material</Label>
+                <Textarea
+                  id="content"
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  placeholder="Escreva o conteúdo completo do material aqui..."
+                  className="min-h-[200px]"
+                  required
+                  data-testid="textarea-material-content"
+                />
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isPublished"
+                    checked={formData.isPublished}
+                    onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                    data-testid="checkbox-material-published"
+                  />
+                  <Label htmlFor="isPublished">Material publicado</Label>
+                </div>
+                <div>
+                  <Label htmlFor="sortOrder">Ordem</Label>
+                  <Input
+                    id="sortOrder"
+                    type="number"
+                    value={formData.sortOrder}
+                    onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                    className="w-20"
+                    data-testid="input-material-order"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowCreateDialog(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={createMaterial.isPending}
+                  data-testid="button-save-material"
+                >
+                  {createMaterial.isPending && <Loader2 className="animate-spin mr-2" size={16} />}
+                  Criar Material
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="grid gap-4">
+        {materials?.map((material: MaterialComplementar) => (
+          <Card key={material.id} data-testid={`material-card-${material.id}`}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-10 h-10 bg-gradient-to-br ${colorSchemeMap[material.colorScheme as keyof typeof colorSchemeMap] || colorSchemeMap.green} rounded-full flex items-center justify-center flex-shrink-0`}>
+                      {getIconComponent(material.icon)}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <h3 className="text-lg font-semibold">{material.title}</h3>
+                      {getStatusBadge(material.isPublished)}
+                      <Badge className={`text-xs bg-${material.colorScheme}-100 text-${material.colorScheme}-800`}>
+                        {material.category}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground">{material.description}</p>
+                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <span>Criado: {new Date(material.createdAt!).toLocaleDateString('pt-BR')}</span>
+                    <span>Tempo: {material.readTime}</span>
+                    <span>Ordem: {material.sortOrder}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEditClick(material)}
+                    data-testid={`button-edit-${material.id}`}
+                  >
+                    <Edit size={16} />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => deleteMaterial.mutate(material.id)}
+                    disabled={deleteMaterial.isPending}
+                    data-testid={`button-delete-${material.id}`}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+
+        {materials?.length === 0 && (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <Book className="mx-auto mb-4 text-muted-foreground" size={48} />
+              <h3 className="text-lg font-semibold mb-2">Nenhum material criado</h3>
+              <p className="text-muted-foreground mb-4">
+                Comece criando seu primeiro material complementar
+              </p>
+              <Button onClick={() => setShowCreateDialog(true)}>
+                <Plus size={16} className="mr-2" />
+                Criar Material
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Editar Material</DialogTitle>
+            <DialogDescription>
+              Faça as alterações necessárias no material
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUpdateSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-title">Título</Label>
+                <Input
+                  id="edit-title"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Ex: Guia de Estrutura Dissertativa"
+                  required
+                  data-testid="input-edit-material-title"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-readTime">Tempo de Leitura</Label>
+                <Input
+                  id="edit-readTime"
+                  value={formData.readTime}
+                  onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                  placeholder="Ex: 12 min"
+                  required
+                  data-testid="input-edit-material-readtime"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="edit-category">Categoria</Label>
+                <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value as any })}>
+                  <SelectTrigger data-testid="select-edit-material-category">
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Fundamental">Fundamental</SelectItem>
+                    <SelectItem value="Técnico">Técnico</SelectItem>
+                    <SelectItem value="Avançado">Avançado</SelectItem>
+                    <SelectItem value="ENEM">ENEM</SelectItem>
+                    <SelectItem value="Gramática">Gramática</SelectItem>
+                    <SelectItem value="Exemplos">Exemplos</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="edit-icon">Ícone</Label>
+                <Select value={formData.icon} onValueChange={(value) => setFormData({ ...formData, icon: value as any })}>
+                  <SelectTrigger data-testid="select-edit-material-icon">
+                    <SelectValue placeholder="Selecione o ícone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="FileText">Arquivo</SelectItem>
+                    <SelectItem value="Target">Alvo</SelectItem>
+                    <SelectItem value="BookOpen">Livro</SelectItem>
+                    <SelectItem value="Lightbulb">Lâmpada</SelectItem>
+                    <SelectItem value="PenTool">Caneta</SelectItem>
+                    <SelectItem value="Eye">Olho</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="edit-colorScheme">Cor</Label>
+                <Select value={formData.colorScheme} onValueChange={(value) => setFormData({ ...formData, colorScheme: value as any })}>
+                  <SelectTrigger data-testid="select-edit-material-color">
+                    <SelectValue placeholder="Selecione a cor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="green">Verde</SelectItem>
+                    <SelectItem value="blue">Azul</SelectItem>
+                    <SelectItem value="purple">Roxo</SelectItem>
+                    <SelectItem value="orange">Laranja</SelectItem>
+                    <SelectItem value="indigo">Índigo</SelectItem>
+                    <SelectItem value="amber">Âmbar</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="edit-description">Descrição</Label>
+              <Textarea
+                id="edit-description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Breve descrição do material..."
+                className="min-h-[80px]"
+                required
+                data-testid="textarea-edit-material-description"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-content">Conteúdo do Material</Label>
+              <Textarea
+                id="edit-content"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Escreva o conteúdo completo do material aqui..."
+                className="min-h-[200px]"
+                required
+                data-testid="textarea-edit-material-content"
+              />
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="edit-isPublished"
+                  checked={formData.isPublished}
+                  onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                  data-testid="checkbox-edit-material-published"
+                />
+                <Label htmlFor="edit-isPublished">Material publicado</Label>
+              </div>
+              <div>
+                <Label htmlFor="edit-sortOrder">Ordem</Label>
+                <Input
+                  id="edit-sortOrder"
+                  type="number"
+                  value={formData.sortOrder}
+                  onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                  placeholder="0"
+                  className="w-20"
+                  data-testid="input-edit-material-order"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowEditDialog(false)}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={updateMaterial.isPending}
+                data-testid="button-update-material"
+              >
+                {updateMaterial.isPending && <Loader2 className="animate-spin mr-2" size={16} />}
+                Salvar Alterações
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

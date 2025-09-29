@@ -908,3 +908,55 @@ export type NewsletterSubscription = z.infer<typeof newsletterSubscriptionSchema
 export type CreateNewsletter = z.infer<typeof createNewsletterSchema>;
 export type UpdateNewsletter = z.infer<typeof updateNewsletterSchema>;
 export type SendNewsletter = z.infer<typeof sendNewsletterSchema>;
+
+// ===================== MATERIAIS COMPLEMENTARES =====================
+
+// Materiais complementares table
+export const materiaisComplementares = pgTable("materiais_complementares", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  content: text("content").notNull(), // Conteúdo completo do material
+  category: varchar("category", { 
+    enum: ["Fundamental", "Técnico", "Avançado", "ENEM", "Gramática", "Exemplos"] 
+  }).notNull().default("Fundamental"),
+  readTime: text("read_time").notNull(), // Ex: "12 min"
+  icon: varchar("icon", { 
+    enum: ["FileText", "Target", "BookOpen", "Lightbulb", "PenTool", "Eye"] 
+  }).notNull().default("FileText"),
+  colorScheme: varchar("color_scheme", { 
+    enum: ["green", "blue", "purple", "orange", "indigo", "amber"] 
+  }).notNull().default("green"),
+  isPublished: boolean("is_published").default(true),
+  sortOrder: integer("sort_order").default(0), // Para ordenação manual
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Material complementar insert schemas
+export const insertMaterialComplementarSchema = createInsertSchema(materiaisComplementares).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Material complementar management schemas
+export const createMaterialComplementarSchema = z.object({
+  title: z.string().min(1, "Título é obrigatório"),
+  description: z.string().min(1, "Descrição é obrigatória"),
+  content: z.string().min(1, "Conteúdo é obrigatório"),
+  category: z.enum(["Fundamental", "Técnico", "Avançado", "ENEM", "Gramática", "Exemplos"]),
+  readTime: z.string().min(1, "Tempo de leitura é obrigatório"),
+  icon: z.enum(["FileText", "Target", "BookOpen", "Lightbulb", "PenTool", "Eye"]).default("FileText"),
+  colorScheme: z.enum(["green", "blue", "purple", "orange", "indigo", "amber"]).default("green"),
+  isPublished: z.boolean().default(true),
+  sortOrder: z.number().default(0),
+});
+
+export const updateMaterialComplementarSchema = createMaterialComplementarSchema.partial();
+
+// Material complementar type definitions
+export type MaterialComplementar = typeof materiaisComplementares.$inferSelect;
+export type InsertMaterialComplementar = z.infer<typeof insertMaterialComplementarSchema>;
+export type CreateMaterialComplementar = z.infer<typeof createMaterialComplementarSchema>;
+export type UpdateMaterialComplementar = z.infer<typeof updateMaterialComplementarSchema>;

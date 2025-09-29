@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -246,6 +246,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get newsletter stats error:", error);
       res.status(500).json({ message: "Erro ao buscar estatísticas" });
+    }
+  });
+
+  // ===================== MATERIAL COMPLEMENTAR MANAGEMENT ENDPOINTS =====================
+
+  // Get all materiais complementares (public endpoint)
+  app.get("/api/materiais-complementares", async (req, res) => {
+    try {
+      const materials = await storage.getAllMateriaisComplementares(true); // Only published
+      res.json(materials);
+    } catch (error) {
+      console.error("Get materiais complementares error:", error);
+      res.status(500).json({ message: "Erro ao buscar materiais" });
+    }
+  });
+
+  // Admin routes for managing materiais complementares
+  app.get("/api/admin/materiais-complementares", async (req, res) => {
+    try {
+      const materials = await storage.getAllMateriaisComplementares(); // All materials
+      res.json(materials);
+    } catch (error) {
+      console.error("Get admin materiais complementares error:", error);
+      res.status(500).json({ message: "Erro ao buscar materiais" });
+    }
+  });
+
+  app.post("/api/admin/materiais-complementares", async (req, res) => {
+    try {
+      const validatedData = createMaterialComplementarSchema.parse(req.body);
+      const material = await storage.createMaterialComplementar(validatedData);
+      res.status(201).json(material);
+    } catch (error) {
+      console.error("Create material complementar error:", error);
+      res.status(400).json({ message: "Erro ao criar material" });
+    }
+  });
+
+  app.get("/api/admin/materiais-complementares/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const material = await storage.getMaterialComplementar(id);
+      
+      if (!material) {
+        return res.status(404).json({ message: "Material não encontrado" });
+      }
+      
+      res.json(material);
+    } catch (error) {
+      console.error("Get material complementar error:", error);
+      res.status(500).json({ message: "Erro ao buscar material" });
+    }
+  });
+
+  app.put("/api/admin/materiais-complementares/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = updateMaterialComplementarSchema.parse(req.body);
+      const material = await storage.updateMaterialComplementar(id, validatedData);
+      res.json(material);
+    } catch (error) {
+      console.error("Update material complementar error:", error);
+      res.status(500).json({ message: "Erro ao atualizar material" });
+    }
+  });
+
+  app.delete("/api/admin/materiais-complementares/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteMaterialComplementar(id);
+      res.json({ message: "Material removido com sucesso" });
+    } catch (error) {
+      console.error("Delete material complementar error:", error);
+      res.status(500).json({ message: "Erro ao remover material" });
     }
   });
 
