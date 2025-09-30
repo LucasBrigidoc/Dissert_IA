@@ -176,14 +176,14 @@ export default function Checkout() {
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto space-y-6 lg:space-y-8">
+        <div className="max-w-6xl mx-auto space-y-4 lg:space-y-5">
           {/* Main Grid: Plan Selection + Order Summary */}
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+          <div className="grid lg:grid-cols-2 gap-4 lg:gap-5">
             {/* Left Column: Plan Selection */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Plan Selection Card */}
-              <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8" data-testid="card-plan-selection">
-                <h2 className="text-2xl font-bold text-dark-blue mb-6 flex items-center gap-3">
+              <div className="bg-white rounded-2xl shadow-2xl p-5 sm:p-6" data-testid="card-plan-selection">
+                <h2 className="text-2xl font-bold text-dark-blue mb-4 flex items-center gap-3">
                   <Sparkles className="text-bright-blue" size={28} />
                   Selecione seu Plano
                 </h2>
@@ -242,8 +242,8 @@ export default function Checkout() {
               </div>
 
               {/* Coupon Code Section */}
-              <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8" data-testid="card-coupon">
-                <h2 className="text-2xl font-bold text-dark-blue mb-6 flex items-center gap-3">
+              <div className="bg-white rounded-2xl shadow-2xl p-5 sm:p-6" data-testid="card-coupon">
+                <h2 className="text-2xl font-bold text-dark-blue mb-4 flex items-center gap-3">
                   <Tag className="text-bright-blue" size={28} />
                   Código de Desconto
                 </h2>
@@ -330,15 +330,15 @@ export default function Checkout() {
 
             {/* Right Column: Order Summary - Full Height */}
             <div className="flex flex-col">
-              <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 flex-1 flex flex-col" data-testid="card-order-summary">
-                <h2 className="text-2xl font-bold text-dark-blue mb-6 flex items-center gap-3">
+              <div className="bg-white rounded-2xl shadow-2xl p-5 sm:p-6 flex-1 flex flex-col" data-testid="card-order-summary">
+                <h2 className="text-2xl font-bold text-dark-blue mb-4 flex items-center gap-3">
                   <CreditCard className="text-bright-blue" size={28} />
                   Resumo do Pedido
                 </h2>
 
                 {/* Plan Details Section */}
-                <div className="space-y-6 mb-8">
-                  <div className="flex justify-between items-baseline pb-6 border-b border-gray-200">
+                <div className="space-y-4 mb-5">
+                  <div className="flex justify-between items-baseline pb-4 border-b border-gray-200">
                     <div>
                       <p className="text-sm text-soft-gray mb-1">Plano Selecionado</p>
                       <p className="text-lg sm:text-xl font-bold text-dark-blue" data-testid="text-plan-name">
@@ -364,7 +364,7 @@ export default function Checkout() {
 
                 {/* Coupon Section */}
                 {couponData && discountAmount > 0 && (
-                  <div className="bg-green-50 rounded-lg p-4 mb-6 border-2 border-green-500">
+                  <div className="bg-green-50 rounded-lg p-4 mb-4 border-2 border-green-500">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
                         <CheckCircle2 className="text-green-600" size={22} />
@@ -383,7 +383,7 @@ export default function Checkout() {
                 )}
 
                 {/* Total Section */}
-                <div className="bg-bright-blue/5 rounded-xl p-6 mb-8 border border-bright-blue/20">
+                <div className="bg-bright-blue/5 rounded-xl p-5 mb-5 border border-bright-blue/20">
                   <div className="flex justify-between items-baseline mb-2">
                     <span className="text-xl font-bold text-dark-blue">Total a Pagar</span>
                     <span className="text-4xl font-bold text-dark-blue" data-testid="text-total-price">
@@ -433,12 +433,12 @@ export default function Checkout() {
           </div>
 
           {/* Benefits Section - Full Width */}
-          <div className="bg-gradient-to-br from-bright-blue to-purple-500 rounded-2xl shadow-2xl p-6 sm:p-8">
-            <h3 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+          <div className="bg-gradient-to-br from-bright-blue to-purple-500 rounded-2xl shadow-2xl p-5 sm:p-6">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               <Sparkles className="text-white" size={24} />
               O que você vai receber:
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2.5">
               <li className="flex items-start gap-3 text-white">
                 <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
                 <span className="text-sm sm:text-base">Acesso ilimitado a todas as funcionalidades</span>
