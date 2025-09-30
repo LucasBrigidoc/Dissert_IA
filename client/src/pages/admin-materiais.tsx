@@ -18,7 +18,8 @@ import {
   TrendingUp,
   BarChart3,
   Mail,
-  Settings
+  Settings,
+  Tag
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -294,6 +295,12 @@ export default function AdminMateriais() {
             <Book size={16} />
             Admin Materiais
           </Button>
+          <Link href="/admin/coupons">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-coupons">
+              <Tag size={16} />
+              Admin Cupons
+            </Button>
+          </Link>
         </div>
       </div>
 
