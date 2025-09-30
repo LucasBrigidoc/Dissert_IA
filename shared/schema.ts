@@ -848,7 +848,10 @@ export const churnPredictions = pgTable("churn_predictions", {
 export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertUserSubscriptionSchema = createInsertSchema(userSubscriptions).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertTransactionSchema = createInsertSchema(transactions).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertCouponSchema = createInsertSchema(coupons).omit({ id: true, createdAt: true, updatedAt: true }).refine(
+export const insertCouponSchema = createInsertSchema(coupons).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  code: z.string().min(1).transform(val => val.toUpperCase()),
+  eligiblePlanIds: z.array(z.string()).default([]),
+}).refine(
   (data) => {
     if (data.discountType === "percent") {
       return data.discountValue >= 1 && data.discountValue <= 100;
@@ -860,6 +863,19 @@ export const insertCouponSchema = createInsertSchema(coupons).omit({ id: true, c
     path: ["discountValue"],
   }
 );
+
+// Validation schemas for coupon operations
+export const validateCouponSchema = z.object({
+  code: z.string().min(1),
+  planId: z.string().optional(),
+  userId: z.string().optional(),
+});
+
+export const applyCouponSchema = z.object({
+  code: z.string().min(1),
+  planId: z.string(),
+  userId: z.string().optional(),
+});
 export const insertCouponRedemptionSchema = createInsertSchema(couponRedemptions).omit({ id: true, createdAt: true });
 export const insertPaymentEventSchema = createInsertSchema(paymentEvents).omit({ id: true });
 export const insertRevenueMetricSchema = createInsertSchema(revenueMetrics).omit({ id: true, createdAt: true });

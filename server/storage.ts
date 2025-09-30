@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -338,6 +338,34 @@ export interface IStorage {
   // Analytics operations
   incrementMaterialView(id: string): Promise<void>;
   incrementMaterialPdfDownload(id: string): Promise<void>;
+
+  // ===================== COUPON OPERATIONS =====================
+  
+  // Coupon operations
+  createCoupon(coupon: InsertCoupon): Promise<Coupon>;
+  getCoupon(id: string): Promise<Coupon | undefined>;
+  getCouponByCode(code: string): Promise<Coupon | undefined>;
+  listCoupons(filters?: { isActive?: boolean; planScope?: string }): Promise<Coupon[]>;
+  updateCoupon(id: string, updates: Partial<Coupon>): Promise<Coupon>;
+  deleteCoupon(id: string): Promise<boolean>;
+  
+  // Coupon validation and usage
+  validateCoupon(code: string, planId?: string, userId?: string): Promise<{
+    valid: boolean;
+    coupon?: Coupon;
+    error?: string;
+    discount?: { type: string; value: number; currency: string };
+  }>;
+  
+  redeemCoupon(redemption: InsertCouponRedemption): Promise<CouponRedemption>;
+  getCouponRedemptions(couponId: string): Promise<CouponRedemption[]>;
+  getUserCouponRedemptions(userId: string): Promise<CouponRedemption[]>;
+  getCouponUsageCount(couponId: string, userId?: string): Promise<number>;
+  
+  // Payment events (webhook audit)
+  createPaymentEvent(event: InsertPaymentEvent): Promise<PaymentEvent>;
+  getPaymentEvent(eventId: string): Promise<PaymentEvent | undefined>;
+  updatePaymentEventStatus(id: string, status: string, processedAt?: Date, error?: string): Promise<PaymentEvent>;
   
 }
 
@@ -395,6 +423,11 @@ export class MemStorage implements IStorage {
   // Material complementar storage
   private materiaisComplementares: Map<string, MaterialComplementar>;
 
+  // Coupon storage
+  private coupons: Map<string, Coupon>;
+  private couponRedemptions: Map<string, CouponRedemption>;
+  private paymentEvents: Map<string, PaymentEvent>;
+
   constructor() {
     this.users = new Map();
     this.userProgress = new Map();
@@ -438,6 +471,11 @@ export class MemStorage implements IStorage {
 
     // Material complementar storage initialization
     this.materiaisComplementares = new Map();
+    
+    // Coupon storage initialization
+    this.coupons = new Map();
+    this.couponRedemptions = new Map();
+    this.paymentEvents = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -2973,6 +3011,209 @@ export class MemStorage implements IStorage {
     material.pdfDownloads = (material.pdfDownloads || 0) + 1;
     material.updatedAt = new Date();
     this.materiaisComplementares.set(id, material);
+  }
+
+  // ===================== COUPON OPERATIONS =====================
+
+  async createCoupon(insertCoupon: InsertCoupon): Promise<Coupon> {
+    const id = randomUUID();
+    const coupon: Coupon = {
+      ...insertCoupon,
+      code: insertCoupon.code.toUpperCase(),
+      currency: insertCoupon.currency || "BRL",
+      planScope: insertCoupon.planScope || "all",
+      isActive: insertCoupon.isActive ?? true,
+      maxRedemptions: insertCoupon.maxRedemptions ?? null,
+      maxRedemptionsPerUser: insertCoupon.maxRedemptionsPerUser ?? null,
+      stripeCouponId: insertCoupon.stripeCouponId ?? null,
+      metadata: insertCoupon.metadata || {},
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.coupons.set(id, coupon);
+    return coupon;
+  }
+
+  async getCoupon(id: string): Promise<Coupon | undefined> {
+    return this.coupons.get(id);
+  }
+
+  async getCouponByCode(code: string): Promise<Coupon | undefined> {
+    const upperCode = code.toUpperCase();
+    return Array.from(this.coupons.values()).find(
+      (coupon) => coupon.code === upperCode
+    );
+  }
+
+  async listCoupons(filters?: { isActive?: boolean; planScope?: string }): Promise<Coupon[]> {
+    let coupons = Array.from(this.coupons.values());
+    
+    if (filters?.isActive !== undefined) {
+      coupons = coupons.filter(c => c.isActive === filters.isActive);
+    }
+    
+    if (filters?.planScope) {
+      coupons = coupons.filter(c => c.planScope === filters.planScope);
+    }
+    
+    return coupons;
+  }
+
+  async updateCoupon(id: string, updates: Partial<Coupon>): Promise<Coupon> {
+    const existing = this.coupons.get(id);
+    if (!existing) {
+      throw new Error("Coupon not found");
+    }
+    
+    const updated: Coupon = {
+      ...existing,
+      ...updates,
+      code: updates.code ? updates.code.toUpperCase() : existing.code,
+      updatedAt: new Date(),
+    };
+    
+    this.coupons.set(id, updated);
+    return updated;
+  }
+
+  async deleteCoupon(id: string): Promise<boolean> {
+    return this.coupons.delete(id);
+  }
+
+  async validateCoupon(code: string, planId?: string, userId?: string): Promise<{
+    valid: boolean;
+    coupon?: Coupon;
+    error?: string;
+    discount?: { type: string; value: number; currency: string };
+  }> {
+    const upperCode = code.toUpperCase();
+    const coupon = await this.getCouponByCode(upperCode);
+    
+    if (!coupon) {
+      return { valid: false, error: "Cupom não encontrado" };
+    }
+    
+    if (!coupon.isActive) {
+      return { valid: false, error: "Cupom inativo" };
+    }
+    
+    const now = new Date();
+    if (now < new Date(coupon.validFrom)) {
+      return { valid: false, error: "Cupom ainda não está válido" };
+    }
+    
+    if (now > new Date(coupon.validUntil)) {
+      return { valid: false, error: "Cupom expirado" };
+    }
+    
+    if (coupon.planScope === "specific" && planId) {
+      const eligiblePlanIds = coupon.eligiblePlanIds as string[] || [];
+      if (!eligiblePlanIds.includes(planId)) {
+        return { valid: false, error: "Cupom não aplicável a este plano" };
+      }
+    }
+    
+    if (coupon.maxRedemptions && coupon.maxRedemptions > 0) {
+      const totalUsage = await this.getCouponUsageCount(coupon.id);
+      if (totalUsage >= coupon.maxRedemptions) {
+        return { valid: false, error: "Limite de usos do cupom atingido" };
+      }
+    }
+    
+    if (userId && coupon.maxRedemptionsPerUser && coupon.maxRedemptionsPerUser > 0) {
+      const userUsage = await this.getCouponUsageCount(coupon.id, userId);
+      if (userUsage >= coupon.maxRedemptionsPerUser) {
+        return { valid: false, error: "Limite de usos por usuário atingido" };
+      }
+    }
+    
+    return {
+      valid: true,
+      coupon,
+      discount: {
+        type: coupon.discountType,
+        value: coupon.discountValue,
+        currency: coupon.currency,
+      },
+    };
+  }
+
+  async redeemCoupon(insertRedemption: InsertCouponRedemption): Promise<CouponRedemption> {
+    const id = randomUUID();
+    const redemption: CouponRedemption = {
+      ...insertRedemption,
+      subscriptionId: insertRedemption.subscriptionId || null,
+      transactionId: insertRedemption.transactionId || null,
+      context: insertRedemption.context || {},
+      id,
+      redeemedAt: new Date(),
+      createdAt: new Date(),
+    };
+    this.couponRedemptions.set(id, redemption);
+    return redemption;
+  }
+
+  async getCouponRedemptions(couponId: string): Promise<CouponRedemption[]> {
+    return Array.from(this.couponRedemptions.values()).filter(
+      (redemption) => redemption.couponId === couponId
+    );
+  }
+
+  async getUserCouponRedemptions(userId: string): Promise<CouponRedemption[]> {
+    return Array.from(this.couponRedemptions.values()).filter(
+      (redemption) => redemption.userId === userId
+    );
+  }
+
+  async getCouponUsageCount(couponId: string, userId?: string): Promise<number> {
+    let redemptions = Array.from(this.couponRedemptions.values()).filter(
+      (redemption) => redemption.couponId === couponId
+    );
+    
+    if (userId) {
+      redemptions = redemptions.filter(r => r.userId === userId);
+    }
+    
+    return redemptions.length;
+  }
+
+  async createPaymentEvent(insertEvent: InsertPaymentEvent): Promise<PaymentEvent> {
+    const id = randomUUID();
+    const event: PaymentEvent = {
+      ...insertEvent,
+      processor: insertEvent.processor || "stripe",
+      processedAt: insertEvent.processedAt ?? null,
+      error: insertEvent.error ?? null,
+      id,
+      receivedAt: new Date(),
+    };
+    this.paymentEvents.set(id, event);
+    return event;
+  }
+
+  async getPaymentEvent(eventId: string): Promise<PaymentEvent | undefined> {
+    return Array.from(this.paymentEvents.values()).find(
+      (event) => event.eventId === eventId
+    );
+  }
+
+  async updatePaymentEventStatus(id: string, status: string, processedAt?: Date, error?: string): Promise<PaymentEvent> {
+    const existing = this.paymentEvents.get(id);
+    if (!existing) {
+      throw new Error("Payment event not found");
+    }
+    
+    const validStatus = status as "received" | "processed" | "failed";
+    const updated: PaymentEvent = {
+      ...existing,
+      status: validStatus,
+      processedAt: processedAt || existing.processedAt,
+      error: error || existing.error,
+    };
+    
+    this.paymentEvents.set(id, updated);
+    return updated;
   }
 
 }

@@ -1,8 +1,9 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -10,6 +11,15 @@ import { geminiService } from "./gemini-service";
 import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
+import Stripe from "stripe";
+
+// Initialize Stripe
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2025-08-27.basil",
+});
 
 // Initialize services
 const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
@@ -246,6 +256,423 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get newsletter stats error:", error);
       res.status(500).json({ message: "Erro ao buscar estatísticas" });
+    }
+  });
+
+  // ===================== STRIPE CHECKOUT ENDPOINT =====================
+
+  // Create checkout session with optional coupon
+  app.post("/api/checkout/create-session", async (req, res) => {
+    try {
+      const checkoutSchema = z.object({
+        planId: z.string(),
+        couponCode: z.string().optional(),
+        userId: z.string().optional(),
+      });
+      
+      const { planId, couponCode, userId } = checkoutSchema.parse(req.body);
+      
+      // Get plan details
+      // TODO: Replace this with actual plan lookup from database
+      const planPrices: Record<string, { monthly: number; name: string }> = {
+        "pro": { monthly: 6590, name: "Plano Pro" },
+        "premium": { monthly: 9990, name: "Plano Premium" },
+      };
+      
+      const plan = planPrices[planId];
+      if (!plan) {
+        return res.status(404).json({ message: "Plano não encontrado" });
+      }
+      
+      let discountAmount = 0;
+      let couponId: string | undefined;
+      let stripeCouponId: string | undefined;
+      
+      // Validate and apply coupon if provided
+      if (couponCode) {
+        const validation = await storage.validateCoupon(couponCode, planId, userId);
+        
+        if (!validation.valid) {
+          return res.status(400).json({ 
+            message: validation.error || "Cupom inválido" 
+          });
+        }
+        
+        if (validation.coupon && validation.discount) {
+          couponId = validation.coupon.id;
+          
+          // Calculate discount
+          if (validation.discount.type === "percent") {
+            discountAmount = Math.round((plan.monthly * validation.discount.value) / 100);
+          } else {
+            discountAmount = validation.discount.value;
+          }
+          
+          // Create Stripe coupon for this session (duration: once)
+          const stripeCoupon = await stripe.coupons.create({
+            duration: "once",
+            ...(validation.discount.type === "percent" 
+              ? { percent_off: validation.discount.value }
+              : { amount_off: validation.discount.value, currency: validation.discount.currency.toLowerCase() }
+            ),
+            name: `${validation.coupon.code} - ${plan.name}`,
+          });
+          
+          stripeCouponId = stripeCoupon.id;
+        }
+      }
+      
+      const finalAmount = Math.max(0, plan.monthly - discountAmount);
+      
+      // Create Stripe Checkout Session
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "subscription",
+        line_items: [
+          {
+            price_data: {
+              currency: "brl",
+              product_data: {
+                name: plan.name,
+              },
+              recurring: {
+                interval: "month",
+              },
+              unit_amount: finalAmount,
+            },
+            quantity: 1,
+          },
+        ],
+        ...(stripeCouponId ? { discounts: [{ coupon: stripeCouponId }] } : {}),
+        success_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/pricing`,
+        metadata: {
+          planId,
+          userId: userId || "anonymous",
+          couponId: couponId || "",
+          couponCode: couponCode || "",
+          discountAmount: discountAmount.toString(),
+        },
+      });
+      
+      res.json({ 
+        sessionId: session.id,
+        url: session.url,
+        originalAmount: plan.monthly,
+        discountAmount,
+        finalAmount,
+      });
+    } catch (error) {
+      console.error("Create checkout session error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Erro ao criar sessão de checkout" 
+      });
+    }
+  });
+
+  // ===================== STRIPE WEBHOOK ENDPOINT =====================
+
+  // Stripe webhook handler
+  app.post("/api/webhooks/stripe", async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    
+    if (!sig) {
+      return res.status(400).send('No signature');
+    }
+    
+    let event;
+    
+    try {
+      // Verify webhook signature (use STRIPE_WEBHOOK_SECRET if configured, otherwise skip in dev)
+      if (process.env.STRIPE_WEBHOOK_SECRET) {
+        event = stripe.webhooks.constructEvent(
+          req.body,
+          sig,
+          process.env.STRIPE_WEBHOOK_SECRET
+        );
+      } else {
+        // In development without webhook secret, just parse the body
+        console.warn('⚠️ STRIPE_WEBHOOK_SECRET not set - webhook signature verification disabled');
+        event = JSON.parse(req.body.toString());
+      }
+    } catch (err) {
+      console.error('Webhook signature verification failed:', err);
+      return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
+    
+    // Check if event already processed (idempotency)
+    const existingEvent = await storage.getPaymentEvent(event.id);
+    if (existingEvent) {
+      console.log(`Event ${event.id} already processed, skipping`);
+      return res.json({ received: true, status: 'duplicate' });
+    }
+    
+    // Record the event
+    await storage.createPaymentEvent({
+      processor: "stripe",
+      eventId: event.id,
+      type: event.type,
+      payload: event,
+      status: "received",
+    });
+    
+    try {
+      // Handle different event types
+      switch (event.type) {
+        case 'checkout.session.completed': {
+          const session = event.data.object;
+          const metadata = session.metadata;
+          
+          if (!metadata) {
+            console.warn('No metadata in session');
+            break;
+          }
+          
+          const { planId, userId, couponId, couponCode, discountAmount } = metadata;
+          
+          // Create or update user subscription
+          const userSubscription = await storage.createUserSubscription({
+            userId: userId || '',
+            planId: planId || '',
+            status: 'active',
+            billingCycle: 'monthly',
+            startDate: new Date(),
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: session.subscription as string,
+            stripeStatus: 'active',
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+            cancelAtPeriodEnd: false,
+            couponId: couponId || undefined,
+            effectivePriceCentavos: session.amount_total ?? undefined,
+          });
+          
+          // Create transaction record
+          const txn = await storage.createTransaction({
+            userId: userId || undefined,
+            subscriptionId: userSubscription.id,
+            type: 'subscription',
+            amount: session.amount_total || 0,
+            currency: 'BRL',
+            status: 'completed',
+            processor: 'stripe',
+            stripePaymentIntentId: session.payment_intent as string,
+            discountAppliedCentavos: parseInt(discountAmount || '0'),
+          });
+          
+          // Redeem the coupon if one was used
+          if (couponId && userId) {
+            await storage.redeemCoupon({
+              couponId,
+              userId,
+              subscriptionId: userSubscription.id,
+              transactionId: txn.id,
+              redeemedAt: new Date(),
+              discountAppliedCentavos: parseInt(discountAmount || '0'),
+              context: {
+                sessionId: session.id,
+                planId,
+              },
+            });
+          }
+          
+          console.log(`✅ Subscription activated for user ${userId}, plan ${planId}`);
+          break;
+        }
+        
+        case 'customer.subscription.updated':
+        case 'customer.subscription.deleted': {
+          const subscription = event.data.object;
+          console.log(`Subscription ${event.type}: ${subscription.id}`);
+          // TODO: Update user subscription status in database
+          break;
+        }
+        
+        case 'invoice.payment_succeeded':
+        case 'invoice.payment_failed': {
+          const invoice = event.data.object;
+          console.log(`Invoice ${event.type}: ${invoice.id}`);
+          // TODO: Record invoice payment
+          break;
+        }
+        
+        default:
+          console.log(`Unhandled event type: ${event.type}`);
+      }
+      
+      // Mark event as processed
+      await storage.updatePaymentEventStatus(
+        (await storage.getPaymentEvent(event.id))!.id,
+        'processed',
+        new Date()
+      );
+      
+      res.json({ received: true });
+    } catch (error) {
+      console.error('Error processing webhook:', error);
+      
+      // Mark event as failed
+      const paymentEvent = await storage.getPaymentEvent(event.id);
+      if (paymentEvent) {
+        await storage.updatePaymentEventStatus(
+          paymentEvent.id,
+          'failed',
+          new Date(),
+          error instanceof Error ? error.message : 'Unknown error'
+        );
+      }
+      
+      res.status(500).json({ error: 'Webhook processing failed' });
+    }
+  });
+
+  // ===================== COUPON MANAGEMENT ENDPOINTS =====================
+
+  // Admin: Create coupon
+  app.post("/api/admin/coupons", async (req, res) => {
+    try {
+      const validatedData = insertCouponSchema.parse(req.body);
+      const coupon = await storage.createCoupon(validatedData);
+      res.json(coupon);
+    } catch (error) {
+      console.error("Create coupon error:", error);
+      res.status(400).json({ message: error instanceof Error ? error.message : "Erro ao criar cupom" });
+    }
+  });
+
+  // Admin: List coupons
+  app.get("/api/admin/coupons", async (req, res) => {
+    try {
+      const { isActive, planScope } = req.query;
+      const coupons = await storage.listCoupons({
+        isActive: isActive === "true" ? true : isActive === "false" ? false : undefined,
+        planScope: planScope as string | undefined,
+      });
+      res.json(coupons);
+    } catch (error) {
+      console.error("List coupons error:", error);
+      res.status(500).json({ message: "Erro ao listar cupons" });
+    }
+  });
+
+  // Admin: Get coupon
+  app.get("/api/admin/coupons/:id", async (req, res) => {
+    try {
+      const coupon = await storage.getCoupon(req.params.id);
+      if (!coupon) {
+        return res.status(404).json({ message: "Cupom não encontrado" });
+      }
+      res.json(coupon);
+    } catch (error) {
+      console.error("Get coupon error:", error);
+      res.status(500).json({ message: "Erro ao buscar cupom" });
+    }
+  });
+
+  // Admin: Update coupon
+  app.patch("/api/admin/coupons/:id", async (req, res) => {
+    try {
+      // Validate update data - create partial schema manually
+      const updateCouponSchema = z.object({
+        code: z.string().min(1).transform(val => val.toUpperCase()).optional(),
+        discountType: z.enum(["percent", "fixed"]).optional(),
+        discountValue: z.number().optional(),
+        currency: z.string().optional(),
+        maxRedemptions: z.number().optional(),
+        maxRedemptionsPerUser: z.number().optional(),
+        validFrom: z.date().optional(),
+        validUntil: z.date().optional(),
+        isActive: z.boolean().optional(),
+        planScope: z.enum(["all", "specific"]).optional(),
+        eligiblePlanIds: z.array(z.string()).optional(),
+        stripeCouponId: z.string().optional(),
+        metadata: z.any().optional(),
+      }).refine(
+        (data) => {
+          if (data.discountType === "percent" && data.discountValue !== undefined) {
+            return data.discountValue >= 1 && data.discountValue <= 100;
+          }
+          return true;
+        },
+        {
+          message: "Para tipo 'percent', o valor do desconto deve estar entre 1 e 100",
+          path: ["discountValue"],
+        }
+      );
+      const validatedData = updateCouponSchema.parse(req.body);
+      const coupon = await storage.updateCoupon(req.params.id, validatedData);
+      res.json(coupon);
+    } catch (error) {
+      console.error("Update coupon error:", error);
+      res.status(400).json({ message: error instanceof Error ? error.message : "Erro ao atualizar cupom" });
+    }
+  });
+
+  // Admin: Delete coupon
+  app.delete("/api/admin/coupons/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteCoupon(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Cupom não encontrado" });
+      }
+      res.json({ message: "Cupom deletado com sucesso" });
+    } catch (error) {
+      console.error("Delete coupon error:", error);
+      res.status(500).json({ message: "Erro ao deletar cupom" });
+    }
+  });
+
+  // Admin: Get coupon statistics
+  app.get("/api/admin/coupons/:id/stats", async (req, res) => {
+    try {
+      const couponId = req.params.id;
+      const coupon = await storage.getCoupon(couponId);
+      if (!coupon) {
+        return res.status(404).json({ message: "Cupom não encontrado" });
+      }
+      
+      const redemptions = await storage.getCouponRedemptions(couponId);
+      const totalUses = redemptions.length;
+      const totalDiscountApplied = redemptions.reduce((sum, r) => sum + r.discountAppliedCentavos, 0);
+      const uniqueUsers = new Set(redemptions.map(r => r.userId)).size;
+      
+      res.json({
+        coupon,
+        stats: {
+          totalUses,
+          uniqueUsers,
+          totalDiscountApplied,
+          redemptions,
+        },
+      });
+    } catch (error) {
+      console.error("Get coupon stats error:", error);
+      res.status(500).json({ message: "Erro ao buscar estatísticas do cupom" });
+    }
+  });
+
+  // ===================== PUBLIC COUPON ENDPOINTS =====================
+
+  // Validate coupon (public, for checkout)
+  app.post("/api/coupons/validate", async (req, res) => {
+    try {
+      const { code, planId, userId } = validateCouponSchema.parse(req.body);
+      const result = await storage.validateCoupon(code, planId, userId);
+      res.json(result);
+    } catch (error) {
+      console.error("Validate coupon error:", error);
+      res.status(400).json({ message: error instanceof Error ? error.message : "Erro ao validar cupom" });
+    }
+  });
+
+  // Get user's coupon redemptions
+  app.get("/api/users/:userId/coupons", async (req, res) => {
+    try {
+      const redemptions = await storage.getUserCouponRedemptions(req.params.userId);
+      res.json(redemptions);
+    } catch (error) {
+      console.error("Get user coupon redemptions error:", error);
+      res.status(500).json({ message: "Erro ao buscar cupons do usuário" });
     }
   });
 

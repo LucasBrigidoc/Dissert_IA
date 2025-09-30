@@ -5,6 +5,10 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 app.set('trust proxy', true); // Enable accurate client IPs for rate limiting on Replit
+
+// Stripe webhook needs raw body - apply before JSON parser
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
