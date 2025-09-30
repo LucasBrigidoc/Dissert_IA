@@ -81,6 +81,15 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
+## September 30, 2025 - Admin Pages Styling Consistency
+- Updated admin-coupons page to match standard admin page styling
+  - Removed custom dark theme (gradient background, white text)
+  - Applied standard theme classes (text-muted-foreground, Card, etc.)
+  - Updated all buttons, inputs, and dialogs to use default theme styling
+  - Statistics cards now use consistent layout with other admin pages
+  - Page now properly adapts to light/dark mode based on system preferences
+- All admin pages now have consistent navigation and visual design
+
 ## September 30, 2025 - GitHub Import Setup Complete
 - Successfully imported project from GitHub to Replit environment
 - Fixed npm script to use local `tsx` instead of `npx tsx` to avoid installation prompts

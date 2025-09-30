@@ -295,51 +295,49 @@ export default function AdminCoupons() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#09072e] via-[#0d0b3a] to-[#09072e] p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+    <div className="container mx-auto p-6 max-w-7xl">
+      <div className="mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3" data-testid="text-page-title">
+            <h1 className="text-3xl font-bold mb-2 flex items-center gap-3" data-testid="text-page-title">
               <Tag className="text-bright-blue" size={32} />
               Gerenciamento de Cupons
             </h1>
-            <p className="text-white/60 mt-1">
+            <p className="text-muted-foreground">
               Crie e gerencie cupons de desconto para suas assinaturas
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                refetchCoupons();
-                queryClient.invalidateQueries({ queryKey: ['/api/admin/coupons/redemptions'] });
-              }}
-              className="bg-white/5 border-white/20 text-white hover:bg-white/10"
-              data-testid="button-refresh"
-            >
-              <RefreshCw size={16} className="mr-2" />
-              Atualizar
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            onClick={() => {
+              refetchCoupons();
+              queryClient.invalidateQueries({ queryKey: ['/api/admin/coupons/redemptions'] });
+            }}
+            data-testid="button-refresh"
+          >
+            <RefreshCw size={16} className="mr-2" />
+            Atualizar
+          </Button>
         </div>
+      </div>
 
-        {/* Admin Navigation */}
+      {/* Admin Navigation */}
+      <div className="mb-6">
         <div className="flex flex-wrap gap-3">
           <Link href="/admin">
-            <Button variant="outline" className="gap-2 bg-white/5 border-white/20 text-white hover:bg-white/10" data-testid="button-admin-dashboard">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-dashboard">
               <BarChart3 size={16} />
               Admin Principal
             </Button>
           </Link>
           <Link href="/admin/newsletter">
-            <Button variant="outline" className="gap-2 bg-white/5 border-white/20 text-white hover:bg-white/10" data-testid="button-admin-newsletter">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-newsletter">
               <Mail size={16} />
               Admin Newsletter
             </Button>
           </Link>
           <Link href="/admin/materiais">
-            <Button variant="outline" className="gap-2 bg-white/5 border-white/20 text-white hover:bg-white/10" data-testid="button-admin-materiais">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-materiais">
               <Book size={16} />
               Admin Materiais
             </Button>
@@ -349,64 +347,65 @@ export default function AdminCoupons() {
             Admin Cupons
           </Button>
         </div>
+      </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20" data-testid="card-total-coupons">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-white/80 flex items-center gap-2">
-                <Tag size={16} className="text-blue-400" />
-                Total de Cupons
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white" data-testid="text-total-coupons">{stats.totalCoupons}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20" data-testid="card-active-coupons">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-white/80 flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-green-400" />
-                Cupons Ativos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white" data-testid="text-active-coupons">{stats.activeCoupons}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-500/20" data-testid="card-total-redemptions">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-white/80 flex items-center gap-2">
-                <Users size={16} className="text-purple-400" />
-                Total de Usos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white" data-testid="text-total-redemptions">{stats.totalRedemptions}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20" data-testid="card-total-discount">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-white/80 flex items-center gap-2">
-                <DollarSign size={16} className="text-orange-400" />
-                Desconto Concedido
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white" data-testid="text-total-discount">
-                {formatCurrency(stats.totalDiscountGiven)}
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <Card data-testid="card-total-coupons">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total de Cupons</p>
+                <p className="text-2xl font-bold" data-testid="text-total-coupons">{stats.totalCoupons}</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <Tag className="text-bright-blue" size={24} />
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Main Content */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+        <Card data-testid="card-active-coupons">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Cupons Ativos</p>
+                <p className="text-2xl font-bold" data-testid="text-active-coupons">{stats.activeCoupons}</p>
+              </div>
+              <CheckCircle2 className="text-green-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-total-redemptions">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total de Usos</p>
+                <p className="text-2xl font-bold" data-testid="text-total-redemptions">{stats.totalRedemptions}</p>
+              </div>
+              <Users className="text-purple-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-total-discount">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Desconto Concedido</p>
+                <p className="text-2xl font-bold" data-testid="text-total-discount">
+                  {formatCurrency(stats.totalDiscountGiven)}
+                </p>
+              </div>
+              <DollarSign className="text-orange-500" size={24} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content */}
+      <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-xl font-bold text-white">Lista de Cupons</CardTitle>
+            <CardTitle className="text-xl font-bold">Lista de Cupons</CardTitle>
             <Dialog open={isCreateDialogOpen} onOpenChange={(open) => {
               setIsCreateDialogOpen(open);
               if (!open) {
@@ -420,12 +419,12 @@ export default function AdminCoupons() {
                   Criar Cupom
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-[#0d0b3a] border-white/20 text-white max-w-2xl" data-testid="dialog-create-edit">
+              <DialogContent className="max-w-2xl" data-testid="dialog-create-edit">
                 <DialogHeader>
                   <DialogTitle className="text-xl">
                     {editingCoupon ? "Editar Cupom" : "Criar Novo Cupom"}
                   </DialogTitle>
-                  <DialogDescription className="text-white/60">
+                  <DialogDescription>
                     {editingCoupon ? "Atualize as informações do cupom" : "Preencha os dados para criar um novo cupom de desconto"}
                   </DialogDescription>
                 </DialogHeader>
@@ -433,27 +432,27 @@ export default function AdminCoupons() {
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="code" className="text-white">Código do Cupom</Label>
+                      <Label htmlFor="code">Código do Cupom</Label>
                       <Input
                         id="code"
                         placeholder="Ex: LANCAMENTO30"
                         value={formData.code}
                         onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-white/40 mt-1"
+                        className="mt-1"
                         data-testid="input-code"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="discountType" className="text-white">Tipo de Desconto</Label>
+                      <Label htmlFor="discountType">Tipo de Desconto</Label>
                       <Select
                         value={formData.discountType}
                         onValueChange={(value: "percent" | "fixed") => setFormData({ ...formData, discountType: value })}
                       >
-                        <SelectTrigger className="bg-white/10 border-white/20 text-white mt-1" data-testid="select-discount-type">
+                        <SelectTrigger className="mt-1" data-testid="select-discount-type">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#0d0b3a] border-white/20 text-white">
+                        <SelectContent>
                           <SelectItem value="percent">Percentual (%)</SelectItem>
                           <SelectItem value="fixed">Valor Fixo (R$)</SelectItem>
                         </SelectContent>
@@ -462,20 +461,20 @@ export default function AdminCoupons() {
                   </div>
 
                   <div>
-                    <Label htmlFor="description" className="text-white">Descrição</Label>
+                    <Label htmlFor="description">Descrição</Label>
                     <Input
                       id="description"
                       placeholder="Ex: Desconto de lançamento de 30%"
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40 mt-1"
+                      className="mt-1"
                       data-testid="input-description"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="discountValue" className="text-white">
+                      <Label htmlFor="discountValue">
                         Valor do Desconto {formData.discountType === "percent" ? "(%)" : "(centavos)"}
                       </Label>
                       <Input
@@ -486,16 +485,16 @@ export default function AdminCoupons() {
                         placeholder={formData.discountType === "percent" ? "30" : "1990"}
                         value={formData.discountValue}
                         onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-white/40 mt-1"
+                        className="mt-1"
                         data-testid="input-discount-value"
                       />
                       {formData.discountType === "fixed" && (
-                        <p className="text-xs text-white/50 mt-1">Em centavos (ex: 1990 = R$ 19,90)</p>
+                        <p className="text-xs text-muted-foreground mt-1">Em centavos (ex: 1990 = R$ 19,90)</p>
                       )}
                     </div>
 
                     <div>
-                      <Label htmlFor="maxUses" className="text-white">Limite de Usos</Label>
+                      <Label htmlFor="maxUses">Limite de Usos</Label>
                       <Input
                         id="maxUses"
                         type="number"
@@ -504,7 +503,7 @@ export default function AdminCoupons() {
                         placeholder="Ilimitado"
                         value={formData.maxUses}
                         onChange={(e) => setFormData({ ...formData, maxUses: e.target.value })}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-white/40 mt-1"
+                        className="mt-1"
                         data-testid="input-max-uses"
                       />
                     </div>
@@ -512,15 +511,15 @@ export default function AdminCoupons() {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="applicablePlans" className="text-white">Planos Aplicáveis</Label>
+                      <Label htmlFor="applicablePlans">Planos Aplicáveis</Label>
                       <Select
                         value={formData.applicablePlans}
                         onValueChange={(value: any) => setFormData({ ...formData, applicablePlans: value })}
                       >
-                        <SelectTrigger className="bg-white/10 border-white/20 text-white mt-1" data-testid="select-applicable-plans">
+                        <SelectTrigger className="mt-1" data-testid="select-applicable-plans">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#0d0b3a] border-white/20 text-white">
+                        <SelectContent>
                           <SelectItem value="all">Todos os planos</SelectItem>
                           <SelectItem value="monthly">Apenas Mensal</SelectItem>
                           <SelectItem value="annual">Apenas Anual</SelectItem>
@@ -529,26 +528,26 @@ export default function AdminCoupons() {
                     </div>
 
                     <div>
-                      <Label htmlFor="validFrom" className="text-white">Válido de</Label>
+                      <Label htmlFor="validFrom">Válido de</Label>
                       <Input
                         id="validFrom"
                         type="date"
                         value={formData.validFrom}
                         onChange={(e) => setFormData({ ...formData, validFrom: e.target.value })}
-                        className="bg-white/10 border-white/20 text-white mt-1"
+                        className="mt-1"
                         data-testid="input-valid-from"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="validUntil" className="text-white">Válido até</Label>
+                      <Label htmlFor="validUntil">Válido até</Label>
                       <Input
                         id="validUntil"
                         type="date"
                         min={formData.validFrom}
                         value={formData.validUntil}
                         onChange={(e) => setFormData({ ...formData, validUntil: e.target.value })}
-                        className="bg-white/10 border-white/20 text-white mt-1"
+                        className="mt-1"
                         placeholder="Opcional"
                         data-testid="input-valid-until"
                       />
@@ -564,7 +563,6 @@ export default function AdminCoupons() {
                       setEditingCoupon(null);
                       resetForm();
                     }}
-                    className="bg-white/5 border-white/20 text-white hover:bg-white/10"
                     data-testid="button-cancel"
                   >
                     Cancelar
@@ -572,7 +570,6 @@ export default function AdminCoupons() {
                   <Button
                     onClick={handleSubmit}
                     disabled={createMutation.isPending || updateMutation.isPending}
-                    className="bg-bright-blue hover:bg-blue-600 text-white"
                     data-testid="button-submit"
                   >
                     {editingCoupon ? "Atualizar" : "Criar"} Cupom
@@ -583,9 +580,9 @@ export default function AdminCoupons() {
           </CardHeader>
           <CardContent>
             {couponsLoading ? (
-              <div className="text-center py-8 text-white/60">Carregando cupons...</div>
+              <div className="text-center py-8 text-muted-foreground">Carregando cupons...</div>
             ) : !coupons || coupons.length === 0 ? (
-              <div className="text-center py-8 text-white/60">
+              <div className="text-center py-8 text-muted-foreground">
                 Nenhum cupom criado ainda. Clique em "Criar Cupom" para começar.
               </div>
             ) : (
@@ -593,20 +590,20 @@ export default function AdminCoupons() {
                 {coupons.map((coupon) => (
                   <Card
                     key={coupon.id}
-                    className={`bg-white/5 border ${coupon.isActive ? 'border-green-500/30' : 'border-red-500/30'} p-4`}
+                    className="p-4 border-2"
                     data-testid={`card-coupon-${coupon.code}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                          <h3 className="text-lg font-bold flex items-center gap-2">
                             <Tag size={18} className="text-bright-blue" />
                             {coupon.code}
                           </h3>
-                          <Badge className={coupon.isActive ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}>
+                          <Badge variant={coupon.isActive ? "default" : "secondary"}>
                             {coupon.isActive ? "Ativo" : "Inativo"}
                           </Badge>
-                          <Badge variant="outline" className="text-white/70">
+                          <Badge variant="outline">
                             {coupon.discountType === "percent" ? (
                               <span className="flex items-center gap-1">
                                 <Percent size={12} />
@@ -617,8 +614,8 @@ export default function AdminCoupons() {
                             )}
                           </Badge>
                         </div>
-                        <p className="text-white/70 text-sm mb-2">{coupon.description}</p>
-                        <div className="flex items-center gap-4 text-xs text-white/50">
+                        <p className="text-sm text-muted-foreground mb-2">{coupon.description}</p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <span>Usos: {coupon.currentUses}/{coupon.maxUses || "∞"}</span>
                           <span>Válido: {formatDate(coupon.validFrom)}</span>
                           {coupon.validUntil && <span>até {formatDate(coupon.validUntil)}</span>}
@@ -632,11 +629,6 @@ export default function AdminCoupons() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleToggleActive(coupon)}
-                          className={`${
-                            coupon.isActive
-                              ? "bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20"
-                              : "bg-green-500/10 border-green-500/30 text-green-400 hover:bg-green-500/20"
-                          }`}
                           data-testid={`button-toggle-${coupon.code}`}
                         >
                           {coupon.isActive ? <XCircle size={16} /> : <CheckCircle2 size={16} />}
@@ -645,7 +637,6 @@ export default function AdminCoupons() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleEdit(coupon)}
-                          className="bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
                           data-testid={`button-edit-${coupon.code}`}
                         >
                           <Edit size={16} />
@@ -658,7 +649,6 @@ export default function AdminCoupons() {
                               deleteMutation.mutate(coupon.id);
                             }
                           }}
-                          className="bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20"
                           data-testid={`button-delete-${coupon.code}`}
                         >
                           <Trash2 size={16} />
@@ -671,7 +661,6 @@ export default function AdminCoupons() {
             )}
           </CardContent>
         </Card>
-      </div>
     </div>
   );
 }
