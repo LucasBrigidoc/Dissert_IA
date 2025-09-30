@@ -114,7 +114,7 @@ export const mockTestimonials = [
     id: 1,
     name: "Maria Fernanda",
     initials: "MF",
-    text: "Passei na USP graças ao Dissert AI! A ferramenta me ajudou a estruturar melhor meus argumentos.",
+    text: "Passei na USP graças ao Dissert IA! A ferramenta me ajudou a estruturar melhor meus argumentos.",
     rating: 5
   },
   {

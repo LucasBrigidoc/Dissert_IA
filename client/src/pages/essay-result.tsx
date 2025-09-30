@@ -112,7 +112,7 @@ export function EssayResult({
         pdf.setPage(i);
         pdf.setFontSize(8);
         pdf.setTextColor(128, 128, 128);
-        pdf.text(`Gerado por DissertAI - Página ${i} de ${totalPages}`, margin, pageHeight - 10);
+        pdf.text(`Gerado por DissertIA - Página ${i} de ${totalPages}`, margin, pageHeight - 10);
         pdf.text(`Estrutura: ${structure.name}`, 190, pageHeight - 10, { align: 'right' });
       }
       

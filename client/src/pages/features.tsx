@@ -83,7 +83,7 @@ export default function Features() {
               <div className="w-80 h-80 sm:w-96 sm:h-96 md:w-[400px] md:h-[400px] mx-auto flex items-center justify-center">
                 <img 
                   src="/imagem/fimagem1.svg" 
-                  alt="Funcionalidades DissertAI" 
+                  alt="Funcionalidades DissertIA" 
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -345,7 +345,7 @@ export default function Features() {
         <LiquidGlassCard className="gradient-bg rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 text-center text-white" data-testid="card-cta">
           <h2 className="text-xl sm:text-3xl font-bold mb-3 sm:mb-4">Pronto para Transformar sua Escrita?</h2>
           <p className="text-base sm:text-xl mb-4 sm:mb-8 text-white/90">
-            Junte-se aos milhares de vestibulandos e concurseiros que já estão transformando sua escrita com o DissertAI
+            Junte-se aos milhares de vestibulandos e concurseiros que já estão transformando sua escrita com o DissertIA
           </p>
           <Button asChild className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale" data-testid="button-try-free">
             <Link href="/signup">Experimente Grátis</Link>

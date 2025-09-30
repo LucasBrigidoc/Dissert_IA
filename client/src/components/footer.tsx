@@ -54,7 +54,7 @@ export function Footer() {
                 <Sparkles className="text-sm" style={{color: '#5087ff'}} />
               </div>
               <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
-                DISSERT<span style={{color: '#ffffff'}}>AI</span>
+                DISSERT<span style={{color: '#ffffff'}}>IA</span>
               </span>
             </div>
             <p className="text-white/70 mb-4">
@@ -158,7 +158,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-white/20 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-white/70">
-          <p className="text-sm md:text-base">&copy; 2025 DissertAI. Todos os direitos reservados.</p>
+          <p className="text-sm md:text-base">&copy; 2025 DissertIA. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

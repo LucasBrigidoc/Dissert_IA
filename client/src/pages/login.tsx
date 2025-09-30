@@ -101,7 +101,7 @@ export default function Login() {
               <div className="text-center">
                 <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4 font-playfair flex items-center justify-center gap-2 sm:gap-3" style={{color: '#5087ff'}}>
                   <Sparkles size={28} className="sm:w-8 sm:h-8 lg:w-[52px] lg:h-[52px]" style={{color: '#ffffff'}} />
-                  DISSERT<span style={{color: '#ffffff'}}>AI</span>
+                  DISSERT<span style={{color: '#ffffff'}}>IA</span>
                 </h2>
                 <div className="block lg:hidden">
                   <HeroCharacter variant="study" size="sm" />

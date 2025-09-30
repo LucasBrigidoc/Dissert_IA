@@ -34,7 +34,7 @@ export default function Landing() {
                 Revolucione Sua Escrita com IA
               </h1>
               <p className="text-base sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-hero-subtitle">
-                O Dissert AI é seu assistente pessoal 24/7 para dominar a arte de escrever redações incríveis para vestibulares e concursos
+                O Dissert IA é seu assistente pessoal 24/7 para dominar a arte de escrever redações incríveis para vestibulares e concursos
               </p>
               <p className="text-sm sm:text-lg mb-4 sm:mb-8 text-white/80" data-testid="text-hero-description">
                 Sua Redação Nota 1000 Apenas a Passos de Distância 

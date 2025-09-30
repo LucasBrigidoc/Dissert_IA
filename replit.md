@@ -1,6 +1,6 @@
 # Overview
 
-DissertAI is a SaaS educational platform for Brazilian students preparing for entrance exams (vestibulares) and competitive exams (concursos). It uses AI to provide personalized writing assistance, featuring tools like the Socratic Argument Architect, Intelligent Repertoire Explorer, and personalized structure creators. The platform aims to combine AI with pedagogical expertise to revolutionize essay writing, offering a modern "liquid glass" design with a blue-themed color scheme.
+DissertIA is a SaaS educational platform for Brazilian students preparing for entrance exams (vestibulares) and competitive exams (concursos). It uses AI to provide personalized writing assistance, featuring tools like the Socratic Argument Architect, Intelligent Repertoire Explorer, and personalized structure creators. The platform aims to combine AI with pedagogical expertise to revolutionize essay writing, offering a modern "liquid glass" design with a blue-themed color scheme.
 
 # User Preferences
 
@@ -35,7 +35,7 @@ Preferred communication style: Simple, everyday language.
 - **Build Process**: Separate client (Vite) and server (esbuild) builds.
 
 ## Design System
-- **Color Palette**: Custom CSS variables for DissertAI brand colors (dark blue, bright blue, soft gray).
+- **Color Palette**: Custom CSS variables for DissertIA brand colors (dark blue, bright blue, soft gray).
 - **Typography**: Inter font family.
 - **Component Library**: Consistent UI components.
 - **Responsive Design**: Mobile-first approach with Tailwind.

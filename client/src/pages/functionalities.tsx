@@ -192,7 +192,7 @@ export default function FunctionalitiesPage() {
         {/* Page Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-dark-blue mb-4">Todas as Funcionalidades</h1>
-          <p className="text-lg text-soft-gray">Explore todas as ferramentas do DissertAI para revolucionar sua escrita</p>
+          <p className="text-lg text-soft-gray">Explore todas as ferramentas do DissertIA para revolucionar sua escrita</p>
         </div>
 
         {/* Core Features Section */}

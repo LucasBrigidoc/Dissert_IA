@@ -13,7 +13,7 @@ export default function About() {
       <section className="gradient-bg min-h-[85vh] flex flex-col justify-center relative overflow-hidden pt-24 pb-8">
         <div className="container mx-auto px-4 sm:px-6 w-full flex flex-col justify-center space-y-4 sm:space-y-6 md:space-y-8">
           <div className="text-center text-white mb-2 sm:mb-3 md:mb-4">
-            <h1 className="font-bold mb-3 sm:mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl" data-testid="text-about-title">Sobre o Dissert AI</h1>
+            <h1 className="font-bold mb-3 sm:mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl" data-testid="text-about-title">Sobre o Dissert IA</h1>
             <p className="text-white/90 sm:text-base md:text-lg lg:text-xl max-w-4xl mx-auto text-[25px]">
               Democratizando excelência na escrita para todas as pessoas com foco no vestibular dos alunos do Brasil
             </p>
@@ -34,7 +34,7 @@ export default function About() {
             </div>
             <div className="w-full md:w-1/2 text-center flex items-center justify-center">
               <div className="mx-auto flex items-center justify-center">
-                <img src="/imagem/fimagem3.svg" alt="Ilustração DissertAI" className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain" />
+                <img src="/imagem/fimagem3.svg" alt="Ilustração DissertIA" className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain" />
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function About() {
 
         {/* Why DissertAI is Special */}
         <div className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-why-special-title">Por Que o Dissert AI é Tão Bom?</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-why-special-title">Por Que o Dissert IA é Tão Bom?</h2>
           <div className="space-y-6 sm:space-y-8">
             <LiquidGlassCard className="p-8" data-testid="card-neuropsychological-methodology">
               <div className="flex items-start">

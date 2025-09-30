@@ -196,7 +196,7 @@ export default function BibliotecaPage() {
     // Cabeçalho do documento
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.text('DissertAI - Biblioteca Pessoal', margin, yPosition);
+    doc.text('DissertIA - Biblioteca Pessoal', margin, yPosition);
     yPosition += 15;
 
     // Informações do arquivo
@@ -280,7 +280,7 @@ export default function BibliotecaPage() {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'italic');
-      doc.text(`Página ${i} de ${pageCount} - Gerado pelo DissertAI`, 
+      doc.text(`Página ${i} de ${pageCount} - Gerado pelo DissertIA`, 
         pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
     }
 

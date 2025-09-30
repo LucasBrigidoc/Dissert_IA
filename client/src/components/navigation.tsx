@@ -43,7 +43,7 @@ export function Navigation() {
             <Sparkles className="text-white text-sm" />
           </div>
           <span className="text-3xl font-bold font-playfair" style={{color: '#5087ff'}}>
-            DISSERT<span style={{color: '#6b7280'}}>AI</span>
+            DISSERT<span style={{color: '#6b7280'}}>IA</span>
           </span>
         </Link>
         
