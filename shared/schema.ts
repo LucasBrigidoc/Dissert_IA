@@ -603,6 +603,14 @@ export const userSubscriptions = pgTable("user_subscriptions", {
   cancellationReason: text("cancellation_reason"),
   isAutoRenew: boolean("is_auto_renew").default(true),
   paymentMethodId: text("payment_method_id"),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  stripeStatus: text("stripe_status"),
+  currentPeriodStart: timestamp("current_period_start"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
+  couponId: varchar("coupon_id").references(() => coupons.id),
+  effectivePriceCentavos: integer("effective_price_centavos"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -620,8 +628,61 @@ export const transactions = pgTable("transactions", {
   paymentProcessorId: text("payment_processor_id"), // External payment ID
   description: text("description"),
   metadata: json("metadata").default({}),
+  processor: text("processor").notNull().default("stripe"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripeInvoiceId: text("stripe_invoice_id"),
+  stripeChargeId: text("stripe_charge_id"),
+  periodStart: timestamp("period_start"),
+  periodEnd: timestamp("period_end"),
+  discountAppliedCentavos: integer("discount_applied_centavos").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Coupons table for discount management
+export const coupons = pgTable("coupons", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  code: text("code").notNull().unique(), // Stored in uppercase
+  discountType: varchar("discount_type", { enum: ["percent", "fixed"] }).notNull(),
+  discountValue: integer("discount_value").notNull(), // 1-100 for percent, centavos for fixed
+  currency: text("currency").notNull().default("BRL"),
+  maxRedemptions: integer("max_redemptions").default(-1), // -1 = unlimited
+  maxRedemptionsPerUser: integer("max_redemptions_per_user").default(-1), // -1 = unlimited
+  validFrom: timestamp("valid_from").notNull(),
+  validUntil: timestamp("valid_until").notNull(),
+  isActive: boolean("is_active").default(true),
+  planScope: varchar("plan_scope", { enum: ["all", "specific"] }).notNull().default("all"),
+  eligiblePlanIds: json("eligible_plan_ids").default([]),
+  stripeCouponId: text("stripe_coupon_id"),
+  metadata: json("metadata").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Coupon redemptions table for tracking coupon usage
+export const couponRedemptions = pgTable("coupon_redemptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  couponId: varchar("coupon_id").notNull().references(() => coupons.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  subscriptionId: varchar("subscription_id").references(() => userSubscriptions.id),
+  transactionId: varchar("transaction_id").references(() => transactions.id),
+  redeemedAt: timestamp("redeemed_at").defaultNow(),
+  discountAppliedCentavos: integer("discount_applied_centavos").notNull(),
+  context: json("context").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Payment events table for webhook audit
+export const paymentEvents = pgTable("payment_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  processor: text("processor").notNull().default("stripe"),
+  eventId: text("event_id").notNull().unique(),
+  type: text("type").notNull(),
+  payload: json("payload").notNull(),
+  receivedAt: timestamp("received_at").defaultNow(),
+  processedAt: timestamp("processed_at"),
+  status: varchar("status", { enum: ["received", "processed", "failed"] }).notNull(),
+  error: text("error"),
 });
 
 // Revenue metrics table for aggregated financial data
@@ -787,6 +848,20 @@ export const churnPredictions = pgTable("churn_predictions", {
 export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertUserSubscriptionSchema = createInsertSchema(userSubscriptions).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertTransactionSchema = createInsertSchema(transactions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCouponSchema = createInsertSchema(coupons).omit({ id: true, createdAt: true, updatedAt: true }).refine(
+  (data) => {
+    if (data.discountType === "percent") {
+      return data.discountValue >= 1 && data.discountValue <= 100;
+    }
+    return true;
+  },
+  {
+    message: "Para tipo 'percent', o valor do desconto deve estar entre 1 e 100",
+    path: ["discountValue"],
+  }
+);
+export const insertCouponRedemptionSchema = createInsertSchema(couponRedemptions).omit({ id: true, createdAt: true });
+export const insertPaymentEventSchema = createInsertSchema(paymentEvents).omit({ id: true });
 export const insertRevenueMetricSchema = createInsertSchema(revenueMetrics).omit({ id: true, createdAt: true });
 export const insertUserEventSchema = createInsertSchema(userEvents).omit({ id: true, createdAt: true });
 export const insertConversionFunnelSchema = createInsertSchema(conversionFunnels).omit({ id: true, createdAt: true });
@@ -813,6 +888,12 @@ export type UserSubscription = typeof userSubscriptions.$inferSelect;
 export type InsertUserSubscription = z.infer<typeof insertUserSubscriptionSchema>;
 export type Transaction = typeof transactions.$inferSelect;
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
+export type Coupon = typeof coupons.$inferSelect;
+export type InsertCoupon = z.infer<typeof insertCouponSchema>;
+export type CouponRedemption = typeof couponRedemptions.$inferSelect;
+export type InsertCouponRedemption = z.infer<typeof insertCouponRedemptionSchema>;
+export type PaymentEvent = typeof paymentEvents.$inferSelect;
+export type InsertPaymentEvent = z.infer<typeof insertPaymentEventSchema>;
 export type RevenueMetric = typeof revenueMetrics.$inferSelect;
 export type InsertRevenueMetric = z.infer<typeof insertRevenueMetricSchema>;
 
