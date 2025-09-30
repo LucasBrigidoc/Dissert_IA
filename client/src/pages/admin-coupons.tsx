@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Tag, Plus, Edit, Trash2, RefreshCw, TrendingUp, Users, DollarSign, Percent, CheckCircle2, XCircle } from "lucide-react";
+import { Tag, Plus, Edit, Trash2, RefreshCw, TrendingUp, Users, DollarSign, Percent, CheckCircle2, XCircle, BarChart3, Mail, Book } from "lucide-react";
 import { Link } from "wouter";
 
 interface Coupon {
@@ -321,12 +321,33 @@ export default function AdminCoupons() {
               <RefreshCw size={16} className="mr-2" />
               Atualizar
             </Button>
-            <Link href="/admin">
-              <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10">
-                ← Voltar ao Dashboard
-              </Button>
-            </Link>
           </div>
+        </div>
+
+        {/* Admin Navigation */}
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin">
+            <Button variant="outline" className="gap-2 bg-white/5 border-white/20 text-white hover:bg-white/10" data-testid="button-admin-dashboard">
+              <BarChart3 size={16} />
+              Admin Principal
+            </Button>
+          </Link>
+          <Link href="/admin/newsletter">
+            <Button variant="outline" className="gap-2 bg-white/5 border-white/20 text-white hover:bg-white/10" data-testid="button-admin-newsletter">
+              <Mail size={16} />
+              Admin Newsletter
+            </Button>
+          </Link>
+          <Link href="/admin/materiais">
+            <Button variant="outline" className="gap-2 bg-white/5 border-white/20 text-white hover:bg-white/10" data-testid="button-admin-materiais">
+              <Book size={16} />
+              Admin Materiais
+            </Button>
+          </Link>
+          <Button variant="default" className="gap-2" data-testid="button-admin-coupons">
+            <Tag size={16} />
+            Admin Cupons
+          </Button>
         </div>
 
         {/* Statistics Cards */}
