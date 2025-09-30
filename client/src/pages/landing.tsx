@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { HeroCharacter } from "@/components/hero-character";
 import { mockFeatures, mockTestimonials } from "@/lib/mock-data";
@@ -158,6 +159,7 @@ export default function Landing() {
           <p className="sm:text-sm text-white/70 mt-3 sm:mt-4 text-[18px]" data-testid="text-trial-info">7 dias grátis. Cancele quando quiser.</p>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
