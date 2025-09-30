@@ -6,7 +6,6 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Tag, CheckCircle2, XCircle, Sparkles, CreditCard, Shield } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
@@ -221,9 +220,6 @@ export default function Checkout() {
                     }`}
                     data-testid="button-select-annual"
                   >
-                    <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-bright-blue text-white text-xs font-semibold">
-                      2 meses grátis!
-                    </Badge>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex-1 pr-20">
                         <h3 className="text-lg sm:text-xl font-bold text-dark-blue mb-1">Plano Anual</h3>
