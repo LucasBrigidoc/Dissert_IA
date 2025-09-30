@@ -35,6 +35,7 @@ import CreateStructurePage from "@/pages/create-structure-page";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminNewsletter from "@/pages/admin-newsletter";
 import AdminMateriais from "@/pages/admin-materiais";
+import Checkout from "@/pages/checkout";
 
 function Router() {
   return (
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/checkout" component={Checkout} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/features" component={Features} />
       <Route path="/about" component={About} />

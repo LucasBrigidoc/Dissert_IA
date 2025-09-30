@@ -157,7 +157,7 @@ export default function Pricing() {
                 }`}
                 data-testid={`button-plan-${plan.id}`}
               >
-                <Link href={plan.id === "free" ? "/signup" : "/signup"}>
+                <Link href={plan.id === "free" ? "/signup" : `/checkout?plan=${isAnnual ? "annual" : "monthly"}`}>
                   {plan.id === "pro" && <span className="mr-2">🚀</span>}
                   {plan.buttonText}
                   {plan.id === "pro" && <span className="ml-2">→</span>}
