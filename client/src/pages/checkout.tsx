@@ -432,7 +432,7 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Full Width Benefits Section */}
+          {/* Benefits Section - Same width as Order Summary */}
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
             <div></div>
             <div className="bg-gradient-to-br from-bright-blue to-purple-500 rounded-2xl shadow-2xl p-6 sm:p-8">
