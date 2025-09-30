@@ -13,13 +13,15 @@ import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 
-// Initialize Stripe
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+// Initialize Stripe (optional in development)
+let stripe: Stripe | null = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-08-27.basil",
+  });
+} else {
+  console.warn('⚠️ STRIPE_SECRET_KEY not found. Payment features will be disabled.');
 }
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-08-27.basil",
-});
 
 // Initialize services
 const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
@@ -264,6 +266,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create checkout session with optional coupon
   app.post("/api/checkout/create-session", async (req, res) => {
     try {
+      if (!stripe) {
+        return res.status(503).json({ message: "Payment service is not configured" });
+      }
+      
       const checkoutSchema = z.object({
         planId: z.string(),
         couponCode: z.string().optional(),
@@ -374,6 +380,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Stripe webhook handler
   app.post("/api/webhooks/stripe", async (req, res) => {
+    if (!stripe) {
+      return res.status(503).json({ message: "Payment service is not configured" });
+    }
+    
     const sig = req.headers['stripe-signature'];
     
     if (!sig) {
