@@ -226,8 +226,9 @@ export default function Checkout() {
                         <p className="text-soft-gray text-sm">Melhor custo-benefício</p>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl sm:text-3xl font-bold text-dark-blue">R$ 599,00</div>
-                        <div className="text-soft-gray text-sm">/ano</div>
+                        <div className="text-2xl sm:text-3xl font-bold text-dark-blue">R$ 49,92</div>
+                        <div className="text-soft-gray text-sm">/mês</div>
+                        <div className="text-soft-gray text-xs mt-1">R$ 599,00/ano</div>
                         <div className="text-green-600 text-xs font-bold mt-1">
                           Economize R$ 190,80
                         </div>
