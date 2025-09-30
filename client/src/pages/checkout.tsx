@@ -432,37 +432,34 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Benefits Section - Same width as Order Summary */}
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-            <div></div>
-            <div className="bg-gradient-to-br from-bright-blue to-purple-500 rounded-2xl shadow-2xl p-6 sm:p-8">
-              <h3 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-                <Sparkles className="text-white" size={24} />
-                O que você vai receber:
-              </h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-white">
-                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
-                  <span className="text-sm sm:text-base">Acesso ilimitado a todas as funcionalidades</span>
-                </li>
-                <li className="flex items-start gap-3 text-white">
-                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
-                  <span className="text-sm sm:text-base">IA avançada para correção e sugestões de redação</span>
-                </li>
-                <li className="flex items-start gap-3 text-white">
-                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
-                  <span className="text-sm sm:text-base">Biblioteca completa de repertórios e estruturas</span>
-                </li>
-                <li className="flex items-start gap-3 text-white">
-                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
-                  <span className="text-sm sm:text-base">Simulações ilimitadas de redações</span>
-                </li>
-                <li className="flex items-start gap-3 text-white">
-                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
-                  <span className="text-sm sm:text-base">Suporte prioritário</span>
-                </li>
-              </ul>
-            </div>
+          {/* Benefits Section - Full Width */}
+          <div className="bg-gradient-to-br from-bright-blue to-purple-500 rounded-2xl shadow-2xl p-6 sm:p-8">
+            <h3 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+              <Sparkles className="text-white" size={24} />
+              O que você vai receber:
+            </h3>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3 text-white">
+                <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-sm sm:text-base">Acesso ilimitado a todas as funcionalidades</span>
+              </li>
+              <li className="flex items-start gap-3 text-white">
+                <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-sm sm:text-base">IA avançada para correção e sugestões de redação</span>
+              </li>
+              <li className="flex items-start gap-3 text-white">
+                <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-sm sm:text-base">Biblioteca completa de repertórios e estruturas</span>
+              </li>
+              <li className="flex items-start gap-3 text-white">
+                <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-sm sm:text-base">Simulações ilimitadas de redações</span>
+              </li>
+              <li className="flex items-start gap-3 text-white">
+                <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-sm sm:text-base">Suporte prioritário</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
