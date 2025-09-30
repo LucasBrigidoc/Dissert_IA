@@ -4,16 +4,16 @@ import { currencyService } from "./currency-service";
 
 /**
  * Weekly Cost Limiting Service for DissertAI
- * Manages unified weekly AI usage limits based on cost (R$11.25/week = R$45/month)
+ * Manages unified weekly AI usage limits based on cost (R$8.75/week = R$35/month)
  */
 export class WeeklyCostLimitingService {
   constructor(private storage: IStorage) {}
 
   /**
-   * Weekly cost limit in centavos (R$11.25 = 1125 centavos)
-   * This ensures monthly limit stays at R$45 (4 weeks × R$11.25 = R$45)
+   * Weekly cost limit in centavos (R$8.75 = 875 centavos)
+   * This ensures monthly limit stays at R$35 (4 weeks × R$8.75 = R$35)
    */
-  private static readonly WEEKLY_COST_LIMIT_CENTAVOS = 1125; // R$11.25
+  private static readonly WEEKLY_COST_LIMIT_CENTAVOS = 875; // R$8.75
 
   /**
    * Get start of current week (Monday 00:00:00)
