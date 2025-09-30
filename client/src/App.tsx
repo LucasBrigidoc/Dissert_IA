@@ -35,6 +35,7 @@ import CreateStructurePage from "@/pages/create-structure-page";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminNewsletter from "@/pages/admin-newsletter";
 import AdminMateriais from "@/pages/admin-materiais";
+import AdminCoupons from "@/pages/admin-coupons";
 import Checkout from "@/pages/checkout";
 
 function Router() {
@@ -71,6 +72,7 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/newsletter" component={AdminNewsletter} />
       <Route path="/admin/materiais" component={AdminMateriais} />
+      <Route path="/admin/coupons" component={AdminCoupons} />
       <Route component={NotFound} />
     </Switch>
   );

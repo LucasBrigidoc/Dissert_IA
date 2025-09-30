@@ -359,6 +359,7 @@ export interface IStorage {
   
   redeemCoupon(redemption: InsertCouponRedemption): Promise<CouponRedemption>;
   getCouponRedemptions(couponId: string): Promise<CouponRedemption[]>;
+  getAllCouponRedemptions(): Promise<CouponRedemption[]>;
   getUserCouponRedemptions(userId: string): Promise<CouponRedemption[]>;
   getCouponUsageCount(couponId: string, userId?: string): Promise<number>;
   
@@ -3158,6 +3159,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.couponRedemptions.values()).filter(
       (redemption) => redemption.couponId === couponId
     );
+  }
+
+  async getAllCouponRedemptions(): Promise<CouponRedemption[]> {
+    return Array.from(this.couponRedemptions.values());
   }
 
   async getUserCouponRedemptions(userId: string): Promise<CouponRedemption[]> {

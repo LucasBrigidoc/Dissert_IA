@@ -555,6 +555,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all coupon redemptions (for admin stats)
+  app.get("/api/admin/coupons/redemptions", async (req, res) => {
+    try {
+      const redemptions = await storage.getAllCouponRedemptions();
+      res.json(redemptions);
+    } catch (error) {
+      console.error("List coupon redemptions error:", error);
+      res.status(500).json({ message: "Erro ao listar usos de cupons" });
+    }
+  });
+
   // Admin: Get coupon
   app.get("/api/admin/coupons/:id", async (req, res) => {
     try {
