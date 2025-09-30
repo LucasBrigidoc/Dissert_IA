@@ -331,37 +331,82 @@ export default function Checkout() {
             {/* Right Column: Order Summary - Full Height */}
             <div className="flex flex-col">
               <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 flex-1 flex flex-col" data-testid="card-order-summary">
-                <h2 className="text-2xl font-bold text-dark-blue mb-8">Resumo do Pedido</h2>
+                <h2 className="text-2xl font-bold text-dark-blue mb-6">Resumo do Pedido</h2>
 
-                <div className="space-y-5 mb-8 flex-1">
-                  <div className="flex justify-between items-center text-base">
-                    <span className="text-soft-gray font-medium" data-testid="text-plan-name">{currentPlan.name}</span>
-                    <span className="text-dark-blue font-bold text-lg" data-testid="text-plan-price">{formatPrice(currentPlan.price)}</span>
+                {/* Plan Details Section */}
+                <div className="bg-gray-50 rounded-xl p-5 mb-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex-1">
+                      <p className="text-dark-blue font-bold text-lg mb-1" data-testid="text-plan-name">
+                        {currentPlan.name}
+                      </p>
+                      {selectedPlan === "annual" && (
+                        <p className="text-bright-blue font-semibold text-base">
+                          12 meses pelo preço de 10
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-dark-blue font-bold text-2xl" data-testid="text-plan-price">
+                        {formatPrice(currentPlan.price)}
+                      </p>
+                      <p className="text-soft-gray text-sm">{currentPlan.period}</p>
+                    </div>
                   </div>
 
-                  {couponData && discountAmount > 0 && (
-                    <div className="flex justify-between items-center text-base">
-                      <span className="text-green-600 font-semibold" data-testid="text-discount-label">Desconto ({couponData.coupon.code})</span>
-                      <span className="text-green-600 font-bold text-lg" data-testid="text-discount-amount">-{formatPrice(discountAmount)}</span>
+                  {selectedPlan === "annual" && (
+                    <div className="bg-bright-blue/10 rounded-lg p-3 border-2 border-bright-blue/30">
+                      <p className="text-center text-bright-blue font-bold text-lg">
+                        💰 Valor mensal: {formatPrice(Math.round(currentPlan.price / 12))}/mês
+                      </p>
+                      <p className="text-center text-soft-gray text-xs mt-1">
+                        Economia de R$ 190,80 no ano!
+                      </p>
                     </div>
                   )}
+                </div>
 
-                  <div className="border-t-2 border-gray-200 pt-5 mt-auto">
+                {/* Coupon Section */}
+                {couponData && discountAmount > 0 && (
+                  <div className="bg-green-50 border-2 border-green-500 rounded-xl p-4 mb-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-xl sm:text-2xl font-bold text-dark-blue">Total</span>
-                      <span className="text-3xl sm:text-4xl font-bold text-bright-blue" data-testid="text-total-price">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="text-green-600" size={20} />
+                        <span className="text-green-700 font-semibold" data-testid="text-discount-label">
+                          Cupom {couponData.coupon.code}
+                        </span>
+                      </div>
+                      <span className="text-green-700 font-bold text-xl" data-testid="text-discount-amount">
+                        -{formatPrice(discountAmount)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Total Section */}
+                <div className="bg-gradient-to-br from-bright-blue/5 to-purple-500/5 rounded-xl p-6 mb-6 border-2 border-bright-blue/20">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-2xl font-bold text-dark-blue">Total a Pagar</span>
+                    <div className="text-right">
+                      <span className="text-4xl font-bold text-bright-blue" data-testid="text-total-price">
                         {formatPrice(finalPrice)}
                       </span>
                     </div>
-                    {selectedPlan === "annual" && finalPrice > 0 && (
-                      <p className="text-soft-gray text-sm text-right mt-2">
-                        ou {formatPrice(Math.round(finalPrice / 12))}/mês
-                      </p>
-                    )}
                   </div>
+                  {selectedPlan === "annual" && finalPrice > 0 && (
+                    <div className="text-right">
+                      <p className="text-soft-gray text-base font-medium">
+                        ou <span className="text-bright-blue font-bold">{formatPrice(Math.round(finalPrice / 12))}/mês</span>
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-auto space-y-4">
+                {/* Spacer */}
+                <div className="flex-1"></div>
+
+                {/* Payment Button and Security Info */}
+                <div className="space-y-4 mt-auto">
                   <Button
                     onClick={handleCheckout}
                     disabled={isProcessing}
@@ -381,12 +426,12 @@ export default function Checkout() {
                     )}
                   </Button>
 
-                  <div className="space-y-3 pt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-2 text-soft-gray text-sm">
+                  <div className="space-y-2 pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-center gap-2 text-soft-gray text-sm">
                       <Shield size={18} className="text-green-600" />
                       <span className="font-medium">Pagamento 100% seguro via Stripe</span>
                     </div>
-                    <p className="text-soft-gray text-xs leading-relaxed">
+                    <p className="text-soft-gray text-xs leading-relaxed text-center">
                       Ao clicar em "Ir para o Pagamento", você será redirecionado para o checkout seguro do Stripe.
                       Seus dados de pagamento são protegidos e nunca são armazenados em nossos servidores.
                     </p>
