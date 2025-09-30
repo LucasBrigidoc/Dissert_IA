@@ -81,6 +81,22 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
+## September 30, 2025 - Complete Rebranding from "Dissert AI" to "Dissert IA"
+- Successfully rebranded entire application from "DissertAI" to "DissertIA"
+- Updated all visual branding elements (headers, navigation, footers)
+- Changed all text references across the application:
+  - Navigation component logo
+  - Login and signup page headers
+  - Footer copyright and branding
+  - All page content references
+  - Mock data testimonials
+  - PDF generation headers and footers
+  - Image alt texts
+  - CSS comments
+- Maintained exact same styling, fonts, colors, and spacing
+- All changes applied via hot module reload without downtime
+- Visual verification completed with screenshots
+
 ## September 30, 2025 - Admin Pages Styling Consistency
 - Updated admin-coupons page to match standard admin page styling
   - Removed custom dark theme (gradient background, white text)
