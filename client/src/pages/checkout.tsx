@@ -330,20 +330,20 @@ export default function Checkout() {
 
             {/* Right Column: Order Summary - Full Height */}
             <div className="flex flex-col">
-              <div className="bg-white rounded-xl border border-gray-200 p-8 sm:p-10 flex-1 flex flex-col" data-testid="card-order-summary">
-                <h2 className="text-xl font-semibold text-dark-blue mb-8">Resumo</h2>
+              <div className="bg-gradient-to-br from-white to-bright-blue/5 rounded-2xl border-2 border-bright-blue/20 shadow-xl p-8 sm:p-10 flex-1 flex flex-col" data-testid="card-order-summary">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-bright-blue to-purple-500 bg-clip-text text-transparent mb-8">Resumo do Pedido</h2>
 
-                {/* Plan Details Section - Minimalist */}
+                {/* Plan Details Section */}
                 <div className="space-y-6 mb-8">
-                  <div className="flex justify-between items-baseline pb-6 border-b border-gray-100">
+                  <div className="flex justify-between items-baseline pb-6 border-b-2 border-bright-blue/20">
                     <div>
-                      <p className="text-base text-soft-gray mb-1">Plano</p>
-                      <p className="text-xl font-semibold text-dark-blue" data-testid="text-plan-name">
+                      <p className="text-sm text-bright-blue font-semibold mb-1">Plano Selecionado</p>
+                      <p className="text-xl font-bold text-dark-blue" data-testid="text-plan-name">
                         {currentPlan.name}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-3xl font-bold text-dark-blue" data-testid="text-plan-price">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-bright-blue to-purple-500 bg-clip-text text-transparent" data-testid="text-plan-price">
                         {formatPrice(currentPlan.price)}
                       </p>
                       <p className="text-sm text-soft-gray mt-1">{currentPlan.period}</p>
@@ -351,44 +351,48 @@ export default function Checkout() {
                   </div>
 
                   {selectedPlan === "annual" && (
-                    <div className="bg-bright-blue/5 rounded-lg p-5">
-                      <p className="text-bright-blue font-medium text-base">
-                        {formatPrice(Math.round(currentPlan.price / 12))}/mês • Economize R$ 190,80
+                    <div className="bg-gradient-to-r from-bright-blue/10 to-purple-500/10 rounded-xl p-5 border border-bright-blue/30">
+                      <p className="text-bright-blue font-semibold text-base">
+                        💰 {formatPrice(Math.round(currentPlan.price / 12))}/mês • Economize R$ 190,80
                       </p>
                     </div>
                   )}
                 </div>
 
-                {/* Coupon Section - Minimalist */}
+                {/* Coupon Section */}
                 {couponData && discountAmount > 0 && (
-                  <div className="flex justify-between items-center pb-6 border-b border-gray-100 mb-6">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle2 className="text-green-600" size={22} />
-                      <div>
-                        <p className="text-sm text-soft-gray">Desconto</p>
-                        <p className="text-base font-semibold text-dark-blue" data-testid="text-discount-label">
-                          {couponData.coupon.code}
-                        </p>
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 mb-6 border-2 border-green-500/30">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-green-500 rounded-full p-1">
+                          <CheckCircle2 className="text-white" size={18} />
+                        </div>
+                        <div>
+                          <p className="text-xs text-green-700 font-medium">Desconto Aplicado</p>
+                          <p className="text-base font-bold text-green-800" data-testid="text-discount-label">
+                            {couponData.coupon.code}
+                          </p>
+                        </div>
                       </div>
+                      <span className="text-2xl font-bold text-green-600" data-testid="text-discount-amount">
+                        -{formatPrice(discountAmount)}
+                      </span>
                     </div>
-                    <span className="text-xl font-bold text-green-600" data-testid="text-discount-amount">
-                      -{formatPrice(discountAmount)}
-                    </span>
                   </div>
                 )}
 
-                {/* Total Section - Minimalist */}
-                <div className="py-8 mb-6">
+                {/* Total Section */}
+                <div className="bg-gradient-to-br from-bright-blue/10 to-purple-500/10 rounded-xl p-8 mb-6 border-2 border-bright-blue/30">
                   <div className="flex justify-between items-baseline mb-3">
-                    <span className="text-lg font-medium text-soft-gray">Total</span>
-                    <span className="text-5xl font-bold text-dark-blue" data-testid="text-total-price">
+                    <span className="text-xl font-bold text-dark-blue">Total a Pagar</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-bright-blue to-purple-500 bg-clip-text text-transparent" data-testid="text-total-price">
                       {formatPrice(finalPrice)}
                     </span>
                   </div>
                   {selectedPlan === "annual" && finalPrice > 0 && (
                     <div className="text-right">
-                      <p className="text-base text-soft-gray">
-                        {formatPrice(Math.round(finalPrice / 12))}/mês
+                      <p className="text-base text-bright-blue font-semibold">
+                        ou {formatPrice(Math.round(finalPrice / 12))}/mês
                       </p>
                     </div>
                   )}
@@ -402,7 +406,7 @@ export default function Checkout() {
                   <Button
                     onClick={handleCheckout}
                     disabled={isProcessing}
-                    className="w-full bg-dark-blue hover:bg-dark-blue/90 text-white py-7 text-lg font-semibold transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-bright-blue to-purple-500 hover:from-bright-blue/90 hover:to-purple-600 text-white py-7 text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300"
                     data-testid="button-checkout"
                   >
                     {isProcessing ? (
@@ -418,9 +422,9 @@ export default function Checkout() {
                     )}
                   </Button>
 
-                  <div className="flex items-center justify-center gap-2 text-soft-gray text-sm">
-                    <Shield size={16} className="text-soft-gray" />
-                    <span>Pagamento seguro via Stripe</span>
+                  <div className="flex items-center justify-center gap-2 text-soft-gray">
+                    <Shield size={18} className="text-green-600" />
+                    <span className="font-medium">Pagamento seguro via Stripe</span>
                   </div>
                 </div>
               </div>
