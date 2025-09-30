@@ -163,14 +163,15 @@ export default function Checkout() {
   const discountAmount = currentPlan.price - finalPrice;
 
   return (
-    <div className="min-h-screen gradient-bg">
+    <div className="min-h-screen bg-gradient-to-br from-[#1e3a8a] via-[#2563eb] to-[#3b82f6]">
       <Navigation />
-      <div className="container mx-auto px-3 sm:px-6 pt-16 sm:pt-20 pb-12">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3" data-testid="text-checkout-title">
+      <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-12">
+        {/* Hero Section */}
+        <div className="text-center mb-10 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4" data-testid="text-checkout-title">
             Finalize sua Assinatura
           </h1>
-          <p className="text-white/70 text-sm sm:text-base">
+          <p className="text-white/90 text-base sm:text-lg max-w-2xl mx-auto">
             Escolha seu plano e complete o pagamento de forma segura
           </p>
         </div>
@@ -178,9 +179,10 @@ export default function Checkout() {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column: Plan Selection */}
           <div className="space-y-6">
-            <LiquidGlassCard className="p-6" data-testid="card-plan-selection">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Sparkles className="text-bright-blue" size={24} />
+            {/* Plan Selection Card */}
+            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8" data-testid="card-plan-selection">
+              <h2 className="text-2xl font-bold text-dark-blue mb-6 flex items-center gap-3">
+                <Sparkles className="text-bright-blue" size={28} />
                 Selecione seu Plano
               </h2>
 
@@ -188,21 +190,21 @@ export default function Checkout() {
                 {/* Monthly Plan */}
                 <button
                   onClick={() => handlePlanChange("monthly")}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 ${
+                  className={`w-full text-left p-5 sm:p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-lg ${
                     selectedPlan === "monthly"
-                      ? "border-bright-blue bg-bright-blue/10"
-                      : "border-white/20 hover:border-white/40"
+                      ? "border-bright-blue bg-bright-blue/5 shadow-md"
+                      : "border-gray-200 hover:border-bright-blue/50"
                   }`}
                   data-testid="button-select-monthly"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-bold text-white">Plano Mensal</h3>
-                      <p className="text-white/60 text-sm">Sem compromisso, cancele quando quiser</p>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-dark-blue mb-1">Plano Mensal</h3>
+                      <p className="text-soft-gray text-sm">Sem compromisso, cancele quando quiser</p>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-white">R$ 65,90</div>
-                      <div className="text-white/60 text-sm">/mês</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-dark-blue">R$ 65,90</div>
+                      <div className="text-soft-gray text-sm">/mês</div>
                     </div>
                   </div>
                 </button>
@@ -210,47 +212,47 @@ export default function Checkout() {
                 {/* Annual Plan */}
                 <button
                   onClick={() => handlePlanChange("annual")}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 relative overflow-hidden ${
+                  className={`w-full text-left p-5 sm:p-6 rounded-xl border-2 transition-all duration-300 relative overflow-hidden hover:shadow-lg ${
                     selectedPlan === "annual"
-                      ? "border-bright-blue bg-bright-blue/10"
-                      : "border-white/20 hover:border-white/40"
+                      ? "border-bright-blue bg-bright-blue/5 shadow-md"
+                      : "border-gray-200 hover:border-bright-blue/50"
                   }`}
                   data-testid="button-select-annual"
                 >
-                  <Badge className="absolute top-2 right-2 bg-gradient-to-r from-purple-600 to-bright-blue text-white">
+                  <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-bright-blue text-white text-xs font-semibold">
                     2 meses grátis!
                   </Badge>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-bold text-white">Plano Anual</h3>
-                      <p className="text-white/60 text-sm">Melhor custo-benefício</p>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1 pr-20">
+                      <h3 className="text-lg sm:text-xl font-bold text-dark-blue mb-1">Plano Anual</h3>
+                      <p className="text-soft-gray text-sm">Melhor custo-benefício</p>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-white">R$ 599,00</div>
-                      <div className="text-white/60 text-sm">/ano</div>
-                      <div className="text-green-400 text-xs font-semibold mt-1">
+                      <div className="text-2xl sm:text-3xl font-bold text-dark-blue">R$ 599,00</div>
+                      <div className="text-soft-gray text-sm">/ano</div>
+                      <div className="text-green-600 text-xs font-bold mt-1">
                         Economize R$ 190,80
                       </div>
                     </div>
                   </div>
                 </button>
               </div>
-            </LiquidGlassCard>
+            </div>
 
             {/* Coupon Code Section */}
-            <LiquidGlassCard className="p-6" data-testid="card-coupon">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Tag className="text-bright-blue" size={24} />
+            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8" data-testid="card-coupon">
+              <h2 className="text-2xl font-bold text-dark-blue mb-6 flex items-center gap-3">
+                <Tag className="text-bright-blue" size={28} />
                 Código de Desconto
               </h2>
 
               {!couponData ? (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <Label htmlFor="coupon" className="text-white/90 text-sm">
+                    <Label htmlFor="coupon" className="text-dark-blue font-medium mb-2 block">
                       Tem um cupom? Digite aqui:
                     </Label>
-                    <div className="flex gap-2 mt-2">
+                    <div className="flex gap-2">
                       <Input
                         id="coupon"
                         type="text"
@@ -265,14 +267,14 @@ export default function Checkout() {
                             handleValidateCoupon();
                           }
                         }}
-                        className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                        className="flex-1 border-gray-300 focus:border-bright-blue"
                         disabled={validatingCoupon || isProcessing}
                         data-testid="input-coupon-code"
                       />
                       <Button
                         onClick={handleValidateCoupon}
                         disabled={validatingCoupon || isProcessing || !couponCode.trim()}
-                        className="bg-bright-blue hover:bg-blue-600 text-white px-6"
+                        className="bg-bright-blue hover:bg-blue-600 text-white px-6 font-semibold"
                         data-testid="button-validate-coupon"
                       >
                         {validatingCoupon ? (
@@ -285,25 +287,25 @@ export default function Checkout() {
                   </div>
 
                   {couponError && (
-                    <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 p-3 rounded-lg" data-testid="text-coupon-error">
-                      <XCircle size={16} />
-                      {couponError}
+                    <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg border border-red-200" data-testid="text-coupon-error">
+                      <XCircle size={18} />
+                      <span className="font-medium">{couponError}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4" data-testid="card-coupon-applied">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="text-green-400 mt-1" size={20} />
-                      <div>
-                        <p className="text-green-400 font-bold text-lg">
+                <div className="bg-green-50 border-2 border-green-500 rounded-xl p-5" data-testid="card-coupon-applied">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 flex-1">
+                      <CheckCircle2 className="text-green-600 mt-1 flex-shrink-0" size={24} />
+                      <div className="flex-1">
+                        <p className="text-green-700 font-bold text-lg mb-1">
                           Cupom "{couponData.coupon.code}" aplicado!
                         </p>
-                        <p className="text-white/70 text-sm mt-1">
+                        <p className="text-green-600 text-sm mb-2">
                           {couponData.coupon.description}
                         </p>
-                        <p className="text-green-400 text-sm font-semibold mt-2">
+                        <p className="text-green-700 text-base font-bold">
                           Desconto: {couponData.discountDisplay}
                         </p>
                       </div>
@@ -312,7 +314,7 @@ export default function Checkout() {
                       variant="ghost"
                       size="sm"
                       onClick={handleRemoveCoupon}
-                      className="text-white/60 hover:text-white hover:bg-white/10"
+                      className="text-soft-gray hover:text-dark-blue hover:bg-gray-100"
                       disabled={isProcessing}
                       data-testid="button-remove-coupon"
                     >
@@ -321,36 +323,37 @@ export default function Checkout() {
                   </div>
                 </div>
               )}
-            </LiquidGlassCard>
+            </div>
           </div>
 
           {/* Right Column: Order Summary */}
           <div className="space-y-6">
-            <LiquidGlassCard className="p-6" data-testid="card-order-summary">
-              <h2 className="text-xl font-bold text-white mb-6">Resumo do Pedido</h2>
+            {/* Order Summary Card */}
+            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8" data-testid="card-order-summary">
+              <h2 className="text-2xl font-bold text-dark-blue mb-8">Resumo do Pedido</h2>
 
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-white/90">
-                  <span data-testid="text-plan-name">{currentPlan.name}</span>
-                  <span data-testid="text-plan-price">{formatPrice(currentPlan.price)}</span>
+              <div className="space-y-5 mb-8">
+                <div className="flex justify-between items-center text-base">
+                  <span className="text-soft-gray font-medium" data-testid="text-plan-name">{currentPlan.name}</span>
+                  <span className="text-dark-blue font-bold text-lg" data-testid="text-plan-price">{formatPrice(currentPlan.price)}</span>
                 </div>
 
                 {couponData && discountAmount > 0 && (
-                  <div className="flex justify-between text-green-400 font-semibold">
-                    <span data-testid="text-discount-label">Desconto ({couponData.coupon.code})</span>
-                    <span data-testid="text-discount-amount">-{formatPrice(discountAmount)}</span>
+                  <div className="flex justify-between items-center text-base">
+                    <span className="text-green-600 font-semibold" data-testid="text-discount-label">Desconto ({couponData.coupon.code})</span>
+                    <span className="text-green-600 font-bold text-lg" data-testid="text-discount-amount">-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
 
-                <div className="border-t border-white/20 pt-4">
+                <div className="border-t-2 border-gray-200 pt-5 mt-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-white">Total</span>
-                    <span className="text-3xl font-bold text-bright-blue" data-testid="text-total-price">
+                    <span className="text-xl sm:text-2xl font-bold text-dark-blue">Total</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-bright-blue" data-testid="text-total-price">
                       {formatPrice(finalPrice)}
                     </span>
                   </div>
                   {selectedPlan === "annual" && finalPrice > 0 && (
-                    <p className="text-white/60 text-sm text-right mt-1">
+                    <p className="text-soft-gray text-sm text-right mt-2">
                       ou {formatPrice(Math.round(finalPrice / 12))}/mês
                     </p>
                   )}
@@ -360,60 +363,63 @@ export default function Checkout() {
               <Button
                 onClick={handleCheckout}
                 disabled={isProcessing}
-                className="w-full bg-gradient-to-r from-bright-blue to-purple-500 hover:from-bright-blue hover:to-purple-600 text-white py-6 text-lg font-bold shadow-xl"
+                className="w-full bg-gradient-to-r from-bright-blue to-purple-500 hover:from-bright-blue hover:to-purple-600 text-white py-6 text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300"
                 data-testid="button-checkout"
               >
                 {isProcessing ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="animate-spin" size={20} />
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin" size={22} />
                     Processando...
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">
-                    <CreditCard size={20} />
+                  <span className="flex items-center justify-center gap-2">
+                    <CreditCard size={22} />
                     Ir para o Pagamento
                   </span>
                 )}
               </Button>
 
-              <div className="mt-6 space-y-3">
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <Shield size={16} />
-                  <span>Pagamento 100% seguro via Stripe</span>
+              <div className="mt-6 space-y-3 pt-6 border-t border-gray-200">
+                <div className="flex items-center gap-2 text-soft-gray text-sm">
+                  <Shield size={18} className="text-green-600" />
+                  <span className="font-medium">Pagamento 100% seguro via Stripe</span>
                 </div>
-                <p className="text-white/50 text-xs">
+                <p className="text-soft-gray text-xs leading-relaxed">
                   Ao clicar em "Ir para o Pagamento", você será redirecionado para o checkout seguro do Stripe.
                   Seus dados de pagamento são protegidos e nunca são armazenados em nossos servidores.
                 </p>
               </div>
-            </LiquidGlassCard>
+            </div>
 
             {/* Benefits Reminder */}
-            <LiquidGlassCard className="p-6 bg-gradient-to-br from-bright-blue/10 to-purple-500/10 border border-bright-blue/30">
-              <h3 className="text-lg font-bold text-white mb-3">✨ O que você vai receber:</h3>
-              <ul className="space-y-2 text-white/80 text-sm">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="text-bright-blue mt-0.5" size={16} />
-                  <span>Acesso ilimitado a todas as funcionalidades</span>
+            <div className="bg-gradient-to-br from-bright-blue to-purple-500 rounded-2xl shadow-2xl p-6 sm:p-8">
+              <h3 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+                <Sparkles className="text-white" size={24} />
+                O que você vai receber:
+              </h3>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-white">
+                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-sm sm:text-base">Acesso ilimitado a todas as funcionalidades</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="text-bright-blue mt-0.5" size={16} />
-                  <span>IA avançada para correção e sugestões de redação</span>
+                <li className="flex items-start gap-3 text-white">
+                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-sm sm:text-base">IA avançada para correção e sugestões de redação</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="text-bright-blue mt-0.5" size={16} />
-                  <span>Biblioteca completa de repertórios e estruturas</span>
+                <li className="flex items-start gap-3 text-white">
+                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-sm sm:text-base">Biblioteca completa de repertórios e estruturas</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="text-bright-blue mt-0.5" size={16} />
-                  <span>Simulações ilimitadas de redações</span>
+                <li className="flex items-start gap-3 text-white">
+                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-sm sm:text-base">Simulações ilimitadas de redações</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="text-bright-blue mt-0.5" size={16} />
-                  <span>Suporte prioritário</span>
+                <li className="flex items-start gap-3 text-white">
+                  <CheckCircle2 className="text-white mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-sm sm:text-base">Suporte prioritário</span>
                 </li>
               </ul>
-            </LiquidGlassCard>
+            </div>
           </div>
         </div>
       </div>
