@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -457,7 +456,6 @@ export default function Checkout() {
             </ul>
           </div>
         </div>
-        <Footer />
       </div>
     </div>
   );
