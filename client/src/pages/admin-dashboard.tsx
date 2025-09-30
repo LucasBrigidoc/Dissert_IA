@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -369,6 +369,12 @@ export default function AdminDashboard() {
             <Button variant="outline" className="gap-2" data-testid="button-admin-materiais">
               <Book size={16} />
               Admin Materiais
+            </Button>
+          </Link>
+          <Link href="/admin/coupons">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-coupons">
+              <Tag size={16} />
+              Admin Cupons
             </Button>
           </Link>
         </div>
