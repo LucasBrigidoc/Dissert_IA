@@ -78,3 +78,15 @@ Preferred communication style: Simple, everyday language.
 ## Replit-Specific
 - **@replit/vite-plugin-runtime-error-modal**: Development error overlay.
 - **@replit/vite-plugin-cartographer**: Replit workspace integration.
+
+# Recent Changes
+
+## September 30, 2025 - GitHub Import Setup
+- Successfully imported project from GitHub to Replit environment
+- Database schema synced using `npm run db:push`
+- Workflow configured: "Start application" runs `npm run dev` on port 5000 with webview output
+- Deployment configured for autoscale with build and start commands
+- PostgreSQL database connected via Neon (DATABASE_URL configured)
+- Application running successfully on port 5000
+- Note: GEMINI_API_KEY not set (using fallback mode) - configure if AI text modification features are needed
+- Note: SENDGRID_API_KEY not set - configure if email features are needed
