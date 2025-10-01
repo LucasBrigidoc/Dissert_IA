@@ -39,6 +39,7 @@ import AdminNewsletter from "@/pages/admin-newsletter";
 import AdminMateriais from "@/pages/admin-materiais";
 import AdminCoupons from "@/pages/admin-coupons";
 import Checkout from "@/pages/checkout";
+import SubscriptionPage from "@/pages/subscription";
 
 function Router() {
   return (
@@ -64,6 +65,11 @@ function Router() {
       <Route path="/settings">
         <ProtectedRoute>
           <Settings />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/subscription">
+        <ProtectedRoute>
+          <SubscriptionPage />
         </ProtectedRoute>
       </Route>
       <Route path="/goals">
