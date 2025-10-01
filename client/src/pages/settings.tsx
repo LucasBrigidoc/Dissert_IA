@@ -392,6 +392,67 @@ export default function SettingsPage() {
           </LiquidGlassCard>
         </div>
 
+        {/* Usage Limits Section */}
+        {limits && (
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-usage-limits">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                <TrendingUp className="text-white" size={20} />
+              </div>
+              <h3 className="text-xl font-semibold text-dark-blue">Limites de Uso de IA</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-soft-gray">Uso {limits.periodLabel || 'periódico'}</span>
+                  <span className="text-sm font-medium text-dark-blue">
+                    {limits.percentageUsed.toFixed(1)}% usado
+                  </span>
+                </div>
+                {limits.weeklyLimit > 0 ? (
+                  <Progress value={getUsagePercentage()} className="h-2" />
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-green-600">
+                    <Sparkles size={16} />
+                    <span>Uso ilimitado</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg">
+                  <div className="text-sm text-soft-gray">Plano</div>
+                  <div className="text-lg font-bold text-dark-blue">
+                    {limits.planName}
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg">
+                  <div className="text-sm text-soft-gray">Créditos Restantes</div>
+                  <div className="text-lg font-bold text-dark-blue">
+                    {limits.weeklyLimit > 0 
+                      ? `${(100 - limits.percentageUsed).toFixed(1)}%` 
+                      : "Ilimitado"}
+                  </div>
+                </div>
+              </div>
+              
+              {!limits.canUseAI && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
+                  <div>
+                    <div className="font-medium text-red-600">Limite atingido</div>
+                    <div className="text-sm text-red-500 mt-1">
+                      Você atingiu o limite de uso. Faça upgrade para continuar usando IA.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </LiquidGlassCard>
+        )}
+
         {/* Account Status + Plan Section */}
         <div className="grid lg:grid-cols-2 gap-6">
           
@@ -522,67 +583,6 @@ export default function SettingsPage() {
             )}
           </LiquidGlassCard>
         </div>
-
-        {/* Usage Limits Section */}
-        {limits && (
-          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-usage-limits">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <TrendingUp className="text-white" size={20} />
-              </div>
-              <h3 className="text-xl font-semibold text-dark-blue">Limites de Uso de IA</h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm text-soft-gray">Uso {limits.periodLabel || 'periódico'}</span>
-                  <span className="text-sm font-medium text-dark-blue">
-                    {limits.percentageUsed.toFixed(1)}% usado
-                  </span>
-                </div>
-                {limits.weeklyLimit > 0 ? (
-                  <Progress value={getUsagePercentage()} className="h-2" />
-                ) : (
-                  <div className="flex items-center gap-2 text-sm text-green-600">
-                    <Sparkles size={16} />
-                    <span>Uso ilimitado</span>
-                  </div>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div className="p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg">
-                  <div className="text-sm text-soft-gray">Plano</div>
-                  <div className="text-lg font-bold text-dark-blue">
-                    {limits.planName}
-                  </div>
-                </div>
-                
-                <div className="p-3 bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 rounded-lg">
-                  <div className="text-sm text-soft-gray">Créditos Restantes</div>
-                  <div className="text-lg font-bold text-dark-blue">
-                    {limits.weeklyLimit > 0 
-                      ? `${(100 - limits.percentageUsed).toFixed(1)}%` 
-                      : "Ilimitado"}
-                  </div>
-                </div>
-              </div>
-              
-              {!limits.canUseAI && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
-                  <div>
-                    <div className="font-medium text-red-600">Limite atingido</div>
-                    <div className="text-sm text-red-500 mt-1">
-                      Você atingiu o limite de uso. Faça upgrade para continuar usando IA.
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </LiquidGlassCard>
-        )}
 
         {/* Transactions History */}
         {transactions && transactions.length > 0 && (
