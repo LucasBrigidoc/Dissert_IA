@@ -157,6 +157,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get public newsletter feed (sent newsletters for authenticated users)
+  app.get("/api/newsletter/feed", async (req, res) => {
+    try {
+      // Get all sent newsletters
+      const newsletters = await storage.getAllNewsletters("sent");
+      res.json(newsletters);
+    } catch (error) {
+      console.error("Get newsletter feed error:", error);
+      res.status(500).json({ message: "Erro ao buscar newsletters" });
+    }
+  });
+
   // ===================== ADMIN NEWSLETTER ENDPOINTS =====================
   
   // Get all subscribers (admin only)
