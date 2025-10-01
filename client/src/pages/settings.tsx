@@ -536,7 +536,7 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-soft-gray">Uso {limits.periodLabel}</span>
+                  <span className="text-sm text-soft-gray">Uso {limits.periodLabel || 'periódico'}</span>
                   <span className="text-sm font-medium text-dark-blue">
                     {limits.percentageUsed.toFixed(1)}% usado
                   </span>

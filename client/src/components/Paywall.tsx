@@ -78,7 +78,7 @@ export function Paywall({
                 </span>
               </div>
               <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                Limite {limits.periodLabel}: {limits.percentageUsed.toFixed(1)}% usado • {(100 - limits.percentageUsed).toFixed(1)}% restante
+                Limite {limits.periodLabel || 'periódico'}: {limits.percentageUsed.toFixed(1)}% usado • {(100 - limits.percentageUsed).toFixed(1)}% restante
               </p>
             </div>
           )}

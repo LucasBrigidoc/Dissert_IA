@@ -272,7 +272,7 @@ export default function SubscriptionPage() {
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Uso de IA</h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Acompanhe seu consumo {limits.periodLabel}
+                  Acompanhe seu consumo {limits.periodLabel || 'periódico'}
                 </p>
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function SubscriptionPage() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Uso {limits.periodLabel}
+                    Uso {limits.periodLabel || 'periódico'}
                   </span>
                   <span className="text-sm font-bold text-gray-900 dark:text-white" data-testid="text-usage">
                     {limits.percentageUsed.toFixed(1)}% usado
@@ -306,7 +306,7 @@ export default function SubscriptionPage() {
                         Limite atingido
                       </p>
                       <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-                        Você atingiu seu limite {limits.periodLabel} de uso de IA. Faça upgrade para continuar usando.
+                        Você atingiu seu limite {limits.periodLabel || 'periódico'} de uso de IA. Faça upgrade para continuar usando.
                       </p>
                     </div>
                   </div>
