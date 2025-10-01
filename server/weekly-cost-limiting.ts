@@ -3,49 +3,85 @@ import { InsertWeeklyUsage, WeeklyUsage } from "@shared/schema";
 import { currencyService } from "./currency-service";
 
 /**
- * Weekly Cost Limiting Service for DissertAI
- * Manages unified weekly AI usage limits based on cost (R$8.75/week = R$35/month)
+ * Cost Limiting Service for DissertAI
+ * Manages AI usage limits with different periods for each plan:
+ * - Free plan: R$2.19 (219 centavos) every 15 days
+ * - Pro plan: R$8.75 (875 centavos) every 7 days
  */
 export class WeeklyCostLimitingService {
   constructor(private storage: IStorage) {}
 
   /**
-   * Weekly cost limit in centavos (R$8.75 = 875 centavos)
-   * This ensures monthly limit stays at R$35 (4 weeks × R$8.75 = R$35)
+   * Plan limits and periods
    */
-  private static readonly WEEKLY_COST_LIMIT_CENTAVOS = 875; // R$8.75
+  private static readonly PLAN_LIMITS = {
+    free: {
+      limitCentavos: 219,  // R$2.19 (25% of pro)
+      periodDays: 15       // Reset every 15 days
+    },
+    pro: {
+      limitCentavos: 875,  // R$8.75
+      periodDays: 7        // Reset every 7 days (weekly)
+    }
+  };
 
   /**
-   * Get start of current week (Monday 00:00:00)
+   * Get start of current period based on plan type
+   * Free: 15-day periods starting from first day of month
+   * Pro: 7-day periods (weekly, Monday 00:00:00)
    */
-  private getWeekStart(date: Date = new Date()): Date {
-    const weekStart = new Date(date);
-    const dayOfWeek = weekStart.getDay();
-    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Sunday = 0, Monday = 1
+  private getPeriodStart(planType: 'free' | 'pro', date: Date = new Date()): Date {
+    const periodStart = new Date(date);
     
-    weekStart.setDate(weekStart.getDate() - daysToMonday);
-    weekStart.setHours(0, 0, 0, 0);
+    if (planType === 'pro') {
+      // Pro: Weekly periods starting Monday
+      const dayOfWeek = periodStart.getDay();
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      periodStart.setDate(periodStart.getDate() - daysToMonday);
+    } else {
+      // Free: 15-day periods
+      // Calculate which period we're in (0-based from start of month)
+      const dayOfMonth = periodStart.getDate();
+      const periodIndex = Math.floor((dayOfMonth - 1) / 15);
+      const periodStartDay = (periodIndex * 15) + 1;
+      periodStart.setDate(periodStartDay);
+    }
     
-    return weekStart;
+    periodStart.setHours(0, 0, 0, 0);
+    return periodStart;
   }
 
   /**
-   * Get or create weekly usage record
+   * Get period duration in days for a plan
    */
-  private async getOrCreateWeeklyUsage(identifier: string): Promise<WeeklyUsage> {
-    const weekStart = this.getWeekStart();
+  private getPeriodDays(planType: 'free' | 'pro'): number {
+    return WeeklyCostLimitingService.PLAN_LIMITS[planType].periodDays;
+  }
+
+  /**
+   * Get cost limit in centavos for a plan
+   */
+  private getLimitCentavos(planType: 'free' | 'pro'): number {
+    return WeeklyCostLimitingService.PLAN_LIMITS[planType].limitCentavos;
+  }
+
+  /**
+   * Get or create usage record for current period
+   */
+  private async getOrCreateUsageRecord(identifier: string, planType: 'free' | 'pro'): Promise<WeeklyUsage> {
+    const periodStart = this.getPeriodStart(planType);
     
-    // Try to find existing weekly usage
-    const existing = await this.storage.findWeeklyUsage(identifier, weekStart);
+    // Try to find existing usage record for this period
+    const existing = await this.storage.findWeeklyUsage(identifier, periodStart);
     
     if (existing) {
       return existing;
     }
 
-    // Create new weekly usage record
+    // Create new usage record for this period
     const newUsage: InsertWeeklyUsage = {
       identifier,
-      weekStart,
+      weekStart: periodStart,
       totalCostCentavos: 0,
       operationCount: 0,
       operationBreakdown: {},
@@ -57,11 +93,12 @@ export class WeeklyCostLimitingService {
   }
 
   /**
-   * Check if operation is allowed within weekly cost limit
+   * Check if operation is allowed within cost limit for plan
    */
   async checkWeeklyCostLimit(
     identifier: string,
-    estimatedCostCentavos: number
+    estimatedCostCentavos: number,
+    planType: 'free' | 'pro'
   ): Promise<{
     allowed: boolean;
     currentUsageCentavos: number;
@@ -72,40 +109,51 @@ export class WeeklyCostLimitingService {
     weekEnd: Date;
     daysUntilReset: number;
   }> {
-    const weeklyUsage = await this.getOrCreateWeeklyUsage(identifier);
-    const currentUsage = weeklyUsage.totalCostCentavos || 0;
+    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
+    const currentUsage = usageRecord.totalCostCentavos || 0;
     const projectedUsage = currentUsage + estimatedCostCentavos;
     
-    const weekStart = this.getWeekStart();
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
+    const periodStart = this.getPeriodStart(planType);
+    const periodEnd = new Date(periodStart);
+    
+    if (planType === 'free' && periodStart.getDate() >= 16) {
+      // For free plan second period (16-end), set to last day of month
+      periodEnd.setMonth(periodEnd.getMonth() + 1);
+      periodEnd.setDate(1);
+      periodEnd.setHours(0, 0, 0, 0);
+    } else {
+      // For pro plan or free plan first period, add period days
+      periodEnd.setDate(periodEnd.getDate() + this.getPeriodDays(planType));
+    }
     
     const now = new Date();
-    const msUntilReset = weekEnd.getTime() - now.getTime();
+    const msUntilReset = periodEnd.getTime() - now.getTime();
     const daysUntilReset = Math.ceil(msUntilReset / (1000 * 60 * 60 * 24));
     
-    const remaining = Math.max(0, WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS - currentUsage);
-    const percentage = Math.min(100, (currentUsage / WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS) * 100);
+    const limitCentavos = this.getLimitCentavos(planType);
+    const remaining = Math.max(0, limitCentavos - currentUsage);
+    const percentage = Math.min(100, (currentUsage / limitCentavos) * 100);
 
     return {
-      allowed: projectedUsage <= WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS,
+      allowed: projectedUsage <= limitCentavos,
       currentUsageCentavos: currentUsage,
-      limitCentavos: WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS,
+      limitCentavos,
       remainingCentavos: remaining,
       remainingPercentage: Math.max(0, 100 - percentage),
-      weekStart,
-      weekEnd,
+      weekStart: periodStart,
+      weekEnd: periodEnd,
       daysUntilReset
     };
   }
 
   /**
-   * Record AI operation cost and update weekly usage
+   * Record AI operation cost and update usage
    */
   async recordAIOperation(
     identifier: string,
     operation: string,
-    costCentavos: number
+    costCentavos: number,
+    planType: 'free' | 'pro'
   ): Promise<{
     success: boolean;
     newUsage: WeeklyUsage;
@@ -116,20 +164,20 @@ export class WeeklyCostLimitingService {
       usagePercentage: number;
     };
   }> {
-    const weeklyUsage = await this.getOrCreateWeeklyUsage(identifier);
+    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
     
     // Update usage counters
-    const newTotalCost = (weeklyUsage.totalCostCentavos || 0) + costCentavos;
-    const newOperationCount = (weeklyUsage.operationCount || 0) + 1;
+    const newTotalCost = (usageRecord.totalCostCentavos || 0) + costCentavos;
+    const newOperationCount = (usageRecord.operationCount || 0) + 1;
     
-    const operationBreakdown = { ...(weeklyUsage.operationBreakdown as any || {}) };
-    const costBreakdown = { ...(weeklyUsage.costBreakdown as any || {}) };
+    const operationBreakdown = { ...(usageRecord.operationBreakdown as any || {}) };
+    const costBreakdown = { ...(usageRecord.costBreakdown as any || {}) };
     
     operationBreakdown[operation] = (operationBreakdown[operation] || 0) + 1;
     costBreakdown[operation] = (costBreakdown[operation] || 0) + costCentavos;
 
-    // Update the weekly usage record
-    const updatedUsage = await this.storage.updateWeeklyUsage(weeklyUsage.id, {
+    // Update the usage record
+    const updatedUsage = await this.storage.updateWeeklyUsage(usageRecord.id, {
       totalCostCentavos: newTotalCost,
       operationCount: newOperationCount,
       operationBreakdown,
@@ -137,15 +185,16 @@ export class WeeklyCostLimitingService {
       lastOperation: new Date(),
     });
 
-    const usagePercentage = Math.min(100, (newTotalCost / WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS) * 100);
-    const remaining = Math.max(0, WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS - newTotalCost);
+    const limitCentavos = this.getLimitCentavos(planType);
+    const usagePercentage = Math.min(100, (newTotalCost / limitCentavos) * 100);
+    const remaining = Math.max(0, limitCentavos - newTotalCost);
 
     return {
       success: true,
       newUsage: updatedUsage,
       usageStats: {
         currentUsageCentavos: newTotalCost,
-        limitCentavos: WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS,
+        limitCentavos,
         remainingCentavos: remaining,
         usagePercentage
       }
@@ -153,9 +202,9 @@ export class WeeklyCostLimitingService {
   }
 
   /**
-   * Get current weekly usage stats for display
+   * Get current usage stats for display
    */
-  async getWeeklyUsageStats(identifier: string): Promise<{
+  async getWeeklyUsageStats(identifier: string, planType: 'free' | 'pro'): Promise<{
     currentUsageCentavos: number;
     limitCentavos: number;
     remainingCentavos: number;
@@ -173,19 +222,20 @@ export class WeeklyCostLimitingService {
       remainingBRL: string;
     };
   }> {
-    const weeklyUsage = await this.getOrCreateWeeklyUsage(identifier);
-    const currentUsage = weeklyUsage.totalCostCentavos || 0;
+    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
+    const currentUsage = usageRecord.totalCostCentavos || 0;
     
-    const weekStart = this.getWeekStart();
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
+    const periodStart = this.getPeriodStart(planType);
+    const periodEnd = new Date(periodStart);
+    periodEnd.setDate(periodEnd.getDate() + this.getPeriodDays(planType));
     
     const now = new Date();
-    const msUntilReset = weekEnd.getTime() - now.getTime();
+    const msUntilReset = periodEnd.getTime() - now.getTime();
     const daysUntilReset = Math.ceil(msUntilReset / (1000 * 60 * 60 * 24));
     
-    const remaining = Math.max(0, WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS - currentUsage);
-    const usagePercentage = Math.min(100, (currentUsage / WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS) * 100);
+    const limitCentavos = this.getLimitCentavos(planType);
+    const remaining = Math.max(0, limitCentavos - currentUsage);
+    const usagePercentage = Math.min(100, (currentUsage / limitCentavos) * 100);
     const remainingPercentage = Math.max(0, 100 - usagePercentage);
 
     // Format values to BRL for display
@@ -195,19 +245,19 @@ export class WeeklyCostLimitingService {
 
     return {
       currentUsageCentavos: currentUsage,
-      limitCentavos: WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS,
+      limitCentavos,
       remainingCentavos: remaining,
       usagePercentage,
       remainingPercentage,
-      operationCount: weeklyUsage.operationCount || 0,
-      operationBreakdown: weeklyUsage.operationBreakdown as any || {},
-      costBreakdown: weeklyUsage.costBreakdown as any || {},
-      weekStart,
-      weekEnd,
+      operationCount: usageRecord.operationCount || 0,
+      operationBreakdown: usageRecord.operationBreakdown as any || {},
+      costBreakdown: usageRecord.costBreakdown as any || {},
+      weekStart: periodStart,
+      weekEnd: periodEnd,
       daysUntilReset,
       formattedUsage: {
         currentBRL: formatCentavosToBRL(currentUsage),
-        limitBRL: formatCentavosToBRL(WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS),
+        limitBRL: formatCentavosToBRL(limitCentavos),
         remainingBRL: formatCentavosToBRL(remaining)
       }
     };
@@ -251,7 +301,7 @@ export class WeeklyCostLimitingService {
   /**
    * Get usage analytics for monitoring
    */
-  async getUsageAnalytics(identifier: string, weeks: number = 4): Promise<{
+  async getUsageAnalytics(identifier: string, planType: 'free' | 'pro', weeks: number = 4): Promise<{
     weeklyHistory: Array<{
       weekStart: Date;
       weekEnd: Date;
@@ -269,12 +319,14 @@ export class WeeklyCostLimitingService {
     totalCostPeriod: number;
   }> {
     const history = await this.storage.getWeeklyUsageHistory(identifier, weeks);
+    const limitCentavos = this.getLimitCentavos(planType);
+    const periodDays = this.getPeriodDays(planType);
     
     const weeklyHistory = history.map((usage: WeeklyUsage) => {
       const weekEnd = new Date(usage.weekStart);
-      weekEnd.setDate(weekEnd.getDate() + 7);
+      weekEnd.setDate(weekEnd.getDate() + periodDays);
       
-      const utilizationPercentage = ((usage.totalCostCentavos || 0) / WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS) * 100;
+      const utilizationPercentage = ((usage.totalCostCentavos || 0) / limitCentavos) * 100;
       
       return {
         weekStart: usage.weekStart,
@@ -299,7 +351,7 @@ export class WeeklyCostLimitingService {
     const peakUsageWeek = peakUsage ? {
       weekStart: peakUsage.weekStart,
       costCentavos: peakUsage.totalCostCentavos || 0,
-      utilizationPercentage: ((peakUsage.totalCostCentavos || 0) / WeeklyCostLimitingService.WEEKLY_COST_LIMIT_CENTAVOS) * 100
+      utilizationPercentage: ((peakUsage.totalCostCentavos || 0) / limitCentavos) * 100
     } : null;
 
     return {

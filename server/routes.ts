@@ -996,30 +996,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get subscription limits and usage
   app.get("/api/subscription/limits", requireAuth, async (req, res) => {
     try {
-      const { subscription, plan } = await subscriptionService.getUserSubscriptionWithPlan(req.user!.id);
-      const weeklyStats = await weeklyCostLimitingService.getWeeklyStats(req.user!.id);
+      const identifier = getAITrackingIdentifier(req);
+      const planType = await subscriptionService.getUserPlanType(req.user!.id);
+      const weeklyStats = await weeklyCostLimitingService.getWeeklyUsageStats(identifier, planType);
       
-      const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
-      const weeklyLimit = hasActiveSubscription ? -1 : 875; // -1 = unlimited for premium, 875 centavos for free
-      const weeklyUsage = weeklyStats.totalCost;
-      const percentageUsed = weeklyLimit === -1 ? 0 : Math.min(100, (weeklyUsage / weeklyLimit) * 100);
-      const canUseAI = weeklyLimit === -1 || weeklyUsage < weeklyLimit;
-      const remainingCredits = weeklyLimit === -1 ? 999999 : Math.max(0, weeklyLimit - weeklyUsage);
-      
-      // Calculate days until weekly reset (next Monday)
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const daysUntilReset = dayOfWeek === 1 ? 7 : dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+      const weeklyLimit = planType === 'free' ? 219 : 875; // 219 centavos for free, 875 for pro
+      const weeklyUsage = weeklyStats.currentUsageCentavos;
+      const percentageUsed = Math.min(100, (weeklyUsage / weeklyLimit) * 100);
+      const canUseAI = weeklyUsage < weeklyLimit;
+      const remainingCredits = Math.max(0, weeklyLimit - weeklyUsage);
       
       res.json({
-        hasActiveSubscription,
+        planType,
         canUseAI,
         weeklyUsage,
         weeklyLimit,
         remainingCredits,
         percentageUsed,
-        planName: plan?.name || "Gratuito",
-        daysUntilReset
+        planName: planType === 'pro' ? "Pro" : "Gratuito",
+        daysUntilReset: weeklyStats.daysUntilReset,
+        resetPeriodDays: planType === 'free' ? 15 : 7
       });
     } catch (error) {
       console.error("Get limits error:", error);
@@ -1452,6 +1448,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Analyze essay text and generate structure
   app.post("/api/structures/analyze", async (req, res) => {
     try {
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+        
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
+      }
+
       // Validate request body
       const validationResult = z.object({
         essayText: z.string().trim().min(50, "Essay text must be at least 50 characters"),
@@ -1509,6 +1526,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: Date.now() - Date.now() // This would be calculated properly in real implementation
       });
 
+      // Record AI operation usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        'structure_analysis',
+        100,
+        planType
+      );
+
       res.json({
         success: true,
         structure: structureAnalysis,
@@ -1526,6 +1551,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate essay using custom structure
   app.post("/api/essays/generate", async (req, res) => {
     try {
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 150, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+        
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
+      }
+
       // Validate request body with Zod
       const validationResult = z.object({
         structureName: z.string().trim().optional(),
@@ -1581,6 +1627,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: Date.now() - Date.now() // This would be calculated properly in real implementation
       });
 
+      // Record AI operation usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        'essay_generation',
+        150,
+        planType
+      );
+
       res.json({
         success: true,
         essay: essayResult.essay,
@@ -1603,23 +1657,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Intelligent repertoire search endpoint with rate limiting
   app.post("/api/repertoires/search", async (req, res) => {
     try {
-      // Check subscription limits for authenticated users
-      if (req.session.userId) {
-        const { subscription } = await subscriptionService.getUserSubscriptionWithPlan(req.session.userId);
-        const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
-        // Only check weekly limits for free users
-        if (!hasActiveSubscription) {
-          const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(req.session.userId, 100);
-          
-          if (!weeklyCheck.allowed) {
-            return res.status(403).json({ 
-              message: `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Faça upgrade para continuar!`,
-              upgradeRequired: true,
-              action: "upgrade"
-            });
-          }
-        }
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
       }
 
       const validatedQuery = searchQuerySchema.parse(req.body);
@@ -1755,6 +1811,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Single OPTIMIZED AI call that generates 6 repertoires
         const repertoireResult = await optimizedAnalysisService.generateRepertoiresBatchOptimized(query, filters, 6);
         const generatedRepertoires = repertoireResult.repertoires;
+        
+        // Record AI operation usage for generated repertoires
+        await weeklyCostLimitingService.recordAIOperation(
+          identifier,
+          'repertoire_generation',
+          100,
+          planType
+        );
         
         // Save all generated repertoires to database
         for (const genRep of generatedRepertoires) {
@@ -2096,6 +2160,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate new proposals using AI
   app.post("/api/proposals/generate", async (req, res) => {
     try {
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+        
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
+      }
+
       const validatedData = generateProposalSchema.parse(req.body);
       
       // Rate limiting check (40 generations every 3 days per user/IP)
@@ -2116,6 +2201,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const aiProposals = await geminiService.generateProposalsBatch(
         validatedData, 
         validatedData.keywords || []
+      );
+      
+      // Record AI operation usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        'proposal_generation',
+        100,
+        planType
       );
       
       // Save generated proposals to storage
@@ -2233,23 +2326,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.setHeader('Content-Type', 'application/json');
     
     try {
-      // Check subscription limits for authenticated users
-      if (req.session.userId) {
-        const { subscription } = await subscriptionService.getUserSubscriptionWithPlan(req.session.userId);
-        const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
-        // Only check weekly limits for free users
-        if (!hasActiveSubscription) {
-          const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(req.session.userId, 100);
-          
-          if (!weeklyCheck.allowed) {
-            return res.status(403).json({ 
-              message: `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Faça upgrade para continuar!`,
-              upgradeRequired: true,
-              action: "upgrade"
-            });
-          }
-        }
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
       }
 
       const validatedData = chatMessageSchema.parse(req.body);
@@ -2362,6 +2457,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: Date.now() - Date.now() // This would be calculated properly in real implementation
       });
 
+      // Record AI operation usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        'chat_argumentative',
+        100,
+        planType
+      );
+
       res.json({
         conversationId: conversation.id,
         response: aiResult.response,
@@ -2389,23 +2492,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Text Modification API endpoint
   app.post("/api/text-modification", async (req, res) => {
     try {
-      // Check subscription limits for authenticated users
-      if (req.session.userId) {
-        const { subscription } = await subscriptionService.getUserSubscriptionWithPlan(req.session.userId);
-        const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
-        // Only check weekly limits for free users
-        if (!hasActiveSubscription) {
-          const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(req.session.userId, 100); // Estimate 100 centavos
-          
-          if (!weeklyCheck.allowed) {
-            return res.status(403).json({ 
-              message: `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Faça upgrade para continuar!`,
-              upgradeRequired: true,
-              action: "upgrade"
-            });
-          }
-        }
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
       }
 
       // Validate input using shared schema
@@ -2442,6 +2547,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: Date.now() - Date.now() // This would be calculated properly in real implementation
       });
 
+      // Record AI operation usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        `text_modification_${type}`,
+        100,
+        planType
+      );
+
       res.json({
         ...result,
         timestamp: new Date().toISOString()
@@ -2475,6 +2588,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Essay correction endpoint with AI
   app.post("/api/essays/correct", async (req, res) => {
     try {
+      // Check AI usage limits for all users (authenticated and anonymous)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 150, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+        
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
+      }
+
       const { essayText, topic, examType } = req.body;
       
       if (!essayText || !topic) {
@@ -2513,6 +2647,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         essayText, 
         topic, 
         examType || 'ENEM'
+      );
+      
+      // Record AI operation usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        'essay_correction',
+        150,
+        planType
       );
       
       res.json({
@@ -3009,12 +3151,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weekly-usage/stats", async (req, res) => {
     try {
       const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
       
-      const stats = await weeklyCostLimitingService.getWeeklyUsageStats(identifier);
+      const stats = await weeklyCostLimitingService.getWeeklyUsageStats(identifier, planType);
       
       res.json({
         success: true,
-        stats
+        stats,
+        planType
       });
     } catch (error) {
       console.error("Error fetching weekly usage stats:", error);
@@ -3027,6 +3173,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { estimatedInputTokens = 1000, estimatedOutputTokens = 500 } = req.body;
       const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
       
       // Estimate cost for the operation
       const costEstimate = await weeklyCostLimitingService.estimateOperationCost(
@@ -3037,13 +3186,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if operation is allowed
       const limitCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(
         identifier,
-        costEstimate.estimatedCostCentavos
+        costEstimate.estimatedCostCentavos,
+        planType
       );
       
       res.json({
         success: true,
         allowed: limitCheck.allowed,
         costEstimate,
+        planType,
         usageStats: {
           currentUsageCentavos: limitCheck.currentUsageCentavos,
           limitCentavos: limitCheck.limitCentavos,
@@ -3070,16 +3221,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
       
       const result = await weeklyCostLimitingService.recordAIOperation(
         identifier,
         operation,
-        costCentavos
+        costCentavos,
+        planType
       );
       
       res.json({
         success: result.success,
-        usageStats: result.usageStats
+        usageStats: result.usageStats,
+        planType
       });
     } catch (error) {
       console.error("Error recording AI operation:", error);
@@ -3090,17 +3246,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get usage analytics for monitoring
   app.get("/api/weekly-usage/analytics", async (req, res) => {
     try {
-      const { weeks = 4 } = req.query;
       const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
       
       const analytics = await weeklyCostLimitingService.getUsageAnalytics(
         identifier, 
-        parseInt(weeks as string) || 4
+        planType
       );
       
       res.json({
         success: true,
-        analytics
+        analytics,
+        planType
       });
     } catch (error) {
       console.error("Error fetching usage analytics:", error);

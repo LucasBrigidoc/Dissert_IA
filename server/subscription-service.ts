@@ -56,6 +56,16 @@ export class SubscriptionService {
   }
 
   /**
+   * Get user plan type: 'free' or 'pro'
+   * Pro plan = users with active subscription
+   * Free plan = users without active subscription
+   */
+  async getUserPlanType(userId: string): Promise<'free' | 'pro'> {
+    const hasActive = await this.hasActiveSubscription(userId);
+    return hasActive ? 'pro' : 'free';
+  }
+
+  /**
    * Get subscription limits for a user
    */
   async getSubscriptionLimits(userId: string): Promise<SubscriptionLimits> {
