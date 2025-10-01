@@ -16,7 +16,7 @@ import { ptBR } from "date-fns/locale";
 
 export default function SettingsPage() {
   const [, setLocation] = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, checkAuth } = useAuth();
   const { 
     subscription, 
     plan, 
@@ -65,13 +65,46 @@ export default function SettingsPage() {
     setLocation("/");
   };
 
-  const handleSaveProfile = () => {
-    setUserProfile(tempProfile);
-    setIsEditingProfile(false);
-    toast({
-      title: "Perfil atualizado",
-      description: "Suas informações foram salvas com sucesso.",
-    });
+  const handleSaveProfile = async () => {
+    try {
+      const response = await fetch("/api/users/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: tempProfile.name,
+          email: tempProfile.email,
+          phone: tempProfile.phone,
+          userType: tempProfile.studentType,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Erro ao atualizar perfil");
+      }
+
+      const updatedUser = await response.json();
+      
+      // Update local state
+      setUserProfile(tempProfile);
+      setIsEditingProfile(false);
+      
+      // Update auth context by refetching user
+      await checkAuth();
+      
+      toast({
+        title: "Perfil atualizado",
+        description: "Suas informações foram salvas com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao salvar",
+        description: error instanceof Error ? error.message : "Não foi possível atualizar o perfil.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCancelProfile = () => {

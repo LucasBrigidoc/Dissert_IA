@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
+import { insertUserSchema, updateUserProfileSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -977,6 +977,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Logout error:", error);
       res.status(500).json({ message: "Erro ao fazer logout" });
+    }
+  });
+
+  // Update user profile endpoint
+  app.put("/api/users/profile", requireAuth, async (req, res) => {
+    try {
+      const validatedData = updateUserProfileSchema.parse(req.body);
+      
+      // Update user in storage
+      const updatedUser = await storage.updateUser(req.user!.id, validatedData);
+      
+      // Don't return password in response
+      const { password: _, ...userResponse } = updatedUser;
+      res.json(userResponse);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Dados inválidos", 
+          errors: error.errors 
+        });
+      }
+      console.error("Update profile error:", error);
+      res.status(500).json({ message: "Erro ao atualizar perfil" });
     }
   });
 

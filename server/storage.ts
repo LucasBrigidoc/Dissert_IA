@@ -6,6 +6,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, user: Partial<User>): Promise<User>;
   
   // User progress operations
   getUserProgress(userId: string): Promise<UserProgress | undefined>;
@@ -546,6 +547,22 @@ export class MemStorage implements IStorage {
     });
     
     return user;
+  }
+
+  async updateUser(id: string, updateData: Partial<User>): Promise<User> {
+    const existing = await this.getUser(id);
+    if (!existing) {
+      throw new Error("User not found");
+    }
+    
+    const updated: User = {
+      ...existing,
+      ...updateData,
+      updatedAt: new Date()
+    };
+    
+    this.users.set(id, updated);
+    return updated;
   }
 
   async getUserProgress(userId: string): Promise<UserProgress | undefined> {
