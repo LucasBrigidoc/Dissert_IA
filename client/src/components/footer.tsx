@@ -121,14 +121,14 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-carreiras">
-                  Carreiras
-                </a>
+                <Link href="/functionalities" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-funcionalidades">
+                  Funcionalidades
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-contato">
-                  Contato
-                </a>
+                <Link href="/pricing" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-planos">
+                  Planos
+                </Link>
               </li>
             </ul>
           </div>
