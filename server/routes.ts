@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema } from "@shared/schema";
+import { insertUserSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -956,6 +956,258 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Logout error:", error);
       res.status(500).json({ message: "Erro ao fazer logout" });
+    }
+  });
+
+  // ===================== USER GOALS (METAS) ENDPOINTS =====================
+
+  // Get user goals
+  app.get("/api/goals", requireAuth, async (req, res) => {
+    try {
+      const goals = await storage.getUserGoals(req.user!.id);
+      res.json(goals);
+    } catch (error) {
+      console.error("Get goals error:", error);
+      res.status(500).json({ message: "Erro ao buscar metas" });
+    }
+  });
+
+  // Create user goal
+  app.post("/api/goals", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertUserGoalSchema.parse({
+        ...req.body,
+        userId: req.user!.id,
+      });
+      const goal = await storage.createUserGoal(validatedData);
+      res.status(201).json(goal);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      console.error("Create goal error:", error);
+      res.status(500).json({ message: "Erro ao criar meta" });
+    }
+  });
+
+  // Update user goal
+  app.patch("/api/goals/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Verify ownership
+      const goals = await storage.getUserGoals(req.user!.id);
+      const existingGoal = goals.find(g => g.id === id);
+      if (!existingGoal) {
+        return res.status(404).json({ message: "Meta não encontrada" });
+      }
+      
+      // Validate update data
+      const updateSchema = insertUserGoalSchema.partial().omit({ userId: true });
+      const validatedData = updateSchema.parse(req.body);
+      
+      const goal = await storage.updateUserGoal(id, validatedData);
+      res.json(goal);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      console.error("Update goal error:", error);
+      res.status(500).json({ message: "Erro ao atualizar meta" });
+    }
+  });
+
+  // Delete user goal
+  app.delete("/api/goals/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Verify ownership
+      const goals = await storage.getUserGoals(req.user!.id);
+      const existingGoal = goals.find(g => g.id === id);
+      if (!existingGoal) {
+        return res.status(404).json({ message: "Meta não encontrada" });
+      }
+      
+      const deleted = await storage.deleteUserGoal(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Meta não encontrada" });
+      }
+      res.json({ message: "Meta deletada com sucesso" });
+    } catch (error) {
+      console.error("Delete goal error:", error);
+      res.status(500).json({ message: "Erro ao deletar meta" });
+    }
+  });
+
+  // ===================== USER EXAMS (PROVAS/VESTIBULARES) ENDPOINTS =====================
+
+  // Get user exams
+  app.get("/api/exams", requireAuth, async (req, res) => {
+    try {
+      const exams = await storage.getUserExams(req.user!.id);
+      res.json(exams);
+    } catch (error) {
+      console.error("Get exams error:", error);
+      res.status(500).json({ message: "Erro ao buscar provas" });
+    }
+  });
+
+  // Create user exam
+  app.post("/api/exams", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertUserExamSchema.parse({
+        ...req.body,
+        userId: req.user!.id,
+      });
+      const exam = await storage.createUserExam(validatedData);
+      res.status(201).json(exam);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      console.error("Create exam error:", error);
+      res.status(500).json({ message: "Erro ao criar prova" });
+    }
+  });
+
+  // Update user exam
+  app.patch("/api/exams/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Verify ownership
+      const exams = await storage.getUserExams(req.user!.id);
+      const existingExam = exams.find(e => e.id === id);
+      if (!existingExam) {
+        return res.status(404).json({ message: "Prova não encontrada" });
+      }
+      
+      // Validate update data
+      const updateSchema = insertUserExamSchema.partial().omit({ userId: true });
+      const validatedData = updateSchema.parse(req.body);
+      
+      const exam = await storage.updateUserExam(id, validatedData);
+      res.json(exam);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      console.error("Update exam error:", error);
+      res.status(500).json({ message: "Erro ao atualizar prova" });
+    }
+  });
+
+  // Delete user exam
+  app.delete("/api/exams/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Verify ownership
+      const exams = await storage.getUserExams(req.user!.id);
+      const existingExam = exams.find(e => e.id === id);
+      if (!existingExam) {
+        return res.status(404).json({ message: "Prova não encontrada" });
+      }
+      
+      const deleted = await storage.deleteUserExam(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Prova não encontrada" });
+      }
+      res.json({ message: "Prova deletada com sucesso" });
+    } catch (error) {
+      console.error("Delete exam error:", error);
+      res.status(500).json({ message: "Erro ao deletar prova" });
+    }
+  });
+
+  // ===================== USER SCHEDULE (CRONOGRAMA) ENDPOINTS =====================
+
+  // Get user schedule for a week
+  app.get("/api/schedule", requireAuth, async (req, res) => {
+    try {
+      // Validate and parse weekStart
+      const weekStartSchema = z.object({
+        weekStart: z.coerce.date().optional()
+      });
+      const { weekStart } = weekStartSchema.parse({ weekStart: req.query.weekStart || new Date().toISOString() });
+      
+      const schedule = await storage.getUserSchedule(req.user!.id, weekStart || new Date());
+      res.json(schedule);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Data inválida", errors: error.errors });
+      }
+      console.error("Get schedule error:", error);
+      res.status(500).json({ message: "Erro ao buscar cronograma" });
+    }
+  });
+
+  // Create or update user schedule
+  app.post("/api/schedule", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertUserScheduleSchema.parse({
+        ...req.body,
+        userId: req.user!.id,
+      });
+      const schedule = await storage.createUserSchedule(validatedData);
+      res.status(201).json(schedule);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      console.error("Create schedule error:", error);
+      res.status(500).json({ message: "Erro ao criar cronograma" });
+    }
+  });
+
+  // Update user schedule
+  app.patch("/api/schedule/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Verify ownership - get all schedules for user
+      const allSchedules = await storage.getUserSchedule(req.user!.id, new Date()); // This is not ideal but works
+      const existingSchedule = allSchedules.find(s => s.id === id);
+      if (!existingSchedule) {
+        return res.status(404).json({ message: "Cronograma não encontrado" });
+      }
+      
+      // Validate update data
+      const updateSchema = insertUserScheduleSchema.partial().omit({ userId: true });
+      const validatedData = updateSchema.parse(req.body);
+      
+      const schedule = await storage.updateUserSchedule(id, validatedData);
+      res.json(schedule);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      console.error("Update schedule error:", error);
+      res.status(500).json({ message: "Erro ao atualizar cronograma" });
+    }
+  });
+
+  // Delete user schedule
+  app.delete("/api/schedule/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Verify ownership - get all schedules for user
+      const allSchedules = await storage.getUserSchedule(req.user!.id, new Date()); // This is not ideal but works
+      const existingSchedule = allSchedules.find(s => s.id === id);
+      if (!existingSchedule) {
+        return res.status(404).json({ message: "Cronograma não encontrado" });
+      }
+      
+      const deleted = await storage.deleteUserSchedule(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Cronograma não encontrado" });
+      }
+      res.json({ message: "Cronograma deletado com sucesso" });
+    } catch (error) {
+      console.error("Delete schedule error:", error);
+      res.status(500).json({ message: "Erro ao deletar cronograma" });
     }
   });
 

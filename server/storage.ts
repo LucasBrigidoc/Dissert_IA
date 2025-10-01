@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -368,6 +368,24 @@ export interface IStorage {
   getPaymentEvent(eventId: string): Promise<PaymentEvent | undefined>;
   updatePaymentEventStatus(id: string, status: string, processedAt?: Date, error?: string): Promise<PaymentEvent>;
   
+  // ===================== USER GOALS OPERATIONS =====================
+  getUserGoals(userId: string): Promise<UserGoal[]>;
+  createUserGoal(goal: InsertUserGoal): Promise<UserGoal>;
+  updateUserGoal(id: string, goal: Partial<UserGoal>): Promise<UserGoal>;
+  deleteUserGoal(id: string): Promise<boolean>;
+  
+  // ===================== USER EXAMS OPERATIONS =====================
+  getUserExams(userId: string): Promise<UserExam[]>;
+  createUserExam(exam: InsertUserExam): Promise<UserExam>;
+  updateUserExam(id: string, exam: Partial<UserExam>): Promise<UserExam>;
+  deleteUserExam(id: string): Promise<boolean>;
+  
+  // ===================== USER SCHEDULE OPERATIONS =====================
+  getUserSchedule(userId: string, weekStart: Date): Promise<UserSchedule[]>;
+  createUserSchedule(schedule: InsertUserSchedule): Promise<UserSchedule>;
+  updateUserSchedule(id: string, schedule: Partial<UserSchedule>): Promise<UserSchedule>;
+  deleteUserSchedule(id: string): Promise<boolean>;
+  
 }
 
 // Helper function to remove undefined values from objects
@@ -429,6 +447,11 @@ export class MemStorage implements IStorage {
   private couponRedemptions: Map<string, CouponRedemption>;
   private paymentEvents: Map<string, PaymentEvent>;
 
+  // User goals, exams and schedule storage
+  private userGoals: Map<string, UserGoal>;
+  private userExams: Map<string, UserExam>;
+  private userSchedules: Map<string, UserSchedule>;
+
   constructor() {
     this.users = new Map();
     this.userProgress = new Map();
@@ -477,6 +500,11 @@ export class MemStorage implements IStorage {
     this.coupons = new Map();
     this.couponRedemptions = new Map();
     this.paymentEvents = new Map();
+    
+    // User goals, exams and schedule storage initialization
+    this.userGoals = new Map();
+    this.userExams = new Map();
+    this.userSchedules = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -3219,6 +3247,142 @@ export class MemStorage implements IStorage {
     
     this.paymentEvents.set(id, updated);
     return updated;
+  }
+
+  // ===================== USER GOALS OPERATIONS IMPLEMENTATION =====================
+
+  async getUserGoals(userId: string): Promise<UserGoal[]> {
+    return Array.from(this.userGoals.values()).filter(
+      (goal) => goal.userId === userId
+    );
+  }
+
+  async createUserGoal(insertGoal: InsertUserGoal): Promise<UserGoal> {
+    const id = randomUUID();
+    const goal: UserGoal = {
+      ...insertGoal,
+      description: insertGoal.description ?? null,
+      priority: insertGoal.priority || "media",
+      completed: insertGoal.completed || false,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userGoals.set(id, goal);
+    return goal;
+  }
+
+  async updateUserGoal(id: string, updateData: Partial<UserGoal>): Promise<UserGoal> {
+    const existing = this.userGoals.get(id);
+    if (!existing) {
+      throw new Error("Goal not found");
+    }
+
+    const updated: UserGoal = {
+      ...existing,
+      ...removeUndefined(updateData),
+      updatedAt: new Date(),
+    };
+
+    this.userGoals.set(id, updated);
+    return updated;
+  }
+
+  async deleteUserGoal(id: string): Promise<boolean> {
+    return this.userGoals.delete(id);
+  }
+
+  // ===================== USER EXAMS OPERATIONS IMPLEMENTATION =====================
+
+  async getUserExams(userId: string): Promise<UserExam[]> {
+    return Array.from(this.userExams.values())
+      .filter((exam) => exam.userId === userId)
+      .sort((a, b) => new Date(a.examAt).getTime() - new Date(b.examAt).getTime());
+  }
+
+  async createUserExam(insertExam: InsertUserExam): Promise<UserExam> {
+    const id = randomUUID();
+    const exam: UserExam = {
+      ...insertExam,
+      location: insertExam.location ?? null,
+      description: insertExam.description ?? null,
+      durationMinutes: insertExam.durationMinutes ?? null,
+      type: insertExam.type || "simulado",
+      status: insertExam.status || "upcoming",
+      subjects: insertExam.subjects || [],
+      importance: insertExam.importance || "media",
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userExams.set(id, exam);
+    return exam;
+  }
+
+  async updateUserExam(id: string, updateData: Partial<UserExam>): Promise<UserExam> {
+    const existing = this.userExams.get(id);
+    if (!existing) {
+      throw new Error("Exam not found");
+    }
+
+    const updated: UserExam = {
+      ...existing,
+      ...removeUndefined(updateData),
+      updatedAt: new Date(),
+    };
+
+    this.userExams.set(id, updated);
+    return updated;
+  }
+
+  async deleteUserExam(id: string): Promise<boolean> {
+    return this.userExams.delete(id);
+  }
+
+  // ===================== USER SCHEDULE OPERATIONS IMPLEMENTATION =====================
+
+  async getUserSchedule(userId: string, weekStart: Date): Promise<UserSchedule[]> {
+    return Array.from(this.userSchedules.values()).filter(
+      (schedule) => 
+        schedule.userId === userId && 
+        schedule.weekStart.getTime() === weekStart.getTime()
+    );
+  }
+
+  async createUserSchedule(insertSchedule: InsertUserSchedule): Promise<UserSchedule> {
+    const id = randomUUID();
+    const schedule: UserSchedule = {
+      ...insertSchedule,
+      activities: insertSchedule.activities || [],
+      hours: insertSchedule.hours || 0,
+      minutes: insertSchedule.minutes || 0,
+      completed: insertSchedule.completed || false,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userSchedules.set(id, schedule);
+    return schedule;
+  }
+
+  async updateUserSchedule(id: string, updateData: Partial<UserSchedule>): Promise<UserSchedule> {
+    const existing = this.userSchedules.get(id);
+    if (!existing) {
+      throw new Error("Schedule not found");
+    }
+
+    const updated: UserSchedule = {
+      ...existing,
+      ...removeUndefined(updateData),
+      updatedAt: new Date(),
+    };
+
+    this.userSchedules.set(id, updated);
+    return updated;
+  }
+
+  async deleteUserSchedule(id: string): Promise<boolean> {
+    return this.userSchedules.delete(id);
   }
 
 }
