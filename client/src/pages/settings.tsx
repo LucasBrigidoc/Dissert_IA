@@ -454,7 +454,7 @@ export default function SettingsPage() {
         )}
 
         {/* Account Status + Plan Section */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6 pb-4">
           
           {/* Account Status Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-account-status">
