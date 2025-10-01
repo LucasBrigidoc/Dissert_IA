@@ -334,7 +334,7 @@ export default function AdminDashboard() {
                 data-testid="button-generate-metrics"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isGeneratingMetrics ? 'animate-spin' : ''}`} />
-                {isGeneratingMetrics ? 'Gerando...' : 'Gerar Métricas'}
+                {isGeneratingMetrics ? 'Atualizando...' : 'Atualizar Métricas'}
               </Button>
               <select
                 value={timeRange}
