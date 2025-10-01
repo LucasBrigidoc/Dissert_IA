@@ -272,7 +272,7 @@ export default function SubscriptionPage() {
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Uso de IA</h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Acompanhe seu consumo semanal
+                  Acompanhe seu consumo {limits.periodLabel}
                 </p>
               </div>
             </div>
@@ -281,10 +281,10 @@ export default function SubscriptionPage() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Uso esta semana
+                    Uso {limits.periodLabel}
                   </span>
                   <span className="text-sm font-bold text-gray-900 dark:text-white" data-testid="text-usage">
-                    {formatCurrency(limits.weeklyUsage)} / {formatCurrency(limits.weeklyLimit)}
+                    {limits.percentageUsed.toFixed(1)}% usado
                   </span>
                 </div>
                 <Progress 
@@ -293,7 +293,7 @@ export default function SubscriptionPage() {
                   data-testid="progress-usage"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  {limits.percentageUsed.toFixed(1)}% usado • Renova em {limits.daysUntilReset} dias
+                  {(100 - limits.percentageUsed).toFixed(1)}% restante • Renova em {limits.daysUntilReset} dias
                 </p>
               </div>
 
@@ -306,7 +306,7 @@ export default function SubscriptionPage() {
                         Limite atingido
                       </p>
                       <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-                        Você atingiu seu limite semanal de uso de IA. Faça upgrade para continuar usando.
+                        Você atingiu seu limite {limits.periodLabel} de uso de IA. Faça upgrade para continuar usando.
                       </p>
                     </div>
                   </div>

@@ -536,10 +536,9 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-soft-gray">Uso semanal</span>
+                  <span className="text-sm text-soft-gray">Uso {limits.periodLabel}</span>
                   <span className="text-sm font-medium text-dark-blue">
-                    {formatCurrency(limits.weeklyUsage)} 
-                    {limits.weeklyLimit > 0 && ` / ${formatCurrency(limits.weeklyLimit)}`}
+                    {limits.percentageUsed.toFixed(1)}% usado
                   </span>
                 </div>
                 {limits.weeklyLimit > 0 ? (
@@ -564,7 +563,7 @@ export default function SettingsPage() {
                   <div className="text-sm text-soft-gray">Créditos Restantes</div>
                   <div className="text-lg font-bold text-dark-blue">
                     {limits.weeklyLimit > 0 
-                      ? formatCurrency(limits.remainingCredits) 
+                      ? `${(100 - limits.percentageUsed).toFixed(1)}%` 
                       : "Ilimitado"}
                   </div>
                 </div>

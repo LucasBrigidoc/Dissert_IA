@@ -1006,6 +1006,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const canUseAI = weeklyUsage < weeklyLimit;
       const remainingCredits = Math.max(0, weeklyLimit - weeklyUsage);
       
+      const periodDays = planType === 'free' ? 15 : 7;
+      const periodLabel = planType === 'free' ? 'quinzenal' : 'semanal';
+      
       res.json({
         planType,
         canUseAI,
@@ -1015,7 +1018,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         percentageUsed,
         planName: planType === 'pro' ? "Pro" : "Gratuito",
         daysUntilReset: weeklyStats.daysUntilReset,
-        resetPeriodDays: planType === 'free' ? 15 : 7
+        resetPeriodDays: periodDays,
+        periodLabel
       });
     } catch (error) {
       console.error("Get limits error:", error);

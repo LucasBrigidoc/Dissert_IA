@@ -36,7 +36,7 @@ export function Paywall({
   const { limits, plan } = useSubscription();
 
   const defaultDescription = limits?.hasActiveSubscription
-    ? `Você atingiu o limite semanal de uso de IA (${limits.weeklyLimit / 100} R$). Faça upgrade para continuar usando ${feature}.`
+    ? `Você atingiu o limite ${limits.periodLabel || 'de uso'} de IA (${limits.percentageUsed.toFixed(0)}% usado). Faça upgrade para continuar usando ${feature}.`
     : `Você precisa de uma assinatura ativa para usar ${feature}.`;
 
   const features = [
@@ -78,7 +78,7 @@ export function Paywall({
                 </span>
               </div>
               <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                Limite semanal: R$ {(limits.weeklyLimit / 100).toFixed(2)} • Usado: {limits.percentageUsed.toFixed(0)}%
+                Limite {limits.periodLabel}: {limits.percentageUsed.toFixed(1)}% usado • {(100 - limits.percentageUsed).toFixed(1)}% restante
               </p>
             </div>
           )}

@@ -16,6 +16,8 @@ interface SubscriptionLimits {
   percentageUsed: number;
   planName: string;
   daysUntilReset: number;
+  resetPeriodDays: number;
+  periodLabel: string;
 }
 
 export function useSubscription() {
