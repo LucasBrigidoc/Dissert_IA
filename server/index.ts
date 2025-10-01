@@ -32,8 +32,11 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: 'auto',
+    // In development (Replit), use secure: false to allow cookies in proxy/iframe
+    // In production, use secure: true for HTTPS
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
+    // Default to 7 days, but can be overridden per-request in login route
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
 }));
