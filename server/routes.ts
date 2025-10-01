@@ -47,6 +47,16 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
+// Helper function to get identifier for AI tracking
+// Uses userId when authenticated, falls back to IP for anonymous users
+function getAITrackingIdentifier(req: Request): string {
+  if (req.session.userId) {
+    return `user_${req.session.userId}`;
+  }
+  const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+  return `ip_${clientIP}`;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== NEWSLETTER MANAGEMENT ENDPOINTS =====================
   
@@ -1094,9 +1104,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { essayText, userId } = validationResult.data;
 
-      // Rate limiting check (6 analyses every 3 days per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`structure_analysis_${clientIP}`, 6, 4320);
+      // Rate limiting check (6 analyses every 3 days per user/IP)
+      const identifier = getAITrackingIdentifier(req);
+      const rateLimitCheck = await storage.checkRateLimit(`structure_analysis_${identifier}`, 6, 4320);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '259200');
@@ -1107,7 +1117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`🔍 Structure analysis request: ${essayText.substring(0, 50)}..., IP: ${clientIP}`);
+      console.log(`🔍 Structure analysis request: ${essayText.substring(0, 50)}..., identifier: ${identifier}`);
       
       // Get existing structures for quality reference if userId provided
       let existingStructures: any[] = [];
@@ -1174,9 +1184,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { structureName, sections, topic, additionalInstructions } = validationResult.data;
 
-      // Rate limiting check (8 essay generations every 3 days per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${clientIP}`, 8, 4320);
+      // Rate limiting check (8 essay generations every 3 days per user/IP)
+      const identifier = getAITrackingIdentifier(req);
+      const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${identifier}`, 8, 4320);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '259200');
@@ -1187,7 +1197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`📝 Essay generation request: ${structureName || 'Custom Structure'}, topic: ${topic.substring(0, 50)}..., IP: ${clientIP}`);
+      console.log(`📝 Essay generation request: ${structureName || 'Custom Structure'}, topic: ${topic.substring(0, 50)}..., identifier: ${identifier}`);
       
       // Generate essay using OPTIMIZED AI system
       const essayResult = await optimizedAnalysisService.generateEssayFromStructureOptimized(
@@ -1233,9 +1243,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedQuery = searchQuerySchema.parse(req.body);
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
-      // Rate limiting check (19 AI searches every 3 days per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`repertoire_search_${clientIP}`, 19, 4320);
+      // Rate limiting check (19 AI searches every 3 days per user/IP)
+      const identifier = getAITrackingIdentifier(req);
+      const rateLimitCheck = await storage.checkRateLimit(`repertoire_search_${identifier}`, 19, 4320);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '259200');
@@ -1350,8 +1360,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (results.length < 4) {
         console.log(`🚀 OPTIMIZED: Generating batch of repertoires for: "${query}" (current: ${results.length}, excluded: ${excludeIds.length})`);
         
-        // Rate limiting check for repertoire generation (18 every 3 days per IP)
-        const generateLimitCheck = await storage.checkRateLimit(`repertoire_generate_${clientIP}`, 8, 4320);
+        // Rate limiting check for repertoire generation (18 every 3 days per user/IP)
+        const generateLimitCheck = await storage.checkRateLimit(`repertoire_generate_${identifier}`, 8, 4320);
         if (!generateLimitCheck.allowed) {
           res.set('Retry-After', '259200');
           return res.status(429).json({ 
@@ -1574,12 +1584,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const futureExamDetection = detectFutureExam(query);
       
       // Rate limiting - use daily limit for future exam detection and regular searches
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const identifier = getAITrackingIdentifier(req);
       let rateLimitCheck;
       
       if (futureExamDetection.isFuture) {
-        // Rate limit for future exam detection (30 searches every 3 days)
-        rateLimitCheck = await storage.checkRateLimit(`future_exam_${clientIP}`, 5, 4320);
+        // Rate limit for future exam detection (30 searches every 3 days per user/IP)
+        rateLimitCheck = await storage.checkRateLimit(`future_exam_${identifier}`, 5, 4320);
         if (!rateLimitCheck.allowed) {
           res.set('Retry-After', '259200');
           return res.status(429).json({ 
@@ -1588,8 +1598,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       } else {
-        // Regular rate limiting (45 searches every 3 days per IP)
-        rateLimitCheck = await storage.checkRateLimit(`proposal_search_${clientIP}`, 14, 4320);
+        // Regular rate limiting (45 searches every 3 days per user/IP)
+        rateLimitCheck = await storage.checkRateLimit(`proposal_search_${identifier}`, 14, 4320);
         if (!rateLimitCheck.allowed) {
           res.set('Retry-After', '259200');
           return res.status(429).json({ 
@@ -1599,7 +1609,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      console.log(`🔍 Proposal search request: "${query}", IP: ${clientIP}${futureExamDetection.isFuture ? ' [FUTURE EXAM DETECTED]' : ''}`);
+      console.log(`🔍 Proposal search request: "${query}", identifier: ${identifier}${futureExamDetection.isFuture ? ' [FUTURE EXAM DETECTED]' : ''}`);
       
       // Handle future exam detection
       if (futureExamDetection.isFuture) {
@@ -1706,9 +1716,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = generateProposalSchema.parse(req.body);
       
-      // Rate limiting check (40 generations every 3 days per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`proposal_generate_${clientIP}`, 11, 4320);
+      // Rate limiting check (40 generations every 3 days per user/IP)
+      const identifier = getAITrackingIdentifier(req);
+      const rateLimitCheck = await storage.checkRateLimit(`proposal_generate_${identifier}`, 11, 4320);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '259200');
@@ -1718,7 +1728,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`🎯 Proposal generation request: ${validatedData.theme}, IP: ${clientIP}`);
+      console.log(`🎯 Proposal generation request: ${validatedData.theme}, identifier: ${identifier}`);
       
       // Generate proposals using AI
       const aiProposals = await geminiService.generateProposalsBatch(
@@ -1844,9 +1854,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = chatMessageSchema.parse(req.body);
       const { conversationId, messageId, message, section, context } = validatedData;
       
-      // Rate limiting check (15 AI chats every 3 days per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${clientIP}`, 12, 4320);
+      // Rate limiting check (15 AI chats every 3 days per user/IP)
+      const identifier = getAITrackingIdentifier(req);
+      const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${identifier}`, 12, 4320);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '259200');
@@ -1856,7 +1866,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`🤖 AI Chat request for section: ${section}, IP: ${clientIP}`);
+      console.log(`🤖 AI Chat request for section: ${section}, identifier: ${identifier}`);
       
       // Get or create conversation
       let conversation;
@@ -1866,8 +1876,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // If conversation not found, create a new one instead of throwing error
           console.log(`⚠️ Conversation ${conversationId} not found, creating new conversation`);
           conversation = await storage.createConversation({
-            userId: null, // TODO: Add user authentication
-            sessionId: clientIP, // Use IP as session identifier for now
+            userId: req.session.userId || null,
+            sessionId: identifier,
             messages: [],
             currentSection: section,
             brainstormData: context || {}
@@ -1876,8 +1886,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         // Create new conversation
         conversation = await storage.createConversation({
-          userId: null, // TODO: Add user authentication
-          sessionId: clientIP, // Use IP as session identifier for now
+          userId: req.session.userId || null,
+          sessionId: identifier,
           messages: [],
           currentSection: section,
           brainstormData: context || {}
@@ -1982,9 +1992,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = textModificationRequestSchema.parse(req.body);
       const { text, type, config } = validatedData;
       
-      // Per-type rate limiting (45 modifications every 3 days per IP per type)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const perTypeIdentifier = `${clientIP}_text_${type}`;
+      // Per-type rate limiting (45 modifications every 3 days per user/IP per type)
+      const identifier = getAITrackingIdentifier(req);
+      const perTypeIdentifier = `${identifier}_text_${type}`;
       const rateLimitCheck = await storage.checkRateLimit(perTypeIdentifier, 9, 4320);
       
       if (!rateLimitCheck.allowed) {
@@ -1996,7 +2006,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`✏️ Text modification request: ${type}, IP: ${clientIP}`);
+      console.log(`✏️ Text modification request: ${type}, identifier: ${identifier}`);
       
       // Process text with AI
       const result = await textModificationService.modifyText(text, type, config || {});
@@ -2064,9 +2074,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Rate limiting check (10 corrections every 3 days per IP)
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const rateLimitCheck = await storage.checkRateLimit(`correction_${clientIP}`, 5, 4320);
+      // Rate limiting check (10 corrections every 3 days per user/IP)
+      const identifier = getAITrackingIdentifier(req);
+      const rateLimitCheck = await storage.checkRateLimit(`correction_${identifier}`, 5, 4320);
       
       if (!rateLimitCheck.allowed) {
         res.set('Retry-After', '259200');
@@ -2076,7 +2086,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`📝 Essay correction request, ${essayText.length} characters, IP: ${clientIP}`);
+      console.log(`📝 Essay correction request, ${essayText.length} characters, identifier: ${identifier}`);
       
       // Correct essay using Gemini AI
       const correction = await textModificationService.correctEssay(
@@ -2578,8 +2588,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get current weekly usage stats
   app.get("/api/weekly-usage/stats", async (req, res) => {
     try {
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const identifier = `weekly_usage_${clientIP}`;
+      const identifier = getAITrackingIdentifier(req);
       
       const stats = await weeklyCostLimitingService.getWeeklyUsageStats(identifier);
       
@@ -2597,8 +2606,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weekly-usage/check", async (req, res) => {
     try {
       const { estimatedInputTokens = 1000, estimatedOutputTokens = 500 } = req.body;
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const identifier = `weekly_usage_${clientIP}`;
+      const identifier = getAITrackingIdentifier(req);
       
       // Estimate cost for the operation
       const costEstimate = await weeklyCostLimitingService.estimateOperationCost(
@@ -2641,8 +2649,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const identifier = `weekly_usage_${clientIP}`;
+      const identifier = getAITrackingIdentifier(req);
       
       const result = await weeklyCostLimitingService.recordAIOperation(
         identifier,
@@ -2664,8 +2671,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weekly-usage/analytics", async (req, res) => {
     try {
       const { weeks = 4 } = req.query;
-      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-      const identifier = `weekly_usage_${clientIP}`;
+      const identifier = getAITrackingIdentifier(req);
       
       const analytics = await weeklyCostLimitingService.getUsageAnalytics(
         identifier, 
