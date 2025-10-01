@@ -50,8 +50,12 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/features" component={Features} />
       <Route path="/about" component={About} />
-      <Route path="/newsletter" component={Newsletter} />
       
+      <Route path="/newsletter">
+        <ProtectedRoute>
+          <Newsletter />
+        </ProtectedRoute>
+      </Route>
       <Route path="/checkout">
         <ProtectedRoute>
           <Checkout />

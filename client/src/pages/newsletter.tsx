@@ -6,19 +6,27 @@ import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Newsletter } from "@shared/schema";
+import { useAuth } from "@/contexts/AuthContext";
+import { getInitials } from "@/lib/utils";
 
 export default function NewsletterPage() {
   const [, setLocation] = useLocation();
+  const { user, logout, loading } = useAuth();
   const [selectedNewsletter, setSelectedNewsletter] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Fetch newsletters from API
+  // Fetch newsletters from API (public feed of sent newsletters)
   const { data: newsletters = [], isLoading: loadingNewsletters } = useQuery<Newsletter[]>({
-    queryKey: ["/api/admin/newsletter/newsletters"],
+    queryKey: ["/api/newsletter/feed"],
   });
 
-  const handleLogout = () => {
-    setLocation("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setLocation("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const handleReadNewsletter = (newsletterId: string) => {
@@ -41,8 +49,8 @@ export default function NewsletterPage() {
   
   const currentNewsletter = selectedNewsletter ? sentNewsletters.find(n => n.id === selectedNewsletter) : null;
 
-  // Loading state
-  if (loadingNewsletters) {
+  // Loading state - wait for both auth and newsletters to load
+  if (loading || loadingNewsletters) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="animate-spin text-bright-blue" size={32} />
@@ -100,14 +108,14 @@ export default function NewsletterPage() {
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                LS
+                {getInitials(user?.name)}
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-3">
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user-mobile">
-                LS
+                {getInitials(user?.name)}
               </div>
               <Button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -283,14 +291,14 @@ export default function NewsletterPage() {
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                LS
+                {getInitials(user?.name)}
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-4">
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                LS
+                {getInitials(user?.name)}
               </div>
               <Button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
