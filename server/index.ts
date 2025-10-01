@@ -1,10 +1,42 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import ConnectPgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 app.set('trust proxy', true); // Enable accurate client IPs for rate limiting on Replit
+
+const PgStore = ConnectPgSimple(session);
+
+// Verificar SESSION_SECRET em produção (obrigatório por segurança)
+if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+  console.error('❌ ERRO CRÍTICO: SESSION_SECRET é obrigatório em produção. Configure esta variável de ambiente.');
+  process.exit(1);
+}
+
+const sessionSecret = process.env.SESSION_SECRET || 'dev-secret-change-in-production-' + Math.random().toString(36);
+
+if (!process.env.SESSION_SECRET) {
+  console.warn('⚠️ SESSION_SECRET não configurado - usando segredo temporário. Configure SESSION_SECRET em produção!');
+}
+
+app.use(session({
+  store: new PgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+  }),
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: 'auto',
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  },
+}));
 
 // Stripe webhook needs raw body - apply before JSON parser
 app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));

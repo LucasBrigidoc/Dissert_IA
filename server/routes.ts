@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
+import "./session-types";
 
 // Initialize Stripe (optional in development)
 let stripe: Stripe | null = null;
@@ -25,6 +26,26 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 // Initialize services
 const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
+
+export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Não autenticado" });
+  }
+
+  try {
+    const user = await storage.getUser(req.session.userId);
+    if (!user) {
+      return res.status(401).json({ message: "Não autenticado" });
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    req.user = userWithoutPassword;
+    next();
+  } catch (error) {
+    console.error("Auth middleware error:", error);
+    return res.status(401).json({ message: "Não autenticado" });
+  }
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== NEWSLETTER MANAGEMENT ENDPOINTS =====================
@@ -802,7 +823,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(validatedData.email);
       if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: "Usuário já existe" });
       }
       
       // Hash password
@@ -814,12 +835,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
       });
       
-      // Don't return password in response
-      const { password: _, ...userResponse } = user;
-      res.status(201).json(userResponse);
+      // Regenerate session to prevent session fixation attacks
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error("Session regeneration error:", err);
+          return res.status(500).json({ message: "Erro ao criar sessão" });
+        }
+        
+        // Save user ID in session
+        req.session.userId = user.id;
+        
+        // Save session
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+            return res.status(500).json({ message: "Erro ao salvar sessão" });
+          }
+          
+          // Don't return password in response
+          const { password: _, ...userResponse } = user;
+          res.status(201).json(userResponse);
+        });
+      });
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(400).json({ message: "Invalid registration data" });
+      res.status(400).json({ message: "Dados de registro inválidos" });
     }
   });
 
@@ -829,27 +869,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { email, password } = req.body;
       
       if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required" });
+        return res.status(400).json({ message: "Email e senha são obrigatórios" });
       }
       
       // Find user
       const user = await storage.getUserByEmail(email);
       if (!user) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: "Credenciais inválidas" });
       }
       
       // Verify password
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: "Credenciais inválidas" });
       }
       
+      // Regenerate session to prevent session fixation attacks
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error("Session regeneration error:", err);
+          return res.status(500).json({ message: "Erro ao criar sessão" });
+        }
+        
+        // Save user ID in session
+        req.session.userId = user.id;
+        
+        // Save session
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+            return res.status(500).json({ message: "Erro ao salvar sessão" });
+          }
+          
+          // Don't return password in response
+          const { password: _, ...userResponse } = user;
+          res.json(userResponse);
+        });
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Falha ao fazer login" });
+    }
+  });
+
+  // Get current user endpoint
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
       // Don't return password in response
       const { password: _, ...userResponse } = user;
       res.json(userResponse);
     } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ message: "Login failed" });
+      console.error("Get current user error:", error);
+      res.status(500).json({ message: "Erro ao buscar usuário" });
+    }
+  });
+
+  // User logout endpoint
+  app.post("/api/auth/logout", async (req, res) => {
+    try {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Erro ao fazer logout" });
+        }
+        res.json({ message: "Logout realizado com sucesso" });
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Erro ao fazer logout" });
     }
   });
 
