@@ -996,8 +996,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get subscription limits and usage
   app.get("/api/subscription/limits", requireAuth, async (req, res) => {
     try {
-      const limits = await subscriptionService.getSubscriptionLimits(req.user!.id);
-      res.json(limits);
+      const { subscription, plan } = await subscriptionService.getUserSubscriptionWithPlan(req.user!.id);
+      const weeklyStats = await weeklyCostLimitingService.getWeeklyStats(req.user!.id);
+      
+      const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+      const weeklyLimit = hasActiveSubscription ? -1 : 875; // -1 = unlimited for premium, 875 centavos for free
+      const weeklyUsage = weeklyStats.totalCost;
+      const percentageUsed = weeklyLimit === -1 ? 0 : Math.min(100, (weeklyUsage / weeklyLimit) * 100);
+      const canUseAI = weeklyLimit === -1 || weeklyUsage < weeklyLimit;
+      const remainingCredits = weeklyLimit === -1 ? 999999 : Math.max(0, weeklyLimit - weeklyUsage);
+      
+      // Calculate days until weekly reset (next Monday)
+      const now = new Date();
+      const dayOfWeek = now.getDay();
+      const daysUntilReset = dayOfWeek === 1 ? 7 : dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+      
+      res.json({
+        hasActiveSubscription,
+        canUseAI,
+        weeklyUsage,
+        weeklyLimit,
+        remainingCredits,
+        percentageUsed,
+        planName: plan?.name || "Gratuito",
+        daysUntilReset
+      });
     } catch (error) {
       console.error("Get limits error:", error);
       res.status(500).json({ message: "Erro ao buscar limites" });
@@ -1582,15 +1605,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Check subscription limits for authenticated users
       if (req.session.userId) {
-        try {
-          await subscriptionService.checkAIUsageAllowed(req.session.userId);
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Limite de uso atingido";
-          return res.status(403).json({ 
-            message,
-            upgradeRequired: true,
-            action: "upgrade"
-          });
+        const { subscription } = await subscriptionService.getUserSubscriptionWithPlan(req.session.userId);
+        const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+        
+        // Only check weekly limits for free users
+        if (!hasActiveSubscription) {
+          const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(req.session.userId, 100);
+          
+          if (!weeklyCheck.allowed) {
+            return res.status(403).json({ 
+              message: `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Faça upgrade para continuar!`,
+              upgradeRequired: true,
+              action: "upgrade"
+            });
+          }
         }
       }
 
@@ -2207,15 +2235,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Check subscription limits for authenticated users
       if (req.session.userId) {
-        try {
-          await subscriptionService.checkAIUsageAllowed(req.session.userId);
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Limite de uso atingido";
-          return res.status(403).json({ 
-            message,
-            upgradeRequired: true,
-            action: "upgrade"
-          });
+        const { subscription } = await subscriptionService.getUserSubscriptionWithPlan(req.session.userId);
+        const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+        
+        // Only check weekly limits for free users
+        if (!hasActiveSubscription) {
+          const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(req.session.userId, 100);
+          
+          if (!weeklyCheck.allowed) {
+            return res.status(403).json({ 
+              message: `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Faça upgrade para continuar!`,
+              upgradeRequired: true,
+              action: "upgrade"
+            });
+          }
         }
       }
 
@@ -2358,15 +2391,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Check subscription limits for authenticated users
       if (req.session.userId) {
-        try {
-          await subscriptionService.checkAIUsageAllowed(req.session.userId);
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Limite de uso atingido";
-          return res.status(403).json({ 
-            message,
-            upgradeRequired: true,
-            action: "upgrade"
-          });
+        const { subscription } = await subscriptionService.getUserSubscriptionWithPlan(req.session.userId);
+        const hasActiveSubscription = subscription?.status === 'active' || subscription?.status === 'trial';
+        
+        // Only check weekly limits for free users
+        if (!hasActiveSubscription) {
+          const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(req.session.userId, 100); // Estimate 100 centavos
+          
+          if (!weeklyCheck.allowed) {
+            return res.status(403).json({ 
+              message: `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Faça upgrade para continuar!`,
+              upgradeRequired: true,
+              action: "upgrade"
+            });
+          }
         }
       }
 

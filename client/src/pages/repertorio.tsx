@@ -10,6 +10,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Repertoire } from "@shared/schema";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { Paywall } from "@/components/Paywall";
 
 interface SearchResult {
   results: Repertoire[];
@@ -29,6 +30,7 @@ export default function Repertorio() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedPopularity, setSelectedPopularity] = useState<string>("all");
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
+  const [showPaywall, setShowPaywall] = useState(false);
   
   const { toast } = useToast();
 
@@ -109,8 +111,17 @@ export default function Repertorio() {
         queryClient.invalidateQueries({ queryKey: ["/api/repertoires"] });
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("❌ Erro na busca:", error);
+      if (error?.upgradeRequired || error?.message?.includes("Limite")) {
+        setShowPaywall(true);
+      } else {
+        toast({
+          title: "Erro na busca",
+          description: error?.message || "Não foi possível realizar a busca. Tente novamente.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -143,8 +154,17 @@ export default function Repertorio() {
         queryClient.invalidateQueries({ queryKey: ["/api/repertoires"] });
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("❌ Erro ao carregar mais repertórios:", error);
+      if (error?.upgradeRequired || error?.message?.includes("Limite")) {
+        setShowPaywall(true);
+      } else {
+        toast({
+          title: "Erro ao carregar",
+          description: error?.message || "Não foi possível carregar mais repertórios. Tente novamente.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -761,6 +781,13 @@ export default function Repertorio() {
           )}
         </div>
       </div>
+      
+      <Paywall
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        feature="busca inteligente de repertório"
+        title="Limite de Uso Atingido"
+      />
     </div>
   );
 }
