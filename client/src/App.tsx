@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Login from "@/pages/login";
@@ -46,34 +47,136 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/pricing" component={Pricing} />
-      <Route path="/checkout" component={Checkout} />
-      <Route path="/dashboard" component={Dashboard} />
       <Route path="/features" component={Features} />
       <Route path="/about" component={About} />
-      <Route path="/argumentos" component={Argumentos} />
-      <Route path="/repertorio" component={Repertorio} />
-      <Route path="/simulador" component={Simulador} />
-      <Route path="/estilo" component={Estilo} />
-      <Route path="/settings" component={Settings} />
-      <Route path="/goals" component={Goals} />
-      <Route path="/exams" component={Exams} />
-      <Route path="/functionalities" component={Functionalities} />
       <Route path="/newsletter" component={Newsletter} />
-      <Route path="/estrutura-curinga" component={EstruturaCuringa} />
-      <Route path="/controlador-escrita" component={ControladorEscrita} />
-      <Route path="/simulacao" component={Simulacao} />
-      <Route path="/resultado" component={Resultado} />
-      <Route path="/biblioteca" component={Biblioteca} />
-      <Route path="/material-complementar" component={MaterialComplementar} />
-      <Route path="/propostas" component={Propostas} />
-      <Route path="/mapa-mental" component={MapaMental} />
-      <Route path="/edit-structure" component={EditStructurePage} />
-      <Route path="/use-structure" component={UseStructurePage} />
-      <Route path="/create-structure" component={CreateStructurePage} />
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/admin/newsletter" component={AdminNewsletter} />
-      <Route path="/admin/materiais" component={AdminMateriais} />
-      <Route path="/admin/coupons" component={AdminCoupons} />
+      
+      <Route path="/checkout">
+        <ProtectedRoute>
+          <Checkout />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/dashboard">
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/settings">
+        <ProtectedRoute>
+          <Settings />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/goals">
+        <ProtectedRoute>
+          <Goals />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/exams">
+        <ProtectedRoute>
+          <Exams />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/functionalities">
+        <ProtectedRoute>
+          <Functionalities />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/argumentos">
+        <ProtectedRoute>
+          <Argumentos />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/repertorio">
+        <ProtectedRoute>
+          <Repertorio />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/simulador">
+        <ProtectedRoute>
+          <Simulador />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/simulacao">
+        <ProtectedRoute>
+          <Simulacao />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/estilo">
+        <ProtectedRoute>
+          <Estilo />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/estrutura-curinga">
+        <ProtectedRoute>
+          <EstruturaCuringa />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/controlador-escrita">
+        <ProtectedRoute>
+          <ControladorEscrita />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/resultado">
+        <ProtectedRoute>
+          <Resultado />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/biblioteca">
+        <ProtectedRoute>
+          <Biblioteca />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/material-complementar">
+        <ProtectedRoute>
+          <MaterialComplementar />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/propostas">
+        <ProtectedRoute>
+          <Propostas />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/mapa-mental">
+        <ProtectedRoute>
+          <MapaMental />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/edit-structure">
+        <ProtectedRoute>
+          <EditStructurePage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/use-structure">
+        <ProtectedRoute>
+          <UseStructurePage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/create-structure">
+        <ProtectedRoute>
+          <CreateStructurePage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin">
+        <ProtectedRoute>
+          <AdminDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/newsletter">
+        <ProtectedRoute>
+          <AdminNewsletter />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/materiais">
+        <ProtectedRoute>
+          <AdminMateriais />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/coupons">
+        <ProtectedRoute>
+          <AdminCoupons />
+        </ProtectedRoute>
+      </Route>
+      
       <Route component={NotFound} />
     </Switch>
   );

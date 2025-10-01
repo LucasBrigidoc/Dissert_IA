@@ -7,18 +7,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Login() {
   const [, setLocation] = useLocation();
+  const { login, isAuthenticating } = useAuth();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would authenticate with the backend
-    // For demo purposes, redirect to dashboard
-    setLocation("/dashboard");
+    
+    try {
+      const success = await login(email, password);
+      if (success) {
+        setLocation("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao fazer login",
+        description: error instanceof Error ? error.message : "Erro desconhecido ao fazer login",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -81,10 +95,11 @@ export default function Login() {
                 
                 <Button
                   type="submit"
-                  className="w-full bg-bright-blue text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale"
+                  disabled={isAuthenticating}
+                  className="w-full bg-bright-blue text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="button-login-submit"
                 >
-                  Entrar
+                  {isAuthenticating ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
               

@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Signup() {
   const [, setLocation] = useLocation();
+  const { register, isRegistering } = useAuth();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userType, setUserType] = useState<"vestibulano" | "concurseiro">("vestibulano");
@@ -19,11 +23,30 @@ export default function Signup() {
     confirmPassword: ""
   });
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would create account with the backend
-    // For demo purposes, redirect to dashboard
-    setLocation("/dashboard");
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Erro de validação",
+        description: "As senhas não coincidem",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      const success = await register(formData.name, formData.email, formData.password, userType);
+      if (success) {
+        setLocation("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao criar conta",
+        description: error instanceof Error ? error.message : "Erro desconhecido ao criar conta",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -146,10 +169,11 @@ export default function Signup() {
                 
                 <Button
                   type="submit"
-                  className="w-full bg-bright-blue text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale"
+                  disabled={isRegistering}
+                  className="w-full bg-bright-blue text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="button-signup-submit"
                 >
-                  Criar Conta
+                  {isRegistering ? "Criando conta..." : "Criar Conta"}
                 </Button>
               </form>
               
