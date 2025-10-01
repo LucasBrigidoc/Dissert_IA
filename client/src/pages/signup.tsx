@@ -24,6 +24,25 @@ export default function Signup() {
     confirmPassword: ""
   });
 
+  const validatePhone = (phone: string): boolean => {
+    const numbers = phone.replace(/\D/g, '');
+    return numbers.length === 10 || numbers.length === 11;
+  };
+
+  const formatPhone = (value: string): string => {
+    const numbers = value.replace(/\D/g, '');
+    
+    if (numbers.length <= 2) {
+      return numbers;
+    } else if (numbers.length <= 6) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    } else if (numbers.length <= 10) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 6)}-${numbers.slice(6)}`;
+    } else {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+    }
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -31,6 +50,15 @@ export default function Signup() {
       toast({
         title: "Erro de validação",
         description: "As senhas não coincidem",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      toast({
+        title: "Erro de validação",
+        description: "Por favor, insira um número de telefone válido com DDD",
         variant: "destructive",
       });
       return;
@@ -51,7 +79,12 @@ export default function Signup() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === "phone") {
+      const formatted = formatPhone(value);
+      setFormData(prev => ({ ...prev, [field]: formatted }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   return (
@@ -93,7 +126,7 @@ export default function Signup() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="phone" className="block text-bright-blue font-medium mb-2">Telefone (opcional)</Label>
+                  <Label htmlFor="phone" className="block text-bright-blue font-medium mb-2">Telefone</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -102,6 +135,7 @@ export default function Signup() {
                     placeholder="(11) 99999-9999"
                     className="w-full px-4 py-3 border-2 border-soft-gray rounded-lg focus:border-bright-blue focus:outline-none smooth-transition"
                     data-testid="input-phone"
+                    required
                   />
                 </div>
                 
