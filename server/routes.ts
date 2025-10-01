@@ -909,7 +909,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User login endpoint
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { email, password, rememberMe } = req.body;
       
       if (!email || !password) {
         return res.status(400).json({ message: "Email e senha são obrigatórios" });
@@ -936,6 +936,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Save user ID in session
         req.session.userId = user.id;
+        
+        // Set session cookie duration based on "remember me" preference
+        if (rememberMe) {
+          // Remember me: 30 days
+          req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+        } else {
+          // Don't remember: session cookie (expires when browser closes)
+          req.session.cookie.maxAge = undefined as any;
+        }
         
         // Save session
         req.session.save((saveErr) => {
