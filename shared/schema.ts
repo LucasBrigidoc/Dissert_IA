@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, json } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, json, uniqueIndex, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -1059,3 +1059,88 @@ export type MaterialComplementar = typeof materiaisComplementares.$inferSelect;
 export type InsertMaterialComplementar = z.infer<typeof insertMaterialComplementarSchema>;
 export type CreateMaterialComplementar = z.infer<typeof createMaterialComplementarSchema>;
 export type UpdateMaterialComplementar = z.infer<typeof updateMaterialComplementarSchema>;
+
+// ===================== USER GOALS (METAS) =====================
+
+export const userGoals = pgTable("user_goals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  target: integer("target").notNull(), // Meta a atingir
+  current: integer("current").notNull().default(0), // Progresso atual
+  unit: text("unit").notNull(), // Unidade (redações, horas, etc)
+  completed: boolean("completed").default(false),
+  priority: varchar("priority", { enum: ["alta", "media", "baixa"] }).default("media"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  userIdIdx: index("idx_user_goals_user_id").on(table.userId),
+}));
+
+export const insertUserGoalSchema = createInsertSchema(userGoals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type UserGoal = typeof userGoals.$inferSelect;
+export type InsertUserGoal = z.infer<typeof insertUserGoalSchema>;
+
+// ===================== USER EXAMS (PROVAS/VESTIBULARES) =====================
+
+export const userExams = pgTable("user_exams", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  examAt: timestamp("exam_at").notNull(), // Data e hora da prova
+  location: text("location"), // Local da prova
+  description: text("description"),
+  type: varchar("type", { enum: ["vestibular", "concurso", "simulado", "outros"] }).notNull().default("simulado"),
+  status: varchar("status", { enum: ["upcoming", "completed", "cancelled"] }).default("upcoming"),
+  subjects: json("subjects").default([]), // Matérias da prova
+  durationMinutes: integer("duration_minutes"), // Duração da prova em minutos
+  importance: varchar("importance", { enum: ["alta", "media", "baixa"] }).default("media"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  userIdIdx: index("idx_user_exams_user_id").on(table.userId),
+}));
+
+export const insertUserExamSchema = createInsertSchema(userExams).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type UserExam = typeof userExams.$inferSelect;
+export type InsertUserExam = z.infer<typeof insertUserExamSchema>;
+
+// ===================== USER SCHEDULE (CRONOGRAMA) =====================
+
+export const userSchedule = pgTable("user_schedule", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  day: varchar("day", { 
+    enum: ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"] 
+  }).notNull(),
+  activities: json("activities").notNull().default([]), // Lista de atividades do dia
+  hours: integer("hours").default(0), // Horas de estudo
+  minutes: integer("minutes").default(0), // Minutos de estudo
+  completed: boolean("completed").default(false),
+  weekStart: timestamp("week_start").notNull(), // Início da semana (para rastrear semanas diferentes)
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  userIdIdx: index("idx_user_schedule_user_id").on(table.userId),
+  uniqueUserDayWeek: uniqueIndex("unique_user_day_week").on(table.userId, table.weekStart, table.day),
+}));
+
+export const insertUserScheduleSchema = createInsertSchema(userSchedule).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type UserSchedule = typeof userSchedule.$inferSelect;
+export type InsertUserSchedule = z.infer<typeof insertUserScheduleSchema>;
