@@ -1,87 +1,158 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Calendar, Plus, Trash2, Edit3, MapPin, Clock, AlertCircle, CheckCircle2, GraduationCap } from "lucide-react";
-
-interface Exam {
-  id: number;
-  name: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  type: "vestibular" | "concurso" | "simulado" | "outros";
-  status: "upcoming" | "completed" | "cancelled";
-  subjects: string[];
-  duration: string;
-  importance: "alta" | "media" | "baixa";
-}
+import { ArrowLeft, Calendar, Plus, Trash2, Edit3, MapPin, Clock, AlertCircle, CheckCircle2, GraduationCap, Loader2 } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import type { SelectUserExam } from "@shared/schema";
 
 export default function Exams() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   
-  const [exams, setExams] = useState<Exam[]>([
-    {
-      id: 1,
-      name: "Simulado ENEM",
-      date: "2024-10-28",
-      time: "08:00",
-      location: "Escola Municipal",
-      description: "Simulado completo do ENEM com redação e questões de todas as áreas",
-      type: "simulado",
-      status: "upcoming",
-      subjects: ["Matemática", "Português", "Redação", "Ciências Humanas", "Ciências da Natureza"],
-      duration: "5h30min",
-      importance: "alta"
-    },
-    {
-      id: 2,
-      name: "ENEM 1º dia",
-      date: "2024-11-03",
-      time: "13:30",
-      location: "Centro de Convenções",
-      description: "Primeiro dia do ENEM - Linguagens, Códigos, Ciências Humanas e Redação",
-      type: "vestibular",
-      status: "upcoming",
-      subjects: ["Português", "Literatura", "Língua Estrangeira", "Redação", "História", "Geografia", "Filosofia", "Sociologia"],
-      duration: "5h30min",
-      importance: "alta"
-    },
-    {
-      id: 3,
-      name: "ENEM 2º dia",
-      date: "2024-11-10",
-      time: "13:30",
-      location: "Centro de Convenções",
-      description: "Segundo dia do ENEM - Ciências da Natureza e Matemática",
-      type: "vestibular",
-      status: "upcoming",
-      subjects: ["Matemática", "Física", "Química", "Biologia"],
-      duration: "5h",
-      importance: "alta"
-    }
-  ]);
-
-  const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newExam, setNewExam] = useState<Partial<Exam>>({
+  const [newExam, setNewExam] = useState({
     name: "",
-    date: "",
-    time: "",
+    examDate: "",
+    examTime: "",
     location: "",
     description: "",
-    type: "simulado",
-    status: "upcoming",
-    subjects: [],
-    duration: "",
-    importance: "media"
+    type: "simulado" as const,
+    status: "upcoming" as const,
+    subjects: [] as string[],
+    durationMinutes: "",
+    importance: "media" as const
   });
+
+  const { data: exams = [], isLoading, isError, error, refetch } = useQuery<SelectUserExam[]>({
+    queryKey: ['/api/exams']
+  });
+
+  const createExamMutation = useMutation({
+    mutationFn: async (examData: any) => {
+      return apiRequest('/api/exams', {
+        method: 'POST',
+        body: JSON.stringify(examData)
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/exams'] });
+      toast({ title: "Prova criada com sucesso!" });
+      resetNewExam();
+      setShowAddForm(false);
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Erro ao criar prova", 
+        description: error.message || "Verifique os dados e tente novamente",
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const updateExamMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<SelectUserExam> }) => {
+      return apiRequest(`/api/exams/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data)
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/exams'] });
+      toast({ title: "Prova atualizada com sucesso!" });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Erro ao atualizar prova",
+        description: error.message || "Verifique os dados e tente novamente",
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const deleteExamMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest(`/api/exams/${id}`, {
+        method: 'DELETE'
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/exams'] });
+      toast({ title: "Prova excluída com sucesso!" });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Erro ao excluir prova",
+        description: error.message || "Tente novamente",
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const resetNewExam = () => {
+    setNewExam({
+      name: "",
+      examDate: "",
+      examTime: "",
+      location: "",
+      description: "",
+      type: "simulado",
+      status: "upcoming",
+      subjects: [],
+      durationMinutes: "",
+      importance: "media"
+    });
+  };
+
+  const handleAddExam = () => {
+    if (!newExam.name) {
+      toast({ title: "O nome é obrigatório", variant: "destructive" });
+      return;
+    }
+    
+    if (!newExam.examDate || !newExam.examTime) {
+      toast({ title: "Data e horário são obrigatórios", variant: "destructive" });
+      return;
+    }
+
+    const examAt = new Date(`${newExam.examDate}T${newExam.examTime}`);
+    
+    const examData: any = {
+      name: newExam.name,
+      examAt: examAt.toISOString(),
+      type: newExam.type,
+      status: newExam.status,
+      importance: newExam.importance,
+      subjects: newExam.subjects
+    };
+
+    if (newExam.location) examData.location = newExam.location;
+    if (newExam.description) examData.description = newExam.description;
+    if (newExam.durationMinutes) {
+      const durationNum = parseInt(newExam.durationMinutes);
+      if (!isNaN(durationNum) && durationNum > 0) {
+        examData.durationMinutes = durationNum;
+      }
+    }
+
+    createExamMutation.mutate(examData);
+  };
+
+  const handleDeleteExam = (id: string) => {
+    deleteExamMutation.mutate(id);
+  };
+
+  const handleStatusChange = (id: string, status: string) => {
+    updateExamMutation.mutate({ id, data: { status: status as any } });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -110,38 +181,6 @@ export default function Exams() {
     }
   };
 
-  const handleAddExam = () => {
-    if (newExam.name && newExam.date && newExam.time) {
-      setExams([...exams, {
-        ...newExam as Exam,
-        id: Date.now(),
-        subjects: newExam.subjects || []
-      }]);
-      setNewExam({
-        name: "",
-        date: "",
-        time: "",
-        location: "",
-        description: "",
-        type: "simulado",
-        status: "upcoming",
-        subjects: [],
-        duration: "",
-        importance: "media"
-      });
-      setShowAddForm(false);
-    }
-  };
-
-  const handleDeleteExam = (id: number) => {
-    setExams(exams.filter(exam => exam.id !== id));
-  };
-
-  const handleUpdateExam = (updatedExam: Exam) => {
-    setExams(exams.map(exam => exam.id === updatedExam.id ? updatedExam : exam));
-    setEditingExam(null);
-  };
-
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('pt-BR', {
@@ -151,9 +190,20 @@ export default function Exams() {
     });
   };
 
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const getDaysUntil = (dateStr: string) => {
     const examDate = new Date(dateStr);
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    examDate.setHours(0, 0, 0, 0);
+    
     const diffTime = examDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
@@ -161,6 +211,15 @@ export default function Exams() {
     if (diffDays === 0) return "Hoje";
     if (diffDays === 1) return "Amanhã";
     return `${diffDays} dias`;
+  };
+
+  const formatDuration = (minutes?: number) => {
+    if (!minutes) return "";
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0 && mins > 0) return `${hours}h${mins}min`;
+    if (hours > 0) return `${hours}h`;
+    return `${mins}min`;
   };
 
   return (
@@ -191,6 +250,25 @@ export default function Exams() {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8 pt-24 space-y-6">
         
+        {/* Error State */}
+        {isError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="flex items-center justify-between">
+              <span>Erro ao carregar provas. {error instanceof Error ? error.message : 'Tente novamente.'}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetch()}
+                className="ml-4"
+                data-testid="button-retry-exams"
+              >
+                Tentar novamente
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Add New Exam Button */}
         <div className="flex justify-end">
           <Button
@@ -210,7 +288,7 @@ export default function Exams() {
               <h2 className="text-lg font-semibold text-dark-blue">Adicionar Nova Prova</h2>
               <Button
                 variant="ghost"
-                onClick={() => setShowAddForm(false)}
+                onClick={() => { setShowAddForm(false); resetNewExam(); }}
                 className="text-soft-gray hover:bg-soft-gray/10"
               >
                 ✕
@@ -248,8 +326,8 @@ export default function Exams() {
                 <Label className="text-sm text-dark-blue">Data</Label>
                 <Input
                   type="date"
-                  value={newExam.date}
-                  onChange={(e) => setNewExam({...newExam, date: e.target.value})}
+                  value={newExam.examDate}
+                  onChange={(e) => setNewExam({...newExam, examDate: e.target.value})}
                   className="mt-1"
                   data-testid="input-new-exam-date"
                 />
@@ -259,8 +337,8 @@ export default function Exams() {
                 <Label className="text-sm text-dark-blue">Horário</Label>
                 <Input
                   type="time"
-                  value={newExam.time}
-                  onChange={(e) => setNewExam({...newExam, time: e.target.value})}
+                  value={newExam.examTime}
+                  onChange={(e) => setNewExam({...newExam, examTime: e.target.value})}
                   className="mt-1"
                   data-testid="input-new-exam-time"
                 />
@@ -278,14 +356,29 @@ export default function Exams() {
               </div>
               
               <div>
-                <Label className="text-sm text-dark-blue">Duração</Label>
+                <Label className="text-sm text-dark-blue">Duração (minutos)</Label>
                 <Input
-                  value={newExam.duration}
-                  onChange={(e) => setNewExam({...newExam, duration: e.target.value})}
-                  placeholder="Ex: 5h30min"
+                  type="number"
+                  value={newExam.durationMinutes}
+                  onChange={(e) => setNewExam({...newExam, durationMinutes: e.target.value})}
+                  placeholder="Ex: 330 (5h30min)"
                   className="mt-1"
                   data-testid="input-new-exam-duration"
                 />
+              </div>
+
+              <div>
+                <Label className="text-sm text-dark-blue">Importância</Label>
+                <Select value={newExam.importance} onValueChange={(value) => setNewExam({...newExam, importance: value as any})}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="alta">Alta</SelectItem>
+                    <SelectItem value="media">Média</SelectItem>
+                    <SelectItem value="baixa">Baixa</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             
@@ -305,12 +398,16 @@ export default function Exams() {
                 onClick={handleAddExam}
                 className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                 data-testid="button-save-new-exam"
+                disabled={createExamMutation.isPending}
               >
+                {createExamMutation.isPending ? (
+                  <Loader2 size={16} className="mr-2 animate-spin" />
+                ) : null}
                 Salvar Prova
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setShowAddForm(false)}
+                onClick={() => { setShowAddForm(false); resetNewExam(); }}
                 data-testid="button-cancel-new-exam"
               >
                 Cancelar
@@ -320,89 +417,11 @@ export default function Exams() {
         )}
 
         {/* Exams List */}
-        <div className="grid gap-4">
-          {exams.map((exam) => (
-            <LiquidGlassCard key={exam.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <h3 className="text-lg font-semibold text-dark-blue">{exam.name}</h3>
-                    <Badge className={getStatusColor(exam.status)}>
-                      {getStatusIcon(exam.status)}
-                      <span className="ml-1 capitalize">{exam.status === 'upcoming' ? 'Próxima' : exam.status === 'completed' ? 'Concluída' : 'Cancelada'}</span>
-                    </Badge>
-                    <Badge className={getImportanceColor(exam.importance)}>
-                      Importância {exam.importance}
-                    </Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="text-bright-blue" size={16} />
-                      <div>
-                        <div className="text-sm font-medium text-dark-blue">{formatDate(exam.date)}</div>
-                        <div className="text-xs text-soft-gray">{getDaysUntil(exam.date)}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Clock className="text-bright-blue" size={16} />
-                      <div>
-                        <div className="text-sm font-medium text-dark-blue">{exam.time}</div>
-                        <div className="text-xs text-soft-gray">{exam.duration}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <MapPin className="text-bright-blue" size={16} />
-                      <div>
-                        <div className="text-sm font-medium text-dark-blue">{exam.location}</div>
-                        <div className="text-xs text-soft-gray capitalize">{exam.type}</div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {exam.description && (
-                    <p className="text-sm text-soft-gray mb-3">{exam.description}</p>
-                  )}
-                  
-                  {exam.subjects.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {exam.subjects.map((subject, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {subject}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setEditingExam(exam)}
-                    className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-                    data-testid={`button-edit-exam-${exam.id}`}
-                  >
-                    <Edit3 size={14} />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDeleteExam(exam.id)}
-                    className="text-red-500 border-red-300 hover:bg-red-50"
-                    data-testid={`button-delete-exam-${exam.id}`}
-                  >
-                    <Trash2 size={14} />
-                  </Button>
-                </div>
-              </div>
-            </LiquidGlassCard>
-          ))}
-        </div>
-
-        {exams.length === 0 && (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-bright-blue" />
+          </div>
+        ) : exams.length === 0 ? (
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
             <div className="text-center py-12">
               <GraduationCap className="mx-auto text-soft-gray mb-4" size={48} />
@@ -417,6 +436,92 @@ export default function Exams() {
               </Button>
             </div>
           </LiquidGlassCard>
+        ) : (
+          <div className="grid gap-4">
+            {exams.map((exam) => (
+              <LiquidGlassCard key={exam.id} className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="text-lg font-semibold text-dark-blue">{exam.name}</h3>
+                      <Select
+                        value={exam.status || 'upcoming'}
+                        onValueChange={(value) => handleStatusChange(exam.id, value)}
+                      >
+                        <SelectTrigger className={`w-[130px] ${getStatusColor(exam.status || 'upcoming')}`}>
+                          <div className="flex items-center">
+                            {getStatusIcon(exam.status || 'upcoming')}
+                            <SelectValue />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="upcoming">Próxima</SelectItem>
+                          <SelectItem value="completed">Concluída</SelectItem>
+                          <SelectItem value="cancelled">Cancelada</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Badge className={getImportanceColor(exam.importance || 'media')}>
+                        Importância {exam.importance || 'media'}
+                      </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="text-bright-blue" size={16} />
+                        <div>
+                          <div className="text-sm font-medium text-dark-blue">{formatDate(exam.examAt)}</div>
+                          <div className="text-xs text-soft-gray">{getDaysUntil(exam.examAt)}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Clock className="text-bright-blue" size={16} />
+                        <div>
+                          <div className="text-sm font-medium text-dark-blue">{formatTime(exam.examAt)}</div>
+                          <div className="text-xs text-soft-gray">{formatDuration(exam.durationMinutes || undefined)}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="text-bright-blue" size={16} />
+                        <div>
+                          <div className="text-sm font-medium text-dark-blue">{exam.location || "Não informado"}</div>
+                          <div className="text-xs text-soft-gray capitalize">{exam.type}</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {exam.description && (
+                      <p className="text-sm text-soft-gray mb-3">{exam.description}</p>
+                    )}
+                    
+                    {exam.subjects && Array.isArray(exam.subjects) && (exam.subjects as string[]).length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {(exam.subjects as string[]).map((subject, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {subject}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteExam(exam.id)}
+                      className="text-red-500 border-red-300 hover:bg-red-50"
+                      data-testid={`button-delete-exam-${exam.id}`}
+                      disabled={deleteExamMutation.isPending}
+                    >
+                      {deleteExamMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                    </Button>
+                  </div>
+                </div>
+              </LiquidGlassCard>
+            ))}
+          </div>
         )}
       </div>
     </div>
