@@ -13,6 +13,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { getInitials } from "@/lib/utils";
 
 export default function SettingsPage() {
   const [, setLocation] = useLocation();
@@ -235,14 +236,14 @@ export default function SettingsPage() {
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                {userProfile.name.split(' ').map(n => n[0]).join('')}
+                {getInitials(userProfile.name)}
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-3">
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user-mobile">
-                {userProfile.name.split(' ').map(n => n[0]).join('')}
+                {getInitials(userProfile.name)}
               </div>
               <Button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

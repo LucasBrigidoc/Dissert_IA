@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { getInitials } from "@/lib/utils";
 
 interface ScoreData {
   id: number;
@@ -423,14 +424,14 @@ export default function Dashboard() {
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                {name.split(' ').map(n => n[0]).join('')}
+                {getInitials(name)}
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-3">
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user-mobile">
-                {name.split(' ').map(n => n[0]).join('')}
+                {getInitials(name)}
               </div>
               <Button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
