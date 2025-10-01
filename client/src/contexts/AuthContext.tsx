@@ -8,7 +8,7 @@ export interface AuthContextType {
   isRegistering: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<boolean>;
-  register: (name: string, email: string, password: string, userType: 'vestibulano' | 'concurseiro') => Promise<boolean>;
+  register: (name: string, email: string, phone: string, password: string, userType: 'vestibulano' | 'concurseiro') => Promise<boolean>;
   checkAuth: () => Promise<void>;
 }
 
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const register = async (name: string, email: string, password: string, userType: 'vestibulano' | 'concurseiro'): Promise<boolean> => {
+  const register = async (name: string, email: string, phone: string, password: string, userType: 'vestibulano' | 'concurseiro'): Promise<boolean> => {
     setIsRegistering(true);
     try {
       const response = await fetch('/api/auth/register', {
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password, userType }),
+        body: JSON.stringify({ name, email, phone, password, userType }),
       });
 
       if (!response.ok) {

@@ -19,6 +19,7 @@ export default function Signup() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: ""
   });
@@ -36,7 +37,7 @@ export default function Signup() {
     }
     
     try {
-      const success = await register(formData.name, formData.email, formData.password, userType);
+      const success = await register(formData.name, formData.email, formData.phone, formData.password, userType);
       if (success) {
         setLocation("/dashboard");
       }
@@ -88,6 +89,19 @@ export default function Signup() {
                     className="w-full px-4 py-3 border-2 border-soft-gray rounded-lg focus:border-bright-blue focus:outline-none smooth-transition"
                     data-testid="input-email"
                     required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="phone" className="block text-bright-blue font-medium mb-2">Telefone (opcional)</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="(11) 99999-9999"
+                    className="w-full px-4 py-3 border-2 border-soft-gray rounded-lg focus:border-bright-blue focus:outline-none smooth-transition"
+                    data-testid="input-phone"
                   />
                 </div>
                 
