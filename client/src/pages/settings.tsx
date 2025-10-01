@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
@@ -40,11 +40,25 @@ export default function SettingsPage() {
   const [userProfile, setUserProfile] = useState({
     name: user?.name || "Usuário",
     email: user?.email || "",
-    phone: "(11) 99999-9999",
+    phone: user?.phone || "",
     studentType: String(user?.userType || "vestibulano")
   });
 
   const [tempProfile, setTempProfile] = useState(userProfile);
+
+  // Update userProfile when user data changes
+  useEffect(() => {
+    if (user) {
+      const updatedProfile = {
+        name: user.name || "Usuário",
+        email: user.email || "",
+        phone: user.phone || "",
+        studentType: String(user.userType || "vestibulano")
+      };
+      setUserProfile(updatedProfile);
+      setTempProfile(updatedProfile);
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
