@@ -61,7 +61,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Why DissertAI is Special */}
+        {/* Why DissertIA is Special */}
         <div className="mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-dark-blue mb-8 sm:mb-12" data-testid="text-why-special-title">Por Que o Dissert IA é Tão Bom?</h2>
           <div className="space-y-6 sm:space-y-8">
