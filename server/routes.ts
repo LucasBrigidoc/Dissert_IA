@@ -9,6 +9,7 @@ import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
 import { geminiService } from "./gemini-service";
 import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
+import { SubscriptionService } from "./subscription-service";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
@@ -26,6 +27,7 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 // Initialize services
 const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
+const subscriptionService = new SubscriptionService(storage);
 
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.userId) {
@@ -44,6 +46,25 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
   } catch (error) {
     console.error("Auth middleware error:", error);
     return res.status(401).json({ message: "Não autenticado" });
+  }
+};
+
+// Middleware to check AI usage limits
+export const checkAILimits = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Não autenticado" });
+  }
+
+  try {
+    await subscriptionService.checkAIUsageAllowed(req.session.userId);
+    next();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Limite de uso atingido";
+    return res.status(403).json({ 
+      message,
+      upgradeRequired: true,
+      action: "upgrade"
+    });
   }
 };
 
@@ -959,6 +980,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== SUBSCRIPTION MANAGEMENT ENDPOINTS =====================
+
+  // Get current user subscription with plan details
+  app.get("/api/subscription", requireAuth, async (req, res) => {
+    try {
+      const { subscription, plan } = await subscriptionService.getUserSubscriptionWithPlan(req.user!.id);
+      res.json({ subscription, plan });
+    } catch (error) {
+      console.error("Get subscription error:", error);
+      res.status(500).json({ message: "Erro ao buscar assinatura" });
+    }
+  });
+
+  // Get subscription limits and usage
+  app.get("/api/subscription/limits", requireAuth, async (req, res) => {
+    try {
+      const limits = await subscriptionService.getSubscriptionLimits(req.user!.id);
+      res.json(limits);
+    } catch (error) {
+      console.error("Get limits error:", error);
+      res.status(500).json({ message: "Erro ao buscar limites" });
+    }
+  });
+
+  // Cancel subscription
+  app.post("/api/subscription/cancel", requireAuth, async (req, res) => {
+    try {
+      const { reason } = req.body;
+      const updated = await subscriptionService.cancelSubscription(req.user!.id, reason);
+      res.json({ 
+        message: "Assinatura cancelada com sucesso. Você ainda terá acesso até o fim do período pago.",
+        subscription: updated 
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Erro ao cancelar assinatura";
+      console.error("Cancel subscription error:", error);
+      res.status(400).json({ message });
+    }
+  });
+
+  // Reactivate subscription
+  app.post("/api/subscription/reactivate", requireAuth, async (req, res) => {
+    try {
+      const updated = await subscriptionService.reactivateSubscription(req.user!.id);
+      res.json({ 
+        message: "Assinatura reativada com sucesso!",
+        subscription: updated 
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Erro ao reativar assinatura";
+      console.error("Reactivate subscription error:", error);
+      res.status(400).json({ message });
+    }
+  });
+
+  // Get transaction history
+  app.get("/api/subscription/transactions", requireAuth, async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const transactions = await subscriptionService.getUserTransactions(req.user!.id, limit);
+      res.json(transactions);
+    } catch (error) {
+      console.error("Get transactions error:", error);
+      res.status(500).json({ message: "Erro ao buscar histórico de transações" });
+    }
+  });
+
   // ===================== USER GOALS (METAS) ENDPOINTS =====================
 
   // Get user goals
@@ -1492,6 +1580,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Intelligent repertoire search endpoint with rate limiting
   app.post("/api/repertoires/search", async (req, res) => {
     try {
+      // Check subscription limits for authenticated users
+      if (req.session.userId) {
+        try {
+          await subscriptionService.checkAIUsageAllowed(req.session.userId);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Limite de uso atingido";
+          return res.status(403).json({ 
+            message,
+            upgradeRequired: true,
+            action: "upgrade"
+          });
+        }
+      }
+
       const validatedQuery = searchQuerySchema.parse(req.body);
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
@@ -2103,6 +2205,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.setHeader('Content-Type', 'application/json');
     
     try {
+      // Check subscription limits for authenticated users
+      if (req.session.userId) {
+        try {
+          await subscriptionService.checkAIUsageAllowed(req.session.userId);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Limite de uso atingido";
+          return res.status(403).json({ 
+            message,
+            upgradeRequired: true,
+            action: "upgrade"
+          });
+        }
+      }
+
       const validatedData = chatMessageSchema.parse(req.body);
       const { conversationId, messageId, message, section, context } = validatedData;
       
@@ -2240,6 +2356,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Text Modification API endpoint
   app.post("/api/text-modification", async (req, res) => {
     try {
+      // Check subscription limits for authenticated users
+      if (req.session.userId) {
+        try {
+          await subscriptionService.checkAIUsageAllowed(req.session.userId);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Limite de uso atingido";
+          return res.status(403).json({ 
+            message,
+            upgradeRequired: true,
+            action: "upgrade"
+          });
+        }
+      }
+
       // Validate input using shared schema
       const validatedData = textModificationRequestSchema.parse(req.body);
       const { text, type, config } = validatedData;
