@@ -1485,7 +1485,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { essayText, userId } = validationResult.data;
 
       // Rate limiting check (6 analyses every 3 days per user/IP)
-      const identifier = getAITrackingIdentifier(req);
       const rateLimitCheck = await storage.checkRateLimit(`structure_analysis_${identifier}`, 6, 4320);
       
       if (!rateLimitCheck.allowed) {
@@ -1594,7 +1593,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { structureName, sections, topic, additionalInstructions } = validationResult.data;
 
       // Rate limiting check (8 essay generations every 3 days per user/IP)
-      const identifier = getAITrackingIdentifier(req);
       const rateLimitCheck = await storage.checkRateLimit(`essay_generation_${identifier}`, 8, 4320);
       
       if (!rateLimitCheck.allowed) {
@@ -1682,7 +1680,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { query, type, category, popularity, excludeIds = [] } = validatedQuery;
       
       // Rate limiting check (19 AI searches every 3 days per user/IP)
-      const identifier = getAITrackingIdentifier(req);
       const rateLimitCheck = await storage.checkRateLimit(`repertoire_search_${identifier}`, 19, 4320);
       
       if (!rateLimitCheck.allowed) {
@@ -2184,7 +2181,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = generateProposalSchema.parse(req.body);
       
       // Rate limiting check (40 generations every 3 days per user/IP)
-      const identifier = getAITrackingIdentifier(req);
       const rateLimitCheck = await storage.checkRateLimit(`proposal_generate_${identifier}`, 11, 4320);
       
       if (!rateLimitCheck.allowed) {
@@ -2351,7 +2347,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { conversationId, messageId, message, section, context } = validatedData;
       
       // Rate limiting check (15 AI chats every 3 days per user/IP)
-      const identifier = getAITrackingIdentifier(req);
       const rateLimitCheck = await storage.checkRateLimit(`ai_chat_${identifier}`, 12, 4320);
       
       if (!rateLimitCheck.allowed) {
@@ -2518,7 +2513,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { text, type, config } = validatedData;
       
       // Per-type rate limiting (45 modifications every 3 days per user/IP per type)
-      const identifier = getAITrackingIdentifier(req);
       const perTypeIdentifier = `${identifier}_text_${type}`;
       const rateLimitCheck = await storage.checkRateLimit(perTypeIdentifier, 9, 4320);
       
@@ -2629,7 +2623,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Rate limiting check (10 corrections every 3 days per user/IP)
-      const identifier = getAITrackingIdentifier(req);
       const rateLimitCheck = await storage.checkRateLimit(`correction_${identifier}`, 5, 4320);
       
       if (!rateLimitCheck.allowed) {
