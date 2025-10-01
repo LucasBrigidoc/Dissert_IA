@@ -6,7 +6,7 @@ export interface AuthContextType {
   loading: boolean;
   isAuthenticating: boolean;
   isRegistering: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<boolean>;
   logout: () => Promise<boolean>;
   register: (name: string, email: string, phone: string, password: string, userType: 'vestibulano' | 'concurseiro') => Promise<boolean>;
   checkAuth: () => Promise<void>;
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string, rememberMe: boolean = false): Promise<boolean> => {
     setIsAuthenticating(true);
     try {
       const response = await fetch('/api/auth/login', {
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, rememberMe }),
       });
 
       if (!response.ok) {

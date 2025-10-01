@@ -17,12 +17,13 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      const success = await login(email, password);
+      const success = await login(email, password, rememberMe);
       if (success) {
         setLocation("/dashboard");
       }
@@ -85,7 +86,12 @@ export default function Login() {
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="remember" data-testid="checkbox-remember" />
+                    <Checkbox 
+                      id="remember" 
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked === true)}
+                      data-testid="checkbox-remember" 
+                    />
                     <Label htmlFor="remember" className="text-soft-gray italic">Lembrar de mim</Label>
                   </div>
                   <a href="#" className="text-soft-gray italic hover:text-bright-blue smooth-transition" data-testid="link-forgot-password">
