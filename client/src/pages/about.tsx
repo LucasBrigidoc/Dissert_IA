@@ -149,7 +149,7 @@ export default function About() {
             Democratizar a excelência na escrita e transformar o futuro educacional do Brasil
           </p>
           <Button asChild className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale" data-testid="button-start-now">
-            <Link href="/signup">Começar Agora</Link>
+            <Link href="/pricing">Começar Agora</Link>
           </Button>
         </LiquidGlassCard>
       </div>
