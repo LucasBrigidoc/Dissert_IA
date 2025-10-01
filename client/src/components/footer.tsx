@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Sparkles, Facebook, Instagram, Twitter, ArrowRight, Loader2 } from "lucide-react";
+import { Sparkles, Facebook, Instagram, Youtube, ArrowRight, Loader2 } from "lucide-react";
+import { SiTiktok } from "react-icons/si";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -67,8 +68,11 @@ export function Footer() {
               <a href="https://www.instagram.com/dissert_ia" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-instagram">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-twitter">
-                <Twitter size={20} />
+              <a href="#" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-youtube">
+                <Youtube size={20} />
+              </a>
+              <a href="#" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-tiktok">
+                <SiTiktok size={20} />
               </a>
             </div>
           </div>
