@@ -843,7 +843,7 @@ export default function Dashboard() {
                   <div className="flex-1 flex items-center justify-center py-8">
                     <div className="text-center space-y-3">
                       <div className="w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-full flex items-center justify-center mx-auto">
-                        <BookOpen className="text-bright-blue" size={32} />
+                        <TrendingUp className="text-bright-blue" size={32} />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma redação corrigida ainda</p>
