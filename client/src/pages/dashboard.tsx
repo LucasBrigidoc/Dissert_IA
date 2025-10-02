@@ -263,6 +263,82 @@ export default function Dashboard() {
     },
   });
 
+  // Mutations for exams
+  const createExamMutation = useMutation({
+    mutationFn: async (data: { name: string; examAt: Date; type: string; location?: string; description?: string; subjects?: string[]; durationMinutes?: number; importance?: string }) => {
+      return await apiRequest("/api/exams", {
+        method: "POST",
+        body: {
+          userId: user?.id,
+          name: data.name,
+          examAt: data.examAt,
+          type: data.type,
+          location: data.location || null,
+          description: data.description || null,
+          subjects: data.subjects || [],
+          durationMinutes: data.durationMinutes || null,
+          importance: data.importance || "media",
+          status: "upcoming",
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/exams"] });
+      toast({
+        title: "Prova criada",
+        description: "Sua prova foi criada com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao criar prova",
+        description: "Não foi possível criar a prova.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateExamMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<{ name: string; examAt: Date; type: string; location: string; description: string; status: string; subjects: string[]; durationMinutes: number; importance: string }> }) => {
+      return await apiRequest(`/api/exams/${id}`, {
+        method: "PATCH",
+        body: data,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/exams"] });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao atualizar prova",
+        description: "Não foi possível atualizar a prova.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteExamMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/exams/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/exams"] });
+      toast({
+        title: "Prova removida",
+        description: "Sua prova foi removida com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao remover prova",
+        description: "Não foi possível remover a prova.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const [editingTarget, setEditingTarget] = useState(false);
   const [newTargetScore, setNewTargetScore] = useState(userProgress?.targetScore ?? 900);
   const [showAddScore, setShowAddScore] = useState(false);
@@ -282,9 +358,10 @@ export default function Dashboard() {
     }
   }, [userProgress?.targetScore]);
   
-  // Map user exams from API to local state format
+  // Map user exams from API to local state format with UUID mapping
   const exams = userExams?.map(exam => ({
     id: parseInt(exam.id.slice(0, 8), 16), // Convert UUID to number for compatibility
+    uuid: exam.id, // Keep the original UUID for API calls
     name: exam.name,
     date: new Date(exam.examAt).toISOString().split('T')[0],
     time: new Date(exam.examAt).toTimeString().slice(0, 5),
@@ -373,27 +450,29 @@ export default function Dashboard() {
   const displayedExams = exams.slice(0, 3);
   
   // Exam helper functions
-  // NOTE: These functions reference undefined setExams - pre-existing bug
   const addNewExam = () => {
     if (newExam.name && newExam.date && newExam.type) {
-      const exam: Exam = {
-        id: Date.now(),
+      // Combine date and time into a Date object
+      const dateTime = newExam.time 
+        ? new Date(`${newExam.date}T${newExam.time}:00`)
+        : new Date(`${newExam.date}T09:00:00`);
+      
+      createExamMutation.mutate({
         name: newExam.name,
-        date: newExam.date,
-        time: newExam.time,
-        location: newExam.location,
+        examAt: dateTime,
         type: newExam.type,
-        description: newExam.description
-      };
-      // @ts-ignore - Pre-existing bug: setExams is undefined
-      setExams([...exams, exam].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+        location: newExam.location || undefined,
+        description: newExam.description || undefined,
+      });
       setNewExam({ name: '', date: '', time: '', location: '', type: '', description: '' });
     }
   };
   
   const removeExam = (examId: number) => {
-    // @ts-ignore - Pre-existing bug: setExams is undefined
-    setExams(exams.filter(exam => exam.id !== examId));
+    const exam = exams.find(e => e.id === examId);
+    if (!exam) return;
+    
+    deleteExamMutation.mutate(exam.uuid);
   };
   
   const formatExamDate = (dateString: string) => {
