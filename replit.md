@@ -53,7 +53,7 @@ Preferred communication style: Simple, everyday language.
 # External Dependencies
 
 ## Core Frameworks
-- **@neondatabase/serverless**: PostgreSQL connection.
+- **pg**: PostgreSQL connection (node-postgres driver).
 - **@tanstack/react-query**: Server state management.
 - **wouter**: Client-side routing.
 - **drizzle-orm**: TypeScript ORM for PostgreSQL.
@@ -72,7 +72,8 @@ Preferred communication style: Simple, everyday language.
 
 ## Authentication and Security
 - **bcrypt**: Password hashing.
-- **connect-pg-simple**: PostgreSQL session store (planned).
+- **memorystore**: In-memory session store (active in development).
+- **connect-pg-simple**: PostgreSQL session store (installed, to be used in production).
 
 ## Validation and Form Handling
 - **zod**: Schema validation.
@@ -85,9 +86,16 @@ Preferred communication style: Simple, everyday language.
 # Replit Environment Setup
 
 ## Database
-- **PostgreSQL Database**: Provisioned via Replit's built-in database service
+- **PostgreSQL Database**: Provisioned via Replit's built-in database service (Neon)
 - **Schema Migration**: Successfully pushed using `npm run db:push`
 - **Connection**: Automatically configured via `DATABASE_URL` environment variable
+- **Driver**: node-postgres (`pg`) with SSL support
+- **SSL Configuration**: Uses `ssl: { rejectUnauthorized: false }` for Replit's self-signed certificates
+- **Session Storage**: MemoryStore (in-memory) for development; must migrate to PgStore for production deployment
+- **⚠️ Production Note**: SSL verification is disabled for Replit compatibility. Before production deployment:
+  1. Re-enable SSL certificate verification with proper trust configuration
+  2. Migrate session storage from MemoryStore to PgStore for persistence across instances
+  3. Configure proper SSL certificates for DATABASE_URL connection
 
 ## Workflow Configuration
 - **Workflow Name**: "Start application"
@@ -113,6 +121,10 @@ The following API keys are optional and will use fallback modes if not configure
 ✅ Frontend running on port 5000 with Vite dev server
 ✅ Backend API running on same port (Express)
 ✅ Database schema initialized and migrated
+✅ Database connection working with pg driver (SSL configured for Replit)
+✅ User registration and authentication fully operational
 ✅ All core functionality operational (auth, routing, UI components)
+✅ Sessions working with MemoryStore (acceptable for single-instance Replit development)
 ⚠️ AI features in fallback mode (GEMINI_API_KEY not configured)
 ⚠️ Payment features disabled (STRIPE_SECRET_KEY not configured)
+⚠️ Sessions in-memory only (must migrate to PgStore before production)
