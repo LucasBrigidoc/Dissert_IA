@@ -650,7 +650,7 @@ export default function Dashboard() {
       <div className="container mx-auto px-3 md:px-6 py-4 md:py-6 pt-16 md:pt-20 space-y-3 md:space-y-5">
         
         {/* First Row: All Exams + Activity Stats + Goals */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4" style={{ gridAutoRows: 'minmax(400px, auto)' }}>
           {/* Welcome + Quick Exam Info Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-welcome-exams">
             <div className="flex items-center mb-2 md:mb-3">
@@ -779,8 +779,8 @@ export default function Dashboard() {
           </LiquidGlassCard>
 
           {/* Improvement Points - Taking 2 columns */}
-          <div className="lg:col-span-2">
-            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20" data-testid="card-improvement-points">
+          <div className="lg:col-span-2 h-full">
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20 h-full min-h-[380px] flex flex-col" data-testid="card-improvement-points">
               <div className="flex items-center mb-2 md:mb-3">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
                   <Target className="text-white" size={14} />
@@ -789,14 +789,19 @@ export default function Dashboard() {
               </div>
               
               {/* Competências em linhas horizontais */}
-              <div className="space-y-1">
+              <div className="flex-1 flex flex-col">
                 {!userCompetencies?.hasData ? (
-                  <div className="text-center py-6">
-                    <p className="text-sm text-soft-gray">Nenhuma redação corrigida ainda.</p>
-                    <p className="text-xs text-soft-gray mt-1">Faça simulações para ver sua análise de competências aqui.</p>
-                  </div>
+                  <>
+                    <div className="flex-1 flex items-center justify-center">
+                      <div className="text-center">
+                        <p className="text-sm text-soft-gray">Nenhuma redação corrigida ainda.</p>
+                        <p className="text-xs text-soft-gray mt-1">Faça simulações para ver sua análise de competências aqui.</p>
+                      </div>
+                    </div>
+                  </>
                 ) : (
-                  userCompetencies.weakestCompetencies.map((comp, index) => {
+                  <div className="space-y-1">
+                    {userCompetencies.weakestCompetencies.map((comp, index) => {
                     const colorSchemes = [
                       { bg: 'from-red-50 to-red-100', border: 'border-red-200', badge: 'bg-red-500', text: 'text-red-600', badgeBg: 'bg-red-100', icon: 'text-red-500' },
                       { bg: 'from-yellow-50 to-yellow-100', border: 'border-yellow-200', badge: 'bg-yellow-500', text: 'text-yellow-600', badgeBg: 'bg-yellow-100', icon: 'text-yellow-500' },
@@ -819,7 +824,8 @@ export default function Dashboard() {
                         </div>
                       </div>
                     );
-                  })
+                  })}
+                  </div>
                 )}
               </div>
               
