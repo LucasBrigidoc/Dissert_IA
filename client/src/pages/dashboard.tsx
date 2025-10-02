@@ -442,6 +442,31 @@ export default function Dashboard() {
     },
   });
   
+  // Fetch newsletters from database
+  const { data: newsletters = [], isLoading: newslettersLoading } = useQuery<Array<{
+    id: string;
+    title: string;
+    content: string;
+    excerpt: string | null;
+    category: string;
+    readTime: number | null;
+    publishDate: Date | null;
+    sentAt: Date | null;
+    isNew: boolean;
+    createdAt: Date;
+  }>>({
+    queryKey: ["/api/newsletter/feed"],
+    enabled: !!user,
+  });
+
+  // Get the latest newsletter (most recent published or marked as new)
+  const latestNewsletter = newsletters.find(n => n.isNew) || 
+    newsletters.sort((a, b) => {
+      const dateA = new Date(b.publishDate || b.sentAt || b.createdAt).getTime();
+      const dateB = new Date(a.publishDate || a.sentAt || a.createdAt).getTime();
+      return dateA - dateB;
+    })[0];
+
   // Fetch user scores from database
   const { data: userScores = [], isLoading: scoresLoading } = useQuery<Array<{
     id: string;
