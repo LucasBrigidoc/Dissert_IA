@@ -710,7 +710,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Fixed Navigation Bar */}
       <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="max-w-[95%] mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center space-x-1" data-testid="link-dashboard-logo">
@@ -834,7 +834,7 @@ export default function Dashboard() {
         </div>
       </nav>
       {/* Dashboard Content */}
-      <div className="container mx-auto px-3 md:px-6 py-4 md:py-6 pt-16 md:pt-20 space-y-3 md:space-y-5">
+      <div className="max-w-[95%] mx-auto px-2 md:px-4 py-4 md:py-6 pt-16 md:pt-20 space-y-3 md:space-y-5">
         
         {/* First Row: All Exams + Activity Stats + Goals */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4" style={{ gridAutoRows: 'minmax(400px, auto)' }}>
