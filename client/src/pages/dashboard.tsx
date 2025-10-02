@@ -138,6 +138,29 @@ export default function Dashboard() {
         userSimulations.filter(s => s.timeTaken && s.isCompleted).length)
     : 0;
 
+  // Fetch user competencies analysis
+  const { data: userCompetencies } = useQuery<{
+    hasData: boolean;
+    weakestCompetencies: Array<{
+      id: number;
+      name: string;
+      score: number;
+      feedback: string;
+    }>;
+    averages: {
+      competence1: number;
+      competence2: number;
+      competence3: number;
+      competence4: number;
+      competence5: number;
+    };
+    overallAverage: number;
+    essaysAnalyzed: number;
+  }>({
+    queryKey: ["/api/user-competencies"],
+    enabled: !!user,
+  });
+
   // Mutation to update user progress
   const updateProgressMutation = useMutation({
     mutationFn: async (data: { targetScore?: number; averageScore?: number; essaysCount?: number; studyHours?: number; streak?: number }) => {
@@ -759,95 +782,56 @@ export default function Dashboard() {
               
               {/* Competências em linhas horizontais */}
               <div className="space-y-1">
-                {/* Competência 1 */}
-                <div className="flex items-center justify-between p-1.5 md:p-2 bg-gradient-to-r from-red-50 to-red-100 rounded border border-red-200">
-                  <div className="flex items-center space-x-1 md:space-x-2">
-                    <div className="w-3 h-3 md:w-4 md:h-4 bg-red-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">1</span>
-                    </div>
-                    <span className="text-xs font-medium text-dark-blue">Norma Culta</span>
-                    <span className="text-xs text-red-600 bg-red-100 px-1 md:px-2 py-0.5 md:py-1 rounded">160/200</span>
+                {!userCompetencies?.hasData ? (
+                  <div className="text-center py-6">
+                    <p className="text-sm text-soft-gray">Nenhuma redação corrigida ainda.</p>
+                    <p className="text-xs text-soft-gray mt-1">Faça simulações para ver sua análise de competências aqui.</p>
                   </div>
-                  <div className="flex items-center space-x-1 md:space-x-2">
-                    <span className="text-xs text-soft-gray hidden sm:inline">Concordância e regência</span>
-                    <AlertTriangle className="text-red-500" size={8} />
-                  </div>
-                </div>
-
-                {/* Competência 2 */}
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded border border-yellow-200">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">2</span>
-                    </div>
-                    <span className="text-xs font-medium text-dark-blue">Compreensão</span>
-                    <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded">140/200</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-soft-gray">Interpretação textual</span>
-                    <AlertTriangle className="text-yellow-500" size={10} />
-                  </div>
-                </div>
-
-                {/* Competência 3 */}
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-blue-100 rounded border border-blue-200">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">3</span>
-                    </div>
-                    <span className="text-xs font-medium text-dark-blue">Argumentação</span>
-                    <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">180/200</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-soft-gray">Diversificar argumentos</span>
-                    <CheckCircle2 className="text-blue-500" size={10} />
-                  </div>
-                </div>
-
-                {/* Competência 4 */}
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-orange-50 to-orange-100 rounded border border-orange-200">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">4</span>
-                    </div>
-                    <span className="text-xs font-medium text-dark-blue">Coesão</span>
-                    <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">120/200</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-soft-gray">Conectivos e coesão</span>
-                    <AlertTriangle className="text-orange-500" size={10} />
-                  </div>
-                </div>
-
-                {/* Competência 5 */}
-                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-green-50 to-green-100 rounded border border-green-200">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">5</span>
-                    </div>
-                    <span className="text-xs font-medium text-dark-blue">Proposta</span>
-                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">170/200</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-soft-gray">Detalhar agentes</span>
-                    <CheckCircle2 className="text-green-500" size={10} />
-                  </div>
-                </div>
+                ) : (
+                  userCompetencies.weakestCompetencies.map((comp, index) => {
+                    const colorSchemes = [
+                      { bg: 'from-red-50 to-red-100', border: 'border-red-200', badge: 'bg-red-500', text: 'text-red-600', badgeBg: 'bg-red-100', icon: 'text-red-500' },
+                      { bg: 'from-yellow-50 to-yellow-100', border: 'border-yellow-200', badge: 'bg-yellow-500', text: 'text-yellow-600', badgeBg: 'bg-yellow-100', icon: 'text-yellow-500' },
+                      { bg: 'from-orange-50 to-orange-100', border: 'border-orange-200', badge: 'bg-orange-500', text: 'text-orange-600', badgeBg: 'bg-orange-100', icon: 'text-orange-500' },
+                    ];
+                    const colors = colorSchemes[index] || colorSchemes[0];
+                    
+                    return (
+                      <div key={comp.id} className={`flex items-center justify-between p-1.5 md:p-2 bg-gradient-to-r ${colors.bg} rounded border ${colors.border}`}>
+                        <div className="flex items-center space-x-1 md:space-x-2">
+                          <div className={`w-3 h-3 md:w-4 md:h-4 ${colors.badge} rounded-full flex items-center justify-center`}>
+                            <span className="text-white text-xs font-bold">{comp.id}</span>
+                          </div>
+                          <span className="text-xs font-medium text-dark-blue">{comp.name}</span>
+                          <span className={`text-xs ${colors.text} ${colors.badgeBg} px-1 md:px-2 py-0.5 md:py-1 rounded`}>{comp.score}/200</span>
+                        </div>
+                        <div className="flex items-center space-x-1 md:space-x-2">
+                          <span className="text-xs text-soft-gray hidden sm:inline">{comp.feedback}</span>
+                          <AlertTriangle className={colors.icon} size={8} />
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
               
               {/* Summary em linha */}
-              <div className="mt-3 flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                    <Lightbulb className="text-white" size={12} />
+              {userCompetencies?.hasData && (
+                <div className="mt-3 flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                      <Lightbulb className="text-white" size={12} />
+                    </div>
+                    <span className="text-xs font-medium text-dark-blue">
+                      Foco: {userCompetencies.weakestCompetencies[0]?.name} (Comp. {userCompetencies.weakestCompetencies[0]?.id})
+                    </span>
                   </div>
-                  <span className="text-xs font-medium text-dark-blue">Foco: Coesão (Comp. 4)</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-soft-gray">Média:</span>
+                    <span className="text-sm font-bold text-bright-blue">{userCompetencies.overallAverage}</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-soft-gray">Média:</span>
-                  <span className="text-sm font-bold text-bright-blue">154</span>
-                </div>
-              </div>
+              )}
             </LiquidGlassCard>
           </div>
         </div>
