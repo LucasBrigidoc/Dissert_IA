@@ -825,7 +825,7 @@ export default function Dashboard() {
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20 h-full min-h-[380px] flex flex-col" data-testid="card-improvement-points">
               <div className="flex items-center mb-2 md:mb-3">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
-                  <Target className="text-white" size={14} />
+                  <TrendingUp className="text-white" size={14} />
                 </div>
                 <h4 className="text-xs md:text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
               </div>
