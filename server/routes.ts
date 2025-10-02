@@ -861,6 +861,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User registration endpoint
   app.post("/api/auth/register", async (req, res) => {
     try {
+      console.log("Registration attempt with data:", { ...req.body, password: '[REDACTED]' });
       const validatedData = insertUserSchema.parse(req.body);
       
       // Check if user already exists
@@ -902,6 +903,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Registration error:", error);
+      // If it's a Zod validation error, show specific details
+      if (error && typeof error === 'object' && 'issues' in error) {
+        const zodError = error as any;
+        console.error("Validation issues:", JSON.stringify(zodError.issues, null, 2));
+        return res.status(400).json({ 
+          message: "Dados de registro inválidos",
+          details: zodError.issues 
+        });
+      }
       res.status(400).json({ message: "Dados de registro inválidos" });
     }
   });

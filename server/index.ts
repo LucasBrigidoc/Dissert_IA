@@ -1,14 +1,16 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
-import ConnectPgSimple from "connect-pg-simple";
+import memorystore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 app.set('trust proxy', true); // Enable accurate client IPs for rate limiting on Replit
 
-const PgStore = ConnectPgSimple(session);
+// Use MemoryStore for sessions to avoid SSL certificate issues with PostgreSQL
+// In production, consider using a persistent store
+const MemoryStore = memorystore(session);
 
 // Verificar SESSION_SECRET em produção (obrigatório por segurança)
 if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
@@ -23,9 +25,8 @@ if (!process.env.SESSION_SECRET) {
 }
 
 app.use(session({
-  store: new PgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
+  store: new MemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
   }),
   secret: sessionSecret,
   resave: false,
