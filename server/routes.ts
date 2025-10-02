@@ -2832,13 +2832,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: Date.now() - Date.now() // This would be calculated properly in real implementation
       });
 
-      // Record AI operation usage
-      await weeklyCostLimitingService.recordAIOperation(
+      // Calculate real cost based on actual tokens from Gemini
+      const promptTokens = aiResult.promptTokens || Math.floor((aiResult.tokensUsed || 280) * 0.6);
+      const outputTokens = aiResult.outputTokens || Math.floor((aiResult.tokensUsed || 280) * 0.4);
+      
+      const costEstimate = await weeklyCostLimitingService.estimateOperationCost(
+        promptTokens,
+        outputTokens
+      );
+
+      // Record AI operation usage with REAL cost based on actual Gemini token counts
+      const usageResult = await weeklyCostLimitingService.recordAIOperation(
         identifier,
         'chat_argumentative',
-        100,
+        costEstimate.estimatedCostCentavos,
         planType
       );
+      
+      console.log(`💰 AI Chat cost: ${promptTokens} input + ${outputTokens} output = ${costEstimate.estimatedCostBRL}`);
 
       res.json({
         conversationId: conversation.id,
@@ -2846,6 +2857,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         section,
         source: aiResult.source,
         tokensSaved: aiResult.tokensSaved || 0,
+        tokensUsed: tokensUsed,
+        usageStats: usageResult.usageStats,
         timestamp: new Date().toISOString()
       });
       
@@ -2921,16 +2934,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: Date.now() - Date.now() // This would be calculated properly in real implementation
       });
 
-      // Record AI operation usage
-      await weeklyCostLimitingService.recordAIOperation(
+      // Calculate real cost based on actual Gemini tokens
+      const promptTokens = result.promptTokens || Math.floor((result.tokensUsed || 200) * 0.7);
+      const outputTokens = result.outputTokens || Math.floor((result.tokensUsed || 200) * 0.3);
+      
+      const costEstimate = await weeklyCostLimitingService.estimateOperationCost(
+        promptTokens,
+        outputTokens
+      );
+
+      // Record AI operation usage with REAL cost based on actual Gemini token counts
+      const usageResult = await weeklyCostLimitingService.recordAIOperation(
         identifier,
         `text_modification_${type}`,
-        100,
+        costEstimate.estimatedCostCentavos,
         planType
       );
+      
+      console.log(`💰 Text modification cost: ${promptTokens} input + ${outputTokens} output = ${costEstimate.estimatedCostBRL}`);
 
       res.json({
         ...result,
+        tokensUsed: promptTokens + outputTokens,
+        usageStats: usageResult.usageStats,
         timestamp: new Date().toISOString()
       });
       
@@ -3022,17 +3048,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         examType || 'ENEM'
       );
       
-      // Record AI operation usage
-      await weeklyCostLimitingService.recordAIOperation(
+      // Calculate real cost based on actual Gemini tokens (essay correction uses more tokens)
+      const promptTokens = correction.promptTokens || Math.floor((correction.tokensUsed || 800) * 0.75);
+      const outputTokens = correction.outputTokens || Math.floor((correction.tokensUsed || 800) * 0.25);
+      
+      const costEstimate = await weeklyCostLimitingService.estimateOperationCost(
+        promptTokens,
+        outputTokens
+      );
+
+      // Record AI operation usage with REAL cost based on actual Gemini token counts
+      const usageResult = await weeklyCostLimitingService.recordAIOperation(
         identifier,
         'essay_correction',
-        150,
+        costEstimate.estimatedCostCentavos,
         planType
       );
+      
+      console.log(`💰 Essay correction cost: ${promptTokens} input + ${outputTokens} output = ${costEstimate.estimatedCostBRL}`);
       
       res.json({
         success: true,
         correction,
+        tokensUsed: promptTokens + outputTokens,
+        usageStats: usageResult.usageStats,
         message: "Essay corrected successfully"
       });
       

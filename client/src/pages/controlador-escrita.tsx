@@ -19,7 +19,7 @@ import type {
   TextModificationType,
   WordDifficulty
 } from "@shared/schema";
-import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
 
 export default function ControladorEscrita() {
   const [location, setLocation] = useLocation();
@@ -381,6 +381,9 @@ ${recommendations}`);
             const result = await response.json();
             processedText = result.modifiedText;
             appliedModifications.push(`${modificationType} (IA)`);
+            
+            // Atualizar barra de progresso de IA após uso de tokens
+            refreshAIUsageStats();
           } else {
             // Fallback to local processing
             processedText = applyLocalModification(processedText, modificationType);
@@ -476,6 +479,9 @@ ${recommendations}`);
       }
       
       const result = await response.json();
+      
+      // Atualizar barra de progresso de IA após uso de tokens
+      refreshAIUsageStats();
       
       setModifiedText(result.modifiedText);
       

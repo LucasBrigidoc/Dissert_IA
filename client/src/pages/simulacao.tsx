@@ -32,7 +32,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { AIUsageProgress } from '@/components/ai-usage-progress';
+import { AIUsageProgress, refreshAIUsageStats } from '@/components/ai-usage-progress';
 
 export default function SimulacaoPage() {
   const [, setLocation] = useLocation();
@@ -333,6 +333,10 @@ export default function SimulacaoPage() {
       setCorrectionData(data.correction);
       setShowCorrectionResult(true);
       setIsActive(false); // Pause the timer when showing results
+      
+      // Atualizar barra de progresso de IA após uso de tokens
+      refreshAIUsageStats();
+      
       toast({
         title: "Redação corrigida com sucesso!",
         description: `Sua nota foi ${data.correction.totalScore}/1000. Confira o feedback detalhado.`,

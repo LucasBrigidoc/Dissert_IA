@@ -454,6 +454,8 @@ export const textModificationResultSchema = z.object({
   modificationType: textModificationTypeSchema,
   source: z.enum(["cache", "optimized_ai", "fallback", "fallback_error"]),
   tokensUsed: z.number().optional(),
+  promptTokens: z.number().optional(),
+  outputTokens: z.number().optional(),
 });
 
 export const textModificationRequestSchema = z.object({

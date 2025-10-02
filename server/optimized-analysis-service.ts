@@ -479,6 +479,73 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
       const result = await this.model.generateContent(optimizedPrompt);
       const response = result.response.text();
       
+      // Extract real token counts from Gemini response
+      const usageMetadata = result.response.usageMetadata || {};
+      const rawPromptTokens = usageMetadata.promptTokenCount || 0;
+      // Normalize candidatesTokenCount (can be array or number)
+      const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
+      const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
+        ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
+        : (rawOutputTokensValue || 0);
+      const rawTotalTokens = usageMetadata.totalTokenCount || 0;
+      
+      // Calculate final values ensuring consistency: finalPromptTokens + finalOutputTokens = finalTotalTokens ALWAYS
+      let finalPromptTokens: number, finalOutputTokens: number, finalTotalTokens: number;
+      
+      if (rawTotalTokens > 0) {
+        // Total is authoritative, reconcile components to match it
+        finalTotalTokens = rawTotalTokens;
+        
+        if (rawPromptTokens > 0 && rawOutputTokens > 0) {
+          // All values present - reconcile if inconsistent
+          const rawSum = rawPromptTokens + rawOutputTokens;
+          if (Math.abs(rawSum - rawTotalTokens) <= 1) {
+            // Close enough (off by 1 due to rounding), use raw values
+            finalPromptTokens = rawPromptTokens;
+            finalOutputTokens = rawTotalTokens - finalPromptTokens; // Ensure exact match
+          } else if (rawSum > rawTotalTokens) {
+            // Components exceed total - scale down proportionally
+            const ratio = rawTotalTokens / rawSum;
+            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
+            finalOutputTokens = rawTotalTokens - finalPromptTokens;
+          } else {
+            // Components less than total - scale up proportionally
+            const ratio = rawTotalTokens / rawSum;
+            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
+            finalOutputTokens = rawTotalTokens - finalPromptTokens;
+          }
+        } else if (rawPromptTokens > 0) {
+          // Have total and prompt only
+          finalPromptTokens = Math.min(rawPromptTokens, rawTotalTokens);
+          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+        } else if (rawOutputTokens > 0) {
+          // Have total and output only
+          finalOutputTokens = Math.min(rawOutputTokens, rawTotalTokens);
+          finalPromptTokens = rawTotalTokens - finalOutputTokens;
+        } else {
+          // Only have total, use typical 60/40 split for chat
+          finalPromptTokens = Math.floor(rawTotalTokens * 0.6);
+          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+        }
+      } else if (rawPromptTokens > 0 || rawOutputTokens > 0) {
+        // No total but have at least one component - their sum IS the total
+        finalPromptTokens = Math.max(0, rawPromptTokens || 0);
+        finalOutputTokens = Math.max(0, rawOutputTokens || 0);
+        finalTotalTokens = finalPromptTokens + finalOutputTokens;
+      } else {
+        // No metadata at all, fallback to estimate
+        const estimatedTokens = this.estimateTokens(optimizedPrompt);
+        finalTotalTokens = estimatedTokens;
+        finalPromptTokens = Math.floor(estimatedTokens * 0.6);
+        finalOutputTokens = estimatedTokens - finalPromptTokens;
+      }
+      
+      const promptTokens = finalPromptTokens;
+      const outputTokens = finalOutputTokens;
+      const totalTokens = finalTotalTokens;
+      
+      console.log(`✅ Chat response generated (${promptTokens} in + ${outputTokens} out = ${totalTokens} tokens)`);
+      
       // 6. Store in intelligent cache
       intelligentCache.setTextModification(
         `chat_${section}_${lastUserMessage.substring(0, 50)}`, 
@@ -488,15 +555,19 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
           modifiedText: response, 
           modificationType: 'argumentativo',
           source: 'optimized_ai', 
-          tokensUsed: this.estimateTokens(optimizedPrompt) 
+          tokensUsed: totalTokens,
+          promptTokens,
+          outputTokens
         },
         'anonymous'
       );
       
-      console.log("✅ Successfully generated chat response with optimized AI");
       return {
         response: response.trim(),
         source: 'optimized_ai',
+        tokensUsed: totalTokens,
+        promptTokens,
+        outputTokens,
         tokensSaved: this.calculateChatTokensSaved(summary, recentMessages, section, context)
       };
       
