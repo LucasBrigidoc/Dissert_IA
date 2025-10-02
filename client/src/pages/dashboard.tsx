@@ -461,7 +461,7 @@ export default function Dashboard() {
 
   // Get the latest newsletter (most recent published or marked as new)
   const latestNewsletter = newsletters.find(n => n.isNew) || 
-    newsletters.sort((a, b) => {
+    [...newsletters].sort((a, b) => {
       const dateA = new Date(b.publishDate || b.sentAt || b.createdAt).getTime();
       const dateB = new Date(a.publishDate || a.sentAt || a.createdAt).getTime();
       return dateA - dateB;
