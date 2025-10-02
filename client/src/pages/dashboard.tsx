@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -194,6 +194,19 @@ export default function Dashboard() {
   const [showGoalsManagement, setShowGoalsManagement] = useState(false);
   const [showExamsManagement, setShowExamsManagement] = useState(false);
   const [animatingGoals, setAnimatingGoals] = useState<Set<number>>(new Set());
+  const [showInitialTargetSetup, setShowInitialTargetSetup] = useState(false);
+  const [initialTargetScore, setInitialTargetScore] = useState(900);
+
+  // Check if user needs to set initial target (first time setup)
+  useEffect(() => {
+    if (userProgress && userProgress.targetScore === 900 && !progressLoading) {
+      // Check if this is truly the first time by checking if it's the default
+      const hasSetTargetBefore = localStorage.getItem(`target-set-${user?.id}`);
+      if (!hasSetTargetBefore) {
+        setShowInitialTargetSetup(true);
+      }
+    }
+  }, [userProgress, progressLoading, user?.id]);
   
   // Map user exams from API to local state format
   const exams = userExams?.map(exam => ({
@@ -1985,6 +1998,73 @@ export default function Dashboard() {
             </div>
           </div>
         </LiquidGlassCard>
+
+        {/* Initial Target Setup Dialog */}
+        <Dialog open={showInitialTargetSetup} onOpenChange={setShowInitialTargetSetup}>
+          <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[85vh] mx-4 sm:mx-auto" data-testid="dialog-initial-target-setup">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+                <Target className="mr-3 text-bright-blue" size={24} />
+                Defina Sua Meta de Pontuação 🎯
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 py-4">
+              <div className="space-y-3">
+                <p className="text-soft-gray leading-relaxed">
+                  Olá! Bem-vindo ao <span className="font-semibold text-dark-blue">DissertIA</span>. 
+                  Para personalizar sua experiência e acompanhar seu progresso, vamos definir sua meta de pontuação.
+                </p>
+                <p className="text-soft-gray leading-relaxed">
+                  Qual pontuação você deseja alcançar nas suas redações?
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <Label htmlFor="initial-target" className="text-sm font-medium text-dark-blue">
+                  Meta de Pontuação
+                </Label>
+                <div className="flex items-center space-x-3">
+                  <Input
+                    id="initial-target"
+                    type="number"
+                    min="0"
+                    max="1000"
+                    value={initialTargetScore}
+                    onChange={(e) => setInitialTargetScore(Number(e.target.value))}
+                    className="flex-1 text-lg font-semibold"
+                    placeholder="900"
+                    data-testid="input-initial-target-score"
+                  />
+                  <span className="text-sm text-soft-gray whitespace-nowrap">pontos</span>
+                </div>
+                <p className="text-xs text-soft-gray">
+                  💡 Dica: Para o ENEM, a pontuação máxima é 1000 pontos. Uma meta comum é 900 pontos.
+                </p>
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  onClick={() => {
+                    updateProgressMutation.mutate({ targetScore: initialTargetScore });
+                    if (user?.id) {
+                      localStorage.setItem(`target-set-${user.id}`, 'true');
+                    }
+                    setShowInitialTargetSetup(false);
+                    toast({
+                      title: "Meta definida! 🎯",
+                      description: `Sua meta de ${initialTargetScore} pontos foi salva com sucesso.`,
+                    });
+                  }}
+                  className="flex-1 bg-bright-blue text-white hover:bg-bright-blue/90"
+                  data-testid="button-save-initial-target"
+                  disabled={updateProgressMutation.isPending}
+                >
+                  {updateProgressMutation.isPending ? "Salvando..." : "Definir Meta"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         
       </div>
