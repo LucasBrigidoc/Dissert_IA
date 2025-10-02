@@ -194,7 +194,7 @@ export default function Dashboard() {
     mutationFn: async (data: { title: string; target: number; unit: string; description?: string; priority?: string }) => {
       return await apiRequest("/api/goals", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           userId: user?.id,
           title: data.title,
           target: data.target,
@@ -203,7 +203,7 @@ export default function Dashboard() {
           description: data.description || null,
           priority: data.priority || "media",
           completed: false,
-        }),
+        },
       });
     },
     onSuccess: () => {
@@ -226,7 +226,7 @@ export default function Dashboard() {
     mutationFn: async ({ id, data }: { id: string; data: Partial<{ title: string; target: number; current: number; unit: string; completed: boolean; description: string; priority: string }> }) => {
       return await apiRequest(`/api/goals/${id}`, {
         method: "PATCH",
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
