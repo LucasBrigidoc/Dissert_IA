@@ -1592,6 +1592,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== SAVED ESSAYS/STRUCTURES/NEWSLETTERS ROUTES =====================
+  // These routes must come BEFORE the generic /api/users/:userId/essays routes
+  // to avoid route matching issues
+
+  app.get("/api/essays/saved", async (req, res) => {
+    try {
+      const userId = req.session?.userId || "default-user";
+      const savedEssays = await storage.getUserSavedEssays(userId);
+      res.json({ results: savedEssays, count: savedEssays.length });
+    } catch (error) {
+      console.error("Get saved essays error:", error);
+      res.status(500).json({ message: "Failed to get saved essays" });
+    }
+  });
+
+  app.get("/api/structures/saved", async (req, res) => {
+    try {
+      const userId = req.session?.userId || "default-user";
+      const savedStructures = await storage.getUserSavedStructures(userId);
+      res.json({ results: savedStructures, count: savedStructures.length });
+    } catch (error) {
+      console.error("Get saved structures error:", error);
+      res.status(500).json({ message: "Failed to get saved structures" });
+    }
+  });
+
+  app.get("/api/newsletters/saved", async (req, res) => {
+    try {
+      const userId = req.session?.userId || "default-user";
+      const savedNewsletters = await storage.getUserSavedNewsletters(userId);
+      res.json({ results: savedNewsletters, count: savedNewsletters.length });
+    } catch (error) {
+      console.error("Get saved newsletters error:", error);
+      res.status(500).json({ message: "Failed to get saved newsletters" });
+    }
+  });
+
   // Get user essays endpoint
   app.get("/api/users/:userId/essays", async (req, res) => {
     try {
@@ -2245,7 +2282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================== SAVED ESSAYS ROUTES =====================
+  // ===================== SAVED ESSAYS/STRUCTURES/NEWSLETTERS POST/DELETE ROUTES =====================
 
   app.post("/api/essays/:id/save", async (req, res) => {
     try {
@@ -2275,19 +2312,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/essays/saved", async (req, res) => {
-    try {
-      const userId = req.session?.userId || "default-user";
-      const savedEssays = await storage.getUserSavedEssays(userId);
-      res.json({ results: savedEssays, count: savedEssays.length });
-    } catch (error) {
-      console.error("Get saved essays error:", error);
-      res.status(500).json({ message: "Failed to get saved essays" });
-    }
-  });
-
-  // ===================== SAVED STRUCTURES ROUTES =====================
-
   app.post("/api/structures/:id/save", async (req, res) => {
     try {
       const structureId = req.params.id;
@@ -2316,19 +2340,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/structures/saved", async (req, res) => {
-    try {
-      const userId = req.session?.userId || "default-user";
-      const savedStructures = await storage.getUserSavedStructures(userId);
-      res.json({ results: savedStructures, count: savedStructures.length });
-    } catch (error) {
-      console.error("Get saved structures error:", error);
-      res.status(500).json({ message: "Failed to get saved structures" });
-    }
-  });
-
-  // ===================== SAVED NEWSLETTERS ROUTES =====================
-
   app.post("/api/newsletters/:id/save", async (req, res) => {
     try {
       const newsletterId = req.params.id;
@@ -2354,17 +2365,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Remove saved newsletter error:", error);
       res.status(500).json({ message: "Failed to remove saved newsletter" });
-    }
-  });
-
-  app.get("/api/newsletters/saved", async (req, res) => {
-    try {
-      const userId = req.session?.userId || "default-user";
-      const savedNewsletters = await storage.getUserSavedNewsletters(userId);
-      res.json({ results: savedNewsletters, count: savedNewsletters.length });
-    } catch (error) {
-      console.error("Get saved newsletters error:", error);
-      res.status(500).json({ message: "Failed to get saved newsletters" });
     }
   });
 

@@ -54,19 +54,30 @@ export default function BibliotecaPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch saved repertoires from API
-  const { data: savedRepertoires, isLoading } = useQuery({
+  // Fetch all saved items from API
+  const { data: savedRepertoires, isLoading: loadingRepertoires } = useQuery({
     queryKey: ['/api/repertoires/saved'],
-    queryFn: async () => {
-      const response = await fetch('/api/repertoires/saved');
-      if (!response.ok) {
-        throw new Error('Failed to fetch saved repertoires');
-      }
-      return response.json();
-    }
   });
 
-  // Transform repertoires to match biblioteca format
+  const { data: savedEssays, isLoading: loadingEssays } = useQuery({
+    queryKey: ['/api/essays/saved'],
+  });
+
+  const { data: savedStructures, isLoading: loadingStructures } = useQuery({
+    queryKey: ['/api/structures/saved'],
+  });
+
+  const { data: savedNewsletters, isLoading: loadingNewsletters } = useQuery({
+    queryKey: ['/api/newsletters/saved'],
+  });
+
+  const { data: savedProposals, isLoading: loadingProposals } = useQuery({
+    queryKey: ['/api/proposals/saved'],
+  });
+
+  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals;
+
+  // Transform data to match biblioteca format
   const transformRepertoireToFile = (repertoire: any) => ({
     id: repertoire.id,
     title: repertoire.title,
@@ -82,106 +93,66 @@ export default function BibliotecaPage() {
               repertoire.category === 'globalization' ? 'Globalização' :
               repertoire.category.charAt(0).toUpperCase() + repertoire.category.slice(1),
     date: repertoire.createdAt,
-    size: '1.0 MB', // Default size since we don't track actual file size
+    size: '1.0 MB',
     type: 'Repertório',
     description: repertoire.description,
     content: `**${repertoire.title}**\n\n${repertoire.description}\n\n**Categoria:** ${repertoire.category}\n**Tipo:** ${repertoire.type}\n**Ano:** ${repertoire.year || 'N/A'}\n**Rating:** ${repertoire.rating || 0}/50\n\n**Palavras-chave:** ${Array.isArray(repertoire.keywords) ? repertoire.keywords.join(', ') : 'N/A'}`
   });
 
-  // Mock data for other categories (keeping existing structure)
+  const transformEssayToFile = (essay: any) => ({
+    id: essay.id,
+    title: essay.title,
+    category: 'Redação',
+    date: essay.createdAt,
+    size: '450 KB',
+    type: 'Redação',
+    description: essay.content?.substring(0, 100) + '...' || 'Redação',
+    grade: essay.score,
+    content: essay.content
+  });
+
+  const transformStructureToFile = (structure: any) => ({
+    id: structure.id,
+    title: structure.title,
+    category: 'Estrutura',
+    date: structure.createdAt,
+    size: '180 KB',
+    type: 'Estilo',
+    description: structure.description || 'Estrutura personalizada',
+    content: structure.structure
+  });
+
+  const transformNewsletterToFile = (newsletter: any) => ({
+    id: newsletter.id,
+    title: newsletter.title,
+    category: newsletter.category || 'Atualidades',
+    date: newsletter.createdAt,
+    size: '2.0 MB',
+    type: 'Newsletter',
+    description: newsletter.summary || 'Newsletter DissertIA',
+    content: newsletter.content
+  });
+
+  const transformProposalToFile = (proposal: any) => ({
+    id: proposal.id,
+    title: proposal.title,
+    category: proposal.category || 'Proposta',
+    date: proposal.createdAt,
+    size: '650 KB',
+    type: 'Proposta',
+    description: `Proposta ${proposal.examType || 'ENEM'} ${proposal.examYear || ''}`,
+    content: proposal.motivationalTexts || proposal.fullContent
+  });
+
+  // Use real data from API or fallback to empty arrays
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
-    redacoes: [
-      {
-        id: 3,
-        title: "Redação ENEM 2023 - Tecnologia na Educação",
-        category: "Educação",
-        date: "2024-01-12",
-        size: "450 KB", 
-        type: "Redação",
-        description: "Dissertação argumentativa sobre impactos da tecnologia",
-        grade: 920,
-        content: "**Redação ENEM 2023: Os impactos da tecnologia na educação brasileira**\n\n**Introdução:**\nA revolução digital transformou radicalmente os paradigmas educacionais no século XXI. No Brasil, país marcado por profundas desigualdades sociais, a incorporação de tecnologias no ambiente escolar representa tanto uma oportunidade de democratização do conhecimento quanto um desafio de inclusão digital. Diante desse cenário, é fundamental analisar como a tecnologia pode contribuir para a melhoria da qualidade educacional, desde que implementada de forma equitativa e planejada.\n\n**Desenvolvimento 1: Benefícios da tecnologia educacional**\nPrimeiramente, é inegável que a tecnologia oferece ferramentas pedagógicas inovadoras... [CONTEÚDO COMPLETO DA REDAÇÃO]\n\n**Desenvolvimento 2: Desafios da inclusão digital**\nPor outro lado, a implementação tecnológica na educação enfrenta obstáculos significativos...\n\n**Conclusão:**\nPortanto, a tecnologia na educação brasileira deve ser vista como instrumento de transformação social..."
-      },
-      {
-        id: 4,
-        title: "Simulado - Violência contra a Mulher",
-        category: "Sociedade",
-        date: "2024-01-08",
-        size: "380 KB",
-        type: "Redação", 
-        description: "Análise sociológica com proposta de intervenção",
-        grade: 860,
-        content: "**Redação: A urgência no combate à violência contra a mulher no Brasil**\n\n**Introdução:**\nO feminicídio representa uma das mais graves violações dos direitos humanos na sociedade contemporânea. No Brasil, de acordo com o Atlas da Violência 2023, uma mulher é assassinada a cada 7 horas, colocando o país entre os que mais registram crimes dessa natureza no mundo...\n\n**Desenvolvimento 1: Raízes culturais do problema**\nA violência contra a mulher tem raízes profundas na cultura patriarcal brasileira...\n\n**Desenvolvimento 2: Falhas nas políticas públicas**\nAlém dos fatores culturais, a insuficiência das políticas públicas agrava o cenário...\n\n**Proposta de Intervenção:**\nPara enfrentar essa problemática, é necessário um plano integrado que envolva educação, legislação e atendimento especializado..."
-      }
-    ],
-    temas: [
-      {
-        id: 5,
-        title: "Tema Personalizado - Inteligência Artificial",
-        category: "Tecnologia",
-        date: "2024-01-14",
-        size: "250 KB",
-        type: "Tema",
-        description: "Tema criado com textos motivadores sobre IA",
-        content: "**Tema: Os desafios da Inteligência Artificial na sociedade contemporânea**\n\n**Textos Motivadores:**\n\n**Texto 1 - Revolução Tecnológica**\n'A inteligência artificial não é mais ficção científica, é uma realidade que está redefinindo o mercado de trabalho, a educação e as relações sociais.' - Revista Época, 2023\n\n**Texto 2 - Dados e Estatísticas**\nSegundo o McKinsey Global Institute, até 2030, cerca de 375 milhões de trabalhadores podem precisar mudar completamente de ocupação devido à automação. No Brasil, 54% dos empregos têm alto potencial de automação.\n\n**Texto 3 - Aspectos Éticos**\n'O desenvolvimento da IA deve ser guiado por princípios éticos que garantam benefícios para toda a humanidade, não apenas para alguns poucos.' - UNESCO, Recomendação sobre Ética da IA\n\n**Instruções:**\nA partir dos textos motivadores e com base nos seus conhecimentos, redija um texto dissertativo-argumentativo sobre os desafios da implementação da inteligência artificial na sociedade brasileira, apresentando proposta de intervenção."
-      }
-    ],
-    estilos: [
-      {
-        id: 6,
-        title: "Estilo Formal Acadêmico - Versão 2",
-        category: "Estilo",
-        date: "2024-01-13",
-        size: "180 KB",
-        type: "Estilo",
-        description: "Configurações de formalidade para textos acadêmicos",
-        content: "**Estilo Formal Acadêmico - Configurações Salvas**\n\n**Parâmetros de Formalidade:**\n• Nível de formalidade: Alto (9/10)\n• Tom: Impessoal e objetivo\n• Vocabulário: Técnico-científico\n• Estrutura: Clássica dissertativa\n\n**Conectivos Preferenciais:**\n• Introdução: \"Primeiramente\", \"Inicialmente\", \"É fundamental considerar\"\n• Desenvolvimento: \"Ademais\", \"Outrossim\", \"Nesse contexto\"\n• Conclusão: \"Portanto\", \"Dessarte\", \"Conclui-se\"\n\n**Expressões Vedadas:**\n• Gírias e informalidades\n• Primeira pessoa (eu, nós)\n• Expressões coloquiais\n• Repetições desnecessárias\n\n**Características do Estilo:**\n• Períodos longos e bem estruturados\n• Subordinação abundante\n• Referências externas obrigatórias\n• Linguagem culta e rebuscada"
-      }
-    ],
-    newsletters: [
-      {
-        id: 7,
-        title: "Newsletter - Tecnologia e Sociedade",
-        category: "Atualidades",
-        date: "2024-01-22",
-        size: "2.1 MB",
-        type: "Newsletter",
-        description: "Curadoria semanal sobre IA e transformação digital"
-      },
-      {
-        id: 8,
-        title: "Newsletter - Sustentabilidade e Meio Ambiente",
-        category: "Meio Ambiente",
-        date: "2024-01-15",
-        size: "1.8 MB",
-        type: "Newsletter",
-        description: "Análise completa sobre mudanças climáticas e políticas ambientais"
-      }
-    ],
-    propostas: [
-      {
-        id: 9,
-        title: "Proposta ENEM - Democratização do Acesso Digital",
-        category: "Tecnologia",
-        date: "2024-01-20",
-        size: "650 KB",
-        type: "Proposta",
-        description: "Tema personalizado com textos motivadores sobre inclusão digital"
-      },
-      {
-        id: 10,
-        title: "Proposta Vestibular - Violência Urbana",
-        category: "Sociedade",
-        date: "2024-01-18",
-        size: "580 KB",
-        type: "Proposta",
-        description: "Proposta completa com contexto e materiais de apoio"
-      }
-    ]
+    redacoes: savedEssays?.results ? savedEssays.results.map(transformEssayToFile) : [],
+    temas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType !== 'ENEM' && p.examType !== 'Vestibular').map(transformProposalToFile) : [],
+    estilos: savedStructures?.results ? savedStructures.results.map(transformStructureToFile) : [],
+    newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
+    propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'ENEM' || p.examType === 'Vestibular').map(transformProposalToFile) : []
   };
-
-  const [bibliotecaState, setBibliotecaState] = useState(bibliotecaData);
 
 
 
@@ -304,14 +275,27 @@ export default function BibliotecaPage() {
     }
   };
 
-  // Get all saved files (only repertoires for now)
-  const allFiles = savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [];
+  // Get all saved files from all categories
+  const allFiles = [
+    ...bibliotecaData.repertorios,
+    ...bibliotecaData.redacoes,
+    ...bibliotecaData.temas,
+    ...bibliotecaData.estilos,
+    ...bibliotecaData.newsletters,
+    ...bibliotecaData.propostas
+  ];
 
   // Filter files based on search and category
   const filteredFiles = allFiles.filter((file: any) => {
     const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          file.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "todos" || file.type === "Repertório";
+    const matchesCategory = selectedCategory === "todos" || 
+                          (selectedCategory === "repertorios" && file.type === "Repertório") ||
+                          (selectedCategory === "redacoes" && file.type === "Redação") ||
+                          (selectedCategory === "temas" && file.type === "Tema") ||
+                          (selectedCategory === "estilos" && file.type === "Estilo") ||
+                          (selectedCategory === "newsletters" && file.type === "Newsletter") ||
+                          (selectedCategory === "propostas" && file.type === "Proposta");
     return matchesSearch && matchesCategory;
   });
 
@@ -498,32 +482,32 @@ export default function BibliotecaPage() {
               <div className="grid grid-cols-3 gap-3 pb-1">
                 <div className="flex items-center space-x-2 bg-blue-50 rounded-full px-3 py-1">
                   <BookOpen className="text-blue-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.repertorios.length}</span>
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.repertorios.length}</span>
                   <span className="text-xs text-soft-gray">Rep</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-green-50 rounded-full px-3 py-1">
                   <PenTool className="text-green-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.redacoes.length}</span>
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.redacoes.length}</span>
                   <span className="text-xs text-soft-gray">Red</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-yellow-50 rounded-full px-3 py-1">
                   <Lightbulb className="text-yellow-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.temas.length}</span>
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.temas.length}</span>
                   <span className="text-xs text-soft-gray">Tem</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-purple-50 rounded-full px-3 py-1">
                   <Target className="text-purple-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.estilos.length}</span>
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.estilos.length}</span>
                   <span className="text-xs text-soft-gray">Est</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-orange-50 rounded-full px-3 py-1">
                   <Newspaper className="text-orange-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.newsletters.length}</span>
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.newsletters.length}</span>
                   <span className="text-xs text-soft-gray">New</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-indigo-50 rounded-full px-3 py-1">
                   <FolderOpen className="text-indigo-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaState.propostas.length}</span>
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.propostas.length}</span>
                   <span className="text-xs text-soft-gray">Pro</span>
                 </div>
               </div>
@@ -534,37 +518,37 @@ export default function BibliotecaPage() {
           <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.repertorios.length}</div>
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
               <div className="text-sm text-soft-gray">Repertórios</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
               <PenTool className="mx-auto mb-2 text-green-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.redacoes.length}</div>
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.redacoes.length}</div>
               <div className="text-sm text-soft-gray">Redações</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
               <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.temas.length}</div>
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.temas.length}</div>
               <div className="text-sm text-soft-gray">Temas</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
               <Target className="mx-auto mb-2 text-purple-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.estilos.length}</div>
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.estilos.length}</div>
               <div className="text-sm text-soft-gray">Estilos</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
               <Newspaper className="mx-auto mb-2 text-orange-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.newsletters.length}</div>
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.newsletters.length}</div>
               <div className="text-sm text-soft-gray">Newsletters</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
               <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaState.propostas.length}</div>
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.propostas.length}</div>
               <div className="text-sm text-soft-gray">Propostas</div>
             </LiquidGlassCard>
           </div>
