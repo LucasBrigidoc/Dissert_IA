@@ -353,21 +353,95 @@ export default function Dashboard() {
   
   const [editingSchedule, setEditingSchedule] = useState<ScheduleDay[]>([]);
   
-  const [scores, setScores] = useState<ScoreData[]>([
-    { id: 1, date: '2024-01-10', totalScore: 720, competence1: 160, competence2: 140, competence3: 180, competence4: 120, competence5: 120, source: 'platform', examName: 'Simulado 1' },
-    { id: 2, date: '2024-01-17', totalScore: 750, competence1: 170, competence2: 150, competence3: 160, competence4: 140, competence5: 130, source: 'platform', examName: 'Simulado 2' },
-    { id: 3, date: '2024-01-24', totalScore: 785, competence1: 160, competence2: 140, competence3: 180, competence4: 120, competence5: 185, source: 'platform', examName: 'Simulado 3' }
-  ]);
+  // Fetch user scores from database
+  const { data: userScores = [], isLoading: scoresLoading } = useQuery<Array<{
+    id: string;
+    userId: string;
+    score: number;
+    competence1: number | null;
+    competence2: number | null;
+    competence3: number | null;
+    competence4: number | null;
+    competence5: number | null;
+    examName: string;
+    source: string;
+    sourceId: string | null;
+    scoreDate: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  }>>({
+    queryKey: ["/api/user-scores"],
+    enabled: !!user,
+  });
+
+  // Convert userScores to ScoreData format for the chart
+  const scores: ScoreData[] = userScores.map(score => ({
+    id: parseInt(score.id.substring(0, 8), 16), // Convert uuid to number for compatibility
+    date: new Date(score.scoreDate).toISOString().split('T')[0],
+    totalScore: score.score,
+    competence1: score.competence1 ?? undefined,
+    competence2: score.competence2 ?? undefined,
+    competence3: score.competence3 ?? undefined,
+    competence4: score.competence4 ?? undefined,
+    competence5: score.competence5 ?? undefined,
+    source: score.source as 'platform' | 'external',
+    examName: score.examName,
+  }));
   
   const [newScore, setNewScore] = useState({
-    date: '',
-    totalScore: '',
+    scoreDate: '',
+    score: '',
     competence1: '',
     competence2: '',
     competence3: '',
     competence4: '',
     competence5: '',
     examName: ''
+  });
+
+  // Mutation for adding new score
+  const addScoreMutation = useMutation({
+    mutationFn: async (data: typeof newScore) => {
+      return await apiRequest("/api/user-scores", {
+        method: "POST",
+        body: JSON.stringify({
+          score: Number(data.score),
+          competence1: data.competence1 ? Number(data.competence1) : null,
+          competence2: data.competence2 ? Number(data.competence2) : null,
+          competence3: data.competence3 ? Number(data.competence3) : null,
+          competence4: data.competence4 ? Number(data.competence4) : null,
+          competence5: data.competence5 ? Number(data.competence5) : null,
+          examName: data.examName || 'Nota Manual',
+          source: 'manual',
+          scoreDate: new Date(data.scoreDate).toISOString(),
+        }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
+      toast({
+        title: "Nota adicionada! ✅",
+        description: "Sua nota foi adicionada com sucesso.",
+      });
+      setNewScore({
+        scoreDate: '',
+        score: '',
+        competence1: '',
+        competence2: '',
+        competence3: '',
+        competence4: '',
+        competence5: '',
+        examName: ''
+      });
+      setShowAddScore(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao adicionar nota",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
   });
   const name = user?.name || "Usuário";
   
@@ -386,31 +460,8 @@ export default function Dashboard() {
   const nextExam = upcomingExams.length > 0 ? upcomingExams[0].name : null;
 
   const handleAddScore = () => {
-    if (newScore.date && newScore.totalScore) {
-      const score: ScoreData = {
-        id: Date.now(),
-        date: newScore.date,
-        totalScore: Number(newScore.totalScore),
-        competence1: newScore.competence1 ? Number(newScore.competence1) : undefined,
-        competence2: newScore.competence2 ? Number(newScore.competence2) : undefined,
-        competence3: newScore.competence3 ? Number(newScore.competence3) : undefined,
-        competence4: newScore.competence4 ? Number(newScore.competence4) : undefined,
-        competence5: newScore.competence5 ? Number(newScore.competence5) : undefined,
-        source: 'external',
-        examName: newScore.examName || 'Nota Externa'
-      };
-      setScores([...scores, score]);
-      setNewScore({
-        date: '',
-        totalScore: '',
-        competence1: '',
-        competence2: '',
-        competence3: '',
-        competence4: '',
-        competence5: '',
-        examName: ''
-      });
-      setShowAddScore(false);
+    if (newScore.scoreDate && newScore.score) {
+      addScoreMutation.mutate(newScore);
     }
   };
 
@@ -1064,8 +1115,28 @@ export default function Dashboard() {
               <h4 className="text-sm md:text-base font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
             <div className="h-48 md:h-64 bg-white rounded-2xl border-2 border-bright-blue/20 p-4 md:p-8 shadow-lg" data-testid="chart-evolution">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              {scoresLoading ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="animate-pulse text-center">
+                    <div className="w-12 h-12 bg-bright-blue/20 rounded-full mx-auto mb-2"></div>
+                    <p className="text-xs text-soft-gray">Carregando...</p>
+                  </div>
+                </div>
+              ) : scores.length === 0 ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 bg-gradient-to-br from-dark-blue/20 to-bright-blue/20 rounded-full flex items-center justify-center mx-auto">
+                      <TrendingUp className="text-bright-blue" size={32} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma nota cadastrada</p>
+                      <p className="text-xs text-soft-gray">Adicione suas notas para acompanhar sua evolução</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                   <defs>
                     <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#10b981" />
@@ -1155,7 +1226,8 @@ export default function Dashboard() {
                     connectNulls={false}
                   />
                 </LineChart>
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              )}
             </div>
             
             {/* Bottom Actions Row */}
@@ -1261,8 +1333,8 @@ export default function Dashboard() {
                   <Label className="text-sm text-dark-blue">Data</Label>
                   <Input
                     type="date"
-                    value={newScore.date}
-                    onChange={(e) => setNewScore({...newScore, date: e.target.value})}
+                    value={newScore.scoreDate}
+                    onChange={(e) => setNewScore({...newScore, scoreDate: e.target.value})}
                     className="mt-1"
                     data-testid="input-score-date"
                   />
@@ -1273,8 +1345,8 @@ export default function Dashboard() {
                 <Label className="text-sm text-dark-blue font-medium">Nota Total (obrigatório)</Label>
                 <Input
                   type="number"
-                  value={newScore.totalScore}
-                  onChange={(e) => setNewScore({...newScore, totalScore: e.target.value})}
+                  value={newScore.score}
+                  onChange={(e) => setNewScore({...newScore, score: e.target.value})}
                   placeholder="Ex: 850"
                   className="mt-1"
                   max="1000"

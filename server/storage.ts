@@ -1322,6 +1322,13 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const userScore: UserScore = {
       ...score,
+      source: score.source ?? "manual",
+      competence1: score.competence1 ?? null,
+      competence2: score.competence2 ?? null,
+      competence3: score.competence3 ?? null,
+      competence4: score.competence4 ?? null,
+      competence5: score.competence5 ?? null,
+      sourceId: score.sourceId ?? null,
       id,
       createdAt: new Date(),
       updatedAt: new Date(),
