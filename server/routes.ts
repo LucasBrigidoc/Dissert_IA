@@ -2245,6 +2245,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== SAVED ESSAYS ROUTES =====================
+
+  app.post("/api/essays/:id/save", async (req, res) => {
+    try {
+      const essayId = req.params.id;
+      const userId = req.session?.userId || "default-user";
+      const savedEssay = await storage.saveEssay(userId, essayId);
+      res.json({ message: "Redação salva com sucesso!", savedEssay });
+    } catch (error) {
+      console.error("Save essay error:", error);
+      res.status(500).json({ message: "Failed to save essay" });
+    }
+  });
+
+  app.delete("/api/essays/:id/save", async (req, res) => {
+    try {
+      const essayId = req.params.id;
+      const userId = req.session?.userId || "default-user";
+      const removed = await storage.removeSavedEssay(userId, essayId);
+      if (removed) {
+        res.json({ message: "Redação removida da biblioteca pessoal!" });
+      } else {
+        res.status(404).json({ message: "Redação não encontrada na biblioteca" });
+      }
+    } catch (error) {
+      console.error("Remove saved essay error:", error);
+      res.status(500).json({ message: "Failed to remove saved essay" });
+    }
+  });
+
+  app.get("/api/essays/saved", async (req, res) => {
+    try {
+      const userId = req.session?.userId || "default-user";
+      const savedEssays = await storage.getUserSavedEssays(userId);
+      res.json({ results: savedEssays, count: savedEssays.length });
+    } catch (error) {
+      console.error("Get saved essays error:", error);
+      res.status(500).json({ message: "Failed to get saved essays" });
+    }
+  });
+
+  // ===================== SAVED STRUCTURES ROUTES =====================
+
+  app.post("/api/structures/:id/save", async (req, res) => {
+    try {
+      const structureId = req.params.id;
+      const userId = req.session?.userId || "default-user";
+      const savedStructure = await storage.saveStructure(userId, structureId);
+      res.json({ message: "Estrutura salva com sucesso!", savedStructure });
+    } catch (error) {
+      console.error("Save structure error:", error);
+      res.status(500).json({ message: "Failed to save structure" });
+    }
+  });
+
+  app.delete("/api/structures/:id/save", async (req, res) => {
+    try {
+      const structureId = req.params.id;
+      const userId = req.session?.userId || "default-user";
+      const removed = await storage.removeSavedStructure(userId, structureId);
+      if (removed) {
+        res.json({ message: "Estrutura removida da biblioteca pessoal!" });
+      } else {
+        res.status(404).json({ message: "Estrutura não encontrada na biblioteca" });
+      }
+    } catch (error) {
+      console.error("Remove saved structure error:", error);
+      res.status(500).json({ message: "Failed to remove saved structure" });
+    }
+  });
+
+  app.get("/api/structures/saved", async (req, res) => {
+    try {
+      const userId = req.session?.userId || "default-user";
+      const savedStructures = await storage.getUserSavedStructures(userId);
+      res.json({ results: savedStructures, count: savedStructures.length });
+    } catch (error) {
+      console.error("Get saved structures error:", error);
+      res.status(500).json({ message: "Failed to get saved structures" });
+    }
+  });
+
+  // ===================== SAVED NEWSLETTERS ROUTES =====================
+
+  app.post("/api/newsletters/:id/save", async (req, res) => {
+    try {
+      const newsletterId = req.params.id;
+      const userId = req.session?.userId || "default-user";
+      const savedNewsletter = await storage.saveNewsletter(userId, newsletterId);
+      res.json({ message: "Newsletter salva com sucesso!", savedNewsletter });
+    } catch (error) {
+      console.error("Save newsletter error:", error);
+      res.status(500).json({ message: "Failed to save newsletter" });
+    }
+  });
+
+  app.delete("/api/newsletters/:id/save", async (req, res) => {
+    try {
+      const newsletterId = req.params.id;
+      const userId = req.session?.userId || "default-user";
+      const removed = await storage.removeSavedNewsletter(userId, newsletterId);
+      if (removed) {
+        res.json({ message: "Newsletter removida da biblioteca pessoal!" });
+      } else {
+        res.status(404).json({ message: "Newsletter não encontrada na biblioteca" });
+      }
+    } catch (error) {
+      console.error("Remove saved newsletter error:", error);
+      res.status(500).json({ message: "Failed to remove saved newsletter" });
+    }
+  });
+
+  app.get("/api/newsletters/saved", async (req, res) => {
+    try {
+      const userId = req.session?.userId || "default-user";
+      const savedNewsletters = await storage.getUserSavedNewsletters(userId);
+      res.json({ results: savedNewsletters, count: savedNewsletters.length });
+    } catch (error) {
+      console.error("Get saved newsletters error:", error);
+      res.status(500).json({ message: "Failed to get saved newsletters" });
+    }
+  });
+
   // ===================== PROPOSAL ROUTES =====================
 
   // Function to detect future exam years
