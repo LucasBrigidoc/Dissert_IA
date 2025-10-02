@@ -344,18 +344,103 @@ export default function Dashboard() {
   // Visible features state
   const [visibleFeatures, setVisibleFeatures] = useState(['argumentos', 'repertorio', 'simulador', 'estrutura-curinga']);
   
-  // Schedule data state
-  const [scheduleData, setScheduleData] = useState<ScheduleDay[]>([
-    { day: 'SEG', activities: ['Repertório', 'Argumentação'], hours: 2, minutes: 0, completed: false },
-    { day: 'TER', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
-    { day: 'QUA', activities: ['Revisão', 'Estrutura Curinga'], hours: 1, minutes: 30, completed: false },
-    { day: 'QUI', activities: ['Simulado'], hours: 2, minutes: 30, completed: false },
-    { day: 'SEX', activities: ['Estilo', 'Correções'], hours: 2, minutes: 0, completed: false },
-    { day: 'SAB', activities: ['Redação Completa'], hours: 3, minutes: 0, completed: false },
-    { day: 'DOM', activities: ['Nada'], hours: 1, minutes: 0, completed: false }
-  ]);
+  // Fetch user schedule from database
+  const getWeekStart = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(now.setDate(diff));
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  };
+
+  const { data: userScheduleData, isLoading: scheduleLoading } = useQuery<Array<{
+    id: string;
+    userId: string;
+    day: string;
+    activities: string[];
+    hours: number;
+    minutes: number;
+    completed: boolean;
+    weekStart: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  }>>({
+    queryKey: ["/api/schedule"],
+    enabled: !!user,
+  });
+
+  // Map database schedule to frontend format
+  const dayMapping: { [key: string]: string } = {
+    'segunda': 'SEG',
+    'terca': 'TER',
+    'quarta': 'QUA',
+    'quinta': 'QUI',
+    'sexta': 'SEX',
+    'sabado': 'SAB',
+    'domingo': 'DOM'
+  };
+
+  const scheduleData: ScheduleDay[] = userScheduleData && userScheduleData.length > 0
+    ? userScheduleData.map(item => ({
+        day: dayMapping[item.day] || item.day,
+        activities: Array.isArray(item.activities) ? item.activities : [],
+        hours: item.hours || 0,
+        minutes: item.minutes || 0,
+        completed: item.completed || false
+      }))
+    : [];
+
+  const hasScheduleData = scheduleData.length > 0;
   
   const [editingSchedule, setEditingSchedule] = useState<ScheduleDay[]>([]);
+
+  // Mutation to save schedule
+  const saveScheduleMutation = useMutation({
+    mutationFn: async (schedules: ScheduleDay[]) => {
+      const weekStart = getWeekStart();
+      const reverseDayMapping: { [key: string]: string } = {
+        'SEG': 'segunda',
+        'TER': 'terca',
+        'QUA': 'quarta',
+        'QUI': 'quinta',
+        'SEX': 'sexta',
+        'SAB': 'sabado',
+        'DOM': 'domingo'
+      };
+
+      // Create/update each day's schedule
+      const promises = schedules.map(schedule => 
+        apiRequest("/api/schedule", {
+          method: "POST",
+          body: JSON.stringify({
+            day: reverseDayMapping[schedule.day],
+            activities: schedule.activities,
+            hours: schedule.hours,
+            minutes: schedule.minutes,
+            completed: schedule.completed,
+            weekStart: weekStart.toISOString()
+          }),
+        })
+      );
+
+      return await Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/schedule"] });
+      toast({
+        title: "Cronograma atualizado! ✅",
+        description: "Seu cronograma foi salvo com sucesso.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao salvar cronograma",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
   
   // Fetch user scores from database
   const { data: userScores = [], isLoading: scoresLoading } = useQuery<Array<{
@@ -518,12 +603,25 @@ export default function Dashboard() {
   };
 
   const handleScheduleEdit = () => {
-    setEditingSchedule([...scheduleData]);
+    if (hasScheduleData) {
+      setEditingSchedule([...scheduleData]);
+    } else {
+      // Initialize with default empty schedule
+      setEditingSchedule([
+        { day: 'SEG', activities: [], hours: 0, minutes: 0, completed: false },
+        { day: 'TER', activities: [], hours: 0, minutes: 0, completed: false },
+        { day: 'QUA', activities: [], hours: 0, minutes: 0, completed: false },
+        { day: 'QUI', activities: [], hours: 0, minutes: 0, completed: false },
+        { day: 'SEX', activities: [], hours: 0, minutes: 0, completed: false },
+        { day: 'SAB', activities: [], hours: 0, minutes: 0, completed: false },
+        { day: 'DOM', activities: [], hours: 0, minutes: 0, completed: false }
+      ]);
+    }
     setShowScheduleEdit(true);
   };
 
   const handleSaveSchedule = () => {
-    setScheduleData([...editingSchedule]);
+    saveScheduleMutation.mutate(editingSchedule);
     setShowScheduleEdit(false);
   };
 
@@ -548,7 +646,7 @@ export default function Dashboard() {
   const toggleScheduleCompletion = (index: number) => {
     const updated = [...scheduleData];
     updated[index].completed = !updated[index].completed;
-    setScheduleData(updated);
+    saveScheduleMutation.mutate(updated);
   };
 
   const formatTime = (hours: number, minutes: number) => {
@@ -1437,69 +1535,94 @@ export default function Dashboard() {
               </Button>
             </div>
           </div>
-          <div className="grid lg:grid-cols-7 gap-4">
-            {/* Dias da Semana */}
-            {scheduleData.map((schedule, index) => (
-              <div key={index} className="flex flex-col">
-                <div className={`p-4 rounded-lg border h-full ${
-                  schedule.completed
-                    ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-300'
-                    : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
-                }`}>
-                  <div className="text-center mb-3">
-                    <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
-                    <div className={`text-xs font-medium ${
-                      schedule.completed 
-                        ? 'text-green-600'
-                        : 'text-bright-blue'
-                    }`}>
-                      {formatTime(schedule.hours, schedule.minutes)}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    {schedule.activities.map((activity, i) => (
-                      <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
-                        schedule.completed
-                          ? 'bg-green-100 text-green-700 line-through'
-                          : 'bg-white/50 text-dark-blue'
-                      }`}>
-                        {activity}
-                      </div>
-                    ))}
-                  </div>
+          
+          {!hasScheduleData ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-full flex items-center justify-center mx-auto">
+                  <Timer className="text-bright-blue" size={36} />
                 </div>
-                <div className="flex items-center justify-center mt-3">
-                  <button
-                    onClick={() => toggleScheduleCompletion(index)}
-                    className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                      schedule.completed
-                        ? 'bg-green-500 text-white hover:bg-green-600'
-                        : 'bg-white/70 text-dark-blue hover:bg-bright-blue/10 border border-bright-blue/30'
-                    }`}
-                    data-testid={`button-complete-${schedule.day.toLowerCase()}`}
-                  >
-                    <CheckCircle2 size={10} />
-                    <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Target className="text-bright-blue mr-3" size={14} />
                 <div>
-                  <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
-                  <div className="text-xs text-soft-gray">Baseado na sua próxima prova</div>
+                  <p className="text-base font-medium text-dark-blue mb-2">Nenhum cronograma definido</p>
+                  <p className="text-sm text-soft-gray mb-4">Personalize seu cronograma de estudos semanal para acompanhar seu progresso</p>
+                  <Button 
+                    variant="outline" 
+                    onClick={handleScheduleEdit}
+                    className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+                  >
+                    <Plus className="mr-2" size={16} />
+                    Criar Cronograma
+                  </Button>
                 </div>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold text-bright-blue" data-testid="text-weekly-hours">{calculateWeeklyHours()}</div>
-                <div className="text-xs text-soft-gray">por semana</div>
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="grid lg:grid-cols-7 gap-4">
+                {/* Dias da Semana */}
+                {scheduleData.map((schedule, index) => (
+                  <div key={index} className="flex flex-col">
+                    <div className={`p-4 rounded-lg border h-full ${
+                      schedule.completed
+                        ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-300'
+                        : 'bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                    }`}>
+                      <div className="text-center mb-3">
+                        <div className="text-sm font-bold text-dark-blue mb-1">{schedule.day}</div>
+                        <div className={`text-xs font-medium ${
+                          schedule.completed 
+                            ? 'text-green-600'
+                            : 'text-bright-blue'
+                        }`}>
+                          {formatTime(schedule.hours, schedule.minutes)}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        {schedule.activities.map((activity, i) => (
+                          <div key={i} className={`text-xs px-2 py-1 rounded text-center ${
+                            schedule.completed
+                              ? 'bg-green-100 text-green-700 line-through'
+                              : 'bg-white/50 text-dark-blue'
+                          }`}>
+                            {activity}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center mt-3">
+                      <button
+                        onClick={() => toggleScheduleCompletion(index)}
+                        className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                          schedule.completed
+                            ? 'bg-green-500 text-white hover:bg-green-600'
+                            : 'bg-white/70 text-dark-blue hover:bg-bright-blue/10 border border-bright-blue/30'
+                        }`}
+                        data-testid={`button-complete-${schedule.day.toLowerCase()}`}
+                      >
+                        <CheckCircle2 size={10} />
+                        <span>{schedule.completed ? 'Concluído' : 'Marcar'}</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Target className="text-bright-blue mr-3" size={14} />
+                    <div>
+                      <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
+                      <div className="text-xs text-soft-gray">Baseado na sua próxima prova</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-bright-blue" data-testid="text-weekly-hours">{calculateWeeklyHours()}</div>
+                    <div className="text-xs text-soft-gray">por semana</div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </LiquidGlassCard>
 
         {/* Schedule Edit Modal */}
