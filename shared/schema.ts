@@ -177,6 +177,24 @@ export const conversations = pgTable("conversations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// User scores table for tracking all user scores (manual and from simulations)
+export const userScores = pgTable("user_scores", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  score: integer("score").notNull(),
+  competence1: integer("competence_1"),
+  competence2: integer("competence_2"),
+  competence3: integer("competence_3"),
+  competence4: integer("competence_4"),
+  competence5: integer("competence_5"),
+  examName: text("exam_name").notNull(),
+  source: varchar("source", { enum: ["manual", "simulation", "essay"] }).notNull().default("manual"),
+  sourceId: varchar("source_id"), // ID of the simulation or essay if applicable
+  scoreDate: timestamp("score_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -297,6 +315,12 @@ export const insertConversationSchema = createInsertSchema(conversations).omit({
   createdAt: true,
   updatedAt: true,
   lastMessageAt: true,
+});
+
+export const insertUserScoreSchema = createInsertSchema(userScores).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const proposalSearchQuerySchema = z.object({
@@ -441,6 +465,9 @@ export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Conversation = typeof conversations.$inferSelect;
 
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
+
+export type InsertUserScore = z.infer<typeof insertUserScoreSchema>;
+export type UserScore = typeof userScores.$inferSelect;
 
 export const insertWeeklyUsageSchema = createInsertSchema(weeklyUsage).omit({
   id: true,
