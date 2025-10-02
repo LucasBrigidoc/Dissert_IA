@@ -142,6 +142,30 @@ export const savedProposals = pgTable("saved_proposals", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Saved essays for user's personal library
+export const savedEssays = pgTable("saved_essays", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  essayId: varchar("essay_id").notNull().references(() => essays.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Saved structures for user's personal library
+export const savedStructures = pgTable("saved_structures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  structureId: varchar("structure_id").notNull().references(() => essayStructures.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Saved newsletters for user's personal library
+export const savedNewsletters = pgTable("saved_newsletters", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  newsletterId: varchar("newsletter_id").notNull().references(() => newsletters.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Simulations table for tracking completed simulations
 export const simulations = pgTable("simulations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -304,6 +328,21 @@ export const insertSavedProposalSchema = createInsertSchema(savedProposals).omit
   createdAt: true,
 });
 
+export const insertSavedEssaySchema = createInsertSchema(savedEssays).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSavedStructureSchema = createInsertSchema(savedStructures).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSavedNewsletterSchema = createInsertSchema(savedNewsletters).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertSimulationSchema = createInsertSchema(simulations).omit({
   id: true,
   createdAt: true,
@@ -457,6 +496,15 @@ export type Proposal = typeof proposals.$inferSelect;
 
 export type InsertSavedProposal = z.infer<typeof insertSavedProposalSchema>;
 export type SavedProposal = typeof savedProposals.$inferSelect;
+
+export type InsertSavedEssay = z.infer<typeof insertSavedEssaySchema>;
+export type SavedEssay = typeof savedEssays.$inferSelect;
+
+export type InsertSavedStructure = z.infer<typeof insertSavedStructureSchema>;
+export type SavedStructure = typeof savedStructures.$inferSelect;
+
+export type InsertSavedNewsletter = z.infer<typeof insertSavedNewsletterSchema>;
+export type SavedNewsletter = typeof savedNewsletters.$inferSelect;
 
 export type InsertSimulation = z.infer<typeof insertSimulationSchema>;
 export type Simulation = typeof simulations.$inferSelect;
