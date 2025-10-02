@@ -45,7 +45,7 @@ Preferred communication style: Simple, everyday language.
 - **Replit Environment**: Configured for Replit hosting, workflow, and deployment.
 - **Profile Management**: User profile update functionality with Brazilian phone validation and database persistence.
 - **Competency Analysis**: "Pontos a Melhorar" feature displaying dynamic competency cards based on real user essay data and average scores, identifying top 3 weakest competencies.
-- **Initial Goal Setup**: First-time user experience with welcome dialog for setting target score, connected to PostgreSQL database with localStorage tracking to prevent re-showing.
+- **Dynamic Goal Management**: Smart goal setting system that shows empty state when no target is defined (similar to weekly goals), prompts users to set their target score, and displays progress with distance to goal once defined. Fully connected to the database.
 
 # External Dependencies
 

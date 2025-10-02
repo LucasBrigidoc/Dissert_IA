@@ -67,7 +67,7 @@ export default function Dashboard() {
     id: string;
     userId: string;
     averageScore: number;
-    targetScore: number;
+    targetScore: number | null;
     essaysCount: number;
     studyHours: number;
     streak: number;
@@ -197,16 +197,12 @@ export default function Dashboard() {
   const [showInitialTargetSetup, setShowInitialTargetSetup] = useState(false);
   const [initialTargetScore, setInitialTargetScore] = useState(900);
 
-  // Check if user needs to set initial target (first time setup)
+  // Check if user needs to set initial target (when targetScore is null)
   useEffect(() => {
-    if (userProgress && userProgress.targetScore === 900 && !progressLoading) {
-      // Check if this is truly the first time by checking if it's the default
-      const hasSetTargetBefore = localStorage.getItem(`target-set-${user?.id}`);
-      if (!hasSetTargetBefore) {
-        setShowInitialTargetSetup(true);
-      }
+    if (userProgress && userProgress.targetScore === null && !progressLoading) {
+      setShowInitialTargetSetup(true);
     }
-  }, [userProgress, progressLoading, user?.id]);
+  }, [userProgress, progressLoading]);
   
   // Map user exams from API to local state format
   const exams = userExams?.map(exam => ({
@@ -377,11 +373,11 @@ export default function Dashboard() {
   
   // Use real user progress data
   const averageScore = userProgress?.averageScore || 0;
-  const targetScore = userProgress?.targetScore || 900;
+  const targetScore = userProgress?.targetScore;
   const essaysCount = userProgress?.essaysCount || 0;
   const studyHours = userProgress?.studyHours || 0;
   const streak = userProgress?.streak || 0;
-  const progressPercentage = targetScore > 0 ? Math.min(100, Math.round((averageScore / targetScore) * 100)) : 0;
+  const progressPercentage = targetScore && targetScore > 0 ? Math.min(100, Math.round((averageScore / targetScore) * 100)) : 0;
   
   // Get next exam
   const upcomingExams = exams
@@ -926,108 +922,137 @@ export default function Dashboard() {
                 </div>
                 <h4 className="text-sm md:text-base font-semibold text-dark-blue">Progresso Geral</h4>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setEditingTarget(true)}
-                className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 p-1 h-8"
-                data-testid="button-edit-target"
-              >
-                <Edit3 size={10} />
-              </Button>
+              {targetScore !== null && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditingTarget(true)}
+                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 p-1 h-8"
+                  data-testid="button-edit-target"
+                >
+                  <Edit3 size={10} />
+                </Button>
+              )}
             </div>
-            <div className="flex items-center justify-center mb-3 md:mb-4">
-              <div className="relative w-24 h-24 md:w-32 md:h-32">
-                <svg className="w-24 h-24 md:w-32 md:h-32 -rotate-90" viewBox="0 0 120 120">
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="50"
-                    fill="none"
-                    stroke="#e5e7eb"
-                    strokeWidth="8"
-                  />
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="50"
-                    fill="none"
-                    stroke="url(#progressGradient)"
-                    strokeWidth="8"
-                    strokeDasharray={314}
-                    strokeDashoffset={314 - (progressPercentage / 100) * 314}
-                    strokeLinecap="round"
-                    className="transition-all duration-500"
-                  />
-                  <defs>
-                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#5087ff" />
-                      <stop offset="100%" stopColor="#09072e" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-xl md:text-2xl font-bold text-dark-blue" data-testid="text-average-score">
-                      {averageScore}
-                    </div>
-                    <div className="text-xs text-soft-gray">Nota Média</div>
+            
+            {targetScore === null ? (
+              <div className="flex-1 flex items-center justify-center py-8">
+                <div className="text-center space-y-3">
+                  <div className="w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-full flex items-center justify-center mx-auto">
+                    <Target className="text-bright-blue" size={32} />
                   </div>
+                  <div>
+                    <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma meta definida</p>
+                    <p className="text-xs text-soft-gray">Defina sua meta de pontuação para acompanhar seu progresso</p>
+                  </div>
+                  <Button 
+                    onClick={() => setShowInitialTargetSetup(true)}
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-2 text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 text-xs"
+                    data-testid="button-define-target"
+                  >
+                    <Target size={12} className="mr-2" />
+                    Definir Meta
+                  </Button>
                 </div>
               </div>
-            </div>
-            <div className="space-y-3">
-              {editingTarget ? (
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-soft-gray">Nova meta:</span>
-                    <input
-                      type="number"
-                      value={newTargetScore}
-                      onChange={(e) => setNewTargetScore(Number(e.target.value))}
-                      className="w-16 px-2 py-1 text-sm border border-bright-blue/30 rounded focus:outline-none focus:border-bright-blue"
-                      data-testid="input-target-score"
-                    />
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        updateProgressMutation.mutate({ targetScore: newTargetScore });
-                        setEditingTarget(false);
-                      }}
-                      className="text-xs bg-bright-blue text-white hover:bg-bright-blue/90"
-                      data-testid="button-save-target"
-                      disabled={updateProgressMutation.isPending}
-                    >
-                      {updateProgressMutation.isPending ? "Salvando..." : "Salvar"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        setNewTargetScore(targetScore);
-                        setEditingTarget(false);
-                      }}
-                      className="text-xs"
-                      data-testid="button-cancel-target"
-                    >
-                      Cancelar
-                    </Button>
+            ) : (
+              <>
+                <div className="flex items-center justify-center mb-3 md:mb-4">
+                  <div className="relative w-24 h-24 md:w-32 md:h-32">
+                    <svg className="w-24 h-24 md:w-32 md:h-32 -rotate-90" viewBox="0 0 120 120">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        fill="none"
+                        stroke="#e5e7eb"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        fill="none"
+                        stroke="url(#progressGradient)"
+                        strokeWidth="8"
+                        strokeDasharray={314}
+                        strokeDashoffset={314 - (progressPercentage / 100) * 314}
+                        strokeLinecap="round"
+                        className="transition-all duration-500"
+                      />
+                      <defs>
+                        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#5087ff" />
+                          <stop offset="100%" stopColor="#09072e" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-xl md:text-2xl font-bold text-dark-blue" data-testid="text-average-score">
+                          {averageScore}
+                        </div>
+                        <div className="text-xs text-soft-gray">Nota Média</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <div className="flex justify-between text-sm">
-                  <span className="text-soft-gray">Meta: {targetScore}</span>
-                  <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal">
-                    {targetScore > averageScore ? `${targetScore - averageScore} pontos para a meta` : 'Meta atingida! 🎉'}
-                  </span>
+                <div className="space-y-3">
+                  {editingTarget ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-soft-gray">Nova meta:</span>
+                        <input
+                          type="number"
+                          value={newTargetScore}
+                          onChange={(e) => setNewTargetScore(Number(e.target.value))}
+                          className="w-16 px-2 py-1 text-sm border border-bright-blue/30 rounded focus:outline-none focus:border-bright-blue"
+                          data-testid="input-target-score"
+                        />
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            updateProgressMutation.mutate({ targetScore: newTargetScore });
+                            setEditingTarget(false);
+                          }}
+                          className="text-xs bg-bright-blue text-white hover:bg-bright-blue/90"
+                          data-testid="button-save-target"
+                          disabled={updateProgressMutation.isPending}
+                        >
+                          {updateProgressMutation.isPending ? "Salvando..." : "Salvar"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setNewTargetScore(targetScore || 900);
+                            setEditingTarget(false);
+                          }}
+                          className="text-xs"
+                          data-testid="button-cancel-target"
+                        >
+                          Cancelar
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-soft-gray">Meta: {targetScore}</span>
+                      <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal">
+                        {targetScore && targetScore > averageScore ? `${targetScore - averageScore} pontos para a meta` : 'Meta atingida! 🎉'}
+                      </span>
+                    </div>
+                  )}
+                  <Progress value={progressPercentage} className="h-3 bg-gray-200">
+                    <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
+                  </Progress>
                 </div>
-              )}
-              <Progress value={progressPercentage} className="h-3 bg-gray-200">
-                <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
-              </Progress>
-            </div>
+              </>
+            )}
           </LiquidGlassCard>
 
           {/* Evolution Chart */}
@@ -2046,9 +2071,6 @@ export default function Dashboard() {
                 <Button
                   onClick={() => {
                     updateProgressMutation.mutate({ targetScore: initialTargetScore });
-                    if (user?.id) {
-                      localStorage.setItem(`target-set-${user.id}`, 'true');
-                    }
                     setShowInitialTargetSetup(false);
                     toast({
                       title: "Meta definida! 🎯",

@@ -18,7 +18,7 @@ export const userProgress = pgTable("user_progress", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
   averageScore: integer("average_score").default(0),
-  targetScore: integer("target_score").default(900),
+  targetScore: integer("target_score"),
   essaysCount: integer("essays_count").default(0),
   studyHours: integer("study_hours").default(0),
   streak: integer("streak").default(0),
