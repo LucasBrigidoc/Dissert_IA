@@ -540,7 +540,7 @@ export class MemStorage implements IStorage {
     await this.createUserProgress({
       userId: id,
       averageScore: 0,
-      targetScore: 900,
+      targetScore: null,
       essaysCount: 0,
       studyHours: 0,
       streak: 0
@@ -576,7 +576,7 @@ export class MemStorage implements IStorage {
     const progress: UserProgress = { 
       ...insertProgress,
       averageScore: insertProgress.averageScore ?? 0,
-      targetScore: insertProgress.targetScore ?? 900,
+      targetScore: insertProgress.targetScore ?? null,
       essaysCount: insertProgress.essaysCount ?? 0,
       studyHours: insertProgress.studyHours ?? 0,
       streak: insertProgress.streak ?? 0, 
