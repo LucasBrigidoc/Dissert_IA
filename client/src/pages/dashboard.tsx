@@ -117,25 +117,29 @@ export default function Dashboard() {
   });
 
   // Fetch user simulations for average time calculation
-  const { data: userSimulations = [] } = useQuery<Array<{
-    id: string;
-    userId: string | null;
-    title: string;
-    timeTaken: number | null;
-    score: number | null;
-    isCompleted: boolean;
-    createdAt: Date;
-  }>>({
+  const { data: simulationsData, isLoading: simulationsLoading } = useQuery<{
+    results: Array<{
+      id: string;
+      userId: string | null;
+      title: string;
+      timeTaken: number | null;
+      score: number | null;
+      isCompleted: boolean;
+      createdAt: Date;
+    }>;
+    count: number;
+    hasMore: boolean;
+  }>({
     queryKey: ["/api/simulations"],
     enabled: !!user,
   });
 
-  // Calculate average simulation time
-  const averageSimulationTime = userSimulations.length > 0
-    ? Math.round(userSimulations
-        .filter(s => s.timeTaken && s.isCompleted)
-        .reduce((sum, s) => sum + (s.timeTaken || 0), 0) / 
-        userSimulations.filter(s => s.timeTaken && s.isCompleted).length)
+  // Calculate average simulation time and check if we have data
+  const userSimulations = simulationsData?.results || [];
+  const completedSimulationsWithTime = userSimulations.filter(s => s.timeTaken !== null && s.timeTaken !== undefined && s.isCompleted);
+  const hasSimulationTimeData = completedSimulationsWithTime.length > 0;
+  const averageSimulationTimeMinutes = hasSimulationTimeData
+    ? Math.round(completedSimulationsWithTime.reduce((sum, s) => sum + (s.timeTaken || 0), 0) / completedSimulationsWithTime.length)
     : 0;
 
   // Fetch user competencies analysis
@@ -1266,43 +1270,37 @@ export default function Dashboard() {
               </div>
               <h4 className="text-sm md:text-base font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
             </div>
-            <div className="space-y-4">
-              <div className="text-center p-3 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
-                <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-total-time">
-                  2h 15min
-                </div>
-                <div className="text-xs text-soft-gray font-medium">Tempo Total</div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded border border-bright-blue/10">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <Lightbulb className="text-white" size={12} />
-                    </div>
-                    <span className="text-sm text-dark-blue">Brainstorm</span>
-                  </div>
-                  <span className="text-sm font-medium text-bright-blue" data-testid="text-brainstorm-time">25min</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-dark-blue/5 to-soft-gray/5 rounded border border-dark-blue/10">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-dark-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <MessageCircle className="text-white" size={12} />
-                    </div>
-                    <span className="text-sm text-dark-blue">Rascunho</span>
-                  </div>
-                  <span className="text-sm font-medium text-dark-blue" data-testid="text-draft-time">1h 20min</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-soft-gray/10">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-soft-gray rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <CheckCircle2 className="text-white" size={12} />
-                    </div>
-                    <span className="text-sm text-dark-blue">A limpo</span>
-                  </div>
-                  <span className="text-sm font-medium text-soft-gray" data-testid="text-final-time">30min</span>
+            
+            {simulationsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-pulse text-center">
+                  <div className="w-12 h-12 bg-bright-blue/20 rounded-full mx-auto mb-2"></div>
+                  <p className="text-xs text-soft-gray">Carregando...</p>
                 </div>
               </div>
-            </div>
+            ) : !hasSimulationTimeData ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-soft-gray/20 to-bright-blue/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Clock className="text-bright-blue" size={32} />
+                </div>
+                <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma simulação completa ainda</p>
+                <p className="text-xs text-soft-gray">Faça simulações para ver seu tempo médio aqui</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="text-center p-3 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                  <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-total-time">
+                    {formatTime(Math.floor(averageSimulationTimeMinutes / 60), averageSimulationTimeMinutes % 60)}
+                  </div>
+                  <div className="text-xs text-soft-gray font-medium">Tempo Médio Total</div>
+                </div>
+                <div className="text-center p-2 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-bright-blue/10">
+                  <p className="text-xs text-soft-gray">
+                    Baseado em {completedSimulationsWithTime.length} {completedSimulationsWithTime.length === 1 ? 'simulação' : 'simulações'}
+                  </p>
+                </div>
+              </div>
+            )}
           </LiquidGlassCard>
         </div>
 
