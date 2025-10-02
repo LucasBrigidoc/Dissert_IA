@@ -1082,6 +1082,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reset target score to null (temporary endpoint for testing)
+  app.post("/api/user-progress/reset-target", requireAuth, async (req, res) => {
+    try {
+      const progress = await storage.updateUserProgress(req.user!.id, { targetScore: null });
+      res.json(progress);
+    } catch (error) {
+      console.error("Reset target score error:", error);
+      res.status(500).json({ message: "Erro ao resetar meta" });
+    }
+  });
+
   // Get user competencies analysis (for dashboard "Pontos a Melhorar")
   app.get("/api/user-competencies", requireAuth, async (req, res) => {
     try {
