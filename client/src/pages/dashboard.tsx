@@ -2150,21 +2150,65 @@ export default function Dashboard() {
             </div>
             <h4 className="font-semibold text-dark-blue">Newsletter da Semana</h4>
           </div>
-          <div className="grid lg:grid-cols-3 gap-6 items-center">
-            <div className="lg:col-span-2">
-              <div className="font-medium text-dark-blue mb-2 text-lg">Tecnologia e Sociedade 🤖</div>
-              <p className="text-soft-gray leading-relaxed">Explore como a inteligência artificial está transformando o mundo moderno e descubra como incorporar esse tema em suas redações com repertório atualizado e exemplos práticos.</p>
+          
+          {latestNewsletter ? (
+            <div className="grid lg:grid-cols-3 gap-6 items-center">
+              <div className="lg:col-span-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="font-medium text-dark-blue text-lg">{latestNewsletter.title}</div>
+                  {latestNewsletter.isNew && (
+                    <span className="px-2 py-0.5 bg-bright-blue/20 text-bright-blue text-xs font-medium rounded">
+                      Novo
+                    </span>
+                  )}
+                </div>
+                {latestNewsletter.excerpt && (
+                  <p className="text-soft-gray leading-relaxed mb-2">{latestNewsletter.excerpt}</p>
+                )}
+                <div className="flex items-center gap-3 text-xs text-soft-gray">
+                  {latestNewsletter.category && (
+                    <span className="flex items-center">
+                      <span className="w-2 h-2 bg-bright-blue rounded-full mr-1.5"></span>
+                      {latestNewsletter.category}
+                    </span>
+                  )}
+                  {latestNewsletter.readTime && (
+                    <span>{latestNewsletter.readTime} min de leitura</span>
+                  )}
+                  {latestNewsletter.publishDate && (
+                    <span>
+                      {new Date(latestNewsletter.publishDate).toLocaleDateString('pt-BR', { 
+                        day: '2-digit', 
+                        month: 'short',
+                        year: 'numeric'
+                      })}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <Button 
+                  onClick={() => setLocation('/newsletter')}
+                  className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 px-8 py-3"
+                  data-testid="button-read-newsletter"
+                >
+                  Ler Newsletter Completa
+                </Button>
+              </div>
             </div>
-            <div className="flex justify-end">
-              <Button 
-                onClick={() => setLocation('/newsletter')}
-                className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 px-8 py-3"
-                data-testid="button-read-newsletter"
-              >
-                Ler Newsletter Completa
-              </Button>
+          ) : (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-center space-y-3">
+                <div className="w-16 h-16 bg-gradient-to-br from-soft-gray/20 to-bright-blue/20 rounded-full flex items-center justify-center mx-auto">
+                  <Book className="text-soft-gray" size={28} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma newsletter publicada</p>
+                  <p className="text-xs text-soft-gray">As newsletters aparecerão aqui assim que forem publicadas</p>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </LiquidGlassCard>
 
         {/* Simulador de Provas - Full Width */}
