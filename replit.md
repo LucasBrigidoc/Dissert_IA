@@ -77,3 +77,38 @@ Preferred communication style: Simple, everyday language.
 ## Replit-Specific
 - **@replit/vite-plugin-runtime-error-modal**: Development error overlay.
 - **@replit/vite-plugin-cartographer**: Replit workspace integration.
+
+# Replit Environment Setup
+
+## Database
+- **PostgreSQL Database**: Provisioned via Replit's built-in database service
+- **Schema Migration**: Successfully pushed using `npm run db:push`
+- **Connection**: Automatically configured via `DATABASE_URL` environment variable
+
+## Workflow Configuration
+- **Workflow Name**: "Start application"
+- **Command**: `npm run dev`
+- **Port**: 5000 (frontend and backend on same port)
+- **Host**: 0.0.0.0 (configured in vite.config.ts)
+- **Proxy Configuration**: `allowedHosts: true` enabled in Vite config for Replit's iframe preview
+
+## Deployment Configuration
+- **Deployment Type**: Autoscale (stateless web app)
+- **Build Command**: `npm run build`
+- **Start Command**: `npm run start`
+
+## Optional Environment Variables
+The following API keys are optional and will use fallback modes if not configured:
+- **GEMINI_API_KEY**: For AI-powered features (text modification, analysis, etc.)
+- **STRIPE_SECRET_KEY**: For payment processing features
+- **STRIPE_WEBHOOK_SECRET**: For Stripe webhook verification
+- **SENDGRID_API_KEY**: For email functionality
+- **SESSION_SECRET**: Auto-generated in development, required in production
+
+## Application Status
+✅ Frontend running on port 5000 with Vite dev server
+✅ Backend API running on same port (Express)
+✅ Database schema initialized and migrated
+✅ All core functionality operational (auth, routing, UI components)
+⚠️ AI features in fallback mode (GEMINI_API_KEY not configured)
+⚠️ Payment features disabled (STRIPE_SECRET_KEY not configured)
