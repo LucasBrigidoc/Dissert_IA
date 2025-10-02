@@ -46,6 +46,7 @@ Preferred communication style: Simple, everyday language.
 - **Profile Management**: User profile update functionality with Brazilian phone validation and database persistence.
 - **Competency Analysis**: "Pontos a Melhorar" feature displaying dynamic competency cards based on real user essay data and average scores, identifying top 3 weakest competencies.
 - **Dynamic Goal Management**: Smart goal setting system that shows empty state when no target is defined (similar to weekly goals), prompts users to set their target score, and displays progress with distance to goal once defined. Fully connected to the database.
+- **User Score Tracking**: Complete system for tracking user scores from multiple sources (simulations, essays, manual entries). Includes database table, API endpoints, and dashboard visualization with real-time data fetching. Features manual score entry dialog for external exam results with competency breakdown.
 
 # External Dependencies
 
