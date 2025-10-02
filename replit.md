@@ -25,8 +25,10 @@ Preferred communication style: Simple, everyday language.
 
 ## Data Storage
 - **Primary Database**: PostgreSQL via Neon Database.
+- **Storage Implementation**: DbStorage class with full Drizzle ORM integration (migrated from MemStorage on Oct 2, 2025).
 - **Schema Design**: User-centric with tables for users, progress, and essays, including ENEM competency fields (competence1-5, feedback1-5).
 - **Migration Management**: Drizzle Kit.
+- **Persistence Status**: ✅ All data persisted to PostgreSQL (users, essays, progress, structures, materials, analytics, etc.).
 
 ## Development
 - **Monorepo Structure**: `client/`, `server/`, and `shared/` directories.
