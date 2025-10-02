@@ -1036,7 +1036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         progress = await storage.createUserProgress({
           userId: req.user!.id,
           averageScore: 0,
-          targetScore: 900,
+          targetScore: null,
           essaysCount: 0,
           studyHours: 0,
           streak: 0,

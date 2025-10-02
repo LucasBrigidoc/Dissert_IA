@@ -186,7 +186,7 @@ export default function Dashboard() {
   });
 
   const [editingTarget, setEditingTarget] = useState(false);
-  const [newTargetScore, setNewTargetScore] = useState(userProgress?.targetScore || 900);
+  const [newTargetScore, setNewTargetScore] = useState(userProgress?.targetScore ?? 900);
   const [showAddScore, setShowAddScore] = useState(false);
   const [showScheduleEdit, setShowScheduleEdit] = useState(false);
   const [showFeaturesConfig, setShowFeaturesConfig] = useState(false);
@@ -203,6 +203,13 @@ export default function Dashboard() {
       setShowInitialTargetSetup(true);
     }
   }, [userProgress, progressLoading]);
+
+  // Update newTargetScore when userProgress changes
+  useEffect(() => {
+    if (userProgress?.targetScore !== undefined) {
+      setNewTargetScore(userProgress.targetScore ?? 900);
+    }
+  }, [userProgress?.targetScore]);
   
   // Map user exams from API to local state format
   const exams = userExams?.map(exam => ({
@@ -1029,7 +1036,7 @@ export default function Dashboard() {
                           size="sm"
                           variant="outline"
                           onClick={() => {
-                            setNewTargetScore(targetScore || 900);
+                            setNewTargetScore(targetScore ?? 900);
                             setEditingTarget(false);
                           }}
                           className="text-xs"
