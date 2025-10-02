@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Link, useLocation } from "wouter";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getInitials } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ScoreData {
   id: number;
@@ -56,6 +57,7 @@ interface Exam {
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const [editingTarget, setEditingTarget] = useState(false);
   const [newTargetScore, setNewTargetScore] = useState(mockUserData.targetScore);
   const [showAddScore, setShowAddScore] = useState(false);
@@ -222,8 +224,8 @@ export default function Dashboard() {
     competence5: '',
     examName: ''
   });
+  const name = user?.name || "Usuário";
   const { 
-    name, 
     averageScore, 
     targetScore, 
     essaysCount, 
