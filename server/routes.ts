@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, updateUserProfileSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
+import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -1021,6 +1021,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       console.error("Update profile error:", error);
       res.status(500).json({ message: "Erro ao atualizar perfil" });
+    }
+  });
+
+  // ===================== USER PROGRESS ENDPOINTS =====================
+
+  // Get user progress
+  app.get("/api/user-progress", requireAuth, async (req, res) => {
+    try {
+      let progress = await storage.getUserProgress(req.user!.id);
+      
+      // Create default progress if it doesn't exist
+      if (!progress) {
+        progress = await storage.createUserProgress({
+          userId: req.user!.id,
+          averageScore: 0,
+          targetScore: 900,
+          essaysCount: 0,
+          studyHours: 0,
+          streak: 0,
+        });
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      console.error("Get user progress error:", error);
+      res.status(500).json({ message: "Erro ao buscar progresso do usuário" });
+    }
+  });
+
+  // Update user progress
+  app.put("/api/user-progress", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertUserProgressSchema.partial().omit({ userId: true }).parse(req.body);
+      
+      // Check if progress exists
+      let progress = await storage.getUserProgress(req.user!.id);
+      
+      if (!progress) {
+        // Create new progress with update data
+        progress = await storage.createUserProgress({
+          userId: req.user!.id,
+          ...validatedData,
+        });
+      } else {
+        // Update existing progress
+        progress = await storage.updateUserProgress(req.user!.id, validatedData);
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Dados inválidos", 
+          errors: error.errors 
+        });
+      }
+      console.error("Update user progress error:", error);
+      res.status(500).json({ message: "Erro ao atualizar progresso" });
     }
   });
 

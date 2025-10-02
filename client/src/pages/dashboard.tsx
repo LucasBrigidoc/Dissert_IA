@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
-import { mockUserData } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +13,9 @@ import { Link, useLocation } from "wouter";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getInitials } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface ScoreData {
   id: number;
@@ -58,8 +60,110 @@ interface Exam {
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  const { toast } = useToast();
+  
+  // Fetch user progress data
+  const { data: userProgress, isLoading: progressLoading } = useQuery<{
+    id: string;
+    userId: string;
+    averageScore: number;
+    targetScore: number;
+    essaysCount: number;
+    studyHours: number;
+    streak: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }>({
+    queryKey: ["/api/user-progress"],
+    enabled: !!user,
+  });
+
+  // Fetch user goals
+  const { data: userGoals = [], isLoading: goalsLoading } = useQuery<Array<{
+    id: string;
+    userId: string;
+    title: string;
+    description: string | null;
+    target: number;
+    current: number;
+    unit: string;
+    completed: boolean;
+    priority: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }>>({
+    queryKey: ["/api/goals"],
+    enabled: !!user,
+  });
+
+  // Fetch user exams
+  const { data: userExams = [], isLoading: examsLoading } = useQuery<Array<{
+    id: string;
+    userId: string;
+    name: string;
+    examAt: Date;
+    location: string | null;
+    description: string | null;
+    type: string;
+    status: string;
+    subjects: string[];
+    durationMinutes: number | null;
+    importance: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }>>({
+    queryKey: ["/api/exams"],
+    enabled: !!user,
+  });
+
+  // Fetch user simulations for average time calculation
+  const { data: userSimulations = [] } = useQuery<Array<{
+    id: string;
+    userId: string | null;
+    title: string;
+    timeTaken: number | null;
+    score: number | null;
+    isCompleted: boolean;
+    createdAt: Date;
+  }>>({
+    queryKey: ["/api/simulations"],
+    enabled: !!user,
+  });
+
+  // Calculate average simulation time
+  const averageSimulationTime = userSimulations.length > 0
+    ? Math.round(userSimulations
+        .filter(s => s.timeTaken && s.isCompleted)
+        .reduce((sum, s) => sum + (s.timeTaken || 0), 0) / 
+        userSimulations.filter(s => s.timeTaken && s.isCompleted).length)
+    : 0;
+
+  // Mutation to update user progress
+  const updateProgressMutation = useMutation({
+    mutationFn: async (data: { targetScore?: number; averageScore?: number; essaysCount?: number; studyHours?: number; streak?: number }) => {
+      return await apiRequest("/api/user-progress", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user-progress"] });
+      toast({
+        title: "Progresso atualizado",
+        description: "Seus dados foram salvos com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao atualizar",
+        description: "Não foi possível salvar suas alterações.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const [editingTarget, setEditingTarget] = useState(false);
-  const [newTargetScore, setNewTargetScore] = useState(mockUserData.targetScore);
+  const [newTargetScore, setNewTargetScore] = useState(userProgress?.targetScore || 900);
   const [showAddScore, setShowAddScore] = useState(false);
   const [showScheduleEdit, setShowScheduleEdit] = useState(false);
   const [showFeaturesConfig, setShowFeaturesConfig] = useState(false);
@@ -68,27 +172,28 @@ export default function Dashboard() {
   const [showExamsManagement, setShowExamsManagement] = useState(false);
   const [animatingGoals, setAnimatingGoals] = useState<Set<number>>(new Set());
   
-  // Exams data state
-  const [exams, setExams] = useState<Exam[]>([
-    { id: 1, name: 'Simulado', date: '2024-10-28', time: '14:00', location: 'Online', type: 'Simulado', description: 'Prova preparatória com formato ENEM' },
-    { id: 2, name: 'ENEM 1º', date: '2024-11-03', time: '13:30', location: 'Local de Prova', type: 'Exame Nacional', description: 'Primeiro dia do ENEM - Redação, Linguagens e Ciências Humanas' },
-    { id: 3, name: 'ENEM 2º', date: '2024-11-10', time: '13:30', location: 'Local de Prova', type: 'Exame Nacional', description: 'Segundo dia do ENEM - Ciências da Natureza e Matemática' },
-    { id: 4, name: 'Vestibular USP', date: '2024-11-15', time: '14:00', location: 'FUVEST', type: 'Vestibular', description: 'Prova da primeira fase da FUVEST' },
-    { id: 5, name: 'Vestibular UNICAMP', date: '2024-11-20', time: '14:00', location: 'COMVEST', type: 'Vestibular', description: 'Prova da primeira fase da UNICAMP' },
-    { id: 6, name: 'Simulado Final', date: '2024-11-25', time: '14:00', location: 'Online', type: 'Simulado', description: 'Simulado final antes das provas oficiais' }
-  ]);
+  // Map user exams from API to local state format
+  const exams = userExams.map(exam => ({
+    id: parseInt(exam.id.slice(0, 8), 16), // Convert UUID to number for compatibility
+    name: exam.name,
+    date: new Date(exam.examAt).toISOString().split('T')[0],
+    time: new Date(exam.examAt).toTimeString().slice(0, 5),
+    location: exam.location || '',
+    type: exam.type,
+    description: exam.description || ''
+  }));
   
   const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '', type: '', description: '' });
   
-  // Goals data state
-  const [goals, setGoals] = useState<Goal[]>([
-    { id: 1, title: 'Fazer redações', target: 2, current: 1, unit: 'redações', completed: false },
-    { id: 2, title: 'Estudar', target: 10, current: 8.9, unit: 'horas', completed: false },
-    { id: 3, title: 'Criar estruturas', target: 2, current: 1, unit: 'estruturas', completed: false },
-    { id: 4, title: 'Simulados', target: 1, current: 0, unit: 'simulados', completed: false },
-    { id: 5, title: 'Revisar argumentos', target: 5, current: 3, unit: 'argumentos', completed: false },
-    { id: 6, title: 'Praticar coesão', target: 3, current: 1, unit: 'exercícios', completed: false }
-  ]);
+  // Map user goals from API to local state format
+  const goals = userGoals.map(goal => ({
+    id: parseInt(goal.id.slice(0, 8), 16), // Convert UUID to number for compatibility
+    title: goal.title,
+    target: goal.target,
+    current: goal.current,
+    unit: goal.unit,
+    completed: goal.completed
+  }));
   
   const [newGoal, setNewGoal] = useState({ title: '', target: '', unit: '' });
   
@@ -225,15 +330,20 @@ export default function Dashboard() {
     examName: ''
   });
   const name = user?.name || "Usuário";
-  const { 
-    averageScore, 
-    targetScore, 
-    essaysCount, 
-    studyHours, 
-    streak, 
-    progressPercentage, 
-    nextExam 
-  } = mockUserData;
+  
+  // Use real user progress data
+  const averageScore = userProgress?.averageScore || 0;
+  const targetScore = userProgress?.targetScore || 900;
+  const essaysCount = userProgress?.essaysCount || 0;
+  const studyHours = userProgress?.studyHours || 0;
+  const streak = userProgress?.streak || 0;
+  const progressPercentage = targetScore > 0 ? Math.min(100, Math.round((averageScore / targetScore) * 100)) : 0;
+  
+  // Get next exam
+  const upcomingExams = exams
+    .filter(e => new Date(e.date) >= new Date())
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const nextExam = upcomingExams.length > 0 ? upcomingExams[0].name : null;
 
   const handleAddScore = () => {
     if (newScore.date && newScore.totalScore) {
@@ -820,13 +930,14 @@ export default function Dashboard() {
                     <Button
                       size="sm"
                       onClick={() => {
-                        mockUserData.targetScore = newTargetScore;
+                        updateProgressMutation.mutate({ targetScore: newTargetScore });
                         setEditingTarget(false);
                       }}
                       className="text-xs bg-bright-blue text-white hover:bg-bright-blue/90"
                       data-testid="button-save-target"
+                      disabled={updateProgressMutation.isPending}
                     >
-                      Salvar
+                      {updateProgressMutation.isPending ? "Salvando..." : "Salvar"}
                     </Button>
                     <Button
                       size="sm"

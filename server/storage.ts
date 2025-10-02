@@ -3278,6 +3278,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const goal: UserGoal = {
       ...insertGoal,
+      current: insertGoal.current ?? 0,
       description: insertGoal.description ?? null,
       priority: insertGoal.priority || "media",
       completed: insertGoal.completed || false,
