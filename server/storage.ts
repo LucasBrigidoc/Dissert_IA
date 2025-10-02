@@ -5807,7 +5807,7 @@ export class DbStorage implements IStorage {
   async getUserExams(userId: string): Promise<UserExam[]> {
     return await db.query.userExams.findMany({
       where: eq(schema.userExams.userId, userId),
-      orderBy: [asc(schema.userExams.examDate)],
+      orderBy: [asc(schema.userExams.examAt)],
     });
   }
 

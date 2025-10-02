@@ -189,6 +189,80 @@ export default function Dashboard() {
     },
   });
 
+  // Mutations for goals
+  const createGoalMutation = useMutation({
+    mutationFn: async (data: { title: string; target: number; unit: string; description?: string; priority?: string }) => {
+      return await apiRequest("/api/goals", {
+        method: "POST",
+        body: JSON.stringify({
+          userId: user?.id,
+          title: data.title,
+          target: data.target,
+          current: 0,
+          unit: data.unit,
+          description: data.description || null,
+          priority: data.priority || "media",
+          completed: false,
+        }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
+      toast({
+        title: "Meta criada",
+        description: "Sua meta foi criada com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao criar meta",
+        description: "Não foi possível criar a meta.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateGoalMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<{ title: string; target: number; current: number; unit: string; completed: boolean; description: string; priority: string }> }) => {
+      return await apiRequest(`/api/goals/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao atualizar meta",
+        description: "Não foi possível atualizar a meta.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteGoalMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/goals/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
+      toast({
+        title: "Meta removida",
+        description: "Sua meta foi removida com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao remover meta",
+        description: "Não foi possível remover a meta.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const [editingTarget, setEditingTarget] = useState(false);
   const [newTargetScore, setNewTargetScore] = useState(userProgress?.targetScore ?? 900);
   const [showAddScore, setShowAddScore] = useState(false);
@@ -221,9 +295,10 @@ export default function Dashboard() {
   
   const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '', type: '', description: '' });
   
-  // Map user goals from API to local state format
+  // Map user goals from API to local state format with UUID mapping
   const goals = userGoals?.map(goal => ({
     id: parseInt(goal.id.slice(0, 8), 16), // Convert UUID to number for compatibility
+    uuid: goal.id, // Keep the original UUID for API calls
     title: goal.title,
     target: goal.target,
     current: goal.current,
@@ -234,20 +309,23 @@ export default function Dashboard() {
   const [newGoal, setNewGoal] = useState({ title: '', target: '', unit: '' });
   
   // Goals helper functions
-  // NOTE: These functions reference undefined setGoals - pre-existing bug
   const toggleGoalCompletion = (goalId: number) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return;
+    
     // Trigger animation
     setAnimatingGoals(prev => new Set(Array.from(prev).concat([goalId])));
     
-    // Update goal state
-    // @ts-ignore - Pre-existing bug: setGoals is undefined
-    setGoals(goals.map(goal => 
-      goal.id === goalId 
-        ? { ...goal, completed: !goal.completed, current: !goal.completed ? goal.target : Math.min(goal.current, goal.target - 0.1) }
-        : goal
-    ));
+    // Update goal state in backend
+    updateGoalMutation.mutate({
+      id: goal.uuid,
+      data: {
+        completed: !goal.completed,
+        current: !goal.completed ? goal.target : Math.max(0, goal.current - 1)
+      }
+    });
     
-    // Clear animation after animation completes (increased duration)
+    // Clear animation after animation completes
     setTimeout(() => {
       setAnimatingGoals(prev => {
         const newArray = Array.from(prev).filter(id => id !== goalId);
@@ -257,33 +335,34 @@ export default function Dashboard() {
   };
   
   const updateGoalProgress = (goalId: number, newCurrent: number) => {
-    // @ts-ignore - Pre-existing bug: setGoals is undefined
-    setGoals(goals.map(goal => 
-      goal.id === goalId 
-        ? { ...goal, current: Math.max(0, newCurrent), completed: newCurrent >= goal.target }
-        : goal
-    ));
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return;
+    
+    updateGoalMutation.mutate({
+      id: goal.uuid,
+      data: {
+        current: Math.max(0, newCurrent),
+        completed: newCurrent >= goal.target
+      }
+    });
   };
   
   const addNewGoal = () => {
     if (newGoal.title && newGoal.target && newGoal.unit) {
-      const goal: Goal = {
-        id: Date.now(),
+      createGoalMutation.mutate({
         title: newGoal.title,
         target: Number(newGoal.target),
-        current: 0,
         unit: newGoal.unit,
-        completed: false
-      };
-      // @ts-ignore - Pre-existing bug: setGoals is undefined
-      setGoals([...goals, goal]);
+      });
       setNewGoal({ title: '', target: '', unit: '' });
     }
   };
   
   const removeGoal = (goalId: number) => {
-    // @ts-ignore - Pre-existing bug: setGoals is undefined
-    setGoals(goals.filter(goal => goal.id !== goalId));
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return;
+    
+    deleteGoalMutation.mutate(goal.uuid);
   };
   
   // Show incomplete tasks first, then completed ones
