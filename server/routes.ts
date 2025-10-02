@@ -1082,6 +1082,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user competencies analysis (for dashboard "Pontos a Melhorar")
+  app.get("/api/user-competencies", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      
+      // Get user's recent essays with competency scores
+      const userEssays = await storage.getEssaysByUser(userId);
+      
+      // Filter essays that have at least one competency score
+      const essaysWithCompetencies = userEssays.filter((essay: any) => 
+        essay.competence1 !== null || 
+        essay.competence2 !== null || 
+        essay.competence3 !== null || 
+        essay.competence4 !== null || 
+        essay.competence5 !== null
+      );
+
+      // If no essays with competencies, return empty data
+      if (essaysWithCompetencies.length === 0) {
+        return res.json({
+          hasData: false,
+          weakestCompetencies: [],
+          averages: {
+            competence1: 0,
+            competence2: 0,
+            competence3: 0,
+            competence4: 0,
+            competence5: 0,
+          }
+        });
+      }
+
+      // Calculate averages for each competency
+      const competencyNames = [
+        { id: 1, name: "Norma Culta", key: 'competence1' as const, defaultFeedback: "Concordância e regência" },
+        { id: 2, name: "Compreensão", key: 'competence2' as const, defaultFeedback: "Interpretação textual" },
+        { id: 3, name: "Argumentação", key: 'competence3' as const, defaultFeedback: "Diversificar argumentos" },
+        { id: 4, name: "Coesão", key: 'competence4' as const, defaultFeedback: "Conectivos e coesão" },
+        { id: 5, name: "Proposta", key: 'competence5' as const, defaultFeedback: "Detalhar agentes" },
+      ];
+
+      const competencyData = competencyNames.map(comp => {
+        const scores = essaysWithCompetencies
+          .map((essay: any) => essay[comp.key])
+          .filter((score: any): score is number => score !== null);
+        
+        const average = scores.length > 0 
+          ? Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length)
+          : 0;
+
+        // Get most recent feedback for this competency
+        const feedbackKey = `${comp.key}Feedback` as const;
+        const recentFeedback = essaysWithCompetencies
+          .map((essay: any) => essay[feedbackKey])
+          .filter((fb: any): fb is string => fb !== null && fb !== '')
+          .slice(-1)[0] || comp.defaultFeedback;
+
+        return {
+          id: comp.id,
+          name: comp.name,
+          average,
+          feedback: recentFeedback,
+          count: scores.length,
+        };
+      });
+
+      // Sort by average score (lowest first) to identify weakest competencies
+      const sortedByWeakness = [...competencyData]
+        .filter(c => c.count > 0) // Only include competencies with data
+        .sort((a, b) => a.average - b.average);
+
+      // Get the 3 weakest competencies (or fewer if not enough data)
+      const weakestCompetencies = sortedByWeakness.slice(0, 3).map(comp => ({
+        id: comp.id,
+        name: comp.name,
+        score: comp.average,
+        feedback: comp.feedback,
+      }));
+
+      // Calculate overall average
+      const totalScores = competencyData.filter(c => c.count > 0);
+      const overallAverage = totalScores.length > 0
+        ? Math.round(totalScores.reduce((sum, c) => sum + c.average, 0) / totalScores.length)
+        : 0;
+
+      res.json({
+        hasData: true,
+        weakestCompetencies,
+        averages: {
+          competence1: competencyData[0].average,
+          competence2: competencyData[1].average,
+          competence3: competencyData[2].average,
+          competence4: competencyData[3].average,
+          competence5: competencyData[4].average,
+        },
+        overallAverage,
+        essaysAnalyzed: essaysWithCompetencies.length,
+      });
+    } catch (error) {
+      console.error("Get user competencies error:", error);
+      res.status(500).json({ message: "Erro ao buscar análise de competências" });
+    }
+  });
+
   // ===================== SUBSCRIPTION MANAGEMENT ENDPOINTS =====================
 
   // Get current user subscription with plan details
