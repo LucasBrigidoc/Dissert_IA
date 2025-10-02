@@ -197,13 +197,6 @@ export default function Dashboard() {
   const [showInitialTargetSetup, setShowInitialTargetSetup] = useState(false);
   const [initialTargetScore, setInitialTargetScore] = useState(900);
 
-  // Check if user needs to set initial target (when targetScore is null)
-  useEffect(() => {
-    if (userProgress && userProgress.targetScore === null && !progressLoading) {
-      setShowInitialTargetSetup(true);
-    }
-  }, [userProgress, progressLoading]);
-
   // Update newTargetScore when userProgress changes
   useEffect(() => {
     if (userProgress?.targetScore !== undefined) {
