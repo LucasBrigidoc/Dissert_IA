@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
+import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertUserScoreSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -1194,6 +1194,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get user competencies error:", error);
       res.status(500).json({ message: "Erro ao buscar análise de competências" });
+    }
+  });
+
+  // ===================== USER SCORES ENDPOINTS =====================
+
+  // Get all user scores (manual + from simulations)
+  app.get("/api/user-scores", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const scores = await storage.getUserScores(userId);
+      res.json(scores);
+    } catch (error) {
+      console.error("Get user scores error:", error);
+      res.status(500).json({ message: "Erro ao buscar notas" });
+    }
+  });
+
+  // Add a manual score
+  app.post("/api/user-scores", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertUserScoreSchema.parse({
+        ...req.body,
+        userId: req.user!.id,
+      });
+      
+      const score = await storage.createUserScore(validatedData);
+      res.json(score);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Dados inválidos", 
+          errors: error.errors 
+        });
+      }
+      console.error("Create user score error:", error);
+      res.status(500).json({ message: "Erro ao adicionar nota" });
     }
   });
 
