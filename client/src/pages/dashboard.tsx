@@ -79,7 +79,7 @@ export default function Dashboard() {
   });
 
   // Fetch user goals
-  const { data: userGoals = [], isLoading: goalsLoading } = useQuery<Array<{
+  const { data: userGoals, isLoading: goalsLoading } = useQuery<Array<{
     id: string;
     userId: string;
     title: string;
@@ -97,7 +97,7 @@ export default function Dashboard() {
   });
 
   // Fetch user exams
-  const { data: userExams = [], isLoading: examsLoading } = useQuery<Array<{
+  const { data: userExams, isLoading: examsLoading } = useQuery<Array<{
     id: string;
     userId: string;
     name: string;
@@ -196,7 +196,7 @@ export default function Dashboard() {
   const [animatingGoals, setAnimatingGoals] = useState<Set<number>>(new Set());
   
   // Map user exams from API to local state format
-  const exams = userExams.map(exam => ({
+  const exams = userExams?.map(exam => ({
     id: parseInt(exam.id.slice(0, 8), 16), // Convert UUID to number for compatibility
     name: exam.name,
     date: new Date(exam.examAt).toISOString().split('T')[0],
@@ -204,19 +204,19 @@ export default function Dashboard() {
     location: exam.location || '',
     type: exam.type,
     description: exam.description || ''
-  }));
+  })) || [];
   
   const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '', type: '', description: '' });
   
   // Map user goals from API to local state format
-  const goals = userGoals.map(goal => ({
+  const goals = userGoals?.map(goal => ({
     id: parseInt(goal.id.slice(0, 8), 16), // Convert UUID to number for compatibility
     title: goal.title,
     target: goal.target,
     current: goal.current,
     unit: goal.unit,
     completed: goal.completed
-  }));
+  })) || [];
   
   const [newGoal, setNewGoal] = useState({ title: '', target: '', unit: '' });
   
@@ -664,26 +664,49 @@ export default function Dashboard() {
             {/* Próximas Provas Resumo */}
             <div className="space-y-1 md:space-y-2">
               <div className="text-xs font-medium text-dark-blue mb-1 md:mb-2">Próximas Provas:</div>
-              {displayedExams.map((exam, index) => (
-                <div key={exam.id} className={`flex items-center justify-between p-1.5 md:p-2 rounded border ${
-                  index % 3 === 0 
-                    ? 'bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 border-soft-gray/20'
-                    : index % 3 === 1
-                      ? 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
-                      : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
-                }`}>
-                  <span className="text-xs text-dark-blue font-medium">{exam.name}</span>
-                  <span className={`text-xs ${
-                    index % 3 === 1 ? 'text-bright-blue' : 'text-soft-gray'
-                  }`}>
-                    {formatExamDate(exam.date)}
-                  </span>
+              {examsLoading ? (
+                <div className="flex-1 flex items-center justify-center py-8">
+                  <div className="animate-pulse text-center">
+                    <div className="w-12 h-12 bg-bright-blue/20 rounded-full mx-auto mb-2"></div>
+                    <p className="text-xs text-soft-gray">Carregando...</p>
+                  </div>
                 </div>
-              ))}
-              {exams.length > 3 && (
-                <div className="text-center py-1">
-                  <span className="text-xs text-soft-gray">+{exams.length - 3} provas adicionais</span>
+              ) : exams.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center py-8">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-full flex items-center justify-center mx-auto">
+                      <Calendar className="text-bright-blue" size={32} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma prova cadastrada</p>
+                      <p className="text-xs text-soft-gray">Adicione suas próximas provas para organizar seus estudos</p>
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                <>
+                  {displayedExams.map((exam, index) => (
+                    <div key={exam.id} className={`flex items-center justify-between p-1.5 md:p-2 rounded border ${
+                      index % 3 === 0 
+                        ? 'bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 border-soft-gray/20'
+                        : index % 3 === 1
+                          ? 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                          : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
+                    }`}>
+                      <span className="text-xs text-dark-blue font-medium">{exam.name}</span>
+                      <span className={`text-xs ${
+                        index % 3 === 1 ? 'text-bright-blue' : 'text-soft-gray'
+                      }`}>
+                        {formatExamDate(exam.date)}
+                      </span>
+                    </div>
+                  ))}
+                  {exams.length > 3 && (
+                    <div className="text-center py-1">
+                      <span className="text-xs text-soft-gray">+{exams.length - 3} provas adicionais</span>
+                    </div>
+                  )}
+                </>
               )}
             </div>
             
@@ -708,7 +731,26 @@ export default function Dashboard() {
               <h4 className="text-sm md:text-base font-semibold text-dark-blue">Metas da Semana</h4>
             </div>
             <div className="space-y-3">
-              {allTasksCompleted ? (
+              {goalsLoading ? (
+                <div className="flex-1 flex items-center justify-center py-8">
+                  <div className="animate-pulse text-center">
+                    <div className="w-12 h-12 bg-bright-blue/20 rounded-full mx-auto mb-2"></div>
+                    <p className="text-xs text-soft-gray">Carregando...</p>
+                  </div>
+                </div>
+              ) : goals.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center py-8">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-full flex items-center justify-center mx-auto">
+                      <Target className="text-bright-blue" size={32} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma meta definida</p>
+                      <p className="text-xs text-soft-gray">Defina suas metas semanais para acompanhar seu progresso</p>
+                    </div>
+                  </div>
+                </div>
+              ) : allTasksCompleted ? (
                 <div className="text-center py-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CheckCircle2 className="text-white" size={32} />
@@ -790,15 +832,25 @@ export default function Dashboard() {
               
               {/* Competências em linhas horizontais */}
               <div className="flex-1 flex flex-col">
-                {!userCompetencies?.hasData ? (
-                  <>
-                    <div className="flex-1 flex items-center justify-center">
-                      <div className="text-center">
-                        <p className="text-sm text-soft-gray">Nenhuma redação corrigida ainda.</p>
-                        <p className="text-xs text-soft-gray mt-1">Faça simulações para ver sua análise de competências aqui.</p>
+                {!userCompetencies ? (
+                  <div className="flex-1 flex items-center justify-center py-8">
+                    <div className="animate-pulse text-center">
+                      <div className="w-12 h-12 bg-bright-blue/20 rounded-full mx-auto mb-2"></div>
+                      <p className="text-xs text-soft-gray">Carregando...</p>
+                    </div>
+                  </div>
+                ) : !userCompetencies.hasData ? (
+                  <div className="flex-1 flex items-center justify-center py-8">
+                    <div className="text-center space-y-3">
+                      <div className="w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-full flex items-center justify-center mx-auto">
+                        <BookOpen className="text-bright-blue" size={32} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-dark-blue mb-1">Nenhuma redação corrigida ainda</p>
+                        <p className="text-xs text-soft-gray">Faça simulações para ver sua análise de competências aqui</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <div className="space-y-1">
                     {userCompetencies.weakestCompetencies.map((comp, index) => {
