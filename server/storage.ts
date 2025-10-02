@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type UserScore, type InsertUserScore, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type SavedEssay, type InsertSavedEssay, type SavedStructure, type InsertSavedStructure, type SavedNewsletter, type InsertSavedNewsletter, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type UserScore, type InsertUserScore, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -60,6 +60,24 @@ export interface IStorage {
   removeSavedProposal(userId: string, proposalId: string): Promise<boolean>;
   getUserSavedProposals(userId: string): Promise<Proposal[]>;
   isProposalSaved(userId: string, proposalId: string): Promise<boolean>;
+  
+  // Saved essays operations
+  saveEssay(userId: string, essayId: string): Promise<SavedEssay>;
+  removeSavedEssay(userId: string, essayId: string): Promise<boolean>;
+  getUserSavedEssays(userId: string): Promise<Essay[]>;
+  isEssaySaved(userId: string, essayId: string): Promise<boolean>;
+  
+  // Saved structures operations
+  saveStructure(userId: string, structureId: string): Promise<SavedStructure>;
+  removeSavedStructure(userId: string, structureId: string): Promise<boolean>;
+  getUserSavedStructures(userId: string): Promise<EssayStructure[]>;
+  isStructureSaved(userId: string, structureId: string): Promise<boolean>;
+  
+  // Saved newsletters operations
+  saveNewsletter(userId: string, newsletterId: string): Promise<SavedNewsletter>;
+  removeSavedNewsletter(userId: string, newsletterId: string): Promise<boolean>;
+  getUserSavedNewsletters(userId: string): Promise<Newsletter[]>;
+  isNewsletterSaved(userId: string, newsletterId: string): Promise<boolean>;
   
   // Simulation operations
   createSimulation(simulation: InsertSimulation): Promise<Simulation>;
@@ -415,6 +433,9 @@ export class MemStorage implements IStorage {
   private savedRepertoires: Map<string, SavedRepertoire>;
   private proposals: Map<string, Proposal>;
   private savedProposals: Map<string, SavedProposal>;
+  private savedEssays: Map<string, SavedEssay>;
+  private savedStructures: Map<string, SavedStructure>;
+  private savedNewsletters: Map<string, SavedNewsletter>;
   private simulations: Map<string, Simulation>;
   private conversations: Map<string, Conversation>;
   private userScores: Map<string, UserScore>;
@@ -470,6 +491,9 @@ export class MemStorage implements IStorage {
     this.savedRepertoires = new Map();
     this.proposals = new Map();
     this.savedProposals = new Map();
+    this.savedEssays = new Map();
+    this.savedStructures = new Map();
+    this.savedNewsletters = new Map();
     this.simulations = new Map();
     this.conversations = new Map();
     this.userScores = new Map();
@@ -1080,6 +1104,162 @@ export class MemStorage implements IStorage {
   async isProposalSaved(userId: string, proposalId: string): Promise<boolean> {
     return Array.from(this.savedProposals.values()).some(
       saved => saved.userId === userId && saved.proposalId === proposalId
+    );
+  }
+
+  // Saved essays operations
+  async saveEssay(userId: string, essayId: string): Promise<SavedEssay> {
+    const existing = Array.from(this.savedEssays.values()).find(
+      saved => saved.userId === userId && saved.essayId === essayId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const id = randomUUID();
+    const savedEssay: SavedEssay = {
+      id,
+      userId,
+      essayId,
+      createdAt: new Date()
+    };
+    
+    this.savedEssays.set(id, savedEssay);
+    return savedEssay;
+  }
+
+  async removeSavedEssay(userId: string, essayId: string): Promise<boolean> {
+    const saved = Array.from(this.savedEssays.values()).find(
+      saved => saved.userId === userId && saved.essayId === essayId
+    );
+    
+    if (saved) {
+      this.savedEssays.delete(saved.id);
+      return true;
+    }
+    return false;
+  }
+
+  async getUserSavedEssays(userId: string): Promise<Essay[]> {
+    const savedIds = Array.from(this.savedEssays.values())
+      .filter(saved => saved.userId === userId)
+      .map(saved => saved.essayId);
+    
+    const essays = savedIds
+      .map(id => this.essays.get(id))
+      .filter((essay): essay is Essay => essay !== undefined);
+    
+    return essays.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async isEssaySaved(userId: string, essayId: string): Promise<boolean> {
+    return Array.from(this.savedEssays.values()).some(
+      saved => saved.userId === userId && saved.essayId === essayId
+    );
+  }
+
+  // Saved structures operations
+  async saveStructure(userId: string, structureId: string): Promise<SavedStructure> {
+    const existing = Array.from(this.savedStructures.values()).find(
+      saved => saved.userId === userId && saved.structureId === structureId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const id = randomUUID();
+    const savedStructure: SavedStructure = {
+      id,
+      userId,
+      structureId,
+      createdAt: new Date()
+    };
+    
+    this.savedStructures.set(id, savedStructure);
+    return savedStructure;
+  }
+
+  async removeSavedStructure(userId: string, structureId: string): Promise<boolean> {
+    const saved = Array.from(this.savedStructures.values()).find(
+      saved => saved.userId === userId && saved.structureId === structureId
+    );
+    
+    if (saved) {
+      this.savedStructures.delete(saved.id);
+      return true;
+    }
+    return false;
+  }
+
+  async getUserSavedStructures(userId: string): Promise<EssayStructure[]> {
+    const savedIds = Array.from(this.savedStructures.values())
+      .filter(saved => saved.userId === userId)
+      .map(saved => saved.structureId);
+    
+    const structures = savedIds
+      .map(id => this.essayStructures.get(id))
+      .filter((structure): structure is EssayStructure => structure !== undefined);
+    
+    return structures.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async isStructureSaved(userId: string, structureId: string): Promise<boolean> {
+    return Array.from(this.savedStructures.values()).some(
+      saved => saved.userId === userId && saved.structureId === structureId
+    );
+  }
+
+  // Saved newsletters operations
+  async saveNewsletter(userId: string, newsletterId: string): Promise<SavedNewsletter> {
+    const existing = Array.from(this.savedNewsletters.values()).find(
+      saved => saved.userId === userId && saved.newsletterId === newsletterId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const id = randomUUID();
+    const savedNewsletter: SavedNewsletter = {
+      id,
+      userId,
+      newsletterId,
+      createdAt: new Date()
+    };
+    
+    this.savedNewsletters.set(id, savedNewsletter);
+    return savedNewsletter;
+  }
+
+  async removeSavedNewsletter(userId: string, newsletterId: string): Promise<boolean> {
+    const saved = Array.from(this.savedNewsletters.values()).find(
+      saved => saved.userId === userId && saved.newsletterId === newsletterId
+    );
+    
+    if (saved) {
+      this.savedNewsletters.delete(saved.id);
+      return true;
+    }
+    return false;
+  }
+
+  async getUserSavedNewsletters(userId: string): Promise<Newsletter[]> {
+    const savedIds = Array.from(this.savedNewsletters.values())
+      .filter(saved => saved.userId === userId)
+      .map(saved => saved.newsletterId);
+    
+    const newsletters = savedIds
+      .map(id => this.newsletters.get(id))
+      .filter((newsletter): newsletter is Newsletter => newsletter !== undefined);
+    
+    return newsletters.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async isNewsletterSaved(userId: string, newsletterId: string): Promise<boolean> {
+    return Array.from(this.savedNewsletters.values()).some(
+      saved => saved.userId === userId && saved.newsletterId === newsletterId
     );
   }
 
