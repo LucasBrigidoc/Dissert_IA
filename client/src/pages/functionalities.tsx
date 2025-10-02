@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, Menu, PenTool } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { mockFeatures } from "@/lib/mock-data";
+import { useAuth } from "@/contexts/AuthContext";
+import { getInitials } from "@/lib/utils";
 
 export default function FunctionalitiesPage() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -107,14 +110,14 @@ export default function FunctionalitiesPage() {
                 <span>Sair</span>
               </Button>
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user">
-                LS
+                {getInitials(user?.name)}
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-3">
               <div className="w-8 h-8 bg-bright-blue rounded-full flex items-center justify-center text-white text-sm font-bold" data-testid="avatar-user-mobile">
-                LS
+                {getInitials(user?.name)}
               </div>
               <Button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
