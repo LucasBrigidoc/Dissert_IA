@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type UserScore, type InsertUserScore, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -76,6 +76,10 @@ export interface IStorage {
   updateConversationSummary(conversationId: string, summary: string): Promise<Conversation>;
   updateConversationData(conversationId: string, brainstormData: any, currentSection: string): Promise<Conversation>;
   getRecentConversations(userId?: string, sessionId?: string, limit?: number): Promise<Conversation[]>;
+  
+  // User scores operations
+  getUserScores(userId: string): Promise<UserScore[]>;
+  createUserScore(score: InsertUserScore): Promise<UserScore>;
   
   // Admin operations
   createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
@@ -413,6 +417,7 @@ export class MemStorage implements IStorage {
   private savedProposals: Map<string, SavedProposal>;
   private simulations: Map<string, Simulation>;
   private conversations: Map<string, Conversation>;
+  private userScores: Map<string, UserScore>;
   private adminUsers: Map<string, AdminUser>;
   private userCosts: Map<string, UserCost>;
   private businessMetrics: Map<string, BusinessMetric>;
@@ -467,6 +472,7 @@ export class MemStorage implements IStorage {
     this.savedProposals = new Map();
     this.simulations = new Map();
     this.conversations = new Map();
+    this.userScores = new Map();
     this.adminUsers = new Map();
     this.userCosts = new Map();
     this.businessMetrics = new Map();
@@ -1302,6 +1308,26 @@ export class MemStorage implements IStorage {
     });
 
     return conversations.slice(0, limit);
+  }
+
+  // User scores operations
+  async getUserScores(userId: string): Promise<UserScore[]> {
+    const scores = Array.from(this.userScores.values())
+      .filter(score => score.userId === userId)
+      .sort((a, b) => new Date(b.scoreDate).getTime() - new Date(a.scoreDate).getTime());
+    return scores;
+  }
+
+  async createUserScore(score: InsertUserScore): Promise<UserScore> {
+    const id = randomUUID();
+    const userScore: UserScore = {
+      ...score,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userScores.set(id, userScore);
+    return userScore;
   }
 
   // Admin operations
