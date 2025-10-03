@@ -2440,13 +2440,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const repertoireResult = await optimizedAnalysisService.generateRepertoiresBatchOptimized(query, filters, 6);
         const generatedRepertoires = repertoireResult.repertoires;
         
-        // Record AI operation usage for generated repertoires
-        await weeklyCostLimitingService.recordAIOperation(
-          identifier,
-          'repertoire_generation',
-          100,
-          planType
-        );
+        // Record AI operation usage with real token counts from API
+        if (repertoireResult.source === 'optimized_ai' && repertoireResult.tokensInput && repertoireResult.tokensOutput) {
+          await weeklyCostLimitingService.recordAIOperationWithTokens(
+            identifier,
+            'repertoire_generation',
+            repertoireResult.tokensInput,
+            repertoireResult.tokensOutput,
+            planType
+          );
+        } else {
+          // Fallback for cache hits or fallback mode (no cost)
+          console.log(`📦 Repertoire source: ${repertoireResult.source} - no cost recorded`);
+        }
         
         // Save all generated repertoires to database
         for (const genRep of generatedRepertoires) {
