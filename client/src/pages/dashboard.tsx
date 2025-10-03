@@ -1509,22 +1509,75 @@ export default function Dashboard() {
               </div>
               
               {/* Summary em linha */}
-              {userCompetencies?.hasData && (
-                <div className="mt-3 flex items-center justify-between p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <Lightbulb className="text-white" size={12} />
+              {userCompetencies?.hasData && (() => {
+                const competencyNames = [
+                  "Norma Culta",
+                  "Compreensão",
+                  "Argumentação",
+                  "Coesão",
+                  "Proposta"
+                ];
+                
+                const allCompetencies = [
+                  { id: 1, name: competencyNames[0], score: Math.round(userCompetencies.averages.competence1) },
+                  { id: 2, name: competencyNames[1], score: Math.round(userCompetencies.averages.competence2) },
+                  { id: 3, name: competencyNames[2], score: Math.round(userCompetencies.averages.competence3) },
+                  { id: 4, name: competencyNames[3], score: Math.round(userCompetencies.averages.competence4) },
+                  { id: 5, name: competencyNames[4], score: Math.round(userCompetencies.averages.competence5) },
+                ];
+
+                // Check if all competencies are perfect (200)
+                const allPerfect = allCompetencies.every(comp => comp.score === 200);
+                
+                // Get all red competencies (score < 80)
+                const redCompetencies = allCompetencies.filter(comp => comp.score < 80);
+                
+                // Get the lowest scoring competency
+                const lowestCompetency = allCompetencies.reduce((lowest, comp) => 
+                  comp.score < lowest.score ? comp : lowest
+                );
+
+                if (allPerfect) {
+                  return (
+                    <div className="mt-3 p-3 bg-gradient-to-r from-green-50 to-green-100 rounded border border-green-200">
+                      <div className="flex items-center">
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          <Check className="text-white" size={12} />
+                        </div>
+                        <span className="text-xs font-medium text-green-700">
+                          Excelente! Todas as competências em 200. Mantenha esse padrão!
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-xs font-medium text-dark-blue">
-                      Foco: {userCompetencies.weakestCompetencies[0]?.name} (Comp. {userCompetencies.weakestCompetencies[0]?.id})
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-soft-gray">Média:</span>
-                    <span className="text-sm font-bold text-bright-blue">{userCompetencies.overallAverage}</span>
-                  </div>
-                </div>
-              )}
+                  );
+                } else if (redCompetencies.length > 0) {
+                  return (
+                    <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-red-100 rounded border border-red-200">
+                      <div className="flex items-center">
+                        <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          <AlertTriangle className="text-white" size={12} />
+                        </div>
+                        <span className="text-xs font-medium text-red-700">
+                          Foco: {redCompetencies.map(comp => `${comp.name} (Comp. ${comp.id})`).join(', ')}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className="mt-3 p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
+                      <div className="flex items-center">
+                        <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          <Lightbulb className="text-white" size={12} />
+                        </div>
+                        <span className="text-xs font-medium text-dark-blue">
+                          Foco: {lowestCompetency.name} (Comp. {lowestCompetency.id})
+                        </span>
+                      </div>
+                    </div>
+                  );
+                }
+              })()}
             </LiquidGlassCard>
           </div>
         </div>
