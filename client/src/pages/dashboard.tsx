@@ -1526,7 +1526,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {editingTarget ? (
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
@@ -1567,12 +1567,28 @@ export default function Dashboard() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-soft-gray">Meta: {targetScore}</span>
-                      <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal">
-                        {targetScore && targetScore > averageScore ? `${targetScore - averageScore} pontos para a meta` : 'Meta atingida! 🎉'}
-                      </span>
-                    </div>
+                    <>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-soft-gray">Meta: {targetScore}</span>
+                        <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal">
+                          {targetScore && targetScore > averageScore ? `${targetScore - averageScore} pts (média)` : 'Meta atingida! 🎉'}
+                        </span>
+                      </div>
+                      {userScores.length > 0 && (() => {
+                        const mostRecentScore = [...userScores].sort((a, b) => 
+                          new Date(b.scoreDate).getTime() - new Date(a.scoreDate).getTime()
+                        )[0];
+                        const recentScore = mostRecentScore.score;
+                        return (
+                          <div className="flex justify-between text-xs">
+                            <span className="text-soft-gray">Última nota: {recentScore}</span>
+                            <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal-recent">
+                              {targetScore && targetScore > recentScore ? `${targetScore - recentScore} pts (última)` : 'Meta atingida! 🎉'}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </>
                   )}
                   <Progress value={progressPercentage} className="h-3 bg-gray-200">
                     <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
