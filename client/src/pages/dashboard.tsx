@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles, BookOpen, Trash2, AlertCircle } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles, BookOpen, Trash2, AlertCircle, Check } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -1419,6 +1419,7 @@ export default function Dashboard() {
 
                       return allCompetencies.map((comp) => {
                         let colors;
+                        let IconComponent = null;
                         
                         if (comp.score === 200) {
                           colors = { 
@@ -1427,19 +1428,29 @@ export default function Dashboard() {
                             badge: 'bg-green-500', 
                             text: 'text-green-600', 
                             badgeBg: 'bg-green-100', 
-                            icon: 'text-green-500',
-                            showIcon: false
+                            icon: 'text-green-500'
                           };
-                        } else if (comp.score < 120) {
+                          IconComponent = Check;
+                        } else if (comp.score < 60) {
                           colors = { 
                             bg: 'from-red-50 to-red-100', 
                             border: 'border-red-200', 
                             badge: 'bg-red-500', 
                             text: 'text-red-600', 
                             badgeBg: 'bg-red-100', 
-                            icon: 'text-red-500',
-                            showIcon: true
+                            icon: 'text-red-500'
                           };
+                          IconComponent = X;
+                        } else if (comp.score < 140) {
+                          colors = { 
+                            bg: 'from-yellow-50 to-yellow-100', 
+                            border: 'border-yellow-200', 
+                            badge: 'bg-yellow-500', 
+                            text: 'text-yellow-600', 
+                            badgeBg: 'bg-yellow-100', 
+                            icon: 'text-yellow-500'
+                          };
+                          IconComponent = AlertTriangle;
                         } else {
                           colors = { 
                             bg: 'from-gray-50 to-gray-100', 
@@ -1447,9 +1458,9 @@ export default function Dashboard() {
                             badge: 'bg-gray-500', 
                             text: 'text-gray-600', 
                             badgeBg: 'bg-gray-100', 
-                            icon: 'text-gray-500',
-                            showIcon: true
+                            icon: 'text-gray-500'
                           };
+                          IconComponent = null;
                         }
                         
                         return (
@@ -1463,7 +1474,7 @@ export default function Dashboard() {
                             </div>
                             <div className="flex items-center space-x-1 md:space-x-2">
                               <span className="text-xs text-soft-gray hidden sm:inline">{comp.feedback}</span>
-                              {colors.showIcon && <AlertTriangle className={colors.icon} size={8} />}
+                              {IconComponent && <IconComponent className={colors.icon} size={8} />}
                             </div>
                           </div>
                         );
