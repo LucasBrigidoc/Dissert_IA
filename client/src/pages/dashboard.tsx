@@ -1486,47 +1486,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <>
-                <div className="flex items-center justify-center mb-3 md:mb-4">
-                  <div className="relative w-24 h-24 md:w-32 md:h-32">
-                    <svg className="w-24 h-24 md:w-32 md:h-32 -rotate-90" viewBox="0 0 120 120">
-                      <circle
-                        cx="60"
-                        cy="60"
-                        r="50"
-                        fill="none"
-                        stroke="#e5e7eb"
-                        strokeWidth="8"
-                      />
-                      <circle
-                        cx="60"
-                        cy="60"
-                        r="50"
-                        fill="none"
-                        stroke="url(#progressGradient)"
-                        strokeWidth="8"
-                        strokeDasharray={314}
-                        strokeDashoffset={314 - (progressPercentage / 100) * 314}
-                        strokeLinecap="round"
-                        className="transition-all duration-500"
-                      />
-                      <defs>
-                        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#5087ff" />
-                          <stop offset="100%" stopColor="#09072e" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="text-xl md:text-2xl font-bold text-dark-blue" data-testid="text-average-score">
-                          {averageScore}
-                        </div>
-                        <div className="text-xs text-soft-gray">Nota Média</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {editingTarget ? (
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
@@ -1568,31 +1528,57 @@ export default function Dashboard() {
                     </div>
                   ) : (
                     <>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-soft-gray">Meta: {targetScore}</span>
-                        <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal">
-                          {targetScore && targetScore > averageScore ? `${targetScore - averageScore} pts (média)` : 'Meta atingida! 🎉'}
-                        </span>
+                      {/* Nota Média Section */}
+                      <div className="bg-white/50 rounded-lg p-3 border border-bright-blue/20">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-soft-gray">Nota Média</span>
+                          <span className="text-lg font-bold text-dark-blue" data-testid="text-average-score">{averageScore}</span>
+                        </div>
+                        <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className="absolute h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500"
+                            style={{width: `${progressPercentage}%`}}
+                          />
+                        </div>
+                        <div className="flex justify-between mt-1">
+                          <span className="text-xs text-soft-gray">Meta: {targetScore}</span>
+                          <span className="text-xs text-bright-blue font-semibold" data-testid="text-points-to-goal">
+                            {targetScore && targetScore > averageScore ? `Faltam ${targetScore - averageScore} pts` : '✓ Atingida'}
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Última Nota Section */}
                       {userScores.length > 0 && (() => {
                         const mostRecentScore = [...userScores].sort((a, b) => 
                           new Date(b.scoreDate).getTime() - new Date(a.scoreDate).getTime()
                         )[0];
                         const recentScore = mostRecentScore.score;
+                        const recentPercentage = targetScore ? Math.min((recentScore / targetScore) * 100, 100) : 0;
+                        
                         return (
-                          <div className="flex justify-between text-xs">
-                            <span className="text-soft-gray">Última nota: {recentScore}</span>
-                            <span className="text-bright-blue font-semibold" data-testid="text-points-to-goal-recent">
-                              {targetScore && targetScore > recentScore ? `${targetScore - recentScore} pts (última)` : 'Meta atingida! 🎉'}
-                            </span>
+                          <div className="bg-white/50 rounded-lg p-3 border border-dark-blue/20">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-medium text-soft-gray">Última Nota</span>
+                              <span className="text-lg font-bold text-dark-blue" data-testid="text-recent-score">{recentScore}</span>
+                            </div>
+                            <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                              <div 
+                                className="absolute h-full bg-gradient-to-r from-dark-blue to-bright-blue rounded-full transition-all duration-500"
+                                style={{width: `${recentPercentage}%`}}
+                              />
+                            </div>
+                            <div className="flex justify-between mt-1">
+                              <span className="text-xs text-soft-gray">Meta: {targetScore}</span>
+                              <span className="text-xs text-dark-blue font-semibold" data-testid="text-points-to-goal-recent">
+                                {targetScore && targetScore > recentScore ? `Faltam ${targetScore - recentScore} pts` : '✓ Atingida'}
+                              </span>
+                            </div>
                           </div>
                         );
                       })()}
                     </>
                   )}
-                  <Progress value={progressPercentage} className="h-3 bg-gray-200">
-                    <div className="h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500" style={{width: `${progressPercentage}%`}} />
-                  </Progress>
                 </div>
               </>
             )}
