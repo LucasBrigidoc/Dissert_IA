@@ -1806,7 +1806,7 @@ export default function Dashboard() {
                 <div className="border-b pb-4">
                   <h3 className="text-sm font-semibold text-dark-blue mb-3">Notas Cadastradas</h3>
                   <div className="space-y-2 max-h-60 overflow-y-auto">
-                    {userScores.map((score) => (
+                    {[...userScores].sort((a, b) => new Date(b.scoreDate).getTime() - new Date(a.scoreDate).getTime()).map((score) => (
                       <div 
                         key={score.id} 
                         className="flex items-center justify-between p-3 rounded-lg border bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 border-soft-gray/20"
