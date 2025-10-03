@@ -83,7 +83,7 @@ export const mockPricingPlans = [
       "Dashboard personalizado",
       "Biblioteca pessoal limitada",
       "Uso limitado de IA",
-      "Simulador básico de redação"
+      "Limite demora 15 dias para zerar"
     ],
     buttonText: "Começar Grátis",
     popular: false
