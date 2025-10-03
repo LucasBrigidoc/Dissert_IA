@@ -906,7 +906,7 @@ export default function Dashboard() {
   };
 
   const chartData = scores.map(score => ({
-    date: new Date(score.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+    date: score.date.split('-').reverse().join('/').slice(0, 5), // DD/MM format
     nota: score.totalScore,
     nome: score.examName
   })).sort((a, b) => new Date(scores.find(s => s.totalScore === a.nota)?.date || 0).getTime() - new Date(scores.find(s => s.totalScore === b.nota)?.date || 0).getTime());
@@ -1829,7 +1829,7 @@ export default function Dashboard() {
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium text-dark-blue">{score.examName}</span>
                             <span className="text-xs text-soft-gray">
-                              {new Date(score.scoreDate).toLocaleDateString('pt-BR')}
+                              {new Date(score.scoreDate).toISOString().split('T')[0].split('-').reverse().join('/')}
                             </span>
                           </div>
                           <div className="text-lg font-bold text-bright-blue mt-1">{score.score} pts</div>
@@ -2458,7 +2458,7 @@ export default function Dashboard() {
                               <div className="text-sm text-soft-gray mb-2">{exam.description}</div>
                             )}
                             <div className="flex items-center space-x-4 text-sm text-soft-gray">
-                              <span>📅 {new Date(exam.date).toLocaleDateString('pt-BR')}</span>
+                              <span>📅 {exam.date.split('-').reverse().join('/')}</span>
                               {exam.time && <span>🕐 {exam.time}</span>}
                               {exam.location && <span>📍 {exam.location}</span>}
                             </div>
