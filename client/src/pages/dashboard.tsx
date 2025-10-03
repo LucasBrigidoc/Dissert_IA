@@ -512,6 +512,8 @@ export default function Dashboard() {
     return monday;
   };
 
+  const weekStart = getWeekStart();
+  
   const { data: userScheduleData, isLoading: scheduleLoading } = useQuery<Array<{
     id: string;
     userId: string;
@@ -524,7 +526,12 @@ export default function Dashboard() {
     createdAt: Date;
     updatedAt: Date;
   }>>({
-    queryKey: ["/api/schedule"],
+    queryKey: ["/api/schedule", { weekStart: weekStart.toISOString() }],
+    queryFn: async () => {
+      const res = await fetch(`/api/schedule?weekStart=${weekStart.toISOString()}`);
+      if (!res.ok) throw new Error('Failed to fetch schedule');
+      return res.json();
+    },
     enabled: !!user,
   });
 
