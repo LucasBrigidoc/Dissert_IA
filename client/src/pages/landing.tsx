@@ -116,8 +116,8 @@ export default function Landing() {
             </div>
           </div>
           <div className="text-center mt-6 sm:mt-12">
-            <Link href="/signup" className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-block" data-testid="button-start-plan">
-              Iniciar Meu Plano de Estudos
+            <Link href="/pricing" className="bg-bright-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale inline-block" data-testid="button-start-plan">
+              Iniciar meus Estudos
             </Link>
           </div>
         </div>
