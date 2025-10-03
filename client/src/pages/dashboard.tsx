@@ -1392,30 +1392,83 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    {userCompetencies.weakestCompetencies.map((comp, index) => {
-                    const colorSchemes = [
-                      { bg: 'from-red-50 to-red-100', border: 'border-red-200', badge: 'bg-red-500', text: 'text-red-600', badgeBg: 'bg-red-100', icon: 'text-red-500' },
-                      { bg: 'from-yellow-50 to-yellow-100', border: 'border-yellow-200', badge: 'bg-yellow-500', text: 'text-yellow-600', badgeBg: 'bg-yellow-100', icon: 'text-yellow-500' },
-                      { bg: 'from-orange-50 to-orange-100', border: 'border-orange-200', badge: 'bg-orange-500', text: 'text-orange-600', badgeBg: 'bg-orange-100', icon: 'text-orange-500' },
-                    ];
-                    const colors = colorSchemes[index] || colorSchemes[0];
-                    
-                    return (
-                      <div key={comp.id} className={`flex items-center justify-between p-1.5 md:p-2 bg-gradient-to-r ${colors.bg} rounded border ${colors.border}`}>
-                        <div className="flex items-center space-x-1 md:space-x-2">
-                          <div className={`w-3 h-3 md:w-4 md:h-4 ${colors.badge} rounded-full flex items-center justify-center`}>
-                            <span className="text-white text-xs font-bold">{comp.id}</span>
+                    {(() => {
+                      const competencyNames = [
+                        "Norma Culta",
+                        "Compreensão",
+                        "Argumentação",
+                        "Coesão",
+                        "Proposta"
+                      ];
+                      
+                      const competencyFeedback = [
+                        "Concordância e regência",
+                        "Interpretação textual",
+                        "Diversificar argumentos",
+                        "Conectivos e coesão",
+                        "Intervenção detalhada"
+                      ];
+
+                      const allCompetencies = [
+                        { id: 1, name: competencyNames[0], score: Math.round(userCompetencies.averages.competence1), feedback: competencyFeedback[0] },
+                        { id: 2, name: competencyNames[1], score: Math.round(userCompetencies.averages.competence2), feedback: competencyFeedback[1] },
+                        { id: 3, name: competencyNames[2], score: Math.round(userCompetencies.averages.competence3), feedback: competencyFeedback[2] },
+                        { id: 4, name: competencyNames[3], score: Math.round(userCompetencies.averages.competence4), feedback: competencyFeedback[3] },
+                        { id: 5, name: competencyNames[4], score: Math.round(userCompetencies.averages.competence5), feedback: competencyFeedback[4] },
+                      ];
+
+                      return allCompetencies.map((comp) => {
+                        let colors;
+                        
+                        if (comp.score === 200) {
+                          colors = { 
+                            bg: 'from-green-50 to-green-100', 
+                            border: 'border-green-200', 
+                            badge: 'bg-green-500', 
+                            text: 'text-green-600', 
+                            badgeBg: 'bg-green-100', 
+                            icon: 'text-green-500',
+                            showIcon: false
+                          };
+                        } else if (comp.score < 120) {
+                          colors = { 
+                            bg: 'from-red-50 to-red-100', 
+                            border: 'border-red-200', 
+                            badge: 'bg-red-500', 
+                            text: 'text-red-600', 
+                            badgeBg: 'bg-red-100', 
+                            icon: 'text-red-500',
+                            showIcon: true
+                          };
+                        } else {
+                          colors = { 
+                            bg: 'from-gray-50 to-gray-100', 
+                            border: 'border-gray-200', 
+                            badge: 'bg-gray-500', 
+                            text: 'text-gray-600', 
+                            badgeBg: 'bg-gray-100', 
+                            icon: 'text-gray-500',
+                            showIcon: true
+                          };
+                        }
+                        
+                        return (
+                          <div key={comp.id} className={`flex items-center justify-between p-1.5 md:p-2 bg-gradient-to-r ${colors.bg} rounded border ${colors.border}`}>
+                            <div className="flex items-center space-x-1 md:space-x-2">
+                              <div className={`w-3 h-3 md:w-4 md:h-4 ${colors.badge} rounded-full flex items-center justify-center`}>
+                                <span className="text-white text-xs font-bold">{comp.id}</span>
+                              </div>
+                              <span className="text-xs font-medium text-dark-blue">{comp.name}</span>
+                              <span className={`text-xs ${colors.text} ${colors.badgeBg} px-1 md:px-2 py-0.5 md:py-1 rounded`}>{comp.score}/200</span>
+                            </div>
+                            <div className="flex items-center space-x-1 md:space-x-2">
+                              <span className="text-xs text-soft-gray hidden sm:inline">{comp.feedback}</span>
+                              {colors.showIcon && <AlertTriangle className={colors.icon} size={8} />}
+                            </div>
                           </div>
-                          <span className="text-xs font-medium text-dark-blue">{comp.name}</span>
-                          <span className={`text-xs ${colors.text} ${colors.badgeBg} px-1 md:px-2 py-0.5 md:py-1 rounded`}>{comp.score}/200</span>
-                        </div>
-                        <div className="flex items-center space-x-1 md:space-x-2">
-                          <span className="text-xs text-soft-gray hidden sm:inline">{comp.feedback}</span>
-                          <AlertTriangle className={colors.icon} size={8} />
-                        </div>
-                      </div>
-                    );
-                  })}
+                        );
+                      });
+                    })()}
                   </div>
                 )}
               </div>
