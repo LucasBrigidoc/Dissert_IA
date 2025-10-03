@@ -1415,7 +1415,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {(() => {
                       const competencyNames = [
                         "Norma Culta",
@@ -1488,17 +1488,17 @@ export default function Dashboard() {
                         }
                         
                         return (
-                          <div key={comp.id} className={`flex items-center justify-between p-1.5 md:p-2 bg-gradient-to-r ${colors.bg} rounded border ${colors.border}`}>
-                            <div className="flex items-center space-x-1 md:space-x-2">
-                              <div className={`w-3 h-3 md:w-4 md:h-4 ${colors.badge} rounded-full flex items-center justify-center`}>
-                                <span className="text-white text-xs font-bold">{comp.id}</span>
+                          <div key={comp.id} className={`flex items-center justify-between p-2.5 md:p-3 bg-gradient-to-r ${colors.bg} rounded-lg border ${colors.border}`}>
+                            <div className="flex items-center space-x-2 md:space-x-3">
+                              <div className={`w-5 h-5 md:w-6 md:h-6 ${colors.badge} rounded-full flex items-center justify-center`}>
+                                <span className="text-white text-xs md:text-sm font-bold">{comp.id}</span>
                               </div>
-                              <span className="text-xs font-medium text-dark-blue">{comp.name}</span>
-                              <span className={`text-xs ${colors.text} ${colors.badgeBg} px-1 md:px-2 py-0.5 md:py-1 rounded`}>{comp.score}/200</span>
+                              <span className="text-xs md:text-sm font-medium text-dark-blue">{comp.name}</span>
+                              <span className={`text-xs md:text-sm ${colors.text} ${colors.badgeBg} px-2 md:px-2.5 py-1 md:py-1 rounded`}>{comp.score}/200</span>
                             </div>
-                            <div className="flex items-center space-x-1 md:space-x-2">
-                              <span className="text-xs text-soft-gray hidden sm:inline">{comp.feedback}</span>
-                              {IconComponent && <IconComponent className={colors.icon} size={14} />}
+                            <div className="flex items-center space-x-2 md:space-x-3">
+                              <span className="text-xs md:text-sm text-soft-gray hidden sm:inline">{comp.feedback}</span>
+                              {IconComponent && <IconComponent className={colors.icon} size={16} />}
                             </div>
                           </div>
                         );
