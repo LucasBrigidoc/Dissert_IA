@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -144,6 +144,9 @@ export default function Dashboard() {
 
   // State for competency period filter
   const [competencyPeriod, setCompetencyPeriod] = useState<string>('all');
+  
+  // State for average score period filter
+  const [averagePeriod, setAveragePeriod] = useState<string>('all');
 
   // Fetch user competencies analysis
   const { data: userCompetencies } = useQuery<{
@@ -854,9 +857,28 @@ export default function Dashboard() {
   });
   const name = user?.name || "Usuário";
   
-  // Calculate average score from userScores instead of using stale data from userProgress
-  const averageScore = userScores.length > 0 
-    ? Math.round(userScores.reduce((sum, score) => sum + score.score, 0) / userScores.length)
+  // Filter scores based on selected period
+  const filteredScoresForAverage = useMemo(() => {
+    if (averagePeriod === 'all') return userScores;
+    
+    const now = new Date();
+    const periodDays = {
+      '7days': 7,
+      '15days': 15,
+      '1month': 30,
+      '3months': 90,
+      '6months': 180,
+    }[averagePeriod];
+    
+    if (!periodDays) return userScores;
+    
+    const cutoffDate = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
+    return userScores.filter(score => new Date(score.scoreDate) >= cutoffDate);
+  }, [userScores, averagePeriod]);
+  
+  // Calculate average score from filtered scores
+  const averageScore = filteredScoresForAverage.length > 0 
+    ? Math.round(filteredScoresForAverage.reduce((sum, score) => sum + score.score, 0) / filteredScoresForAverage.length)
     : 0;
   
   const targetScore = userProgress?.targetScore;
@@ -1682,7 +1704,22 @@ export default function Dashboard() {
                       {/* Nota Média Section */}
                       <div className="bg-white/50 rounded-xl p-4 md:p-5 border border-bright-blue/20">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm font-medium text-soft-gray">Nota Média</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-soft-gray">Nota Média</span>
+                            <Select value={averagePeriod} onValueChange={setAveragePeriod} data-testid="select-average-period">
+                              <SelectTrigger className="w-28 h-7 text-xs border-bright-blue/30">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">Todas</SelectItem>
+                                <SelectItem value="7days">7 dias</SelectItem>
+                                <SelectItem value="15days">15 dias</SelectItem>
+                                <SelectItem value="1month">1 mês</SelectItem>
+                                <SelectItem value="3months">3 meses</SelectItem>
+                                <SelectItem value="6months">6 meses</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                           <span className="text-2xl md:text-3xl font-bold text-dark-blue" data-testid="text-average-score">{averageScore}</span>
                         </div>
                         <div className="relative h-3 md:h-4 bg-gray-200 rounded-full overflow-hidden">
