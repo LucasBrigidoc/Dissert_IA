@@ -40,7 +40,7 @@ export default function Exams() {
     mutationFn: async (examData: any) => {
       return apiRequest('/api/exams', {
         method: 'POST',
-        body: JSON.stringify(examData)
+        body: examData
       });
     },
     onSuccess: () => {
@@ -62,7 +62,7 @@ export default function Exams() {
     mutationFn: async ({ id, data }: { id: string; data: Partial<SelectUserExam> }) => {
       return apiRequest(`/api/exams/${id}`, {
         method: 'PATCH',
-        body: JSON.stringify(data)
+        body: data
       });
     },
     onSuccess: () => {
