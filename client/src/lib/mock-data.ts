@@ -97,7 +97,7 @@ export const mockPricingPlans = [
     features: [
       "Acesso a todas funcionalidades",
       "IA avançada com correção por competências ENEM",
-      "Estrutura Curinga: crie e use modelos personalizados",
+      "Estrutura Coringa: crie e use modelos personalizados",
       "Repertório inteligente com milhares de referências",
       "Controlador de Escrita: ajuste tom e formalidade",
       "Simulador completo idêntico ao dia da prova",

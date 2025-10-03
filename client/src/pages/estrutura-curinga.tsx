@@ -110,7 +110,7 @@ export function EstruturaCuringa() {
               <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
                 <Edit3 className="text-white" size={20} />
               </div>
-              <h1 className="text-2xl font-bold text-dark-blue">Estrutura Curinga</h1>
+              <h1 className="text-2xl font-bold text-dark-blue">Estrutura Coringa</h1>
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@ export function EstruturaCuringa() {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-dark-blue mb-4">
-            Estrutura Curinga
+            Estrutura Coringa
           </h1>
           <p className="text-lg text-soft-gray max-w-2xl mx-auto">
             Crie modelos de estrutura reutilizáveis e gere redações personalizadas seguindo sua metodologia preferida
