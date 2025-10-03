@@ -866,23 +866,39 @@ export default function BibliotecaPage() {
       <Dialog open={showFileDetails} onOpenChange={setShowFileDetails}>
         <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col" aria-describedby="file-details-description" hideClose>
           <DialogHeader>
-            <div className="flex items-center space-x-3 mb-2">
-              {selectedFile && getIcon(selectedFile.type)}
-              <div>
-                <DialogTitle className="text-xl font-bold text-dark-blue">
-                  {selectedFile?.title}
-                </DialogTitle>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge className={`text-xs ${selectedFile ? getTypeColor(selectedFile.type) : ''}`}>
-                    {selectedFile?.type}
-                  </Badge>
-                  {selectedFile?.grade && (
-                    <Badge className="bg-green-100 text-green-800 text-xs">
-                      Nota: {selectedFile.grade}
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-3">
+                {selectedFile && getIcon(selectedFile.type)}
+                <div>
+                  <DialogTitle className="text-xl font-bold text-dark-blue">
+                    {selectedFile?.title}
+                  </DialogTitle>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge className={`text-xs ${selectedFile ? getTypeColor(selectedFile.type) : ''}`}>
+                      {selectedFile?.type}
                     </Badge>
-                  )}
+                    {selectedFile?.grade && (
+                      <Badge className="bg-green-100 text-green-800 text-xs">
+                        Nota: {selectedFile.grade}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => {
+                  if (selectedFile) {
+                    deleteFile(selectedFile.id);
+                    setShowFileDetails(false);
+                  }
+                }}
+                data-testid="button-delete-header"
+              >
+                <Trash2 size={18} />
+              </Button>
             </div>
           </DialogHeader>
           
