@@ -98,6 +98,8 @@ export interface IStorage {
   // User scores operations
   getUserScores(userId: string): Promise<UserScore[]>;
   createUserScore(score: InsertUserScore): Promise<UserScore>;
+  updateUserScore(id: string, score: Partial<UserScore>): Promise<UserScore>;
+  deleteUserScore(id: string): Promise<boolean>;
   
   // Admin operations
   createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
@@ -4283,6 +4285,21 @@ export class DbStorage implements IStorage {
   async createUserScore(insertScore: InsertUserScore): Promise<UserScore> {
     const [score] = await db.insert(schema.userScores).values(insertScore).returning();
     return score;
+  }
+
+  async updateUserScore(id: string, updates: Partial<UserScore>): Promise<UserScore> {
+    const [score] = await db.update(schema.userScores)
+      .set(updates)
+      .where(eq(schema.userScores.id, id))
+      .returning();
+    if (!score) throw new Error("Score not found");
+    return score;
+  }
+
+  async deleteUserScore(id: string): Promise<boolean> {
+    const result = await db.delete(schema.userScores)
+      .where(eq(schema.userScores.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 
   // ===================== ADMIN OPERATIONS =====================

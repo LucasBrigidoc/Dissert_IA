@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles, BookOpen } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, AlertTriangle, Edit3, X, Save, Grid3X3, MoreVertical, Menu, Archive, Star, Sparkles, BookOpen, Trash2, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useLocation } from "wouter";
@@ -723,6 +723,8 @@ export default function Dashboard() {
     examName: ''
   });
 
+  const [editingScore, setEditingScore] = useState<string | null>(null);
+
   // Mutation for adding new score
   const addScoreMutation = useMutation({
     mutationFn: async (data: typeof newScore) => {
@@ -768,6 +770,75 @@ export default function Dashboard() {
       });
     },
   });
+
+  // Mutation for updating a score
+  const updateScoreMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: typeof newScore }) => {
+      return await apiRequest(`/api/user-scores/${id}`, {
+        method: "PATCH",
+        body: {
+          score: Number(data.score),
+          competence1: data.competence1 ? Number(data.competence1) : null,
+          competence2: data.competence2 ? Number(data.competence2) : null,
+          competence3: data.competence3 ? Number(data.competence3) : null,
+          competence4: data.competence4 ? Number(data.competence4) : null,
+          competence5: data.competence5 ? Number(data.competence5) : null,
+          examName: data.examName || 'Nota Manual',
+          scoreDate: new Date(data.scoreDate).toISOString(),
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-competencies"] });
+      toast({
+        title: "Nota atualizada! ✅",
+        description: "Suas alterações foram salvas com sucesso.",
+      });
+      setEditingScore(null);
+      setNewScore({
+        scoreDate: '',
+        score: '',
+        competence1: '',
+        competence2: '',
+        competence3: '',
+        competence4: '',
+        competence5: '',
+        examName: ''
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao atualizar nota",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation for deleting a score
+  const deleteScoreMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/user-scores/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-competencies"] });
+      toast({
+        title: "Nota excluída",
+        description: "A nota foi removida com sucesso.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao excluir nota",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
   const name = user?.name || "Usuário";
   
   // Use real user progress data
@@ -786,8 +857,46 @@ export default function Dashboard() {
 
   const handleAddScore = () => {
     if (newScore.scoreDate && newScore.score) {
-      addScoreMutation.mutate(newScore);
+      if (editingScore) {
+        updateScoreMutation.mutate({ id: editingScore, data: newScore });
+      } else {
+        addScoreMutation.mutate(newScore);
+      }
     }
+  };
+
+  const handleEditScore = (score: typeof userScores[0]) => {
+    setEditingScore(score.id);
+    setNewScore({
+      scoreDate: new Date(score.scoreDate).toISOString().split('T')[0],
+      score: score.score.toString(),
+      competence1: score.competence1?.toString() || '',
+      competence2: score.competence2?.toString() || '',
+      competence3: score.competence3?.toString() || '',
+      competence4: score.competence4?.toString() || '',
+      competence5: score.competence5?.toString() || '',
+      examName: score.examName
+    });
+  };
+
+  const handleDeleteScore = (id: string) => {
+    if (confirm('Tem certeza que deseja excluir esta nota?')) {
+      deleteScoreMutation.mutate(id);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingScore(null);
+    setNewScore({
+      scoreDate: '',
+      score: '',
+      competence1: '',
+      competence2: '',
+      competence3: '',
+      competence4: '',
+      competence5: '',
+      examName: ''
+    });
   };
 
   const chartData = scores.map(score => ({
@@ -1637,16 +1746,83 @@ export default function Dashboard() {
         </div>
 
         {/* Add Score Dialog */}
-        <Dialog open={showAddScore} onOpenChange={setShowAddScore}>
+        <Dialog open={showAddScore} onOpenChange={(open) => {
+          setShowAddScore(open);
+          if (!open) {
+            handleCancelEdit();
+          }
+        }}>
           <DialogContent className="max-w-[95vw] sm:max-w-lg lg:max-w-2xl max-h-[85vh] overflow-y-auto mx-4 sm:mx-auto">
             <DialogHeader>
               <DialogTitle className="text-dark-blue flex items-center">
-                <Plus className="mr-2" size={12} />
-                Adicionar Nova Nota
+                {editingScore ? (
+                  <>
+                    <Edit3 className="mr-2" size={16} />
+                    Editar Nota
+                  </>
+                ) : (
+                  <>
+                    <Plus className="mr-2" size={16} />
+                    Gerenciar Notas
+                  </>
+                )}
               </DialogTitle>
             </DialogHeader>
             
             <div className="space-y-4 sm:space-y-6">
+              {/* List of existing scores */}
+              {!editingScore && userScores.length > 0 && (
+                <div className="border-b pb-4">
+                  <h3 className="text-sm font-semibold text-dark-blue mb-3">Notas Cadastradas</h3>
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                    {userScores.map((score) => (
+                      <div 
+                        key={score.id} 
+                        className="flex items-center justify-between p-3 rounded-lg border bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 border-soft-gray/20"
+                        data-testid={`score-item-${score.id}`}
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-dark-blue">{score.examName}</span>
+                            <span className="text-xs text-soft-gray">
+                              {new Date(score.scoreDate).toLocaleDateString('pt-BR')}
+                            </span>
+                          </div>
+                          <div className="text-lg font-bold text-bright-blue mt-1">{score.score} pts</div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditScore(score)}
+                            className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10"
+                            data-testid={`button-edit-score-${score.id}`}
+                          >
+                            <Edit3 size={14} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteScore(score.id)}
+                            className="border-red-300 text-red-600 hover:bg-red-50"
+                            data-testid={`button-delete-score-${score.id}`}
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Form for adding/editing */}
+              {editingScore && (
+                <div className="flex items-center gap-2 p-2 bg-bright-blue/10 rounded-lg border border-bright-blue/20">
+                  <AlertCircle className="text-bright-blue" size={16} />
+                  <span className="text-sm text-dark-blue">Editando nota existente</span>
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm text-dark-blue">Nome da Prova/Simulado</Label>
@@ -1718,16 +1894,27 @@ export default function Dashboard() {
                   onClick={handleAddScore}
                   className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 flex-1"
                   data-testid="button-save-score"
+                  disabled={addScoreMutation.isPending || updateScoreMutation.isPending}
                 >
-                  Salvar Nota
+                  {editingScore ? 'Salvar Alterações' : 'Salvar Nota'}
                 </Button>
+                {editingScore && (
+                  <Button
+                    variant="outline"
+                    onClick={handleCancelEdit}
+                    className="sm:flex-none border-soft-gray/30"
+                    data-testid="button-cancel-edit"
+                  >
+                    Cancelar Edição
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   onClick={() => setShowAddScore(false)}
                   className="sm:flex-none"
                   data-testid="button-cancel-score"
                 >
-                  Cancelar
+                  Fechar
                 </Button>
               </div>
             </div>

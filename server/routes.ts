@@ -1244,6 +1244,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
       });
       
+      // Check for duplicate: same exam name and date
+      const existingScores = await storage.getUserScores(req.user!.id);
+      const scoreDate = new Date(validatedData.scoreDate).toISOString().split('T')[0];
+      const duplicate = existingScores.find(s => {
+        const existingDate = new Date(s.scoreDate).toISOString().split('T')[0];
+        return s.examName === validatedData.examName && existingDate === scoreDate;
+      });
+
+      if (duplicate) {
+        return res.status(400).json({ 
+          message: "Já existe uma nota com este nome de prova e data. Por favor, edite a nota existente ou escolha outra data.",
+          duplicate: true
+        });
+      }
+      
       const score = await storage.createUserScore(validatedData);
       res.json(score);
     } catch (error) {
@@ -1255,6 +1270,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       console.error("Create user score error:", error);
       res.status(500).json({ message: "Erro ao adicionar nota" });
+    }
+  });
+
+  // Update a user score
+  app.patch("/api/user-scores/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user!.id;
+      
+      // Verify the score belongs to the user
+      const allUserScores = await storage.getUserScores(userId);
+      const existingScore = allUserScores.find(s => s.id === id);
+      if (!existingScore) {
+        return res.status(404).json({ message: "Nota não encontrada" });
+      }
+
+      // Prepare updates with validation
+      const updates: Partial<UserScore> = {};
+      if (req.body.score !== undefined) {
+        const score = Number(req.body.score);
+        if (isNaN(score) || score < 0 || score > 1000) {
+          return res.status(400).json({ message: "Nota total deve estar entre 0 e 1000" });
+        }
+        updates.score = score;
+      }
+      if (req.body.competence1 !== undefined) {
+        const comp = (req.body.competence1 === null || req.body.competence1 === '') ? null : Number(req.body.competence1);
+        if (comp !== null && (isNaN(comp) || comp < 0 || comp > 200)) {
+          return res.status(400).json({ message: "Competências devem estar entre 0 e 200" });
+        }
+        updates.competence1 = comp;
+      }
+      if (req.body.competence2 !== undefined) {
+        const comp = (req.body.competence2 === null || req.body.competence2 === '') ? null : Number(req.body.competence2);
+        if (comp !== null && (isNaN(comp) || comp < 0 || comp > 200)) {
+          return res.status(400).json({ message: "Competências devem estar entre 0 e 200" });
+        }
+        updates.competence2 = comp;
+      }
+      if (req.body.competence3 !== undefined) {
+        const comp = (req.body.competence3 === null || req.body.competence3 === '') ? null : Number(req.body.competence3);
+        if (comp !== null && (isNaN(comp) || comp < 0 || comp > 200)) {
+          return res.status(400).json({ message: "Competências devem estar entre 0 e 200" });
+        }
+        updates.competence3 = comp;
+      }
+      if (req.body.competence4 !== undefined) {
+        const comp = (req.body.competence4 === null || req.body.competence4 === '') ? null : Number(req.body.competence4);
+        if (comp !== null && (isNaN(comp) || comp < 0 || comp > 200)) {
+          return res.status(400).json({ message: "Competências devem estar entre 0 e 200" });
+        }
+        updates.competence4 = comp;
+      }
+      if (req.body.competence5 !== undefined) {
+        const comp = (req.body.competence5 === null || req.body.competence5 === '') ? null : Number(req.body.competence5);
+        if (comp !== null && (isNaN(comp) || comp < 0 || comp > 200)) {
+          return res.status(400).json({ message: "Competências devem estar entre 0 e 200" });
+        }
+        updates.competence5 = comp;
+      }
+      if (req.body.examName !== undefined) updates.examName = req.body.examName;
+      if (req.body.scoreDate !== undefined) updates.scoreDate = new Date(req.body.scoreDate);
+
+      // Check for duplicate with the new values (if examName or scoreDate is being updated)
+      if (updates.examName || updates.scoreDate) {
+        const newExamName = updates.examName || existingScore.examName;
+        const newScoreDate = updates.scoreDate || existingScore.scoreDate;
+        const scoreDate = new Date(newScoreDate).toISOString().split('T')[0];
+        
+        const duplicate = allUserScores.find(s => {
+          if (s.id === id) return false; // Skip the score being edited
+          const existingDate = new Date(s.scoreDate).toISOString().split('T')[0];
+          return s.examName === newExamName && existingDate === scoreDate;
+        });
+
+        if (duplicate) {
+          return res.status(400).json({ 
+            message: "Já existe outra nota com este nome de prova e data.",
+            duplicate: true
+          });
+        }
+      }
+
+      const updatedScore = await storage.updateUserScore(id, updates);
+      res.json(updatedScore);
+    } catch (error) {
+      console.error("Update user score error:", error);
+      res.status(500).json({ message: "Erro ao atualizar nota" });
+    }
+  });
+
+  // Delete a user score
+  app.delete("/api/user-scores/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user!.id;
+      
+      // Verify the score belongs to the user
+      const existingScore = (await storage.getUserScores(userId)).find(s => s.id === id);
+      if (!existingScore) {
+        return res.status(404).json({ message: "Nota não encontrada" });
+      }
+
+      const deleted = await storage.deleteUserScore(id);
+      if (deleted) {
+        res.json({ message: "Nota excluída com sucesso" });
+      } else {
+        res.status(500).json({ message: "Erro ao excluir nota" });
+      }
+    } catch (error) {
+      console.error("Delete user score error:", error);
+      res.status(500).json({ message: "Erro ao excluir nota" });
     }
   });
 
