@@ -546,6 +546,9 @@ export default function Dashboard() {
     'domingo': 'DOM'
   };
 
+  // Order for displaying days of the week
+  const dayOrder = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
+  
   const scheduleData: ScheduleDay[] = userScheduleData && userScheduleData.length > 0
     ? userScheduleData.map(item => ({
         day: dayMapping[item.day] || item.day,
@@ -553,7 +556,7 @@ export default function Dashboard() {
         hours: item.hours || 0,
         minutes: item.minutes || 0,
         completed: item.completed || false
-      }))
+      })).sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day))
     : [];
 
   const hasScheduleData = scheduleData.length > 0;
