@@ -1532,10 +1532,11 @@ export default function Dashboard() {
                 // Get all red competencies (score < 80)
                 const redCompetencies = allCompetencies.filter(comp => comp.score < 80);
                 
-                // Get the lowest scoring competency
-                const lowestCompetency = allCompetencies.reduce((lowest, comp) => 
-                  comp.score < lowest.score ? comp : lowest
-                );
+                // Get the lowest score
+                const lowestScore = Math.min(...allCompetencies.map(comp => comp.score));
+                
+                // Get all competencies with the lowest score
+                const lowestCompetencies = allCompetencies.filter(comp => comp.score === lowestScore);
 
                 if (allPerfect) {
                   return (
@@ -1558,7 +1559,7 @@ export default function Dashboard() {
                           <AlertTriangle className="text-white" size={12} />
                         </div>
                         <span className="text-xs font-medium text-red-700">
-                          Foco: {redCompetencies.map(comp => `${comp.name} (Comp. ${comp.id})`).join(', ')}
+                          Foco: {redCompetencies.map(comp => `${comp.name} ${comp.id}`).join(', ')}
                         </span>
                       </div>
                     </div>
@@ -1571,7 +1572,7 @@ export default function Dashboard() {
                           <Lightbulb className="text-white" size={12} />
                         </div>
                         <span className="text-xs font-medium text-dark-blue">
-                          Foco: {lowestCompetency.name} (Comp. {lowestCompetency.id})
+                          Foco: {lowestCompetencies.map(comp => `${comp.name} ${comp.id}`).join(', ')}
                         </span>
                       </div>
                     </div>
