@@ -1695,7 +1695,6 @@ export default function Dashboard() {
                     className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
                     data-testid="button-add-score"
                   >
-                    <Plus size={10} className="mr-1" />
                     {userScores.length > 0 ? 'Gerenciar Notas' : 'Adicionar Nota'}
                   </Button>
                 </DialogTrigger>
