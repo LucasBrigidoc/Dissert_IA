@@ -1537,17 +1537,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }, null, 2));
       
       const validatedData = insertUserScheduleSchema.parse(dataToValidate);
-      const schedule = await storage.createUserSchedule(validatedData);
       
-      console.log("✅ Schedule created successfully:", schedule.id);
-      res.status(201).json(schedule);
+      // Check if a schedule already exists for this user/week/day
+      const existingSchedules = await storage.getUserSchedule(req.user!.id, validatedData.weekStart);
+      const existingSchedule = existingSchedules.find(s => s.day === validatedData.day);
+      
+      let schedule;
+      if (existingSchedule) {
+        // Update existing schedule
+        console.log("📝 Updating existing schedule:", existingSchedule.id);
+        schedule = await storage.updateUserSchedule(existingSchedule.id, {
+          activities: validatedData.activities,
+          hours: validatedData.hours,
+          minutes: validatedData.minutes,
+          completed: validatedData.completed
+        });
+        console.log("✅ Schedule updated successfully:", schedule.id);
+      } else {
+        // Create new schedule
+        console.log("➕ Creating new schedule");
+        schedule = await storage.createUserSchedule(validatedData);
+        console.log("✅ Schedule created successfully:", schedule.id);
+      }
+      
+      res.status(200).json(schedule);
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error("❌ Validation error:", JSON.stringify(error.errors, null, 2));
         return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
       }
-      console.error("❌ Create schedule error:", error);
-      res.status(500).json({ message: "Erro ao criar cronograma" });
+      console.error("❌ Create/Update schedule error:", error);
+      res.status(500).json({ message: "Erro ao salvar cronograma" });
     }
   });
 
