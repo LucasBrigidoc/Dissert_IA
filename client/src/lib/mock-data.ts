@@ -80,6 +80,7 @@ export const mockPricingPlans = [
     features: [
       "Acesso a funcionalidades básicas",
       "Newsletter educacional semanal",
+      "Material complementar educacional",
       "Dashboard personalizado",
       "Biblioteca pessoal limitada",
       "Uso limitado de IA",
