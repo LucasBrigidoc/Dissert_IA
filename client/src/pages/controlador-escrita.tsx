@@ -82,7 +82,7 @@ export default function ControladorEscrita() {
     mutationFn: async (data: { title: string; originalText: string; modifiedText: string; modificationType: string; activeModifications: string[] }) => {
       return await apiRequest('/api/saved-texts', {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
