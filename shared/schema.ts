@@ -1240,6 +1240,8 @@ export const insertUserScheduleSchema = createInsertSchema(userSchedule).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  weekStart: z.coerce.date(),
 });
 
 export type UserSchedule = typeof userSchedule.$inferSelect;

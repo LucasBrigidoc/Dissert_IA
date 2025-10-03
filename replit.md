@@ -118,7 +118,7 @@ The following API keys are optional and will use fallback modes if not configure
 - **SESSION_SECRET**: Auto-generated in development, required in production
 
 ## Application Status
-✅ **Successfully imported from GitHub and configured for Replit (Oct 2, 2025)**
+✅ **Successfully imported from GitHub and configured for Replit (Oct 3, 2025)**
 ✅ Frontend running on port 5000 with Vite dev server
 ✅ Backend API running on same port (Express)
 ✅ Database schema initialized and migrated (Replit PostgreSQL via Helium)
@@ -127,6 +127,20 @@ The following API keys are optional and will use fallback modes if not configure
 ✅ All core functionality operational (auth, routing, UI components)
 ✅ Sessions working with MemoryStore (acceptable for single-instance Replit development)
 ✅ Deployment configured (autoscale mode with build and start commands)
+✅ Workflow configured with webview output type and port 5000
+✅ Host configuration set to 0.0.0.0 with allowedHosts enabled
+✅ Schedule (cronograma) saving fixed - now properly saves to database with date conversion
 ⚠️ AI features in fallback mode (GEMINI_API_KEY not configured - optional)
 ⚠️ Payment features disabled (STRIPE_SECRET_KEY not configured - optional)
 ⚠️ Sessions in-memory only (must migrate to PgStore before production)
+
+## Recent Changes (Oct 3, 2025)
+
+### Schedule (Cronograma) Feature Fix
+- **Fixed**: Schedule saving error where `weekStart` field was receiving string instead of date
+- **Solution**: 
+  - Updated `insertUserScheduleSchema` in `shared/schema.ts` to use `z.coerce.date()` for automatic string-to-date conversion
+  - Implemented proper API integration in `client/src/pages/schedule-editor.tsx` using `useMutation` and `apiRequest`
+  - Added data transformation to convert UI format to database format (day names, duration parsing, weekStart calculation)
+  - Added loading states and toast notifications for better UX
+- **Pattern**: Now follows the same pattern as the goals (metas) feature for consistency

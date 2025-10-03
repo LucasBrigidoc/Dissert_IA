@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useMutation } from "@tanstack/react-query";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Save, Plus, Trash2, Clock, Calendar } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface Activity {
   name: string;
@@ -21,6 +24,7 @@ interface ScheduleDay {
 
 export default function ScheduleEditor() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const [schedule, setSchedule] = useState<ScheduleDay[]>([
     { 
@@ -139,11 +143,100 @@ export default function ScheduleEditor() {
     setSchedule(newSchedule);
   };
 
+  // Mutation to save schedule
+  const saveScheduleMutation = useMutation({
+    mutationFn: async (scheduleData: any[]) => {
+      const promises = scheduleData.map(dayData => 
+        apiRequest('/api/schedule', {
+          method: 'POST',
+          body: JSON.stringify(dayData)
+        })
+      );
+      return Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/schedule'] });
+      toast({ 
+        title: "Cronograma salvo com sucesso!",
+        description: "Seu plano de estudos foi atualizado."
+      });
+      setLocation('/dashboard');
+    },
+    onError: (error: any) => {
+      console.error('Erro ao salvar cronograma:', error);
+      toast({ 
+        title: "Erro ao salvar cronograma",
+        description: error.message || "Verifique os dados e tente novamente",
+        variant: "destructive" 
+      });
+    }
+  });
+
+  // Helper function to map day abbreviations to database format
+  const mapDayToDB = (day: string): string => {
+    const dayMap: Record<string, string> = {
+      'SEG': 'segunda',
+      'TER': 'terca',
+      'QUA': 'quarta',
+      'QUI': 'quinta',
+      'SEX': 'sexta',
+      'SAB': 'sabado',
+      'DOM': 'domingo'
+    };
+    return dayMap[day] || 'segunda';
+  };
+
+  // Helper function to parse duration string to hours and minutes
+  const parseDuration = (durationStr: string): { hours: number; minutes: number } => {
+    if (durationStr === '-') return { hours: 0, minutes: 0 };
+    
+    const cleanStr = durationStr.replace('h', '').trim();
+    const value = parseFloat(cleanStr);
+    
+    if (isNaN(value)) return { hours: 0, minutes: 0 };
+    
+    const hours = Math.floor(value);
+    const minutes = Math.round((value - hours) * 60);
+    
+    return { hours, minutes };
+  };
+
+  // Get the start of the current week (Monday at 00:00)
+  const getWeekStart = (): string => {
+    const now = new Date();
+    const day = now.getDay();
+    const diff = day === 0 ? -6 : 1 - day; // Sunday is 0, Monday is 1
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    return monday.toISOString();
+  };
+
   const handleSave = () => {
-    // Here you would typically save to backend/localStorage
-    console.log('Salvando cronograma:', schedule, 'Meta semanal:', weeklyGoal);
-    // Navigate back to dashboard
-    setLocation('/dashboard');
+    const weekStart = getWeekStart();
+    
+    // Convert schedule to database format
+    const scheduleData = schedule.map(day => {
+      const totalDuration = day.activities
+        .filter(activity => activity.duration !== '-')
+        .reduce((total, activity) => {
+          const { hours, minutes } = parseDuration(activity.duration);
+          return total + hours + (minutes / 60);
+        }, 0);
+      
+      const { hours, minutes } = parseDuration(totalDuration.toFixed(2) + 'h');
+      
+      return {
+        day: mapDayToDB(day.day),
+        activities: day.activities,
+        hours,
+        minutes,
+        completed: false,
+        weekStart
+      };
+    });
+    
+    saveScheduleMutation.mutate(scheduleData);
   };
 
   const handleBack = () => {
@@ -171,10 +264,12 @@ export default function ScheduleEditor() {
           </div>
           <Button 
             onClick={handleSave}
+            disabled={saveScheduleMutation.isPending}
             className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+            data-testid="button-save-schedule"
           >
             <Save className="mr-2" size={16} />
-            Salvar Alterações
+            {saveScheduleMutation.isPending ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
         </div>
 
