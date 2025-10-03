@@ -1210,9 +1210,7 @@ export const insertUserExamSchema = createInsertSchema(userExams).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
-  examAt: z.union([z.date(), z.string()]).transform((val) => {
-    return typeof val === 'string' ? new Date(val) : val;
-  }),
+  examAt: z.coerce.date(),
 });
 
 export type UserExam = typeof userExams.$inferSelect;
