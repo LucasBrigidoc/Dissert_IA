@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertUserScoreSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema } from "@shared/schema";
+import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertUserScoreSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema, type UserScore } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -1224,6 +1224,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===================== USER SCORES ENDPOINTS =====================
 
+  // Helper function to recalculate and update user's average score in progress
+  async function updateUserAverageScore(userId: string) {
+    try {
+      const scores = await storage.getUserScores(userId);
+      const averageScore = scores.length > 0 
+        ? Math.round(scores.reduce((sum, score) => sum + score.score, 0) / scores.length)
+        : 0;
+      
+      let progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        await storage.createUserProgress({
+          userId,
+          averageScore,
+          targetScore: null,
+          essaysCount: 0,
+          studyHours: 0,
+          streak: 0,
+        });
+      } else {
+        await storage.updateUserProgress(userId, { averageScore });
+      }
+    } catch (error) {
+      console.error("Error updating user average score:", error);
+    }
+  }
+
   // Get all user scores (manual + from simulations)
   app.get("/api/user-scores", requireAuth, async (req, res) => {
     try {
@@ -1260,6 +1286,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const score = await storage.createUserScore(validatedData);
+      
+      // Recalculate and update user's average score
+      await updateUserAverageScore(req.user!.id);
+      
       res.json(score);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -1354,6 +1384,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updatedScore = await storage.updateUserScore(id, updates);
+      
+      // Recalculate and update user's average score
+      await updateUserAverageScore(userId);
+      
       res.json(updatedScore);
     } catch (error) {
       console.error("Update user score error:", error);
@@ -1375,6 +1409,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const deleted = await storage.deleteUserScore(id);
       if (deleted) {
+        // Recalculate and update user's average score
+        await updateUserAverageScore(userId);
+        
         res.json({ message: "Nota excluída com sucesso" });
       } else {
         res.status(500).json({ message: "Erro ao excluir nota" });
@@ -3045,7 +3082,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         section,
         source: aiResult.source,
         tokensSaved: aiResult.tokensSaved || 0,
-        tokensUsed: tokensUsed,
+        tokensUsed: promptTokens + outputTokens,
         usageStats: usageResult.usageStats,
         timestamp: new Date().toISOString()
       });

@@ -746,6 +746,7 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user-competencies"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-progress"] });
       toast({
         title: "Nota adicionada! ✅",
         description: "Sua nota foi adicionada com sucesso.",
@@ -791,6 +792,7 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user-competencies"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-progress"] });
       toast({
         title: "Nota atualizada! ✅",
         description: "Suas alterações foram salvas com sucesso.",
@@ -826,6 +828,7 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user-competencies"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-progress"] });
       toast({
         title: "Nota excluída",
         description: "A nota foi removida com sucesso.",
