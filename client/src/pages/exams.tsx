@@ -127,7 +127,7 @@ export default function Exams() {
     
     const examData: any = {
       name: newExam.name,
-      examAt: examAt.toISOString(),
+      examAt: examAt,
       type: newExam.type,
       status: newExam.status,
       importance: newExam.importance,
