@@ -1696,7 +1696,7 @@ export default function Dashboard() {
                     data-testid="button-add-score"
                   >
                     <Plus size={10} className="mr-1" />
-                    Adicionar Nota
+                    {userScores.length > 0 ? 'Gerenciar Notas' : 'Adicionar Nota'}
                   </Button>
                 </DialogTrigger>
               </Dialog>
