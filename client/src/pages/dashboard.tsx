@@ -571,14 +571,14 @@ export default function Dashboard() {
       const promises = schedules.map(schedule => 
         apiRequest("/api/schedule", {
           method: "POST",
-          body: JSON.stringify({
+          body: {
             day: reverseDayMapping[schedule.day],
             activities: schedule.activities,
             hours: schedule.hours,
             minutes: schedule.minutes,
             completed: schedule.completed,
             weekStart: weekStart.toISOString()
-          }),
+          },
         })
       );
 
@@ -676,7 +676,7 @@ export default function Dashboard() {
     mutationFn: async (data: typeof newScore) => {
       return await apiRequest("/api/user-scores", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           score: Number(data.score),
           competence1: data.competence1 ? Number(data.competence1) : null,
           competence2: data.competence2 ? Number(data.competence2) : null,
@@ -686,7 +686,7 @@ export default function Dashboard() {
           examName: data.examName || 'Nota Manual',
           source: 'manual',
           scoreDate: new Date(data.scoreDate).toISOString(),
-        }),
+        },
       });
     },
     onSuccess: () => {
@@ -1864,7 +1864,7 @@ export default function Dashboard() {
                         <Textarea
                           value={day.activities.join('\n')}
                           onChange={(e) => updateScheduleDay(index, 'activities', e.target.value)}
-                          placeholder="Uma atividade por linha..."
+                          placeholder="Redação dissertativa&#10;Revisão de matemática&#10;Leitura de livro&#10;(Uma por linha)"
                           className="min-h-[80px] sm:min-h-[100px] resize-none"
                           data-testid={`textarea-activities-${day.day.toLowerCase()}`}
                         />
