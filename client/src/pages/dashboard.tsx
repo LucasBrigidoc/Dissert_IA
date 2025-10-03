@@ -2223,12 +2223,10 @@ export default function Dashboard() {
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent className="z-[9999]">
-                        <SelectItem value="Simulado">Simulado</SelectItem>
-                        <SelectItem value="Exame Nacional">Exame Nacional</SelectItem>
-                        <SelectItem value="Vestibular">Vestibular</SelectItem>
-                        <SelectItem value="Concurso">Concurso</SelectItem>
-                        <SelectItem value="Prova Escolar">Prova Escolar</SelectItem>
-                        <SelectItem value="Outro">Outro</SelectItem>
+                        <SelectItem value="simulado">Simulado</SelectItem>
+                        <SelectItem value="vestibular">Vestibular</SelectItem>
+                        <SelectItem value="concurso">Concurso</SelectItem>
+                        <SelectItem value="outros">Outros</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
