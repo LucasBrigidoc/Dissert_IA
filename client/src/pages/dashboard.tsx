@@ -583,7 +583,7 @@ export default function Dashboard() {
           method: "POST",
           body: {
             day: reverseDayMapping[schedule.day],
-            activities: schedule.activities,
+            activities: schedule.activities.filter(activity => activity.trim() !== ''),
             hours: schedule.hours,
             minutes: schedule.minutes,
             completed: schedule.completed,
@@ -826,8 +826,8 @@ export default function Dashboard() {
   const updateScheduleDay = (index: number, field: 'activities' | 'hours' | 'minutes', value: string | string[] | number) => {
     const updated = [...editingSchedule];
     if (field === 'activities' && typeof value === 'string') {
-      // Parse activities from textarea (one per line)
-      updated[index].activities = value.split('\n').filter(activity => activity.trim() !== '');
+      // Parse activities from textarea (one per line) - keep empty lines during editing
+      updated[index].activities = value.split('\n');
     } else if (field === 'hours' && typeof value === 'string') {
       updated[index].hours = parseInt(value) || 0;
     } else if (field === 'minutes' && typeof value === 'string') {
