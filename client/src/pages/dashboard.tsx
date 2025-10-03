@@ -1554,26 +1554,40 @@ export default function Dashboard() {
                 } else if (redCompetencies.length > 0) {
                   return (
                     <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-red-100 rounded border border-red-200">
-                      <div className="flex items-center">
-                        <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                      <div className="flex items-center flex-wrap gap-2">
+                        <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
                           <AlertTriangle className="text-white" size={12} />
                         </div>
-                        <span className="text-xs font-medium text-red-700">
-                          Foco: {redCompetencies.map(comp => `${comp.name} ${comp.id}`).join(', ')}
-                        </span>
+                        <span className="text-xs font-medium text-red-700">Foco:</span>
+                        {redCompetencies.map((comp, index) => (
+                          <div key={comp.id} className="flex items-center gap-1">
+                            <span className="text-xs font-medium text-red-700">{comp.name}</span>
+                            <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">{comp.id}</span>
+                            </div>
+                            {index < redCompetencies.length - 1 && <span className="text-xs text-red-700">,</span>}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   );
                 } else {
                   return (
                     <div className="mt-3 p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded border border-bright-blue/20">
-                      <div className="flex items-center">
-                        <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                      <div className="flex items-center flex-wrap gap-2">
+                        <div className="w-6 h-6 bg-bright-blue rounded-full flex items-center justify-center flex-shrink-0">
                           <Lightbulb className="text-white" size={12} />
                         </div>
-                        <span className="text-xs font-medium text-dark-blue">
-                          Foco: {lowestCompetencies.map(comp => `${comp.name} ${comp.id}`).join(', ')}
-                        </span>
+                        <span className="text-xs font-medium text-dark-blue">Foco:</span>
+                        {lowestCompetencies.map((comp, index) => (
+                          <div key={comp.id} className="flex items-center gap-1">
+                            <span className="text-xs font-medium text-dark-blue">{comp.name}</span>
+                            <div className="w-4 h-4 bg-bright-blue rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">{comp.id}</span>
+                            </div>
+                            {index < lowestCompetencies.length - 1 && <span className="text-xs text-dark-blue">,</span>}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   );
