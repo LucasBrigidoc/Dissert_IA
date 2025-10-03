@@ -864,7 +864,7 @@ export default function BibliotecaPage() {
       
       {/* Modal de Detalhes do Arquivo */}
       <Dialog open={showFileDetails} onOpenChange={setShowFileDetails}>
-        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col" aria-describedby="file-details-description">
+        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col" aria-describedby="file-details-description" hideClose>
           <DialogHeader>
             <div className="flex items-center space-x-3 mb-2">
               {selectedFile && getIcon(selectedFile.type)}
