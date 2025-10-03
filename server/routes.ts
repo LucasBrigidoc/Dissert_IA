@@ -1430,6 +1430,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create user exam
   app.post("/api/exams", requireAuth, async (req, res) => {
     try {
+      console.log("📝 Creating exam with data:", JSON.stringify(req.body, null, 2));
       const validatedData = insertUserExamSchema.parse({
         ...req.body,
         userId: req.user!.id,
@@ -1438,6 +1439,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(exam);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error("❌ Validation errors:", JSON.stringify(error.errors, null, 2));
         return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
       }
       console.error("Create exam error:", error);
