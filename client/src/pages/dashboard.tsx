@@ -2452,10 +2452,11 @@ export default function Dashboard() {
             <div className="space-y-6 py-4">
               <div className="space-y-3">
                 <p className="text-soft-gray leading-relaxed">
-                  O <span className="font-semibold text-dark-blue">DissertIA</span> é seu assistente pessoal de redação com IA, oferecendo ferramentas como o Arquiteto de Argumentos Socrático, Explorador de Repertório Inteligente e correção profissional de redações.
+                  Olá! Bem-vindo ao <span className="font-semibold text-dark-blue">DissertIA</span>. 
+                  Para personalizar sua experiência e acompanhar seu progresso, vamos definir sua meta de pontuação.
                 </p>
                 <p className="text-soft-gray leading-relaxed">
-                  Para começar, defina sua meta de pontuação e acompanhe sua evolução:
+                  Qual pontuação você deseja alcançar nas suas redações?
                 </p>
               </div>
 
