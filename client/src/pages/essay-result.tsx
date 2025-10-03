@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import type { EssayStructure } from "@shared/schema";
 import jsPDF from 'jspdf';
+import { AIUsageProgress } from "@/components/ai-usage-progress";
 
 interface EssayResultProps {
   essay: string;
@@ -155,29 +156,14 @@ export function EssayResult({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Button 
-            variant="outline" 
-            onClick={onBack} 
-            className="mb-4 border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hover:border-bright-blue backdrop-blur-sm bg-white/60 transition-all duration-200 shadow-sm" 
-            data-testid="button-voltar"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar para Estrutura Coringa
-          </Button>
-          
-          <div className="flex items-center justify-between">
+      {/* Fixed Header com AI Usage Progress */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h1 className="text-3xl font-bold text-dark-blue mb-2">
-                Redação Gerada
-              </h1>
-              <p className="text-soft-gray">
-                Sua redação foi criada com sucesso usando o modelo "{structure.name}"
-              </p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-dark-blue">Redação Gerada</h1>
+              <p className="text-soft-gray">Sua redação foi criada com sucesso usando o modelo "{structure.name}"</p>
             </div>
-            
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-green-100 text-green-800">
                 <CheckCircle className="mr-1 h-3 w-3" />
@@ -185,6 +171,29 @@ export function EssayResult({
               </Badge>
             </div>
           </div>
+        </div>
+        
+        {/* AI Usage Progress - Integrado no header */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
+            <AIUsageProgress variant="inline" />
+          </div>
+        </div>
+      </div>
+
+      {/* Content com padding para compensar header fixo */}
+      <div className="container mx-auto px-4 py-8 pt-32 sm:pt-40">
+        {/* Botão Voltar */}
+        <div className="mb-8">
+          <Button 
+            variant="outline" 
+            onClick={onBack} 
+            className="border-bright-blue/30 text-bright-blue hover:bg-bright-blue/10 hover:border-bright-blue backdrop-blur-sm bg-white/60 transition-all duration-200 shadow-sm" 
+            data-testid="button-voltar"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar para Estrutura Coringa
+          </Button>
         </div>
 
         <div className="space-y-6">

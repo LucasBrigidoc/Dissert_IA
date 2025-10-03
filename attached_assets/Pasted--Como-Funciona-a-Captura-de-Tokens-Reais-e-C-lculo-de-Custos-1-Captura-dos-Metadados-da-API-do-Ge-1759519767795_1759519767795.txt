@@ -1,0 +1,90 @@
+ Como Funciona a Captura de Tokens Reais e Cálculo de Custos
+1️⃣ Captura dos Metadados da API do Gemini
+Quando o texto é modificado pela IA (no text-modification-service.ts linha 656), o sistema captura os metadados reais da resposta do Gemini:
+
+// Após chamar a API do Gemini
+const result = await this.model.generateContent(optimizedPrompt);
+const response = result.response.text();
+// 🎯 Captura os metadados REAIS de uso de tokens
+const usageMetadata = result.response.usageMetadata || {};
+const rawPromptTokens = usageMetadata.promptTokenCount || 0;        // Tokens de entrada
+const rawOutputTokens = usageMetadata.candidatesTokenCount || 0;     // Tokens de saída  
+const rawTotalTokens = usageMetadata.totalTokenCount || 0;           // Total
+2️⃣ Normalização dos Valores
+O sistema garante consistência matemática nos valores (linhas 665-690):
+
+// Garante que: promptTokens + outputTokens = totalTokens SEMPRE
+if (rawTotalTokens > 0) {
+  finalTotalTokens = rawTotalTokens;
+  finalPromptTokens = rawPromptTokens;
+  finalOutputTokens = finalTotalTokens - finalPromptTokens;
+} else {
+  // Fallback se metadados incompletos
+  finalPromptTokens = rawPromptTokens || Math.floor(text.length / 4);
+  finalOutputTokens = rawOutputTokens || Math.floor(text.length / 3);
+  finalTotalTokens = finalPromptTokens + finalOutputTokens;
+}
+3️⃣ Cálculo do Custo Real em BRL
+O cost-tracking-service.ts calcula o custo baseado nos tokens reais capturados:
+
+// Preços do Gemini 2.5 Flash-Lite (por milhão de tokens)
+GEMINI_PRICING_USD = {
+  input: 0.10,   // $0.10 por milhão de tokens de entrada
+  output: 0.40,  // $0.40 por milhão de tokens de saída
+}
+// 💰 Cálculo do custo em USD
+const inputCostUSD = (inputTokens / 1_000_000) * 0.10;
+const outputCostUSD = (outputTokens / 1_000_000) * 0.40;
+const totalCostUSD = inputCostUSD + outputCostUSD;
+// 💱 Conversão para BRL (taxa de câmbio dinâmica)
+const totalCostBRL = await currencyService.convertUSDtoBRL(totalCostUSD);
+// 🪙 Conversão para centavos (R$ 0,01 = 1 centavo)
+const centavos = Math.ceil(totalCostBRL * 100);
+Exemplo real:
+
+1.000 tokens entrada + 500 tokens saída
+Custo USD: (1000/1M × $0.10) + (500/1M × $0.40) = $0.0001 + $0.0002 = $0.0003
+Taxa câmbio: ~R$ 6,00
+Custo BRL: $0.0003 × 6 = R$ 0,0018
+Custo final: 1 centavo (arredondado para cima)
+4️⃣ Registro no Banco de Dados
+O sistema registra o uso real no período do usuário (weekly-cost-limiting.ts):
+
+await weeklyCostLimitingService.recordUsage(
+  userId,
+  operation: 'text_modification',
+  costCentavos: centavos,  // Custo calculado com tokens REAIS
+  inputTokens: finalPromptTokens,
+  outputTokens: finalOutputTokens
+);
+5️⃣ Atualização da Barra de Progresso
+O componente AIUsageProgress (linha 675 do controlador) busca os dados atualizados:
+
+// Busca estatísticas reais do banco de dados
+const response = await fetch("/api/weekly-usage/stats");
+const data = await response.json();
+// Dados retornados:
+{
+  currentUsageCentavos: 45,      // Custo acumulado REAL
+  limitCentavos: 875,            // Limite do plano (R$ 8,75)
+  usagePercentage: 5.14,         // 45/875 = 5.14%
+  operationCount: 12,            // Total de operações
+  costBreakdown: {               // Detalhamento por tipo
+    "text_modification": 25,
+    "essay_correction": 20
+  }
+}
+A barra é atualizada automaticamente:
+
+✅ A cada 30 segundos
+✅ Após cada operação de IA (via refreshAIUsageStats())
+✅ Reflete o uso REAL dos tokens capturados da API
+📈 Diferença entre Valor Pré-definido vs Real
+Antes (estimativa):
+
+Sistema estimava: ~1.500 tokens → ~3 centavos
+Agora (real):
+
+API retorna: 1.234 tokens (entrada) + 456 tokens (saída)
+Cálculo real: (1234/1M × $0.10) + (456/1M × $0.40) = 2 centavos ✅
+Isso garante que você paga apenas pelo que realmente usou, com precisão total baseada nos metadados da API do Gemini!
