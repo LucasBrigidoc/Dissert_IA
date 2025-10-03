@@ -1475,42 +1475,47 @@ export default function Dashboard() {
               <>
                 <div className="space-y-3">
                   {editingTarget ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-soft-gray">Nova meta:</span>
-                        <input
-                          type="number"
-                          value={newTargetScore}
-                          onChange={(e) => setNewTargetScore(Number(e.target.value))}
-                          className="w-16 px-2 py-1 text-sm border border-bright-blue/30 rounded focus:outline-none focus:border-bright-blue"
-                          data-testid="input-target-score"
-                        />
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            updateProgressMutation.mutate({ targetScore: newTargetScore });
-                            setEditingTarget(false);
-                          }}
-                          className="text-xs bg-bright-blue text-white hover:bg-bright-blue/90"
-                          data-testid="button-save-target"
-                          disabled={updateProgressMutation.isPending}
-                        >
-                          {updateProgressMutation.isPending ? "Salvando..." : "Salvar"}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setNewTargetScore(targetScore ?? 900);
-                            setEditingTarget(false);
-                          }}
-                          className="text-xs"
-                          data-testid="button-cancel-target"
-                        >
-                          Cancelar
-                        </Button>
+                    <div className="bg-white/50 rounded-xl p-4 border border-bright-blue/20">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2 flex-1">
+                          <span className="text-sm font-medium text-soft-gray whitespace-nowrap">Nova meta:</span>
+                          <input
+                            type="number"
+                            value={newTargetScore}
+                            onChange={(e) => setNewTargetScore(Number(e.target.value))}
+                            className="w-20 px-3 py-2 text-base font-semibold text-dark-blue border border-bright-blue/30 rounded-lg focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20"
+                            data-testid="input-target-score"
+                            min="0"
+                            max="1000"
+                            placeholder="900"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              updateProgressMutation.mutate({ targetScore: newTargetScore });
+                              setEditingTarget(false);
+                            }}
+                            className="bg-bright-blue text-white hover:bg-bright-blue/90"
+                            data-testid="button-save-target"
+                            disabled={updateProgressMutation.isPending}
+                          >
+                            {updateProgressMutation.isPending ? "Salvando..." : "Salvar"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setNewTargetScore(targetScore ?? 900);
+                              setEditingTarget(false);
+                            }}
+                            className="border-soft-gray/30"
+                            data-testid="button-cancel-target"
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ) : (
