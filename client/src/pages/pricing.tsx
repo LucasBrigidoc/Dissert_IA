@@ -271,7 +271,7 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
-                          Até 5 itens
+                          Limitado
                         </Badge>
                       </div>
                     </td>
@@ -311,7 +311,7 @@ export default function Pricing() {
                     <td className="p-3 sm:p-4 text-center border-r border-[#5087ff]/40">
                       <div className="flex items-center justify-center">
                         <Badge variant="outline" className="text-orange-400 border-orange-400/60 bg-orange-500/20 text-xs px-1.5 py-0.5">
-                          3 por dia
+                          Limitado
                         </Badge>
                       </div>
                     </td>

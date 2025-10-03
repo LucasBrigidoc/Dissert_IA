@@ -81,7 +81,7 @@ export const mockPricingPlans = [
       "Acesso a funcionalidades básicas",
       "Newsletter educacional semanal",
       "Dashboard personalizado",
-      "Biblioteca pessoal limitada (até 5 itens)",
+      "Biblioteca pessoal limitada",
       "Uso limitado de IA",
       "Simulador básico de redação"
     ],
@@ -142,7 +142,7 @@ export const mockFAQ = [
   {
     id: 2,
     question: "O que está incluído no plano gratuito?",
-    answer: "O plano gratuito inclui acesso a funcionalidades básicas, newsletter educacional semanal, dashboard personalizado, biblioteca pessoal limitada (até 5 itens), uso limitado de IA e simulador básico de redação."
+    answer: "O plano gratuito inclui acesso a funcionalidades básicas, newsletter educacional semanal, dashboard personalizado, biblioteca pessoal limitada, uso limitado de IA e simulador básico de redação."
   },
   {
     id: 3,
@@ -162,7 +162,7 @@ export const mockFAQ = [
   {
     id: 6,
     question: "Como funciona a biblioteca pessoal?",
-    answer: "No plano gratuito, você pode salvar até 5 itens na sua biblioteca pessoal. No Plano Pro, você tem espaço completo para salvar todas suas redações, repertórios e acompanhar seu progresso completo."
+    answer: "No plano gratuito, você pode salvar uma quantidade limitada de itens na sua biblioteca pessoal. No Plano Pro, você tem espaço completo para salvar todas suas redações, repertórios e acompanhar seu progresso completo."
   },
   {
     id: 7,
