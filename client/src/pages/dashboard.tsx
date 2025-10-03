@@ -170,7 +170,7 @@ export default function Dashboard() {
     mutationFn: async (data: { targetScore?: number; averageScore?: number; essaysCount?: number; studyHours?: number; streak?: number }) => {
       return await apiRequest("/api/user-progress", {
         method: "PUT",
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
@@ -2452,11 +2452,10 @@ export default function Dashboard() {
             <div className="space-y-6 py-4">
               <div className="space-y-3">
                 <p className="text-soft-gray leading-relaxed">
-                  Olá! Bem-vindo ao <span className="font-semibold text-dark-blue">DissertIA</span>. 
-                  Para personalizar sua experiência e acompanhar seu progresso, vamos definir sua meta de pontuação.
+                  O <span className="font-semibold text-dark-blue">DissertIA</span> é seu assistente pessoal de redação com IA, oferecendo ferramentas como o Arquiteto de Argumentos Socrático, Explorador de Repertório Inteligente e correção profissional de redações.
                 </p>
                 <p className="text-soft-gray leading-relaxed">
-                  Qual pontuação você deseja alcançar nas suas redações?
+                  Para começar, defina sua meta de pontuação e acompanhe sua evolução:
                 </p>
               </div>
 
