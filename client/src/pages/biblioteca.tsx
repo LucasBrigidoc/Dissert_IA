@@ -602,6 +602,15 @@ export default function BibliotecaPage() {
                 >
                   Propostas
                 </Button>
+                <Button
+                  variant={selectedCategory === "textosModificados" ? "default" : "secondary"}
+                  size="sm"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
+                  onClick={() => setSelectedCategory("textosModificados")}
+                  data-testid="filter-textos-modificados"
+                >
+                  Textos Modificados
+                </Button>
               </div>
             </div>
           </LiquidGlassCard>
@@ -643,12 +652,17 @@ export default function BibliotecaPage() {
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.propostas.length}</span>
                   <span className="text-xs text-soft-gray">Pro</span>
                 </div>
+                <div className="flex items-center space-x-2 bg-cyan-50 rounded-full px-3 py-1">
+                  <FileText className="text-cyan-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.textosModificados.length}</span>
+                  <span className="text-xs text-soft-gray">Txt</span>
+                </div>
               </div>
             </LiquidGlassCard>
           </div>
           
           {/* Desktop: Full Grid */}
-          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
@@ -683,6 +697,12 @@ export default function BibliotecaPage() {
               <FolderOpen className="mx-auto mb-2 text-indigo-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.propostas.length}</div>
               <div className="text-sm text-soft-gray">Propostas</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <FileText className="mx-auto mb-2 text-cyan-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.textosModificados.length}</div>
+              <div className="text-sm text-soft-gray">Textos Modificados</div>
             </LiquidGlassCard>
           </div>
         </div>
@@ -721,6 +741,7 @@ export default function BibliotecaPage() {
                         {file.type === "Estilo" && <Target size={16} className="text-purple-600" />}
                         {file.type === "Newsletter" && <Newspaper size={16} className="text-orange-600" />}
                         {file.type === "Proposta" && <FolderOpen size={16} className="text-indigo-600" />}
+                        {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
                       </div>
                       {/* Desktop: Regular icon */}
                       <div className="hidden sm:block">
