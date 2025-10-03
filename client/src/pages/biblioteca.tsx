@@ -147,7 +147,8 @@ export default function BibliotecaPage() {
     description: savedText.modifiedText?.substring(0, 100) + '...' || 'Texto modificado do Controlador de Escrita',
     content: `**${savedText.title}**\n\n**Texto Original:**\n${savedText.originalText}\n\n**Texto Modificado:**\n${savedText.modifiedText}\n\n${savedText.modificationType ? `**Tipo de Modificação:** ${savedText.modificationType}` : ''}`,
     originalText: savedText.originalText,
-    modifiedText: savedText.modifiedText
+    modifiedText: savedText.modifiedText,
+    modificationType: savedText.modificationType
   });
 
   const transformProposalToFile = (proposal: any) => ({
@@ -778,30 +779,73 @@ export default function BibliotecaPage() {
           {selectedFile && (
             <div className="flex-1 min-h-0 flex flex-col" id="file-details-description">
               {/* Informações do Arquivo */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium text-dark-blue">Categoria: </span>
-                    <span className="text-soft-gray">{selectedFile.category}</span>
+              {selectedFile.type === 'Texto Modificado' ? (
+                /* Exibição especial para textos modificados */
+                <div className="flex-1 overflow-y-auto space-y-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium text-dark-blue">Data de Criação: </span>
+                        <span className="text-soft-gray">{new Date(selectedFile.date).toLocaleDateString('pt-BR')}</span>
+                      </div>
+                      {selectedFile.modificationType && (
+                        <div>
+                          <span className="font-medium text-dark-blue">Tipo de Modificação: </span>
+                          <span className="text-soft-gray">{selectedFile.modificationType}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-medium text-dark-blue">Data de Criação: </span>
-                    <span className="text-soft-gray">{new Date(selectedFile.date).toLocaleDateString('pt-BR')}</span>
+                  
+                  {/* Texto Original */}
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <h3 className="font-semibold text-dark-blue mb-2 flex items-center gap-2">
+                      <FileText size={18} className="text-bright-blue" />
+                      Texto Original
+                    </h3>
+                    <div className="bg-white rounded p-3 text-sm text-soft-gray whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
+                      {selectedFile.originalText || 'Texto original não disponível'}
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-medium text-dark-blue">Tamanho: </span>
-                    <span className="text-soft-gray">{selectedFile.size}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-dark-blue">Tipo: </span>
-                    <span className="text-soft-gray">{selectedFile.type}</span>
+                  
+                  {/* Texto Modificado */}
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <h3 className="font-semibold text-dark-blue mb-2 flex items-center gap-2">
+                      <PenTool size={18} className="text-green-600" />
+                      Texto Modificado
+                    </h3>
+                    <div className="bg-white rounded p-3 text-sm text-soft-gray whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
+                      {selectedFile.modifiedText || 'Texto modificado não disponível'}
+                    </div>
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <span className="font-medium text-dark-blue">Descrição: </span>
-                  <span className="text-soft-gray">{selectedFile.description}</span>
+              ) : (
+                /* Exibição padrão para outros tipos de arquivos */
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium text-dark-blue">Categoria: </span>
+                      <span className="text-soft-gray">{selectedFile.category}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-dark-blue">Data de Criação: </span>
+                      <span className="text-soft-gray">{new Date(selectedFile.date).toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-dark-blue">Tamanho: </span>
+                      <span className="text-soft-gray">{selectedFile.size}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-dark-blue">Tipo: </span>
+                      <span className="text-soft-gray">{selectedFile.type}</span>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <span className="font-medium text-dark-blue">Descrição: </span>
+                    <span className="text-soft-gray">{selectedFile.description}</span>
+                  </div>
                 </div>
-              </div>
+              )}
               
               {/* Botões de Ação */}
               <div className="flex justify-between items-center pt-6 border-t border-gray-200 mt-4">
