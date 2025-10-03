@@ -147,7 +147,96 @@ export class WeeklyCostLimitingService {
   }
 
   /**
-   * Record AI operation cost and update usage
+   * Gemini 2.5 Flash-Lite pricing in USD per million tokens
+   */
+  private static readonly GEMINI_PRICING_USD = {
+    input: 0.10,   // $0.10 per million tokens
+    output: 0.40,  // $0.40 per million tokens
+  };
+
+  /**
+   * Calculate cost in centavos (1/100 BRL) for AI operation using dynamic exchange rates
+   */
+  private async calculateCostCentavos(inputTokens: number, outputTokens: number): Promise<number> {
+    // Calculate cost in USD first
+    const inputCostUSD = (inputTokens / 1_000_000) * WeeklyCostLimitingService.GEMINI_PRICING_USD.input;
+    const outputCostUSD = (outputTokens / 1_000_000) * WeeklyCostLimitingService.GEMINI_PRICING_USD.output;
+    const totalCostUSD = inputCostUSD + outputCostUSD;
+    
+    // Convert to BRL using current exchange rate
+    const totalCostBRL = await currencyService.convertUSDtoBRL(totalCostUSD);
+    
+    // Convert to centavos (R$ 0.01 = 1 centavo)
+    const centavos = Math.ceil(totalCostBRL * 100);
+    
+    console.log(`💰 Cost calculation: ${inputTokens} in + ${outputTokens} out = $${totalCostUSD.toFixed(6)} USD = R$ ${totalCostBRL.toFixed(4)} BRL = ${centavos} centavos`);
+    
+    return centavos;
+  }
+
+  /**
+   * Record AI operation with real token usage and calculate actual cost
+   */
+  async recordAIOperationWithTokens(
+    identifier: string,
+    operation: string,
+    tokensInput: number,
+    tokensOutput: number,
+    planType: 'free' | 'pro'
+  ): Promise<{
+    success: boolean;
+    newUsage: WeeklyUsage;
+    costCentavos: number;
+    usageStats: {
+      currentUsageCentavos: number;
+      limitCentavos: number;
+      remainingCentavos: number;
+      usagePercentage: number;
+    };
+  }> {
+    // Calculate real cost based on actual token usage
+    const costCentavos = await this.calculateCostCentavos(tokensInput, tokensOutput);
+    
+    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
+    
+    // Update usage counters
+    const newTotalCost = (usageRecord.totalCostCentavos || 0) + costCentavos;
+    const newOperationCount = (usageRecord.operationCount || 0) + 1;
+    
+    const operationBreakdown = { ...(usageRecord.operationBreakdown as any || {}) };
+    const costBreakdown = { ...(usageRecord.costBreakdown as any || {}) };
+    
+    operationBreakdown[operation] = (operationBreakdown[operation] || 0) + 1;
+    costBreakdown[operation] = (costBreakdown[operation] || 0) + costCentavos;
+
+    // Update the usage record
+    const updatedUsage = await this.storage.updateWeeklyUsage(usageRecord.id, {
+      totalCostCentavos: newTotalCost,
+      operationCount: newOperationCount,
+      operationBreakdown,
+      costBreakdown,
+      lastOperation: new Date(),
+    });
+
+    const limitCentavos = this.getLimitCentavos(planType);
+    const usagePercentage = Math.min(100, (newTotalCost / limitCentavos) * 100);
+    const remaining = Math.max(0, limitCentavos - newTotalCost);
+
+    return {
+      success: true,
+      newUsage: updatedUsage,
+      costCentavos,
+      usageStats: {
+        currentUsageCentavos: newTotalCost,
+        limitCentavos,
+        remainingCentavos: remaining,
+        usagePercentage
+      }
+    };
+  }
+
+  /**
+   * Record AI operation cost and update usage (deprecated - use recordAIOperationWithTokens instead)
    */
   async recordAIOperation(
     identifier: string,
