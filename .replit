@@ -15,10 +15,6 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 39669
-externalPort = 5173
-
-[[ports]]
 localPort = 42287
 externalPort = 3000
 
@@ -66,7 +62,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx tsx server/index.ts"
+args = "npm run dev"
 waitForPort = 5000
 
 [agent]
