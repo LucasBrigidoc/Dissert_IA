@@ -1111,6 +1111,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get user's recent essays with competency scores
       const userEssays = await storage.getEssaysByUser(userId);
       
+      // Get user's manual scores with competency scores
+      const userScores = await storage.getUserScores(userId);
+      
       // Filter essays that have at least one competency score
       const essaysWithCompetencies = userEssays.filter((essay: any) => 
         essay.competence1 !== null || 
@@ -1120,8 +1123,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         essay.competence5 !== null
       );
 
-      // If no essays with competencies, return empty data
-      if (essaysWithCompetencies.length === 0) {
+      // Filter scores that have at least one competency score
+      const scoresWithCompetencies = userScores.filter((score: any) => 
+        score.competence1 !== null || 
+        score.competence2 !== null || 
+        score.competence3 !== null || 
+        score.competence4 !== null || 
+        score.competence5 !== null
+      );
+
+      // Combine both sources
+      const allCompetencyData = [...essaysWithCompetencies, ...scoresWithCompetencies];
+
+      // If no data with competencies, return empty data
+      if (allCompetencyData.length === 0) {
         return res.json({
           hasData: false,
           weakestCompetencies: [],
@@ -1145,15 +1160,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       const competencyData = competencyNames.map(comp => {
-        const scores = essaysWithCompetencies
-          .map((essay: any) => essay[comp.key])
+        const scores = allCompetencyData
+          .map((item: any) => item[comp.key])
           .filter((score: any): score is number => score !== null);
         
         const average = scores.length > 0 
           ? Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length)
           : 0;
 
-        // Get most recent feedback for this competency
+        // Get most recent feedback for this competency (from essays only)
         const feedbackKey = `${comp.key}Feedback` as const;
         const recentFeedback = essaysWithCompetencies
           .map((essay: any) => essay[feedbackKey])
@@ -1199,7 +1214,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           competence5: competencyData[4].average,
         },
         overallAverage,
-        essaysAnalyzed: essaysWithCompetencies.length,
+        essaysAnalyzed: allCompetencyData.length,
       });
     } catch (error) {
       console.error("Get user competencies error:", error);

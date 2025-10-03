@@ -743,6 +743,7 @@ export default function Dashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-scores"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-competencies"] });
       toast({
         title: "Nota adicionada! ✅",
         description: "Sua nota foi adicionada com sucesso.",
