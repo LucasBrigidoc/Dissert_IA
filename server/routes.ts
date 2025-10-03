@@ -1522,17 +1522,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create or update user schedule
   app.post("/api/schedule", requireAuth, async (req, res) => {
     try {
-      const validatedData = insertUserScheduleSchema.parse({
+      console.log("📅 Received schedule data:", JSON.stringify(req.body, null, 2));
+      
+      // Convert weekStart string to Date if needed
+      const dataToValidate = {
         ...req.body,
         userId: req.user!.id,
-      });
+        weekStart: req.body.weekStart ? new Date(req.body.weekStart) : new Date()
+      };
+      
+      console.log("📅 Data to validate:", JSON.stringify({
+        ...dataToValidate,
+        weekStart: dataToValidate.weekStart.toISOString()
+      }, null, 2));
+      
+      const validatedData = insertUserScheduleSchema.parse(dataToValidate);
       const schedule = await storage.createUserSchedule(validatedData);
+      
+      console.log("✅ Schedule created successfully:", schedule.id);
       res.status(201).json(schedule);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error("❌ Validation error:", JSON.stringify(error.errors, null, 2));
         return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
       }
-      console.error("Create schedule error:", error);
+      console.error("❌ Create schedule error:", error);
       res.status(500).json({ message: "Erro ao criar cronograma" });
     }
   });
