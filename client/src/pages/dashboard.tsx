@@ -1431,7 +1431,7 @@ export default function Dashboard() {
                             icon: 'text-green-500'
                           };
                           IconComponent = Check;
-                        } else if (comp.score < 60) {
+                        } else if (comp.score < 80) {
                           colors = { 
                             bg: 'from-red-50 to-red-100', 
                             border: 'border-red-200', 
@@ -1441,7 +1441,7 @@ export default function Dashboard() {
                             icon: 'text-red-500'
                           };
                           IconComponent = X;
-                        } else if (comp.score < 140) {
+                        } else if (comp.score < 160) {
                           colors = { 
                             bg: 'from-yellow-50 to-yellow-100', 
                             border: 'border-yellow-200', 
@@ -1474,7 +1474,7 @@ export default function Dashboard() {
                             </div>
                             <div className="flex items-center space-x-1 md:space-x-2">
                               <span className="text-xs text-soft-gray hidden sm:inline">{comp.feedback}</span>
-                              {IconComponent && <IconComponent className={colors.icon} size={8} />}
+                              {IconComponent && <IconComponent className={colors.icon} size={14} />}
                             </div>
                           </div>
                         );
