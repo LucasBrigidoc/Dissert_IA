@@ -2222,7 +2222,7 @@ export default function Dashboard() {
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[9999]">
                         <SelectItem value="Simulado">Simulado</SelectItem>
                         <SelectItem value="Exame Nacional">Exame Nacional</SelectItem>
                         <SelectItem value="Vestibular">Vestibular</SelectItem>
