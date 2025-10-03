@@ -348,7 +348,7 @@ export default function Features() {
             Junte-se aos milhares de vestibulandos e concurseiros que já estão transformando sua escrita com o DissertIA
           </p>
           <Button asChild className="bg-white text-dark-blue px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-gray-100 smooth-transition hover-scale" data-testid="button-try-free">
-            <Link href="/signup">Experimente Grátis</Link>
+            <Link href="/pricing">Experimente Grátis</Link>
           </Button>
         </LiquidGlassCard>
       </div>
