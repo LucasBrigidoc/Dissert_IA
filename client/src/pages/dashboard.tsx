@@ -905,6 +905,34 @@ export default function Dashboard() {
     nome: score.examName
   })).sort((a, b) => new Date(scores.find(s => s.totalScore === a.nota)?.date || 0).getTime() - new Date(scores.find(s => s.totalScore === b.nota)?.date || 0).getTime());
 
+  // Calculate dynamic Y-axis domain based on score values
+  const calculateYAxisDomain = () => {
+    if (scores.length === 0) return [0, 1000];
+    
+    const scoreValues = scores.map(s => s.totalScore);
+    const minScore = Math.min(...scoreValues);
+    const maxScore = Math.max(...scoreValues);
+    
+    // Add padding and round to nearest 50
+    const padding = 100;
+    const yMin = Math.max(0, Math.floor((minScore - padding) / 50) * 50);
+    const yMax = Math.min(1000, Math.ceil((maxScore + padding) / 50) * 50);
+    
+    // Ensure minimum range of 200 points for better visualization
+    const range = yMax - yMin;
+    if (range < 200) {
+      const center = (yMin + yMax) / 2;
+      return [
+        Math.max(0, Math.floor((center - 100) / 50) * 50),
+        Math.min(1000, Math.ceil((center + 100) / 50) * 50)
+      ];
+    }
+    
+    return [yMin, yMax];
+  };
+
+  const yAxisDomain = calculateYAxisDomain();
+
   const handleLogout = () => {
     // In a real app, this would clear authentication tokens/session
     // For demo purposes, just redirect to landing page
@@ -1559,7 +1587,7 @@ export default function Dashboard() {
               </div>
               <h4 className="text-sm md:text-base font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
-            <div className="h-48 md:h-64 bg-white rounded-2xl border-2 border-bright-blue/20 p-4 md:p-8 shadow-lg" data-testid="chart-evolution">
+            <div className="h-56 md:h-72 bg-white rounded-2xl border-2 border-bright-blue/20 p-3 md:p-6 shadow-lg" data-testid="chart-evolution">
               {scoresLoading ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="animate-pulse text-center">
@@ -1581,7 +1609,7 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <LineChart data={chartData} margin={{ top: 10, right: 10, left: 5, bottom: 5 }}>
                   <defs>
                     <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#10b981" />
@@ -1607,23 +1635,24 @@ export default function Dashboard() {
                   <XAxis 
                     dataKey="date" 
                     stroke="#6b7280"
-                    fontSize={12}
+                    fontSize={11}
                     fontWeight={600}
                     tickLine={false}
                     axisLine={false}
-                    tick={{ dy: 10, fill: '#374151' }}
+                    tick={{ dy: 8, fill: '#374151' }}
                     interval="preserveStartEnd"
                   />
                   <YAxis 
                     stroke="#6b7280"
-                    fontSize={12}
+                    fontSize={11}
                     fontWeight={600}
-                    domain={[650, 850]}
+                    domain={yAxisDomain}
                     tickLine={false}
                     axisLine={false}
-                    tick={{ dx: -10, fill: '#374151' }}
-                    tickFormatter={(value) => `${value} pts`}
-                    width={70}
+                    tick={{ dx: -5, fill: '#374151' }}
+                    tickFormatter={(value) => `${value}`}
+                    width={50}
+                    tickCount={6}
                   />
                   <Tooltip 
                     contentStyle={{ 
