@@ -162,7 +162,6 @@ export function EssayResult({
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-dark-blue">Redação Gerada</h1>
-              <p className="text-soft-gray">Sua redação foi criada com sucesso usando o modelo "{structure.name}"</p>
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-green-100 text-green-800">
