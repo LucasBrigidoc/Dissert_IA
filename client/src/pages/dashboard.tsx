@@ -1442,24 +1442,11 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {/* Progress Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/10 border-bright-blue/20" data-testid="card-progress">
-            <div className="flex items-center justify-between mb-3 md:mb-4">
-              <div className="flex items-center">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={14} />
-                </div>
-                <h4 className="text-sm md:text-base font-semibold text-dark-blue">Progresso Geral</h4>
+            <div className="flex items-center mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                <TrendingUp className="text-white" size={14} />
               </div>
-              {targetScore !== null && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditingTarget(true)}
-                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 p-1 h-8"
-                  data-testid="button-edit-target"
-                >
-                  <Edit3 size={10} />
-                </Button>
-              )}
+              <h4 className="text-sm md:text-base font-semibold text-dark-blue">Progresso Geral</h4>
             </div>
             
             {targetScore === null ? (
@@ -1577,6 +1564,22 @@ export default function Dashboard() {
                           </div>
                         );
                       })()}
+
+                      {/* Edit Target Button */}
+                      {targetScore !== null && (
+                        <div className="flex justify-center mt-3">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingTarget(true)}
+                            className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                            data-testid="button-edit-target"
+                          >
+                            <Edit3 size={14} className="mr-2" />
+                            Editar Meta
+                          </Button>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
