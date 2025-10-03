@@ -102,7 +102,8 @@ export const mockPricingPlans = [
       "Controlador de Escrita: ajuste tom e formalidade",
       "Simulador completo idêntico ao dia da prova",
       "Biblioteca completa + Material exclusivo",
-      "Uso completo de IA + Suporte prioritário"
+      "Uso completo de IA + Suporte prioritário",
+      "Limite zera em 7 dias"
     ],
     buttonText: "Assinar Pro",
     popular: true
