@@ -1107,6 +1107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user-competencies", requireAuth, async (req, res) => {
     try {
       const userId = req.user!.id;
+      const period = req.query.period as string || 'all';
       
       // Get user's recent essays with competency scores
       const userEssays = await storage.getEssaysByUser(userId);
@@ -1114,8 +1115,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get user's manual scores with competency scores
       const userScores = await storage.getUserScores(userId);
       
+      // Calculate the date threshold based on period
+      let dateThreshold: Date | null = null;
+      const now = new Date();
+      
+      switch (period) {
+        case '3months':
+          dateThreshold = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+          break;
+        case '1month':
+          dateThreshold = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        case '15days':
+          dateThreshold = new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000);
+          break;
+        case 'last':
+          // Will be handled separately - get only the most recent
+          break;
+        case 'all':
+        default:
+          dateThreshold = null;
+          break;
+      }
+      
       // Filter essays that have at least one competency score
-      const essaysWithCompetencies = userEssays.filter((essay: any) => 
+      let essaysWithCompetencies = userEssays.filter((essay: any) => 
         essay.competence1 !== null || 
         essay.competence2 !== null || 
         essay.competence3 !== null || 
@@ -1124,7 +1148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
 
       // Filter scores that have at least one competency score
-      const scoresWithCompetencies = userScores.filter((score: any) => 
+      let scoresWithCompetencies = userScores.filter((score: any) => 
         score.competence1 !== null || 
         score.competence2 !== null || 
         score.competence3 !== null || 
@@ -1132,8 +1156,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         score.competence5 !== null
       );
 
+      // Apply date filtering if needed
+      if (dateThreshold) {
+        essaysWithCompetencies = essaysWithCompetencies.filter((essay: any) => 
+          new Date(essay.createdAt) >= dateThreshold
+        );
+        scoresWithCompetencies = scoresWithCompetencies.filter((score: any) => 
+          new Date(score.scoreDate) >= dateThreshold
+        );
+      }
+
       // Combine both sources
-      const allCompetencyData = [...essaysWithCompetencies, ...scoresWithCompetencies];
+      let allCompetencyData = [...essaysWithCompetencies, ...scoresWithCompetencies];
+      
+      // If period is 'last', get only the most recent item with competencies
+      if (period === 'last' && allCompetencyData.length > 0) {
+        // Sort by date (most recent first)
+        allCompetencyData = allCompetencyData.sort((a: any, b: any) => {
+          const dateA = new Date(a.scoreDate || a.createdAt);
+          const dateB = new Date(b.scoreDate || b.createdAt);
+          return dateB.getTime() - dateA.getTime();
+        });
+        // Keep only the most recent
+        allCompetencyData = [allCompetencyData[0]];
+      }
 
       // If no data with competencies, return empty data
       if (allCompetencyData.length === 0) {

@@ -142,6 +142,9 @@ export default function Dashboard() {
     ? Math.round(completedSimulationsWithTime.reduce((sum, s) => sum + (s.timeTaken || 0), 0) / completedSimulationsWithTime.length)
     : 0;
 
+  // State for competency period filter
+  const [competencyPeriod, setCompetencyPeriod] = useState<string>('all');
+
   // Fetch user competencies analysis
   const { data: userCompetencies } = useQuery<{
     hasData: boolean;
@@ -161,7 +164,14 @@ export default function Dashboard() {
     overallAverage: number;
     essaysAnalyzed: number;
   }>({
-    queryKey: ["/api/user-competencies"],
+    queryKey: ["/api/user-competencies", competencyPeriod],
+    queryFn: async () => {
+      const response = await fetch(`/api/user-competencies?period=${competencyPeriod}`, {
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch competencies');
+      return response.json();
+    },
     enabled: !!user,
   });
 
@@ -1362,11 +1372,25 @@ export default function Dashboard() {
           {/* Improvement Points - Taking 2 columns */}
           <div className="lg:col-span-2 h-full">
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-soft-gray/5 border-bright-blue/20 h-full min-h-[380px] flex flex-col" data-testid="card-improvement-points">
-              <div className="flex items-center mb-2 md:mb-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
-                  <TrendingUp className="text-white" size={14} />
+              <div className="flex items-center justify-between mb-2 md:mb-3">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                    <TrendingUp className="text-white" size={14} />
+                  </div>
+                  <h4 className="text-xs md:text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
                 </div>
-                <h4 className="text-xs md:text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
+                <Select value={competencyPeriod} onValueChange={setCompetencyPeriod} data-testid="select-competency-period">
+                  <SelectTrigger className="w-32 h-8 text-xs border-bright-blue/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas</SelectItem>
+                    <SelectItem value="3months">3 meses</SelectItem>
+                    <SelectItem value="1month">1 mês</SelectItem>
+                    <SelectItem value="15days">15 dias</SelectItem>
+                    <SelectItem value="last">Última</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               {/* Competências em linhas horizontais */}
