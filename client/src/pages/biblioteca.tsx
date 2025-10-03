@@ -179,99 +179,209 @@ export default function BibliotecaPage() {
   const downloadAsPDF = (file: any) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 20;
     const maxWidth = pageWidth - 2 * margin;
-    let yPosition = 30;
+    let yPosition = 20;
 
-    // Cabeçalho do documento
-    doc.setFontSize(20);
+    // Cores DissertIA
+    const darkBlue = [13, 51, 97]; // #0D3361
+    const brightBlue = [41, 128, 185]; // #2980B9
+    const lightBlue = [224, 242, 254]; // #E0F2FE
+    const lightGreen = [220, 252, 231]; // #DCFCE7
+    const gray = [107, 114, 128]; // #6B7280
+
+    // Função para adicionar rodapé em todas as páginas
+    const addFooter = (pageNumber: number, totalPages: number) => {
+      const footerY = pageHeight - 25;
+      
+      // Linha superior do rodapé
+      doc.setDrawColor(...brightBlue);
+      doc.setLineWidth(0.5);
+      doc.line(margin, footerY - 5, pageWidth - margin, footerY - 5);
+      
+      // Logo e nome DissertIA
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...darkBlue);
+      doc.text('DISSERTIA', margin, footerY);
+      
+      // Informações de contato
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...gray);
+      doc.text('www.dissertia.com.br', margin, footerY + 5);
+      doc.text('@dissertia', margin, footerY + 10);
+      
+      // Número da página
+      doc.setTextColor(...gray);
+      doc.text(`Página ${pageNumber} de ${totalPages}`, 
+        pageWidth - margin, footerY + 7, { align: 'right' });
+    };
+
+    // Cabeçalho com gradiente simulado
+    doc.setFillColor(...darkBlue);
+    doc.rect(0, 0, pageWidth, 35, 'F');
+    
+    doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.text('DissertIA - Biblioteca Pessoal', margin, yPosition);
-    yPosition += 15;
-
-    // Informações do arquivo
-    doc.setFontSize(16);
-    doc.text(file.title, margin, yPosition);
-    yPosition += 10;
-
+    doc.setTextColor(255, 255, 255);
+    doc.text('DISSERTIA', margin, 15);
+    
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Tipo: ${file.type}`, margin, yPosition);
-    yPosition += 5;
-    doc.text(`Categoria: ${file.category}`, margin, yPosition);
-    yPosition += 5;
-    doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR')}`, margin, yPosition);
-    yPosition += 5;
+    doc.text('Biblioteca Pessoal', margin, 22);
     
-    if (file.grade) {
-      doc.text(`Nota: ${file.grade}`, margin, yPosition);
-      yPosition += 5;
-    }
+    yPosition = 45;
 
-    doc.text(`Descrição: ${file.description}`, margin, yPosition);
+    // Título do arquivo
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...darkBlue);
+    doc.text(file.title, margin, yPosition);
+    yPosition += 12;
+
+    // Badge do tipo
+    doc.setFillColor(...brightBlue);
+    doc.roundedRect(margin, yPosition - 5, 50, 7, 2, 2, 'F');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 255, 255);
+    doc.text(file.type, margin + 25, yPosition, { align: 'center' });
     yPosition += 15;
 
-    // Linha separadora
-    doc.setDrawColor(0, 0, 0);
-    doc.line(margin, yPosition, pageWidth - margin, yPosition);
-    yPosition += 10;
+    // Se for texto modificado, usar layout especial
+    if (file.type === 'Texto Modificado' && file.originalText && file.modifiedText) {
+      // Informações
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...gray);
+      doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR')}`, margin, yPosition);
+      if (file.modificationType) {
+        doc.text(`Tipo de Modificação: ${file.modificationType}`, margin + 70, yPosition);
+      }
+      yPosition += 12;
 
-    // Conteúdo
-    if (file.content) {
-      doc.setFontSize(14);
+      // Texto Original
+      doc.setFillColor(...lightBlue);
+      doc.roundedRect(margin, yPosition, maxWidth, 10, 2, 2, 'F');
+      doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
-      doc.text('Conteúdo:', margin, yPosition);
-      yPosition += 10;
+      doc.setTextColor(...darkBlue);
+      doc.text('📄 Texto Original', margin + 3, yPosition + 7);
+      yPosition += 15;
 
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0);
+      const originalLines = doc.splitTextToSize(file.originalText, maxWidth - 4);
       
-      const lines = file.content.split('\\n');
-      
-      lines.forEach((line: string) => {
-        if (line.trim()) {
-          // Verifica se precisa de nova página
-          if (yPosition > doc.internal.pageSize.getHeight() - 30) {
-            doc.addPage();
-            yPosition = 30;
-          }
-          
-          if (line.startsWith('**') && line.endsWith('**')) {
-            // Títulos em negrito
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            const title = line.replace(/\*\*/g, '');
-            const titleLines = doc.splitTextToSize(title, maxWidth);
-            doc.text(titleLines, margin, yPosition);
-            yPosition += titleLines.length * 6 + 3;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-          } else if (line.startsWith('•')) {
-            // Listas com marcadores
-            const listItem = line.substring(2);
-            const listLines = doc.splitTextToSize(`• ${listItem}`, maxWidth);
-            doc.text(listLines, margin + 5, yPosition);
-            yPosition += listLines.length * 5;
-          } else {
-            // Texto normal
-            const textLines = doc.splitTextToSize(line, maxWidth);
-            doc.text(textLines, margin, yPosition);
-            yPosition += textLines.length * 5;
-          }
-        } else {
-          yPosition += 3; // Espaço em branco
+      originalLines.forEach((line: string) => {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 30;
         }
+        doc.text(line, margin + 2, yPosition);
+        yPosition += 5;
       });
+      yPosition += 10;
+
+      // Verificar se precisa de nova página
+      if (yPosition > pageHeight - 80) {
+        doc.addPage();
+        yPosition = 30;
+      }
+
+      // Texto Modificado
+      doc.setFillColor(...lightGreen);
+      doc.roundedRect(margin, yPosition, maxWidth, 10, 2, 2, 'F');
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(34, 139, 34);
+      doc.text('✏️ Texto Modificado', margin + 3, yPosition + 7);
+      yPosition += 15;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0);
+      const modifiedLines = doc.splitTextToSize(file.modifiedText, maxWidth - 4);
+      
+      modifiedLines.forEach((line: string) => {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        doc.text(line, margin + 2, yPosition);
+        yPosition += 5;
+      });
+
+    } else {
+      // Layout padrão para outros tipos
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...gray);
+      doc.text(`Categoria: ${file.category}`, margin, yPosition);
+      yPosition += 5;
+      doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR')}`, margin, yPosition);
+      yPosition += 5;
+      
+      if (file.grade) {
+        doc.text(`Nota: ${file.grade}`, margin, yPosition);
+        yPosition += 5;
+      }
+
+      doc.text(`Descrição: ${file.description}`, margin, yPosition);
+      yPosition += 15;
+
+      // Linha separadora
+      doc.setDrawColor(...brightBlue);
+      doc.setLineWidth(0.5);
+      doc.line(margin, yPosition, pageWidth - margin, yPosition);
+      yPosition += 10;
+
+      // Conteúdo
+      if (file.content) {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const lines = file.content.split('\n');
+        
+        lines.forEach((line: string) => {
+          if (line.trim()) {
+            if (yPosition > pageHeight - 40) {
+              doc.addPage();
+              yPosition = 30;
+            }
+            
+            if (line.startsWith('**') && line.endsWith('**')) {
+              doc.setFont('helvetica', 'bold');
+              doc.setFontSize(11);
+              doc.setTextColor(...darkBlue);
+              const title = line.replace(/\*\*/g, '');
+              const titleLines = doc.splitTextToSize(title, maxWidth);
+              doc.text(titleLines, margin, yPosition);
+              yPosition += titleLines.length * 6 + 3;
+              doc.setFont('helvetica', 'normal');
+              doc.setFontSize(10);
+              doc.setTextColor(0, 0, 0);
+            } else {
+              const textLines = doc.splitTextToSize(line, maxWidth);
+              doc.text(textLines, margin, yPosition);
+              yPosition += textLines.length * 5;
+            }
+          } else {
+            yPosition += 3;
+          }
+        });
+      }
     }
 
-    // Rodapé
+    // Adicionar rodapé em todas as páginas
     const pageCount = doc.internal.pages.length - 1;
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'italic');
-      doc.text(`Página ${i} de ${pageCount} - Gerado pelo DissertIA`, 
-        pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+      addFooter(i, pageCount);
     }
 
     // Download do PDF
