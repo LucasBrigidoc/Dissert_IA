@@ -1797,14 +1797,11 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+              <div className="mt-4 p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Target className="text-bright-blue mr-3" size={14} />
-                    <div>
-                      <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
-                      <div className="text-xs text-soft-gray">Baseado na sua próxima prova</div>
-                    </div>
+                    <Target className="text-bright-blue mr-2" size={14} />
+                    <div className="text-sm font-medium text-dark-blue">Meta Semanal de Estudos</div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-bright-blue" data-testid="text-weekly-hours">{calculateWeeklyHours()}</div>
