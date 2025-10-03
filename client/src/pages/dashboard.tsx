@@ -1529,20 +1529,20 @@ export default function Dashboard() {
                   ) : (
                     <>
                       {/* Nota Média Section */}
-                      <div className="bg-white/50 rounded-lg p-3 border border-bright-blue/20">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-soft-gray">Nota Média</span>
-                          <span className="text-lg font-bold text-dark-blue" data-testid="text-average-score">{averageScore}</span>
+                      <div className="bg-white/50 rounded-xl p-4 md:p-5 border border-bright-blue/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium text-soft-gray">Nota Média</span>
+                          <span className="text-2xl md:text-3xl font-bold text-dark-blue" data-testid="text-average-score">{averageScore}</span>
                         </div>
-                        <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="relative h-3 md:h-4 bg-gray-200 rounded-full overflow-hidden">
                           <div 
                             className="absolute h-full bg-gradient-to-r from-bright-blue to-dark-blue rounded-full transition-all duration-500"
                             style={{width: `${progressPercentage}%`}}
                           />
                         </div>
-                        <div className="flex justify-between mt-1">
-                          <span className="text-xs text-soft-gray">Meta: {targetScore}</span>
-                          <span className="text-xs text-bright-blue font-semibold" data-testid="text-points-to-goal">
+                        <div className="flex justify-between mt-2">
+                          <span className="text-sm text-soft-gray">Meta: {targetScore}</span>
+                          <span className="text-sm text-bright-blue font-semibold" data-testid="text-points-to-goal">
                             {targetScore && targetScore > averageScore ? `Faltam ${targetScore - averageScore} pts` : '✓ Atingida'}
                           </span>
                         </div>
@@ -1557,20 +1557,20 @@ export default function Dashboard() {
                         const recentPercentage = targetScore ? Math.min((recentScore / targetScore) * 100, 100) : 0;
                         
                         return (
-                          <div className="bg-white/50 rounded-lg p-3 border border-dark-blue/20">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-xs font-medium text-soft-gray">Última Nota</span>
-                              <span className="text-lg font-bold text-dark-blue" data-testid="text-recent-score">{recentScore}</span>
+                          <div className="bg-white/50 rounded-xl p-4 md:p-5 border border-dark-blue/20">
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-sm font-medium text-soft-gray">Última Nota</span>
+                              <span className="text-2xl md:text-3xl font-bold text-dark-blue" data-testid="text-recent-score">{recentScore}</span>
                             </div>
-                            <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="relative h-3 md:h-4 bg-gray-200 rounded-full overflow-hidden">
                               <div 
                                 className="absolute h-full bg-gradient-to-r from-dark-blue to-bright-blue rounded-full transition-all duration-500"
                                 style={{width: `${recentPercentage}%`}}
                               />
                             </div>
-                            <div className="flex justify-between mt-1">
-                              <span className="text-xs text-soft-gray">Meta: {targetScore}</span>
-                              <span className="text-xs text-dark-blue font-semibold" data-testid="text-points-to-goal-recent">
+                            <div className="flex justify-between mt-2">
+                              <span className="text-sm text-soft-gray">Meta: {targetScore}</span>
+                              <span className="text-sm text-dark-blue font-semibold" data-testid="text-points-to-goal-recent">
                                 {targetScore && targetScore > recentScore ? `Faltam ${targetScore - recentScore} pts` : '✓ Atingida'}
                               </span>
                             </div>
