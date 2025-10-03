@@ -1187,7 +1187,7 @@ export default function Dashboard() {
                       </button>
                       <div className="flex-1">
                         <div className={`text-sm font-medium ${goal.completed ? 'text-green-700 line-through' : 'text-dark-blue'}`}>
-                          {goal.title} {goal.target} {goal.unit}
+                          {goal.title}
                         </div>
                         <div className={`text-xs ${goal.completed ? 'text-green-600' : 'text-soft-gray'}`}>
                           {goal.current}/{goal.target} concluídas
