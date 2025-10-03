@@ -749,6 +749,58 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
       const result = await this.model.generateContent(optimizedPrompt);
       const response = result.response.text();
       
+      // Extract real token counts from Gemini response
+      const usageMetadata = result.response.usageMetadata || {};
+      const rawPromptTokens = usageMetadata.promptTokenCount || 0;
+      // Normalize candidatesTokenCount (can be array or number)
+      const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
+      const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
+        ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
+        : (rawOutputTokensValue || 0);
+      const rawTotalTokens = usageMetadata.totalTokenCount || 0;
+      
+      // Calculate final values ensuring consistency: finalPromptTokens + finalOutputTokens = finalTotalTokens ALWAYS
+      let finalPromptTokens: number, finalOutputTokens: number, finalTotalTokens: number;
+      
+      if (rawTotalTokens > 0) {
+        // Total is authoritative, reconcile components to match it
+        finalTotalTokens = rawTotalTokens;
+        
+        if (rawPromptTokens > 0 && rawOutputTokens > 0) {
+          // All values present - reconcile if inconsistent
+          const rawSum = rawPromptTokens + rawOutputTokens;
+          if (Math.abs(rawSum - rawTotalTokens) <= 1) {
+            // Close enough - use raw values
+            finalPromptTokens = rawPromptTokens;
+            finalOutputTokens = rawOutputTokens;
+          } else {
+            // Significant mismatch - distribute total proportionally
+            const ratio = rawPromptTokens / rawSum;
+            finalPromptTokens = Math.round(rawTotalTokens * ratio);
+            finalOutputTokens = rawTotalTokens - finalPromptTokens;
+          }
+        } else if (rawPromptTokens > 0) {
+          // Only prompt tokens present
+          finalPromptTokens = Math.min(rawPromptTokens, rawTotalTokens);
+          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+        } else if (rawOutputTokens > 0) {
+          // Only output tokens present
+          finalOutputTokens = Math.min(rawOutputTokens, rawTotalTokens);
+          finalPromptTokens = rawTotalTokens - finalOutputTokens;
+        } else {
+          // No component data - split evenly (conservative estimate)
+          finalPromptTokens = Math.floor(rawTotalTokens * 0.6);
+          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+        }
+      } else {
+        // No metadata - use estimates as fallback
+        finalPromptTokens = this.estimateTokens(optimizedPrompt);
+        finalOutputTokens = this.estimateTokens(response);
+        finalTotalTokens = finalPromptTokens + finalOutputTokens;
+      }
+      
+      console.log(`💰 Token usage for repertoire generation: ${finalPromptTokens} input + ${finalOutputTokens} output = ${finalTotalTokens} total`);
+      
       // 5. Parse and validate repertoires
       const repertoires = this.parseRepertoireResponse(response, userFilters);
       
@@ -761,7 +813,7 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
           modifiedText: JSON.stringify(repertoires), 
           modificationType: 'argumentativo',
           source: 'optimized_ai', 
-          tokensUsed: this.estimateTokens(optimizedPrompt) 
+          tokensUsed: finalTotalTokens
         },
         'anonymous'
       );
@@ -770,6 +822,9 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
       return {
         repertoires: repertoires,
         source: 'optimized_ai',
+        tokensInput: finalPromptTokens,
+        tokensOutput: finalOutputTokens,
+        tokensTotal: finalTotalTokens,
         tokensSaved: this.calculateRepertoireTokensSaved(query, userFilters, batchSize)
       };
       
