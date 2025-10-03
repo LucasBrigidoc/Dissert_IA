@@ -609,6 +609,48 @@ export default function Dashboard() {
       });
     },
   });
+
+  // Mutation to toggle task completion without showing toast
+  const toggleCompletionMutation = useMutation({
+    mutationFn: async (schedules: ScheduleDay[]) => {
+      const weekStart = getWeekStart();
+      const reverseDayMapping: { [key: string]: string } = {
+        'SEG': 'segunda',
+        'TER': 'terca',
+        'QUA': 'quarta',
+        'QUI': 'quinta',
+        'SEX': 'sexta',
+        'SAB': 'sabado',
+        'DOM': 'domingo'
+      };
+
+      const promises = schedules.map(schedule => 
+        apiRequest("/api/schedule", {
+          method: "POST",
+          body: {
+            day: reverseDayMapping[schedule.day],
+            activities: schedule.activities.filter(activity => activity.trim() !== ''),
+            hours: schedule.hours,
+            minutes: schedule.minutes,
+            completed: schedule.completed,
+            weekStart: weekStart.toISOString()
+          },
+        })
+      );
+
+      return await Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/schedule"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao atualizar tarefa",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
   
   // Fetch newsletters from database
   const { data: newsletters = [], isLoading: newslettersLoading } = useQuery<Array<{
@@ -839,7 +881,7 @@ export default function Dashboard() {
   const toggleScheduleCompletion = (index: number) => {
     const updated = [...scheduleData];
     updated[index].completed = !updated[index].completed;
-    saveScheduleMutation.mutate(updated);
+    toggleCompletionMutation.mutate(updated);
   };
 
   const formatTime = (hours: number, minutes: number) => {
