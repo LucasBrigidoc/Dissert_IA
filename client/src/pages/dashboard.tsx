@@ -841,8 +841,11 @@ export default function Dashboard() {
   });
   const name = user?.name || "Usuário";
   
-  // Use real user progress data
-  const averageScore = userProgress?.averageScore || 0;
+  // Calculate average score from userScores instead of using stale data from userProgress
+  const averageScore = userScores.length > 0 
+    ? Math.round(userScores.reduce((sum, score) => sum + score.score, 0) / userScores.length)
+    : 0;
+  
   const targetScore = userProgress?.targetScore;
   const essaysCount = userProgress?.essaysCount || 0;
   const studyHours = userProgress?.studyHours || 0;
