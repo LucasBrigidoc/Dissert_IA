@@ -49,6 +49,7 @@ Preferred communication style: Simple, everyday language.
 - **Competency Analysis**: "Pontos a Melhorar" feature displaying dynamic competency cards based on real user essay data and average scores, identifying top 3 weakest competencies.
 - **Dynamic Goal Management**: Smart goal setting system that shows empty state when no target is defined (similar to weekly goals), prompts users to set their target score, and displays progress with distance to goal once defined. Fully connected to the database.
 - **User Score Tracking**: Complete system for tracking user scores from multiple sources (simulations, essays, manual entries). Includes database table, API endpoints, and dashboard visualization with real-time data fetching. Features manual score entry dialog for external exam results with competency breakdown.
+- **Save to Library Feature**: Users can save modified texts from the Writing Controller (Controlador de Escrita) to their personal library with custom titles. Saved texts are displayed in the Biblioteca page with filtering, viewing, copying, and deletion capabilities.
 
 # External Dependencies
 
@@ -180,3 +181,24 @@ The following API keys are optional and will use fallback modes if not configure
   - Added data transformation to convert UI format to database format (day names, duration parsing, weekStart calculation)
   - Added loading states and toast notifications for better UX
 - **Pattern**: Now follows the same pattern as the goals (metas) feature for consistency
+
+### Save to Library Feature Implementation (Oct 3, 2025 - 8:26 AM)
+- **Status**: ✅ Complete implementation of save-to-library functionality for modified texts
+- **Database Schema**:
+  - Created `saved_texts` table in `shared/schema.ts` with fields: id, userId, title, originalText, modifiedText, modificationType, activeModifications, createdAt
+  - Successfully pushed to database using `npm run db:push`
+- **Backend Implementation**:
+  - Added CRUD methods in `server/storage.ts`: `createSavedText`, `getUserSavedTexts`, `deleteSavedText`
+  - Created REST API endpoints in `server/routes.ts`:
+    - POST /api/saved-texts (save text with title)
+    - GET /api/saved-texts (list user's saved texts)
+    - DELETE /api/saved-texts/:id (delete saved text)
+  - Fixed bug in `deleteSavedText` to return false when no rows deleted (was always returning true)
+- **Frontend Implementation**:
+  - Added save dialog in `client/src/pages/controlador-escrita.tsx` with title input
+  - Integrated mutation hook for saving texts to API
+  - Modified `client/src/pages/biblioteca.tsx` to display saved texts:
+    - Added "Textos Modificados" category with cyan color scheme
+    - Integrated saved texts into library grid and filtering system
+    - Added view, copy, and delete functionality for saved texts
+- **Testing**: Requires user authentication; all components verified and ready for end-to-end testing
