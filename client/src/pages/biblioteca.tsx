@@ -75,7 +75,11 @@ export default function BibliotecaPage() {
     queryKey: ['/api/proposals/saved'],
   });
 
-  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals;
+  const { data: savedTexts, isLoading: loadingTexts } = useQuery({
+    queryKey: ['/api/saved-texts'],
+  });
+
+  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts;
 
   // Transform data to match biblioteca format
   const transformRepertoireToFile = (repertoire: any) => ({
@@ -133,6 +137,19 @@ export default function BibliotecaPage() {
     content: newsletter.content
   });
 
+  const transformTextToFile = (savedText: any) => ({
+    id: savedText.id,
+    title: savedText.title,
+    category: 'Texto Modificado',
+    date: savedText.createdAt,
+    size: '300 KB',
+    type: 'Texto Modificado',
+    description: savedText.modifiedText?.substring(0, 100) + '...' || 'Texto modificado do Controlador de Escrita',
+    content: `**${savedText.title}**\n\n**Texto Original:**\n${savedText.originalText}\n\n**Texto Modificado:**\n${savedText.modifiedText}\n\n${savedText.modificationType ? `**Tipo de Modificação:** ${savedText.modificationType}` : ''}`,
+    originalText: savedText.originalText,
+    modifiedText: savedText.modifiedText
+  });
+
   const transformProposalToFile = (proposal: any) => ({
     id: proposal.id,
     title: proposal.title,
@@ -151,7 +168,8 @@ export default function BibliotecaPage() {
     temas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType !== 'ENEM' && p.examType !== 'Vestibular').map(transformProposalToFile) : [],
     estilos: savedStructures?.results ? savedStructures.results.map(transformStructureToFile) : [],
     newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
-    propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'ENEM' || p.examType === 'Vestibular').map(transformProposalToFile) : []
+    propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'ENEM' || p.examType === 'Vestibular').map(transformProposalToFile) : [],
+    textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : []
   };
 
 
@@ -282,7 +300,8 @@ export default function BibliotecaPage() {
     ...bibliotecaData.temas,
     ...bibliotecaData.estilos,
     ...bibliotecaData.newsletters,
-    ...bibliotecaData.propostas
+    ...bibliotecaData.propostas,
+    ...bibliotecaData.textosModificados
   ];
 
   // Filter files based on search and category
@@ -295,7 +314,8 @@ export default function BibliotecaPage() {
                           (selectedCategory === "temas" && file.type === "Tema") ||
                           (selectedCategory === "estilos" && file.type === "Estilo") ||
                           (selectedCategory === "newsletters" && file.type === "Newsletter") ||
-                          (selectedCategory === "propostas" && file.type === "Proposta");
+                          (selectedCategory === "propostas" && file.type === "Proposta") ||
+                          (selectedCategory === "textosModificados" && file.type === "Texto Modificado");
     return matchesSearch && matchesCategory;
   });
 
@@ -307,6 +327,7 @@ export default function BibliotecaPage() {
       case "Estilo": return <Target size={20} className="text-purple-600" />;
       case "Newsletter": return <Newspaper size={20} className="text-orange-600" />;
       case "Proposta": return <FolderOpen size={20} className="text-indigo-600" />;
+      case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
       default: return <FileText size={20} className="text-gray-600" />;
     }
   };
@@ -319,6 +340,7 @@ export default function BibliotecaPage() {
       case "Estilo": return "bg-purple-100 text-purple-800";
       case "Newsletter": return "bg-orange-100 text-orange-800";
       case "Proposta": return "bg-indigo-100 text-indigo-800";
+      case "Texto Modificado": return "bg-cyan-100 text-cyan-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };

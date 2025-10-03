@@ -166,6 +166,18 @@ export const savedNewsletters = pgTable("saved_newsletters", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Saved texts from Controlador de Escrita
+export const savedTexts = pgTable("saved_texts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  title: text("title").notNull(),
+  originalText: text("original_text").notNull(),
+  modifiedText: text("modified_text").notNull(),
+  modificationType: text("modification_type"),
+  activeModifications: json("active_modifications").default([]),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Simulations table for tracking completed simulations
 export const simulations = pgTable("simulations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -279,6 +291,11 @@ export const insertRateLimitSchema = createInsertSchema(rateLimits).omit({
 });
 
 export const insertSavedRepertoireSchema = createInsertSchema(savedRepertoires).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSavedTextSchema = createInsertSchema(savedTexts).omit({
   id: true,
   createdAt: true,
 });
@@ -491,6 +508,8 @@ export type RateLimit = typeof rateLimits.$inferSelect;
 export type InsertSavedRepertoire = z.infer<typeof insertSavedRepertoireSchema>;
 export type SavedRepertoire = typeof savedRepertoires.$inferSelect;
 
+export type InsertSavedText = z.infer<typeof insertSavedTextSchema>;
+export type SavedText = typeof savedTexts.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type ChatMessage = z.infer<typeof chatMessageSchema>;

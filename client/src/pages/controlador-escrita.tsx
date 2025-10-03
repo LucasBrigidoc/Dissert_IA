@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target, HelpCircle, Lightbulb, Search, ExternalLink } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { 
   TextModificationConfig, 
   TextModificationResult, 
@@ -68,6 +72,36 @@ export default function ControladorEscrita() {
   // Estados para feedback e ajuda
   const [feedbackText, setFeedbackText] = useState<string>("");
   const [helpSections, setHelpSections] = useState<{ [key: string]: boolean }>({});
+  
+  // Estados para salvar na biblioteca
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveTitle, setSaveTitle] = useState("");
+  
+  // Mutation para salvar texto
+  const saveTextMutation = useMutation({
+    mutationFn: async (data: { title: string; originalText: string; modifiedText: string; modificationType: string; activeModifications: string[] }) => {
+      return await apiRequest('/api/saved-texts', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saved-texts'] });
+      toast({
+        title: "Texto salvo na biblioteca!",
+        description: "O texto modificado foi adicionado à sua biblioteca pessoal.",
+      });
+      setShowSaveDialog(false);
+      setSaveTitle("");
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar o texto. Tente novamente.",
+        variant: "destructive",
+      });
+    },
+  });
   
   // Função para alternar seções de ajuda
   const toggleHelpSection = (cardId: string) => {
@@ -558,10 +592,25 @@ ${recommendations}`);
       return;
     }
     
-    // Simular salvamento na biblioteca
-    toast({
-      title: "Texto salvo na biblioteca!",
-      description: "O texto modificado foi adicionado à sua biblioteca pessoal.",
+    setShowSaveDialog(true);
+  };
+
+  const confirmSaveToLibrary = () => {
+    if (!saveTitle.trim()) {
+      toast({
+        title: "Título obrigatório",
+        description: "Por favor, forneça um título para o texto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    saveTextMutation.mutate({
+      title: saveTitle,
+      originalText,
+      modifiedText,
+      modificationType: modificationType || "",
+      activeModifications: Array.from(activeModifications),
     });
   };
 
@@ -1306,6 +1355,50 @@ ${recommendations}`);
         </div>
 
       </div>
+
+      {/* Dialog para salvar na biblioteca */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Salvar Texto na Biblioteca</DialogTitle>
+            <DialogDescription>
+              Dê um título para o texto modificado para salvá-lo na sua biblioteca pessoal.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="save-title">Título do Texto</Label>
+              <Input
+                id="save-title"
+                placeholder="Ex: Texto sobre educação - Formal"
+                value={saveTitle}
+                onChange={(e) => setSaveTitle(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && confirmSaveToLibrary()}
+                data-testid="input-save-title"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowSaveDialog(false);
+                  setSaveTitle("");
+                }}
+                data-testid="button-cancel-save"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={confirmSaveToLibrary}
+                disabled={saveTextMutation.isPending}
+                data-testid="button-confirm-save"
+              >
+                {saveTextMutation.isPending ? "Salvando..." : "Salvar"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

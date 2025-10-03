@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type SavedEssay, type InsertSavedEssay, type SavedStructure, type InsertSavedStructure, type SavedNewsletter, type InsertSavedNewsletter, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type UserScore, type InsertUserScore, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
+import { type User, type InsertUser, type UserProgress, type InsertUserProgress, type Essay, type InsertEssay, type EssayStructure, type InsertEssayStructure, type Repertoire, type InsertRepertoire, type SearchCache, type InsertSearchCache, type RateLimit, type InsertRateLimit, type SavedRepertoire, type InsertSavedRepertoire, type Proposal, type InsertProposal, type SavedProposal, type InsertSavedProposal, type SavedEssay, type InsertSavedEssay, type SavedStructure, type InsertSavedStructure, type SavedNewsletter, type InsertSavedNewsletter, type SavedText, type InsertSavedText, type Simulation, type InsertSimulation, type Conversation, type InsertConversation, type ConversationMessage, type UserScore, type InsertUserScore, type AdminUser, type InsertAdminUser, type UserCost, type InsertUserCost, type BusinessMetric, type InsertBusinessMetric, type UserDailyUsage, type InsertUserDailyUsage, type WeeklyUsage, type InsertWeeklyUsage, type SubscriptionPlan, type InsertSubscriptionPlan, type UserSubscription, type InsertUserSubscription, type Transaction, type InsertTransaction, type RevenueMetric, type InsertRevenueMetric, type UserEvent, type InsertUserEvent, type ConversionFunnel, type InsertConversionFunnel, type UserSession, type InsertUserSession, type TaskCompletion, type InsertTaskCompletion, type UserCohort, type InsertUserCohort, type PredictiveMetric, type InsertPredictiveMetric, type ChurnPrediction, type InsertChurnPrediction, type Newsletter, type InsertNewsletter, type NewsletterSubscriber, type InsertNewsletterSubscriber, type NewsletterSend, type InsertNewsletterSend, type MaterialComplementar, type InsertMaterialComplementar, type Coupon, type InsertCoupon, type CouponRedemption, type InsertCouponRedemption, type PaymentEvent, type InsertPaymentEvent, type UserGoal, type InsertUserGoal, type UserExam, type InsertUserExam, type UserSchedule, type InsertUserSchedule } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -78,6 +78,11 @@ export interface IStorage {
   removeSavedNewsletter(userId: string, newsletterId: string): Promise<boolean>;
   getUserSavedNewsletters(userId: string): Promise<Newsletter[]>;
   isNewsletterSaved(userId: string, newsletterId: string): Promise<boolean>;
+  
+  // Saved texts operations
+  createSavedText(savedText: InsertSavedText): Promise<SavedText>;
+  getUserSavedTexts(userId: string): Promise<SavedText[]>;
+  deleteSavedText(id: string, userId: string): Promise<boolean>;
   
   // Simulation operations
   createSimulation(simulation: InsertSimulation): Promise<Simulation>;
@@ -4137,6 +4142,32 @@ export class DbStorage implements IStorage {
       ),
     });
     return !!result;
+  }
+
+  // ===================== SAVED TEXTS OPERATIONS =====================
+  
+  async createSavedText(insertSavedText: InsertSavedText): Promise<SavedText> {
+    const [saved] = await db.insert(schema.savedTexts).values(insertSavedText).returning();
+    return saved;
+  }
+
+  async getUserSavedTexts(userId: string): Promise<SavedText[]> {
+    const texts = await db.query.savedTexts.findMany({
+      where: eq(schema.savedTexts.userId, userId),
+      orderBy: desc(schema.savedTexts.createdAt),
+    });
+    return texts;
+  }
+
+  async deleteSavedText(id: string, userId: string): Promise<boolean> {
+    const result = await db
+      .delete(schema.savedTexts)
+      .where(and(
+        eq(schema.savedTexts.id, id),
+        eq(schema.savedTexts.userId, userId)
+      ))
+      .returning();
+    return result.length > 0;
   }
 
   // ===================== SIMULATION OPERATIONS =====================

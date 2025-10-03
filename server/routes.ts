@@ -1900,6 +1900,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Saved texts endpoints
+  app.post("/api/saved-texts", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const userId = req.session.userId;
+      const { title, originalText, modifiedText, modificationType, activeModifications } = req.body;
+
+      if (!title || !originalText || !modifiedText) {
+        return res.status(400).json({ message: "Título, texto original e texto modificado são obrigatórios" });
+      }
+
+      const savedText = await storage.createSavedText({
+        userId,
+        title,
+        originalText,
+        modifiedText,
+        modificationType: modificationType || null,
+        activeModifications: activeModifications || [],
+      });
+
+      res.status(201).json(savedText);
+    } catch (error) {
+      console.error("Save text error:", error);
+      res.status(500).json({ message: "Erro ao salvar texto" });
+    }
+  });
+
+  app.get("/api/saved-texts", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const userId = req.session.userId;
+      const savedTexts = await storage.getUserSavedTexts(userId);
+      res.json({ results: savedTexts, count: savedTexts.length });
+    } catch (error) {
+      console.error("Get saved texts error:", error);
+      res.status(500).json({ message: "Erro ao buscar textos salvos" });
+    }
+  });
+
+  app.delete("/api/saved-texts/:id", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const userId = req.session.userId;
+      const { id } = req.params;
+
+      const success = await storage.deleteSavedText(id, userId);
+      if (success) {
+        res.json({ message: "Texto deletado com sucesso" });
+      } else {
+        res.status(404).json({ message: "Texto não encontrado" });
+      }
+    } catch (error) {
+      console.error("Delete saved text error:", error);
+      res.status(500).json({ message: "Erro ao deletar texto" });
+    }
+  });
+
   // Get user essays endpoint
   app.get("/api/users/:userId/essays", async (req, res) => {
     try {
