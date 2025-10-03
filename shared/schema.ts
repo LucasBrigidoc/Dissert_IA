@@ -360,6 +360,8 @@ export const insertUserScoreSchema = createInsertSchema(userScores).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  scoreDate: z.coerce.date(),
 });
 
 export const proposalSearchQuerySchema = z.object({
