@@ -1039,9 +1039,7 @@ export default function Dashboard() {
                           : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
                     }`}>
                       <span className="text-xs text-dark-blue font-medium">{exam.name}</span>
-                      <span className={`text-xs ${
-                        index % 3 === 1 ? 'text-bright-blue' : 'text-soft-gray'
-                      }`}>
+                      <span className="text-xs text-bright-blue">
                         {formatExamDate(exam.date)}
                       </span>
                     </div>
