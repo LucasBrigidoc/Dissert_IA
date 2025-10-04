@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { Home, Menu, X, User, Settings, LogOut, FileEdit, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { useToast } from "@/hooks/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
 import { useQuery } from "@tanstack/react-query";
 import type { User as UserType } from "@shared/schema";
 
 export function EstruturaRoterizada() {
-  const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const isMobile = useIsMobile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -36,7 +33,7 @@ export function EstruturaRoterizada() {
       });
 
       if (response.ok) {
-        setLocation('/login');
+        window.location.href = '/login';
       }
     } catch (error) {
       toast({
