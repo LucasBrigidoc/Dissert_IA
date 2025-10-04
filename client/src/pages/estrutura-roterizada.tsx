@@ -33,7 +33,10 @@ export function EstruturaRoterizada() {
     defaultValues: {
       proposal: "",
       familiarityLevel: undefined,
-      problemsAndChallenges: "",
+      problemsAndChallenges: {
+        dontKnow: false,
+        text: "",
+      },
       knownReferences: {
         hasReferences: false,
         references: "",
@@ -60,6 +63,7 @@ export function EstruturaRoterizada() {
   };
 
   const hasReferences = form.watch("knownReferences.hasReferences");
+  const dontKnowProblems = form.watch("problemsAndChallenges.dontKnow");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -131,11 +135,11 @@ export function EstruturaRoterizada() {
                 <h3 className="text-xl font-semibold text-dark-blue">Questionário de Roteirização</h3>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {/* Question 1: Proposta da redação */}
                 <div>
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center flex-shrink-0">
                       <BookOpen className="text-white" size={14} />
                     </div>
                     <label className="block text-sm font-medium text-dark-blue">
@@ -164,7 +168,7 @@ export function EstruturaRoterizada() {
                 {/* Question 2: Nível de familiaridade */}
                 <div>
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center flex-shrink-0">
                       <Brain className="text-white" size={14} />
                     </div>
                     <label className="block text-sm font-medium text-dark-blue">
@@ -234,36 +238,60 @@ export function EstruturaRoterizada() {
                 {/* Question 3: Problemas e desafios */}
                 <div>
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center flex-shrink-0">
                       <Lightbulb className="text-white" size={14} />
                     </div>
                     <label className="block text-sm font-medium text-dark-blue">
                       Quais seriam os principais problemas, causas ou desafios ligados a esse tema que você acha importante destacar e sua solução?
                     </label>
                   </div>
+                  
                   <FormField
                     control={form.control}
-                    name="problemsAndChallenges"
+                    name="problemsAndChallenges.dontKnow"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 mb-3 p-3 rounded-lg bg-white/50 border border-bright-blue/10">
                         <FormControl>
-                          <Textarea
-                            placeholder="Ex: Falta de políticas públicas efetivas, invisibilidade social, conflitos territoriais..."
-                            className="min-h-[100px] resize-none border-bright-blue/20"
-                            data-testid="textarea-problems"
-                            {...field}
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            data-testid="checkbox-dont-know-problems"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="cursor-pointer text-sm font-medium" data-testid="label-checkbox-dont-know-problems">
+                            Não conheço
+                          </FormLabel>
+                        </div>
                       </FormItem>
                     )}
                   />
+
+                  {!dontKnowProblems && (
+                    <FormField
+                      control={form.control}
+                      name="problemsAndChallenges.text"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Ex: Falta de políticas públicas efetivas, invisibilidade social, conflitos territoriais..."
+                              className="min-h-[100px] resize-none border-bright-blue/20"
+                              data-testid="textarea-problems"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </div>
 
                 {/* Question 4: Autores e conceitos conhecidos */}
                 <div>
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center flex-shrink-0">
                       <Target className="text-white" size={14} />
                     </div>
                     <label className="block text-sm font-medium text-dark-blue">
@@ -316,7 +344,7 @@ export function EstruturaRoterizada() {
                 {/* Question 5: Nível de detalhamento */}
                 <div>
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center flex-shrink-0">
                       <Settings2 className="text-white" size={14} />
                     </div>
                     <label className="block text-sm font-medium text-dark-blue">

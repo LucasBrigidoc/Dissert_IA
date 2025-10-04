@@ -1280,7 +1280,16 @@ export const essayOutlineQuestionnaireSchema = z.object({
   ], {
     required_error: "Selecione seu nível de familiaridade",
   }),
-  problemsAndChallenges: z.string().min(20, "Descreva os problemas com pelo menos 20 caracteres"),
+  problemsAndChallenges: z.object({
+    dontKnow: z.boolean(),
+    text: z.string().optional(),
+  }).refine(
+    (data) => data.dontKnow || (data.text && data.text.length >= 20),
+    {
+      message: "Descreva os problemas com pelo menos 20 caracteres ou marque 'Não conheço'",
+      path: ["text"],
+    }
+  ),
   knownReferences: z.object({
     hasReferences: z.boolean(),
     references: z.string().optional(),
