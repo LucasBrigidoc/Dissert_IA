@@ -84,6 +84,11 @@ export interface IStorage {
   getUserSavedTexts(userId: string): Promise<SavedText[]>;
   deleteSavedText(id: string, userId: string): Promise<boolean>;
   
+  // Saved outlines operations
+  createSavedOutline(savedOutline: InsertSavedOutline): Promise<SavedOutline>;
+  getUserSavedOutlines(userId: string): Promise<SavedOutline[]>;
+  deleteSavedOutline(id: string, userId: string): Promise<boolean>;
+  
   // Simulation operations
   createSimulation(simulation: InsertSimulation): Promise<Simulation>;
   updateSimulation(id: string, simulation: Partial<Simulation>): Promise<Simulation>;
@@ -4165,6 +4170,32 @@ export class DbStorage implements IStorage {
       .where(and(
         eq(schema.savedTexts.id, id),
         eq(schema.savedTexts.userId, userId)
+      ))
+      .returning();
+    return result.length > 0;
+  }
+
+  // ===================== SAVED OUTLINES OPERATIONS =====================
+  
+  async createSavedOutline(insertSavedOutline: InsertSavedOutline): Promise<SavedOutline> {
+    const [saved] = await db.insert(schema.savedOutlines).values(insertSavedOutline).returning();
+    return saved;
+  }
+
+  async getUserSavedOutlines(userId: string): Promise<SavedOutline[]> {
+    const outlines = await db.query.savedOutlines.findMany({
+      where: eq(schema.savedOutlines.userId, userId),
+      orderBy: desc(schema.savedOutlines.createdAt),
+    });
+    return outlines;
+  }
+
+  async deleteSavedOutline(id: string, userId: string): Promise<boolean> {
+    const result = await db
+      .delete(schema.savedOutlines)
+      .where(and(
+        eq(schema.savedOutlines.id, id),
+        eq(schema.savedOutlines.userId, userId)
       ))
       .returning();
     return result.length > 0;

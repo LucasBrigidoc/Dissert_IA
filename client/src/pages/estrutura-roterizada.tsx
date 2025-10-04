@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, FileEdit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles } from "lucide-react";
+import { ArrowLeft, FileEdit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
@@ -21,11 +21,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export function EstruturaRoterizada() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [generatedOutline, setGeneratedOutline] = useState<any>(null);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveTitle, setSaveTitle] = useState("");
+  const [lastQuestionnaire, setLastQuestionnaire] = useState<EssayOutlineQuestionnaire | null>(null);
 
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -63,10 +68,11 @@ export function EstruturaRoterizada() {
         method: "POST",
         body: data,
       });
-      return response;
+      return { outline: response, questionnaireData: data };
     },
     onSuccess: (data) => {
       setGeneratedOutline(data.outline);
+      setLastQuestionnaire(data.questionnaireData);
       toast({
         title: "Roteiro gerado com sucesso!",
         description: "Seu roteiro personalizado está pronto.",
@@ -88,6 +94,50 @@ export function EstruturaRoterizada() {
       });
     },
   });
+
+  const saveOutlineMutation = useMutation({
+    mutationFn: async (data: { title: string }) => {
+      if (!generatedOutline || !lastQuestionnaire) throw new Error("Nenhum roteiro para salvar");
+      
+      const response = await apiRequest("/api/saved-outlines", {
+        method: "POST",
+        body: {
+          title: data.title,
+          proposalTitle: lastQuestionnaire.proposal.substring(0, 200),
+          proposalStatement: lastQuestionnaire.proposal,
+          outlineData: generatedOutline,
+        },
+      });
+      return response;
+    },
+    onSuccess: () => {
+      setShowSaveDialog(false);
+      setSaveTitle("");
+      toast({
+        title: "Roteiro salvo!",
+        description: "Seu roteiro foi salvo na biblioteca com sucesso.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao salvar roteiro",
+        description: error.message || "Não foi possível salvar o roteiro.",
+      });
+    },
+  });
+
+  const handleSaveOutline = () => {
+    if (!saveTitle.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Título obrigatório",
+        description: "Por favor, digite um título para o roteiro.",
+      });
+      return;
+    }
+    saveOutlineMutation.mutate({ title: saveTitle });
+  };
 
   const onSubmit = async (data: EssayOutlineQuestionnaire) => {
     generateOutlineMutation.mutate(data);
@@ -459,11 +509,22 @@ export function EstruturaRoterizada() {
         {generatedOutline && (
           <div id="generated-outline" className="mt-8">
             <LiquidGlassCard className="bg-gradient-to-br from-green-50/50 to-blue-50/50 border-green-200/50">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
-                  <Sparkles className="text-white" size={20} />
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                    <Sparkles className="text-white" size={20} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-dark-blue">Roteiro Personalizado</h3>
                 </div>
-                <h3 className="text-2xl font-bold text-dark-blue">Roteiro Personalizado</h3>
+                <Button
+                  onClick={() => setShowSaveDialog(true)}
+                  variant="outline"
+                  className="bg-white hover:bg-blue-50 border-blue-300"
+                  data-testid="button-save-outline"
+                >
+                  <Save className="mr-2" size={16} />
+                  Salvar na Biblioteca
+                </Button>
               </div>
 
               {/* Análise da Proposta */}
@@ -684,6 +745,50 @@ export function EstruturaRoterizada() {
           </div>
         )}
       </div>
+
+      {/* Dialog para salvar roteiro */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent data-testid="dialog-save-outline">
+          <DialogHeader>
+            <DialogTitle>Salvar Roteiro na Biblioteca</DialogTitle>
+            <DialogDescription>
+              Digite um título para identificar este roteiro na sua biblioteca.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              placeholder="Ex: Roteiro - Valorização Povos Tradicionais"
+              value={saveTitle}
+              onChange={(e) => setSaveTitle(e.target.value)}
+              data-testid="input-outline-title"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSaveOutline();
+                }
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowSaveDialog(false);
+                setSaveTitle("");
+              }}
+              data-testid="button-cancel-save"
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleSaveOutline}
+              disabled={saveOutlineMutation.isPending}
+              data-testid="button-confirm-save"
+            >
+              {saveOutlineMutation.isPending ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

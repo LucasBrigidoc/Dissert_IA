@@ -1966,6 +1966,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Saved outlines endpoints
+  app.post("/api/saved-outlines", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const userId = req.session.userId;
+      const { title, proposalTitle, proposalStatement, outlineData } = req.body;
+
+      if (!title || !proposalTitle || !proposalStatement || !outlineData) {
+        return res.status(400).json({ message: "Todos os campos são obrigatórios" });
+      }
+
+      const savedOutline = await storage.createSavedOutline({
+        userId,
+        title,
+        proposalTitle,
+        proposalStatement,
+        outlineData,
+      });
+
+      res.status(201).json(savedOutline);
+    } catch (error) {
+      console.error("Save outline error:", error);
+      res.status(500).json({ message: "Erro ao salvar roteiro" });
+    }
+  });
+
+  app.get("/api/saved-outlines", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const userId = req.session.userId;
+      const savedOutlines = await storage.getUserSavedOutlines(userId);
+      res.json({ results: savedOutlines, count: savedOutlines.length });
+    } catch (error) {
+      console.error("Get saved outlines error:", error);
+      res.status(500).json({ message: "Erro ao buscar roteiros salvos" });
+    }
+  });
+
+  app.delete("/api/saved-outlines/:id", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const userId = req.session.userId;
+      const { id } = req.params;
+
+      const success = await storage.deleteSavedOutline(id, userId);
+      if (success) {
+        res.json({ message: "Roteiro deletado com sucesso" });
+      } else {
+        res.status(404).json({ message: "Roteiro não encontrado" });
+      }
+    } catch (error) {
+      console.error("Delete saved outline error:", error);
+      res.status(500).json({ message: "Erro ao deletar roteiro" });
+    }
+  });
+
   // Get user essays endpoint
   app.get("/api/users/:userId/essays", async (req, res) => {
     try {

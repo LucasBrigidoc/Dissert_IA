@@ -178,6 +178,17 @@ export const savedTexts = pgTable("saved_texts", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Saved outlines/roteiros from Estrutura Roterizada
+export const savedOutlines = pgTable("saved_outlines", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  title: text("title").notNull(),
+  proposalTitle: text("proposal_title").notNull(),
+  proposalStatement: text("proposal_statement").notNull(),
+  outlineData: json("outline_data").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Simulations table for tracking completed simulations
 export const simulations = pgTable("simulations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -296,6 +307,11 @@ export const insertSavedRepertoireSchema = createInsertSchema(savedRepertoires).
 });
 
 export const insertSavedTextSchema = createInsertSchema(savedTexts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSavedOutlineSchema = createInsertSchema(savedOutlines).omit({
   id: true,
   createdAt: true,
 });
@@ -510,6 +526,8 @@ export type SavedRepertoire = typeof savedRepertoires.$inferSelect;
 
 export type InsertSavedText = z.infer<typeof insertSavedTextSchema>;
 export type SavedText = typeof savedTexts.$inferSelect;
+export type InsertSavedOutline = z.infer<typeof insertSavedOutlineSchema>;
+export type SavedOutline = typeof savedOutlines.$inferSelect;
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type ChatMessage = z.infer<typeof chatMessageSchema>;

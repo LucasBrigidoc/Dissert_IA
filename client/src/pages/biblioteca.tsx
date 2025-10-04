@@ -79,7 +79,11 @@ export default function BibliotecaPage() {
     queryKey: ['/api/saved-texts'],
   });
 
-  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts;
+  const { data: savedOutlines, isLoading: loadingOutlines } = useQuery({
+    queryKey: ['/api/saved-outlines'],
+  });
+
+  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts || loadingOutlines;
 
   // Transform data to match biblioteca format
   const transformRepertoireToFile = (repertoire: any) => ({
