@@ -206,55 +206,74 @@ export default function BibliotecaPage() {
     const maxWidth = pageWidth - 2 * margin;
     let yPosition = 20;
 
-    // Cores DissertIA
-    const darkBlue = [13, 51, 97]; // #0D3361
-    const brightBlue = [41, 128, 185]; // #2980B9
+    // Cores DissertIA (mesmas do sistema)
+    const darkBlue = [80, 135, 255]; // #5087ff - cor principal
+    const softGray = [107, 114, 128]; // #6b7280 - cor secundária
     const lightBlue = [224, 242, 254]; // #E0F2FE
     const lightGreen = [220, 252, 231]; // #DCFCE7
-    const gray = [107, 114, 128]; // #6B7280
+    const lightPurple = [243, 232, 255]; // #F3E8FF
+    const lightAmber = [254, 243, 199]; // #FEF3C7
+    const purple = [168, 85, 247]; // #A855F7
+    const blue = [59, 130, 246]; // #3B82F6
+    const amber = [245, 158, 11]; // #F59E0B
+    const green = [34, 197, 94]; // #22C55E
 
     // Função para adicionar rodapé em todas as páginas
     const addFooter = (pageNumber: number, totalPages: number) => {
       const footerY = pageHeight - 25;
       
       // Linha superior do rodapé
-      doc.setDrawColor(...brightBlue);
+      doc.setDrawColor(...darkBlue);
       doc.setLineWidth(0.5);
       doc.line(margin, footerY - 5, pageWidth - margin, footerY - 5);
       
-      // Logo e nome DissertIA
-      doc.setFontSize(12);
+      // Logo DissertIA estilizada
+      doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...darkBlue);
-      doc.text('DISSERTIA', margin, footerY);
+      doc.text('DISSERT', margin, footerY);
+      doc.setTextColor(...softGray);
+      doc.text('IA', margin + 30, footerY);
       
       // Informações de contato
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...gray);
+      doc.setTextColor(...softGray);
       doc.text('www.dissertia.com.br', margin, footerY + 5);
-      doc.text('@dissertia', margin, footerY + 10);
       
       // Número da página
-      doc.setTextColor(...gray);
+      doc.setTextColor(...softGray);
       doc.text(`Página ${pageNumber} de ${totalPages}`, 
         pageWidth - margin, footerY + 7, { align: 'right' });
     };
 
-    // Cabeçalho com gradiente simulado
+    // Cabeçalho com logo DissertIA estilizada (mesmo estilo da navbar)
     doc.setFillColor(...darkBlue);
-    doc.rect(0, 0, pageWidth, 35, 'F');
+    doc.rect(0, 0, pageWidth, 38, 'F');
     
-    doc.setFontSize(24);
+    // Logo DissertIA - "DISSERT" azul + "IA" cinza
+    doc.setFontSize(28);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(255, 255, 255);
-    doc.text('DISSERTIA', margin, 15);
+    doc.text('DISSERT', margin, 18);
+    doc.setTextColor(220, 220, 220);
+    doc.text('IA', margin + 48, 18);
     
-    doc.setFontSize(10);
+    // Ícone/emoji baseado no tipo
+    let typeIcon = '📄';
+    if (file.type === 'Roteiro Personalizado') typeIcon = '✏️';
+    else if (file.type === 'Texto Modificado') typeIcon = '📝';
+    else if (file.type === 'Newsletter') typeIcon = '📰';
+    else if (file.type === 'Repertório') typeIcon = '📚';
+    else if (file.type === 'Redação') typeIcon = '✍️';
+    else if (file.type === 'Proposta') typeIcon = '💡';
+    
+    doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
-    doc.text('Biblioteca Pessoal', margin, 22);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`${typeIcon} ${file.type}`, margin, 28);
     
-    yPosition = 45;
+    yPosition = 50;
 
     // Título do arquivo
     doc.setFontSize(18);
@@ -263,21 +282,263 @@ export default function BibliotecaPage() {
     doc.text(file.title, margin, yPosition);
     yPosition += 12;
 
-    // Badge do tipo
-    doc.setFillColor(...brightBlue);
-    doc.roundedRect(margin, yPosition - 5, 50, 7, 2, 2, 'F');
+    // Data de criação
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(255, 255, 255);
-    doc.text(file.type, margin + 25, yPosition, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...softGray);
+    doc.text(`📅 ${new Date(file.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`, margin, yPosition);
     yPosition += 15;
 
-    // Se for texto modificado, usar layout especial
-    if (file.type === 'Texto Modificado' && file.originalText && file.modifiedText) {
+    // Se for roteiro personalizado, usar layout especial
+    if (file.type === 'Roteiro Personalizado' && file.outlineData) {
+      const outline = file.outlineData;
+      
+      // Análise da Proposta
+      doc.setFillColor(...lightBlue);
+      doc.roundedRect(margin, yPosition, maxWidth, 8, 2, 2, 'F');
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...darkBlue);
+      doc.text('📋 Análise da Proposta', margin + 3, yPosition + 6);
+      yPosition += 13;
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0);
+      const propostaLines = doc.splitTextToSize(`Proposta: ${outline.proposta}`, maxWidth - 4);
+      propostaLines.forEach((line: string) => {
+        doc.text(line, margin + 2, yPosition);
+        yPosition += 5;
+      });
+      yPosition += 5;
+      
+      // Palavras-chave
+      if (outline.palavrasChave && outline.palavrasChave.length > 0) {
+        doc.setFontSize(9);
+        doc.setTextColor(...softGray);
+        doc.text('Palavras-chave: ' + outline.palavrasChave.join(', '), margin + 2, yPosition);
+        yPosition += 8;
+      }
+      
+      // Categoria Temática
+      if (outline.categoriaTematica) {
+        doc.text('Categoria: ' + outline.categoriaTematica, margin + 2, yPosition);
+        yPosition += 12;
+      }
+      
+      // Repertórios Sugeridos
+      if (outline.repertoriosSugeridos && outline.repertoriosSugeridos.length > 0) {
+        if (yPosition > pageHeight - 60) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        
+        doc.setFillColor(220, 252, 231);
+        doc.roundedRect(margin, yPosition, maxWidth, 8, 2, 2, 'F');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(34, 197, 94);
+        doc.text('💡 Repertórios Sugeridos', margin + 3, yPosition + 6);
+        yPosition += 13;
+        
+        outline.repertoriosSugeridos.forEach((rep: any, idx: number) => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 30;
+          }
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(`${idx + 1}. ${rep.titulo} (${rep.tipo})`, margin + 2, yPosition);
+          yPosition += 5;
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(...softGray);
+          const relacaoLines = doc.splitTextToSize(rep.relacao, maxWidth - 6);
+          relacaoLines.forEach((line: string) => {
+            doc.text(line, margin + 4, yPosition);
+            yPosition += 4;
+          });
+          yPosition += 3;
+        });
+        yPosition += 5;
+      }
+      
+      // 1º Parágrafo - Introdução (Azul)
+      if (outline.introducao) {
+        if (yPosition > pageHeight - 60) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        
+        doc.setFillColor(...lightBlue);
+        doc.roundedRect(margin, yPosition, maxWidth, 8, 2, 2, 'F');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...blue);
+        doc.text('1️⃣ 1º Parágrafo - Introdução', margin + 3, yPosition + 6);
+        yPosition += 13;
+        
+        const introducaoTexts = [
+          { label: '1ª frase (Contextualização):', text: outline.introducao.frase1 },
+          { label: '2ª frase (Problema central):', text: outline.introducao.frase2 },
+          { label: '3ª frase (Tese):', text: outline.introducao.frase3 }
+        ];
+        
+        introducaoTexts.forEach(item => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 30;
+          }
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(...blue);
+          doc.text(item.label, margin + 2, yPosition);
+          yPosition += 5;
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(0, 0, 0);
+          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          lines.forEach((line: string) => {
+            doc.text(line, margin + 2, yPosition);
+            yPosition += 4;
+          });
+          yPosition += 3;
+        });
+        yPosition += 5;
+      }
+      
+      // 2º Parágrafo - 1º Desenvolvimento (Roxo)
+      if (outline.desenvolvimento1) {
+        if (yPosition > pageHeight - 60) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        
+        doc.setFillColor(...lightPurple);
+        doc.roundedRect(margin, yPosition, maxWidth, 8, 2, 2, 'F');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...purple);
+        doc.text('2️⃣ 2º Parágrafo - 1º Desenvolvimento', margin + 3, yPosition + 6);
+        yPosition += 13;
+        
+        const dev1Texts = [
+          { label: '1ª frase (Tópico frasal):', text: outline.desenvolvimento1.frase1 },
+          { label: '2ª frase (Repertório):', text: outline.desenvolvimento1.frase2 },
+          { label: '3ª frase (Análise crítica):', text: outline.desenvolvimento1.frase3 }
+        ];
+        
+        dev1Texts.forEach(item => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 30;
+          }
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(...purple);
+          doc.text(item.label, margin + 2, yPosition);
+          yPosition += 5;
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(0, 0, 0);
+          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          lines.forEach((line: string) => {
+            doc.text(line, margin + 2, yPosition);
+            yPosition += 4;
+          });
+          yPosition += 3;
+        });
+        yPosition += 5;
+      }
+      
+      // 3º Parágrafo - 2º Desenvolvimento (Amarelo)
+      if (outline.desenvolvimento2) {
+        if (yPosition > pageHeight - 60) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        
+        doc.setFillColor(...lightAmber);
+        doc.roundedRect(margin, yPosition, maxWidth, 8, 2, 2, 'F');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...amber);
+        doc.text('3️⃣ 3º Parágrafo - 2º Desenvolvimento', margin + 3, yPosition + 6);
+        yPosition += 13;
+        
+        const dev2Texts = [
+          { label: '1ª frase (Tópico frasal):', text: outline.desenvolvimento2.frase1 },
+          { label: '2ª frase (Repertório):', text: outline.desenvolvimento2.frase2 },
+          { label: '3ª frase (Análise crítica):', text: outline.desenvolvimento2.frase3 }
+        ];
+        
+        dev2Texts.forEach(item => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 30;
+          }
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(...amber);
+          doc.text(item.label, margin + 2, yPosition);
+          yPosition += 5;
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(0, 0, 0);
+          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          lines.forEach((line: string) => {
+            doc.text(line, margin + 2, yPosition);
+            yPosition += 4;
+          });
+          yPosition += 3;
+        });
+        yPosition += 5;
+      }
+      
+      // 4º Parágrafo - Conclusão (Verde)
+      if (outline.conclusao) {
+        if (yPosition > pageHeight - 60) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        
+        doc.setFillColor(...lightGreen);
+        doc.roundedRect(margin, yPosition, maxWidth, 8, 2, 2, 'F');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...green);
+        doc.text('4️⃣ 4º Parágrafo - Conclusão', margin + 3, yPosition + 6);
+        yPosition += 13;
+        
+        const conclusaoTexts = [
+          { label: '1ª frase (Retomada da tese):', text: outline.conclusao.frase1 },
+          { label: '2ª frase (Proposta de intervenção):', text: outline.conclusao.frase2 },
+          { label: '3ª frase (Detalhamento):', text: outline.conclusao.frase3 }
+        ];
+        
+        conclusaoTexts.forEach(item => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 30;
+          }
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(...green);
+          doc.text(item.label, margin + 2, yPosition);
+          yPosition += 5;
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(0, 0, 0);
+          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          lines.forEach((line: string) => {
+            doc.text(line, margin + 2, yPosition);
+            yPosition += 4;
+          });
+          yPosition += 3;
+        });
+      }
+      
+    } else if (file.type === 'Texto Modificado' && file.originalText && file.modifiedText) {
       // Informações
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...gray);
+      doc.setTextColor(...softGray);
       doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR')}`, margin, yPosition);
       if (file.modificationType) {
         doc.text(`Tipo de Modificação: ${file.modificationType}`, margin + 70, yPosition);
@@ -341,7 +602,7 @@ export default function BibliotecaPage() {
       // Layout padrão para outros tipos
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...gray);
+      doc.setTextColor(...softGray);
       doc.text(`Categoria: ${file.category}`, margin, yPosition);
       yPosition += 5;
       doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR')}`, margin, yPosition);
@@ -356,7 +617,7 @@ export default function BibliotecaPage() {
       yPosition += 15;
 
       // Linha separadora
-      doc.setDrawColor(...brightBlue);
+      doc.setDrawColor(...darkBlue);
       doc.setLineWidth(0.5);
       doc.line(margin, yPosition, pageWidth - margin, yPosition);
       yPosition += 10;
