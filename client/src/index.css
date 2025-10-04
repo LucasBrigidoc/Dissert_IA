@@ -104,11 +104,6 @@
     background: var(--liquid-glass-bg);
     box-shadow: 0 20px 40px var(--liquid-glass-shadow);
     border: 1px solid var(--liquid-glass-border);
-    color: hsl(243 82% 11%) !important;
-  }
-  
-  .liquid-glass * {
-    color: inherit;
   }
   
   .liquid-glass-dark {
@@ -116,11 +111,6 @@
     background: var(--liquid-glass-dark-bg);
     box-shadow: 0 20px 40px var(--liquid-glass-dark-shadow);
     border: 1px solid var(--liquid-glass-border);
-    color: hsl(0 0% 100%) !important;
-  }
-  
-  .liquid-glass-dark * {
-    color: inherit;
   }
   
   .smooth-transition {
