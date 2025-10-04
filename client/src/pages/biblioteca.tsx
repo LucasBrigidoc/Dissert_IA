@@ -1004,6 +1004,181 @@ export default function BibliotecaPage() {
                     </div>
                   </div>
                 </div>
+              ) : selectedFile.type === 'Roteiro Personalizado' && selectedFile.outlineData ? (
+                /* Exibição especial para roteiros */
+                <div className="flex-1 overflow-y-auto space-y-4">
+                  {/* Análise da Proposta */}
+                  <div className="p-4 bg-white/60 rounded-xl border border-bright-blue/20">
+                    <h4 className="text-lg font-semibold text-dark-blue mb-4">📋 Análise da Proposta</h4>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-sm font-medium text-soft-gray mb-1">Proposta:</p>
+                        <p className="text-dark-blue">{selectedFile.outlineData.proposta}</p>
+                      </div>
+                      {selectedFile.outlineData.palavrasChave && selectedFile.outlineData.palavrasChave.length > 0 && (
+                        <div>
+                          <p className="text-sm font-medium text-soft-gray mb-1">Palavras-chave obrigatórias:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedFile.outlineData.palavrasChave.map((palavra: string, idx: number) => (
+                              <span key={idx} className="px-3 py-1 bg-bright-blue/10 text-bright-blue rounded-full text-sm font-medium">
+                                {palavra}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {selectedFile.outlineData.categoriaTematica && (
+                        <div>
+                          <p className="text-sm font-medium text-soft-gray mb-1">Categoria Temática:</p>
+                          <p className="text-dark-blue capitalize">{selectedFile.outlineData.categoriaTematica}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Repertórios Sugeridos */}
+                  {selectedFile.outlineData.repertoriosSugeridos && selectedFile.outlineData.repertoriosSugeridos.length > 0 && (
+                    <div className="p-4 bg-white/60 rounded-xl border border-emerald-200/50">
+                      <h4 className="text-lg font-semibold text-dark-blue mb-4 flex items-center gap-2">
+                        <span className="text-emerald-600">💡</span>
+                        Repertórios Sugeridos
+                      </h4>
+                      <div className="space-y-4">
+                        {selectedFile.outlineData.repertoriosSugeridos.map((repertorio: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-emerald-50/50 rounded-lg border border-emerald-200/30">
+                            <div className="flex items-start gap-3">
+                              <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-emerald-500 text-white rounded-full text-xs font-bold">
+                                {idx + 1}
+                              </span>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <p className="font-semibold text-dark-blue">{repertorio.titulo}</p>
+                                  <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 rounded text-xs">
+                                    {repertorio.tipo}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-soft-gray">
+                                  <strong className="text-dark-blue">Como usar:</strong> {repertorio.relacao}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Roteiro em 4 Blocos */}
+                  <div className="space-y-6">
+                    {/* Introdução */}
+                    {selectedFile.outlineData.introducao && (
+                      <div className="p-4 bg-white/60 rounded-xl border border-blue-200/50">
+                        <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-sm">1</span>
+                          1º Parágrafo - Introdução
+                        </h4>
+                        <div className="space-y-3 text-sm">
+                          <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-200/30">
+                            <p className="text-xs font-medium text-blue-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Contextualização com repertório sociocultural que apresente o tema</p>
+                            <p className="text-dark-blue"><strong>1ª frase:</strong> {selectedFile.outlineData.introducao.frase1}</p>
+                          </div>
+                          <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-200/30">
+                            <p className="text-xs font-medium text-blue-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Apresentação do problema ou desafio central do tema</p>
+                            <p className="text-dark-blue"><strong>2ª frase:</strong> {selectedFile.outlineData.introducao.frase2}</p>
+                          </div>
+                          <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-200/30">
+                            <p className="text-xs font-medium text-blue-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Tese com os dois argumentos que serão desenvolvidos</p>
+                            <p className="text-dark-blue"><strong>3ª frase:</strong> {selectedFile.outlineData.introducao.frase3}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 1º Desenvolvimento */}
+                    {selectedFile.outlineData.desenvolvimento1 && (
+                      <div className="p-4 bg-white/60 rounded-xl border border-purple-200/50">
+                        <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 bg-purple-500 text-white rounded-full text-sm">2</span>
+                          2º Parágrafo - 1º Desenvolvimento
+                        </h4>
+                        <div className="space-y-3 text-sm">
+                          <div className="p-3 bg-purple-50/50 rounded-lg border border-purple-200/30">
+                            <p className="text-xs font-medium text-purple-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Tópico frasal apresentando o primeiro argumento</p>
+                            <p className="text-dark-blue"><strong>1ª frase:</strong> {selectedFile.outlineData.desenvolvimento1.frase1}</p>
+                          </div>
+                          <div className="p-3 bg-purple-50/50 rounded-lg border border-purple-200/30">
+                            <p className="text-xs font-medium text-purple-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Repertório legitimado (dados, citações, fatos) que comprove o argumento</p>
+                            <p className="text-dark-blue"><strong>2ª frase:</strong> {selectedFile.outlineData.desenvolvimento1.frase2}</p>
+                          </div>
+                          <div className="p-3 bg-purple-50/50 rounded-lg border border-purple-200/30">
+                            <p className="text-xs font-medium text-purple-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Análise crítica conectando o repertório ao tema e mostrando as consequências</p>
+                            <p className="text-dark-blue"><strong>3ª frase:</strong> {selectedFile.outlineData.desenvolvimento1.frase3}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 2º Desenvolvimento */}
+                    {selectedFile.outlineData.desenvolvimento2 && (
+                      <div className="p-4 bg-white/60 rounded-xl border border-amber-200/50">
+                        <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 bg-amber-500 text-white rounded-full text-sm">3</span>
+                          3º Parágrafo - 2º Desenvolvimento
+                        </h4>
+                        <div className="space-y-3 text-sm">
+                          <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200/30">
+                            <p className="text-xs font-medium text-amber-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Tópico frasal apresentando o segundo argumento</p>
+                            <p className="text-dark-blue"><strong>1ª frase:</strong> {selectedFile.outlineData.desenvolvimento2.frase1}</p>
+                          </div>
+                          <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200/30">
+                            <p className="text-xs font-medium text-amber-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Repertório legitimado (dados, citações, fatos) que comprove o argumento</p>
+                            <p className="text-dark-blue"><strong>2ª frase:</strong> {selectedFile.outlineData.desenvolvimento2.frase2}</p>
+                          </div>
+                          <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200/30">
+                            <p className="text-xs font-medium text-amber-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Análise crítica conectando o repertório ao tema e mostrando as consequências</p>
+                            <p className="text-dark-blue"><strong>3ª frase:</strong> {selectedFile.outlineData.desenvolvimento2.frase3}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Conclusão */}
+                    {selectedFile.outlineData.conclusao && (
+                      <div className="p-4 bg-white/60 rounded-xl border border-green-200/50">
+                        <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full text-sm">4</span>
+                          4º Parágrafo - Conclusão
+                        </h4>
+                        <div className="space-y-3 text-sm">
+                          <div className="p-3 bg-green-50/50 rounded-lg border border-green-200/30">
+                            <p className="text-xs font-medium text-green-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Retomada da tese apresentada na introdução</p>
+                            <p className="text-dark-blue"><strong>1ª frase:</strong> {selectedFile.outlineData.conclusao.frase1}</p>
+                          </div>
+                          <div className="p-3 bg-green-50/50 rounded-lg border border-green-200/30">
+                            <p className="text-xs font-medium text-green-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Proposta de intervenção com agente + ação + meio/modo + finalidade</p>
+                            <p className="text-dark-blue"><strong>2ª frase:</strong> {selectedFile.outlineData.conclusao.frase2}</p>
+                          </div>
+                          <div className="p-3 bg-green-50/50 rounded-lg border border-green-200/30">
+                            <p className="text-xs font-medium text-green-600 mb-1">💡 O que deve ter:</p>
+                            <p className="text-xs text-soft-gray mb-2">Detalhamento da proposta de intervenção (como será feito)</p>
+                            <p className="text-dark-blue"><strong>3ª frase:</strong> {selectedFile.outlineData.conclusao.frase3}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               ) : (
                 /* Exibição padrão para outros tipos de arquivos */
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">
