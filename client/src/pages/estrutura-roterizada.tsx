@@ -326,12 +326,15 @@ export function EstruturaRoterizada() {
         doc.setFont("helvetica", "bold");
         doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
         doc.text(rep.titulo, margin + 9, yPosition);
+        yPosition += 5;
         
         doc.setTextColor(greenAccent[0], greenAccent[1], greenAccent[2]);
         doc.setFont("helvetica", "italic");
-        doc.text(`(${rep.tipo})`, margin + 9 + doc.getTextWidth(rep.titulo) + 2, yPosition);
+        doc.setFontSize(9);
+        doc.text(`(${rep.tipo})`, margin + 9, yPosition);
         yPosition += 6;
         
+        doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(50, 50, 50);
         const relacaoLines = doc.splitTextToSize(`Como usar: ${rep.relacao}`, maxWidth - 12);
