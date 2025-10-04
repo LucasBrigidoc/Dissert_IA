@@ -83,7 +83,7 @@ export function EstruturaRoterizada() {
         {/* Título da Página */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
               <FileEdit className="text-white" size={28} />
             </div>
             <h1 className="text-4xl font-bold text-dark-blue">Estrutura Roterizada</h1>
