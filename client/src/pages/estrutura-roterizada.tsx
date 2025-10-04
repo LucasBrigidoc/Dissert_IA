@@ -61,10 +61,7 @@ export function EstruturaRoterizada() {
     mutationFn: async (data: EssayOutlineQuestionnaire) => {
       const response = await apiRequest("/api/generate-outline", {
         method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: data,
       });
       return response;
     },
