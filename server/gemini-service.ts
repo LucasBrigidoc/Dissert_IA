@@ -427,6 +427,13 @@ Tipos de repertório: filmes, séries, livros, dados estatísticos, leis/artigos
    - 3-5 palavras-chave obrigatórias
    - Categoria temática (cultura, direitos humanos, tecnologia, educação, meio ambiente, etc.)
    - Alertas de risco (tangenciamento, fuga ao tema, generalizações, etc.)
+   - **EXPLICAÇÃO DO TEMA**: Forneça uma explicação clara e didática sobre o que trata o tema da proposta, adaptada ao nível de familiaridade do estudante:
+     * Se o estudante NUNCA ESTUDOU o tema (${familiarityText === 'nunca estudou esse assunto' ? 'ESTE É O CASO' : 'não é o caso'}): Explique o tema de forma INTRODUTÓRIA e DIDÁTICA, como se fosse a primeira vez que ele está tendo contato. Use linguagem acessível e defina conceitos básicos.
+     * Se o estudante CONHECE UM POUCO (${familiarityText === 'conhece um pouco sobre o tema' ? 'ESTE É O CASO' : 'não é o caso'}): Explique o tema de forma INTERMEDIÁRIA, reforçando pontos-chave e adicionando contextos importantes que ele pode não conhecer completamente.
+     * Se o estudante JÁ ESTUDOU E SABE DESENVOLVER (${familiarityText === 'já estudou e sabe desenvolver' ? 'ESTE É O CASO' : 'não é o caso'}): Explique o tema de forma AVANÇADA, destacando nuances, debates contemporâneos e aspectos mais profundos que enriquecerão a redação.
+     * Se o estudante TEM DOMÍNIO AVANÇADO (${familiarityText === 'tem domínio avançado sobre o tema' ? 'ESTE É O CASO' : 'não é o caso'}): Explique o tema de forma ESPECIALIZADA, trazendo perspectivas críticas, debates acadêmicos e conexões complexas que demonstrem alto nível de conhecimento.
+     
+     A explicação deve ter 3-5 frases bem estruturadas e específicas ao tema proposto "${proposal}".
 
 2. **ROTEIRO EM 4 BLOCOS:**
 
@@ -456,6 +463,7 @@ Retorne APENAS um JSON com esta estrutura:
   "palavrasChave": ["palavra1", "palavra2", "palavra3"],
   "categoriaTematica": "categoria",
   "alertasRisco": ["alerta1", "alerta2"],
+  "explicacaoTema": "Explicação didática e clara sobre o tema, adaptada ao nível de familiaridade do estudante (3-5 frases bem estruturadas)",
   "analiseRepertorio": "Se o usuário forneceu repertórios, explique aqui se foram mantidos, ajustados ou substituídos e POR QUÊ. Se não forneceu, omita este campo.",
   "analiseProblemas": "Se o usuário forneceu problemas/causas/soluções, explique aqui se foram incorporados ou se você sugeriu alternativas melhores e POR QUÊ. Se não forneceu, omita este campo.",
   "repertoriosSugeridos": [
