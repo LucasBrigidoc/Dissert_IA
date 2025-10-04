@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { ArrowLeft, FileEdit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
-import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { essayOutlineQuestionnaireSchema, type EssayOutlineQuestionnaire } from "@shared/schema";
@@ -74,6 +74,10 @@ export function EstruturaRoterizada() {
         title: "Roteiro gerado com sucesso!",
         description: "Seu roteiro personalizado está pronto.",
       });
+      
+      // Atualizar barra de progresso de IA após uso de tokens
+      refreshAIUsageStats();
+      
       // Scroll to outline
       setTimeout(() => {
         document.getElementById('generated-outline')?.scrollIntoView({ behavior: 'smooth' });

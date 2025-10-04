@@ -4402,7 +4402,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await geminiService.generateEssayOutline(questionnaireData);
       
       // Record AI operation with actual token usage
-      await weeklyCostLimitingService.recordAIOperation(
+      await weeklyCostLimitingService.recordAIOperationWithTokens(
         identifier,
         'essay_outline',
         result.promptTokens || 0,
