@@ -570,12 +570,11 @@ export function EstruturaRoterizada() {
 
               {/* Análise Crítica das Ideias do Usuário */}
               {(() => {
+                const invalidPhrases = ['não forneceu', 'não possui', 'não conhece', 'não sabe', 'não tem', 'usuário não'];
                 const hasValidRepertorio = generatedOutline.analiseRepertorio && 
-                  !generatedOutline.analiseRepertorio.toLowerCase().includes('não forneceu') &&
-                  !generatedOutline.analiseRepertorio.toLowerCase().includes('não possui');
+                  !invalidPhrases.some(phrase => generatedOutline.analiseRepertorio.toLowerCase().includes(phrase));
                 const hasValidProblemas = generatedOutline.analiseProblemas && 
-                  !generatedOutline.analiseProblemas.toLowerCase().includes('não forneceu') &&
-                  !generatedOutline.analiseProblemas.toLowerCase().includes('não possui');
+                  !invalidPhrases.some(phrase => generatedOutline.analiseProblemas.toLowerCase().includes(phrase));
                 
                 return (hasValidRepertorio || hasValidProblemas) && (
                   <div className="mb-8 p-4 bg-blue-50/60 rounded-xl border border-blue-300/30">
