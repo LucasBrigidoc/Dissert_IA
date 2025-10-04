@@ -383,10 +383,18 @@ O estudante solicitou um roteiro EXTREMAMENTE DETALHADO. Este é um nível MÁXI
 "Inicie o primeiro parágrafo com uma contextualização histórica ou sociocultural específica ao tema. Você pode começar a frase com conectivos como 'Historicamente,', 'Desde o século XX,', 'De acordo com dados recentes,' ou 'Segundo a pesquisa X de 2023,'. Por exemplo, se o tema for sobre impacto das redes sociais, mencione: 'Segundo pesquisa do IBGE de 2023, 85% dos brasileiros utilizam redes sociais diariamente, o que demonstra a centralidade dessas plataformas na vida contemporânea'. Desenvolva esta contextualização em 2-3 linhas (aproximadamente 40-50 palavras), mostrando a RELEVÂNCIA do repertório escolhido para introduzir o problema. Em seguida, na segunda frase, use um conectivo de contraste como 'Entretanto,', 'Contudo,', 'Todavia,' ou 'No entanto,' para apresentar a PROBLEMÁTICA central. Estruture assim: [Conectivo de contraste] + [apresentação do problema] + [sua tese/posicionamento]. Exemplo: 'Entretanto, esse uso massivo tem gerado debates sobre privacidade e saúde mental, tornando urgente a discussão sobre regulamentação e educação digital'. Esta frase deve ter aproximadamente 25-35 palavras. DICA: evite generalizações como 'sempre foi assim' ou 'todos sabem'; seja específico e use dados/fatos. ATENÇÃO: não cite o repertório sem explicar sua relação com o tema - sempre conecte o repertório à problemática que será discutida."
 
 Cada orientação do roteiro deve ser TÃO DETALHADA quanto o exemplo acima. O estudante deve poder praticamente COPIAR suas instruções como guia de escrita.
+
+⚠️ **IMPORTANTE - FORMATAÇÃO DA RESPOSTA:**
+NÃO inclua marcações de quantidade como "(Aprox. 4-5 linhas)", "(60-80 palavras)", "(2-3 linhas)" ou similares no roteiro final. 
+Essas instruções são apenas para VOCÊ seguir internamente ao criar o conteúdo, mas o usuário NÃO DEVE VER essas anotações.
 `
       : `
 **MODO DIREÇÕES GERAIS:**
 Forneça orientações objetivas, concisas e diretas. Cada frase do roteiro deve ter 1-2 linhas, indicando apenas o caminho principal sem detalhamento excessivo. Seja direto ao ponto.
+
+⚠️ **IMPORTANTE - FORMATAÇÃO DA RESPOSTA:**
+NÃO inclua marcações de quantidade como "(Aprox. 4-5 linhas)", "(60-80 palavras)", "(2-3 linhas)" ou similares no roteiro final.
+O usuário NÃO DEVE VER essas anotações técnicas.
 `;
 
     return `Você é um especialista em redações ENEM nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
