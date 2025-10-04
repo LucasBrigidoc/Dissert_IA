@@ -10,7 +10,6 @@ import { essayOutlineQuestionnaireSchema, type EssayOutlineQuestionnaire } from 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -63,9 +62,9 @@ export function EstruturaRoterizada() {
   const hasReferences = form.watch("knownReferences.hasReferences");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      {/* Header Sticky - Estilo Controlador de Escrita */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Sticky */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center justify-between">
@@ -120,23 +119,28 @@ export function EstruturaRoterizada() {
       </div>
 
       {/* Content Area */}
-      <div className="container mx-auto px-4 sm:px-6 pt-32 sm:pt-40 pb-12">
+      <div className="container mx-auto px-6 py-4 pt-32">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Question 1: Proposta da redação */}
-            <LiquidGlassCard className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="text-white" size={24} />
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            {/* Questionário em um único card - Estilo Simulador */}
+            <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Target className="text-white" size={14} />
                 </div>
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-dark-blue mb-1">
+                <h3 className="text-xl font-semibold text-dark-blue">Questionário de Roteirização</h3>
+              </div>
+
+              <div className="space-y-6">
+                {/* Question 1: Proposta da redação */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <BookOpen className="text-white" size={14} />
+                    </div>
+                    <label className="block text-sm font-medium text-dark-blue">
                       Proposta da redação
-                    </h3>
-                    <p className="text-sm text-soft-gray">
-                      Cole ou descreva o tema da redação que você precisa desenvolver
-                    </p>
+                    </label>
                   </div>
                   <FormField
                     control={form.control}
@@ -146,7 +150,7 @@ export function EstruturaRoterizada() {
                         <FormControl>
                           <Textarea
                             placeholder="Ex: Os desafios para a valorização de comunidades e povos tradicionais no Brasil"
-                            className="min-h-[120px] resize-none"
+                            className="min-h-[100px] resize-none border-bright-blue/20"
                             data-testid="textarea-proposal"
                             {...field}
                           />
@@ -156,23 +160,16 @@ export function EstruturaRoterizada() {
                     )}
                   />
                 </div>
-              </div>
-            </LiquidGlassCard>
 
-            {/* Question 2: Nível de familiaridade */}
-            <LiquidGlassCard className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Brain className="text-white" size={24} />
-                </div>
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-dark-blue mb-1">
+                {/* Question 2: Nível de familiaridade */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Brain className="text-white" size={14} />
+                    </div>
+                    <label className="block text-sm font-medium text-dark-blue">
                       Qual o seu nível de familiaridade com a proposta?
-                    </h3>
-                    <p className="text-sm text-soft-gray">
-                      Isso nos ajuda a personalizar o roteiro para o seu conhecimento
-                    </p>
+                    </label>
                   </div>
                   <FormField
                     control={form.control}
@@ -183,10 +180,10 @@ export function EstruturaRoterizada() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             value={field.value}
-                            className="space-y-3"
+                            className="space-y-2"
                             data-testid="radiogroup-familiarity"
                           >
-                            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50/50 transition-colors">
+                            <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 hover:bg-blue-50/50 transition-colors border border-bright-blue/10">
                               <RadioGroupItem value="never-studied" id="never-studied" data-testid="radio-never-studied" />
                               <label
                                 htmlFor="never-studied"
@@ -196,7 +193,7 @@ export function EstruturaRoterizada() {
                                 Nunca estudei esse assunto
                               </label>
                             </div>
-                            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50/50 transition-colors">
+                            <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 hover:bg-blue-50/50 transition-colors border border-bright-blue/10">
                               <RadioGroupItem value="know-little" id="know-little" data-testid="radio-know-little" />
                               <label
                                 htmlFor="know-little"
@@ -206,7 +203,7 @@ export function EstruturaRoterizada() {
                                 Conheço um pouco
                               </label>
                             </div>
-                            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50/50 transition-colors">
+                            <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 hover:bg-blue-50/50 transition-colors border border-bright-blue/10">
                               <RadioGroupItem value="studied-can-develop" id="studied-can-develop" data-testid="radio-studied-can-develop" />
                               <label
                                 htmlFor="studied-can-develop"
@@ -216,7 +213,7 @@ export function EstruturaRoterizada() {
                                 Já estudei e sei desenvolver
                               </label>
                             </div>
-                            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50/50 transition-colors">
+                            <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 hover:bg-blue-50/50 transition-colors border border-bright-blue/10">
                               <RadioGroupItem value="advanced-mastery" id="advanced-mastery" data-testid="radio-advanced-mastery" />
                               <label
                                 htmlFor="advanced-mastery"
@@ -233,23 +230,16 @@ export function EstruturaRoterizada() {
                     )}
                   />
                 </div>
-              </div>
-            </LiquidGlassCard>
 
-            {/* Question 3: Problemas e desafios */}
-            <LiquidGlassCard className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Lightbulb className="text-white" size={24} />
-                </div>
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-dark-blue mb-1">
-                      Problemas, causas e desafios
-                    </h3>
-                    <p className="text-sm text-soft-gray">
-                      Quais seriam os principais pontos ligados a esse tema que você acha importante destacar e sua solução?
-                    </p>
+                {/* Question 3: Problemas e desafios */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Lightbulb className="text-white" size={14} />
+                    </div>
+                    <label className="block text-sm font-medium text-dark-blue">
+                      Quais seriam os principais problemas, causas ou desafios ligados a esse tema que você acha importante destacar e sua solução?
+                    </label>
                   </div>
                   <FormField
                     control={form.control}
@@ -259,7 +249,7 @@ export function EstruturaRoterizada() {
                         <FormControl>
                           <Textarea
                             placeholder="Ex: Falta de políticas públicas efetivas, invisibilidade social, conflitos territoriais..."
-                            className="min-h-[120px] resize-none"
+                            className="min-h-[100px] resize-none border-bright-blue/20"
                             data-testid="textarea-problems"
                             {...field}
                           />
@@ -269,30 +259,23 @@ export function EstruturaRoterizada() {
                     )}
                   />
                 </div>
-              </div>
-            </LiquidGlassCard>
 
-            {/* Question 4: Autores e conceitos conhecidos */}
-            <LiquidGlassCard className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Target className="text-white" size={24} />
-                </div>
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-dark-blue mb-1">
-                      Repertório que você conhece
-                    </h3>
-                    <p className="text-sm text-soft-gray">
+                {/* Question 4: Autores e conceitos conhecidos */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Target className="text-white" size={14} />
+                    </div>
+                    <label className="block text-sm font-medium text-dark-blue">
                       Quais autores, conceitos, obras, estatísticas ou exemplos você já conhece que podem se conectar a essa proposta?
-                    </p>
+                    </label>
                   </div>
                   
                   <FormField
                     control={form.control}
                     name="knownReferences.hasReferences"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 mb-3 p-3 rounded-lg bg-white/50 border border-bright-blue/10">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -301,7 +284,7 @@ export function EstruturaRoterizada() {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="cursor-pointer" data-testid="label-checkbox-has-references">
+                          <FormLabel className="cursor-pointer text-sm font-medium" data-testid="label-checkbox-has-references">
                             Possuo repertório sobre este tema
                           </FormLabel>
                         </div>
@@ -318,7 +301,7 @@ export function EstruturaRoterizada() {
                           <FormControl>
                             <Textarea
                               placeholder="Ex: Darcy Ribeiro (O Povo Brasileiro), Ailton Krenak, dados do IBGE sobre povos indígenas..."
-                              className="min-h-[100px] resize-none"
+                              className="min-h-[80px] resize-none border-bright-blue/20"
                               data-testid="textarea-references"
                               {...field}
                             />
@@ -329,23 +312,16 @@ export function EstruturaRoterizada() {
                     />
                   )}
                 </div>
-              </div>
-            </LiquidGlassCard>
 
-            {/* Question 5: Nível de detalhamento */}
-            <LiquidGlassCard className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Settings2 className="text-white" size={24} />
-                </div>
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-dark-blue mb-1">
+                {/* Question 5: Nível de detalhamento */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Settings2 className="text-white" size={14} />
+                    </div>
+                    <label className="block text-sm font-medium text-dark-blue">
                       Nível de detalhamento do roteiro desejado
-                    </h3>
-                    <p className="text-sm text-soft-gray">
-                      Escolha como prefere receber o roteiro da sua redação
-                    </p>
+                    </label>
                   </div>
                   <FormField
                     control={form.control}
@@ -356,10 +332,10 @@ export function EstruturaRoterizada() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             value={field.value}
-                            className="space-y-3"
+                            className="space-y-2"
                             data-testid="radiogroup-detail-level"
                           >
-                            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50/50 transition-colors">
+                            <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 hover:bg-blue-50/50 transition-colors border border-bright-blue/10">
                               <RadioGroupItem value="step-by-step" id="step-by-step" data-testid="radio-step-by-step" />
                               <label
                                 htmlFor="step-by-step"
@@ -372,7 +348,7 @@ export function EstruturaRoterizada() {
                                 </span>
                               </label>
                             </div>
-                            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50/50 transition-colors">
+                            <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 hover:bg-blue-50/50 transition-colors border border-bright-blue/10">
                               <RadioGroupItem value="general-directions" id="general-directions" data-testid="radio-general-directions" />
                               <label
                                 htmlFor="general-directions"
@@ -393,20 +369,20 @@ export function EstruturaRoterizada() {
                   />
                 </div>
               </div>
-            </LiquidGlassCard>
 
-            {/* Submit Button */}
-            <div className="flex justify-center pt-4">
-              <Button
-                type="submit"
-                size="lg"
-                className="bg-gradient-to-r from-dark-blue to-bright-blue hover:from-dark-blue/90 hover:to-bright-blue/90 text-white px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
-                data-testid="button-generate-outline"
-              >
-                <CheckCircle2 className="mr-2" size={20} />
-                Gerar Roteiro Personalizado
-              </Button>
-            </div>
+              {/* Submit Button */}
+              <div className="flex justify-center mt-8 pt-6 border-t border-bright-blue/20">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="bg-gradient-to-r from-dark-blue to-bright-blue hover:from-dark-blue/90 hover:to-bright-blue/90 text-white px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                  data-testid="button-generate-outline"
+                >
+                  <CheckCircle2 className="mr-2" size={20} />
+                  Gerar Roteiro Personalizado
+                </Button>
+              </div>
+            </LiquidGlassCard>
           </form>
         </Form>
       </div>
