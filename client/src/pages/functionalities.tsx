@@ -22,7 +22,8 @@ export default function FunctionalitiesPage() {
       "Explorador de Repertório": "/repertorio?from=functionalities", 
       "Simulador de Prova": "/simulador?from=functionalities",
       "Controlador de Escrita": "/controlador-escrita?from=functionalities",
-      "Estrutura Coringa": "/estilo?from=functionalities",
+      "Estrutura Roterizada": "/estrutura-roterizada?from=functionalities",
+      "Estrutura Coringa": "/estrutura-roterizada?from=functionalities",
       "Newsletter Educacional": "/dashboard",
       "Explorador de Propostas": "/propostas?from=functionalities",
       "Biblioteca Pessoal": "/biblioteca?from=functionalities"
@@ -58,6 +59,7 @@ export default function FunctionalitiesPage() {
     feature.name === "Controlador de Escrita"
   );
   const creationFeatures = mockFeatures.filter(feature => 
+    feature.name === "Estrutura Roterizada" ||
     feature.name === "Estrutura Coringa" ||
     feature.name === "Explorador de Propostas"
   );

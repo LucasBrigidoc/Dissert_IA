@@ -41,8 +41,8 @@ export const mockFeatures = [
   },
   {
     id: 3,
-    name: "Estrutura Coringa",
-    description: "Crie e use modelos e gere redações personalizadas",
+    name: "Estrutura Roterizada",
+    description: "Sistema inteligente de roteirização de redações com análise estrutural avançada",
     icon: "edit"
   },
   {
@@ -98,7 +98,7 @@ export const mockPricingPlans = [
     features: [
       "Acesso a todas funcionalidades",
       "IA avançada com correção por competências ENEM",
-      "Estrutura Coringa: crie e use modelos personalizados",
+      "Estrutura Roterizada: sistema inteligente de roteirização",
       "Repertório inteligente com milhares de referências",
       "Controlador de Escrita: ajuste tom e formalidade",
       "Simulador completo idêntico ao dia da prova",

@@ -17,13 +17,12 @@ import About from "@/pages/about";
 import Argumentos from "@/pages/argumentos";
 import Repertorio from "@/pages/repertorio";
 import Simulador from "@/pages/simulador";
-import Estilo from "@/pages/estilo";
 import Settings from "@/pages/settings";
 import Goals from "@/pages/goals";
 import Exams from "@/pages/exams";
 import Functionalities from "@/pages/functionalities";
 import Newsletter from "@/pages/newsletter";
-import { EstruturaCuringa } from "@/pages/estrutura-curinga";
+import { EstruturaRoterizada } from "@/pages/estrutura-roterizada";
 import ControladorEscrita from "@/pages/controlador-escrita";
 import Simulacao from "@/pages/simulacao";
 import { Resultado } from "@/pages/resultado";
@@ -31,9 +30,6 @@ import Biblioteca from "@/pages/biblioteca";
 import MaterialComplementar from "@/pages/material-complementar";
 import Propostas from "@/pages/propostas";
 import MapaMental from "@/pages/mapa-mental";
-import EditStructurePage from "@/pages/edit-structure";
-import UseStructurePage from "@/pages/use-structure-page";
-import CreateStructurePage from "@/pages/create-structure-page";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminNewsletter from "@/pages/admin-newsletter";
 import AdminMateriais from "@/pages/admin-materiais";
@@ -111,14 +107,9 @@ function Router() {
           <Simulacao />
         </ProtectedRoute>
       </Route>
-      <Route path="/estilo">
+      <Route path="/estrutura-roterizada">
         <ProtectedRoute>
-          <Estilo />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/estrutura-curinga">
-        <ProtectedRoute>
-          <EstruturaCuringa />
+          <EstruturaRoterizada />
         </ProtectedRoute>
       </Route>
       <Route path="/controlador-escrita">
@@ -149,21 +140,6 @@ function Router() {
       <Route path="/mapa-mental">
         <ProtectedRoute>
           <MapaMental />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/edit-structure">
-        <ProtectedRoute>
-          <EditStructurePage />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/use-structure">
-        <ProtectedRoute>
-          <UseStructurePage />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/create-structure">
-        <ProtectedRoute>
-          <CreateStructurePage />
         </ProtectedRoute>
       </Route>
       <Route path="/admin">
