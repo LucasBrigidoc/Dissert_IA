@@ -344,6 +344,26 @@ INSTRUÇÕES:
       ? 'passo a passo detalhado' 
       : 'direções gerais';
 
+    const detailInstructions = detailLevel === 'step-by-step' 
+      ? `
+**ATENÇÃO - MODO DETALHADO ATIVADO:**
+O estudante solicitou um roteiro PASSO A PASSO DETALHADO. Isso significa que cada frase do roteiro deve ser:
+- MAIS LONGA e MAIS ELABORADA (cada frase deve ter 2-3 períodos completos explicando em detalhes)
+- MUITO ESPECÍFICA ao tema, com exemplos concretos, dados e contextualizações
+- RICA EM DETALHES sobre COMO desenvolver aquele ponto (não apenas "o que" fazer, mas "como" fazer)
+- Inclua orientações extras sobre conectivos, estrutura de frase e raciocínio argumentativo
+- Forneça exemplos de como começar cada frase ou parágrafo
+- Cada item do roteiro deve funcionar como um GUIA PASSO A PASSO que o estudante pode seguir quase literalmente
+
+Exemplo de diferença:
+❌ GENÉRICO: "Contextualize com repertório sobre o tema"
+✅ DETALHADO: "Inicie com uma contextualização histórica ou cultural específica ao tema. Por exemplo, mencione dados do IBGE de 2023 sobre [aspecto específico do tema], ou cite a Lei [número] que regulamenta [aspecto], ou traga um exemplo concreto do filme/livro [nome] que retrata [situação específica]. Use conectivos como 'Historicamente,' ou 'Segundo dados de' para iniciar. Desenvolva em 2-3 linhas mostrando a relevância desse repertório para introduzir a problemática."
+`
+      : `
+**MODO DIREÇÕES GERAIS:**
+Forneça orientações objetivas e diretas, sem detalhamento excessivo. Cada frase do roteiro deve ser concisa e indicar o caminho principal.
+`;
+
     return `Você é um especialista em redações ENEM nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
 
 **PROPOSTA DA REDAÇÃO:**
@@ -354,6 +374,8 @@ ${proposal}
 - Problemas/desafios conhecidos: ${problemsText}
 - Repertório disponível: ${referencesText}
 - Detalhamento desejado: ${detailText}
+
+${detailInstructions}
 
 **INSTRUÇÕES IMPORTANTES:**
 Garanta que o roteiro evite cenários onde o estudante:
