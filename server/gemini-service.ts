@@ -296,7 +296,25 @@ INSTRUÇÕES:
       const response = await result.response;
       const text = response.text();
 
-      return this.parseOutlineResponse(text, questionnaireData.proposal);
+      // Extract token usage metadata from Gemini response
+      const usageMetadata = result.response.usageMetadata || {};
+      const promptTokens = usageMetadata.promptTokenCount || 0;
+      const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
+      const outputTokens = Array.isArray(rawOutputTokensValue) 
+        ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
+        : (rawOutputTokensValue || 0);
+      const totalTokens = usageMetadata.totalTokenCount || 0;
+
+      console.log(`📊 Gemini Essay Outline - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens}`);
+
+      const outline = this.parseOutlineResponse(text, questionnaireData.proposal);
+      
+      return {
+        outline,
+        tokensUsed: totalTokens,
+        promptTokens,
+        outputTokens
+      };
     } catch (error) {
       console.error("Erro ao gerar roteiro:", error);
       throw new Error("Erro ao gerar roteiro. Tente novamente.");
