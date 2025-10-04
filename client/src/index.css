@@ -104,6 +104,7 @@
     background: var(--liquid-glass-bg);
     box-shadow: 0 20px 40px var(--liquid-glass-shadow);
     border: 1px solid var(--liquid-glass-border);
+    color: var(--dark-blue);
   }
   
   .liquid-glass-dark {
@@ -111,6 +112,7 @@
     background: var(--liquid-glass-dark-bg);
     box-shadow: 0 20px 40px var(--liquid-glass-dark-shadow);
     border: 1px solid var(--liquid-glass-border);
+    color: var(--pure-white);
   }
   
   .smooth-transition {
