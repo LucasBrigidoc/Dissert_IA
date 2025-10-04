@@ -158,80 +158,82 @@ export function EstruturaRoterizada() {
     const amberAccent = [245, 158, 11];
     const blueAccent = [59, 130, 246];
 
-    // Logo DissertIA no topo
+    // Header com gradiente visual
     doc.setFillColor(brightBlue[0], brightBlue[1], brightBlue[2]);
-    doc.roundedRect(margin, yPosition - 3, 8, 8, 2, 2, 'F');
+    doc.rect(0, 0, pageWidth, 35, 'F');
     
-    // Ícone de estrela simulado (usando texto)
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    doc.text("✦", margin + 2.5, yPosition + 3);
+    // Logo DissertIA - Quadrado branco com borda
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, yPosition - 2, 10, 10, 1.5, 1.5, 'F');
     
-    // Texto DISSERTIA com fonte Times (similar a Playfair)
-    doc.setFontSize(24);
+    // Texto DISSERTIA com fonte Times
+    doc.setFontSize(22);
     doc.setFont("times", "bold");
-    doc.setTextColor(brightBlue[0], brightBlue[1], brightBlue[2]);
-    doc.text("DISSERT", margin + 10, yPosition + 5);
+    doc.setTextColor(255, 255, 255);
+    doc.text("DISSERT", margin + 13, yPosition + 6);
     
-    doc.setTextColor(softGray[0], softGray[1], softGray[2]);
-    doc.text("IA", margin + 10 + doc.getTextWidth("DISSERT"), yPosition + 5);
+    doc.setFontSize(22);
+    doc.text("IA", margin + 13 + doc.getTextWidth("DISSERT"), yPosition + 6);
     
-    yPosition += 15;
+    // Subtítulo no header
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(255, 255, 255);
+    const headerSubtitle = "Roteiro Personalizado";
+    doc.text(headerSubtitle, pageWidth - margin - doc.getTextWidth(headerSubtitle), yPosition + 6);
+    
+    yPosition = 45;
 
-    // Subtítulo "Roteiro Personalizado"
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-    doc.text("Roteiro Personalizado", margin, yPosition);
+    // Análise da Proposta - Seção com borda lateral colorida
+    doc.setDrawColor(blueAccent[0], blueAccent[1], blueAccent[2]);
+    doc.setLineWidth(3);
+    doc.line(margin - 5, yPosition, margin - 5, yPosition + 8);
     
-    // Linha decorativa
-    doc.setDrawColor(brightBlue[0], brightBlue[1], brightBlue[2]);
-    doc.setLineWidth(0.5);
-    doc.line(margin, yPosition + 3, pageWidth - margin, yPosition + 3);
-    
-    yPosition += 15;
-
-    // Análise da Proposta com fundo colorido
-    doc.setFillColor(blueAccent[0], blueAccent[1], blueAccent[2], 0.1);
-    doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
-    
-    doc.setFontSize(14);
+    doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(blueAccent[0], blueAccent[1], blueAccent[2]);
-    doc.text("📋 Análise da Proposta", margin, yPosition + 5);
+    doc.text("ANALISE DA PROPOSTA", margin, yPosition + 6);
     yPosition += 15;
 
+    // Fundo cinza claro para conteúdo
+    const proposalLines = doc.splitTextToSize(generatedOutline.proposta, maxWidth - 6);
+    const proposalHeight = proposalLines.length * 5 + 12;
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(margin - 2, yPosition - 5, maxWidth + 4, proposalHeight, 2, 2, 'F');
+    
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
     doc.text("Proposta:", margin, yPosition);
-    yPosition += 5;
+    yPosition += 6;
     
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(60, 60, 60);
-    const proposalLines = doc.splitTextToSize(generatedOutline.proposta, maxWidth);
+    doc.setTextColor(50, 50, 50);
     doc.text(proposalLines, margin, yPosition);
-    yPosition += proposalLines.length * 5 + 5;
+    yPosition += proposalLines.length * 5 + 8;
 
     if (generatedOutline.palavrasChave && generatedOutline.palavrasChave.length > 0) {
       doc.setFont("helvetica", "bold");
       doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-      doc.text("Palavras-chave: ", margin, yPosition);
+      doc.text("Palavras-chave:", margin, yPosition);
+      yPosition += 5;
       
       doc.setFont("helvetica", "normal");
       doc.setTextColor(brightBlue[0], brightBlue[1], brightBlue[2]);
-      doc.text(generatedOutline.palavrasChave.join(", "), margin + doc.getTextWidth("Palavras-chave: "), yPosition);
-      yPosition += 10;
+      const keywordsText = generatedOutline.palavrasChave.join(" | ");
+      const keywordsLines = doc.splitTextToSize(keywordsText, maxWidth - 6);
+      doc.text(keywordsLines, margin + 3, yPosition);
+      yPosition += keywordsLines.length * 5 + 5;
     }
 
     if (generatedOutline.categoriaTematica) {
       doc.setFont("helvetica", "bold");
       doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-      doc.text("Categoria Temática: ", margin, yPosition);
+      doc.text("Categoria Tematica:", margin, yPosition);
       
       doc.setFont("helvetica", "normal");
-      doc.setTextColor(60, 60, 60);
-      doc.text(generatedOutline.categoriaTematica, margin + doc.getTextWidth("Categoria Temática: "), yPosition);
+      doc.setTextColor(50, 50, 50);
+      doc.text(generatedOutline.categoriaTematica, margin + doc.getTextWidth("Categoria Tematica: ") + 2, yPosition);
       yPosition += 10;
     }
 
@@ -249,13 +251,15 @@ export function EstruturaRoterizada() {
       !invalidPhrases.some(phrase => generatedOutline.analiseProblemas.toLowerCase().includes(phrase));
 
     if (hasValidRepertorio || hasValidProblemas) {
-      doc.setFillColor(blueAccent[0], blueAccent[1], blueAccent[2], 0.1);
-      doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+      // Borda lateral colorida
+      doc.setDrawColor(blueAccent[0], blueAccent[1], blueAccent[2]);
+      doc.setLineWidth(3);
+      doc.line(margin - 5, yPosition, margin - 5, yPosition + 8);
       
-      doc.setFontSize(14);
+      doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(blueAccent[0], blueAccent[1], blueAccent[2]);
-      doc.text("🔍 Análise de suas Ideias", margin, yPosition + 5);
+      doc.text("ANALISE DE SUAS IDEIAS", margin, yPosition + 6);
       yPosition += 15;
 
       doc.setFontSize(10);
@@ -263,25 +267,25 @@ export function EstruturaRoterizada() {
       if (hasValidRepertorio) {
         doc.setFont("helvetica", "bold");
         doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        doc.text("📚 Sobre os Repertórios:", margin, yPosition);
-        yPosition += 5;
+        doc.text("Sobre os Repertorios:", margin, yPosition);
+        yPosition += 6;
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        const repertorioLines = doc.splitTextToSize(generatedOutline.analiseRepertorio, maxWidth);
-        doc.text(repertorioLines, margin, yPosition);
-        yPosition += repertorioLines.length * 5 + 5;
+        doc.setTextColor(50, 50, 50);
+        const repertorioLines = doc.splitTextToSize(generatedOutline.analiseRepertorio, maxWidth - 6);
+        doc.text(repertorioLines, margin + 3, yPosition);
+        yPosition += repertorioLines.length * 5 + 8;
       }
 
       if (hasValidProblemas) {
         doc.setFont("helvetica", "bold");
         doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        doc.text("💭 Sobre os Problemas/Argumentos:", margin, yPosition);
-        yPosition += 5;
+        doc.text("Sobre os Problemas/Argumentos:", margin, yPosition);
+        yPosition += 6;
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        const problemasLines = doc.splitTextToSize(generatedOutline.analiseProblemas, maxWidth);
-        doc.text(problemasLines, margin, yPosition);
-        yPosition += problemasLines.length * 5 + 5;
+        doc.setTextColor(50, 50, 50);
+        const problemasLines = doc.splitTextToSize(generatedOutline.analiseProblemas, maxWidth - 6);
+        doc.text(problemasLines, margin + 3, yPosition);
+        yPosition += problemasLines.length * 5 + 8;
       }
     }
 
@@ -292,13 +296,15 @@ export function EstruturaRoterizada() {
         yPosition = 20;
       }
 
-      doc.setFillColor(greenAccent[0], greenAccent[1], greenAccent[2], 0.1);
-      doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+      // Borda lateral verde
+      doc.setDrawColor(greenAccent[0], greenAccent[1], greenAccent[2]);
+      doc.setLineWidth(3);
+      doc.line(margin - 5, yPosition, margin - 5, yPosition + 8);
       
-      doc.setFontSize(14);
+      doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(greenAccent[0], greenAccent[1], greenAccent[2]);
-      doc.text("💡 Repertórios Sugeridos", margin, yPosition + 5);
+      doc.text("REPERTORIOS SUGERIDOS", margin, yPosition + 6);
       yPosition += 15;
 
       doc.setFontSize(10);
@@ -307,29 +313,39 @@ export function EstruturaRoterizada() {
           doc.addPage();
           yPosition = 20;
         }
+        
+        // Número com fundo colorido
+        doc.setFillColor(greenAccent[0], greenAccent[1], greenAccent[2]);
+        doc.circle(margin + 3, yPosition - 2, 3.5, 'F');
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255, 255, 255);
+        doc.text((idx + 1).toString(), margin + (idx + 1 > 9 ? 1.5 : 2.2), yPosition);
+        
+        doc.setFontSize(10);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        doc.text(`${idx + 1}. ${rep.titulo}`, margin, yPosition);
+        doc.text(rep.titulo, margin + 9, yPosition);
         
         doc.setTextColor(greenAccent[0], greenAccent[1], greenAccent[2]);
-        doc.setFont("helvetica", "normal");
-        doc.text(`(${rep.tipo})`, margin + doc.getTextWidth(`${idx + 1}. ${rep.titulo} `), yPosition);
-        yPosition += 5;
+        doc.setFont("helvetica", "italic");
+        doc.text(`(${rep.tipo})`, margin + 9 + doc.getTextWidth(rep.titulo) + 2, yPosition);
+        yPosition += 6;
         
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        const relacaoLines = doc.splitTextToSize(`Como usar: ${rep.relacao}`, maxWidth);
-        doc.text(relacaoLines, margin, yPosition);
-        yPosition += relacaoLines.length * 5 + 5;
+        doc.setTextColor(50, 50, 50);
+        const relacaoLines = doc.splitTextToSize(`Como usar: ${rep.relacao}`, maxWidth - 12);
+        doc.text(relacaoLines, margin + 9, yPosition);
+        yPosition += relacaoLines.length * 5 + 6;
       });
     }
 
-    // Roteiro em 4 Blocos com cores
+    // Roteiro em 4 Blocos com cores e design profissional
     const sections = [
-      { title: "1º Parágrafo - Introdução", data: generatedOutline.introducao, color: blueAccent, number: "1" },
-      { title: "2º Parágrafo - 1º Desenvolvimento", data: generatedOutline.desenvolvimento1, color: purpleAccent, number: "2" },
-      { title: "3º Parágrafo - 2º Desenvolvimento", data: generatedOutline.desenvolvimento2, color: amberAccent, number: "3" },
-      { title: "4º Parágrafo - Conclusão", data: generatedOutline.conclusao, color: greenAccent, number: "4" }
+      { title: "1 PARAGRAFO - INTRODUCAO", shortTitle: "Introducao", data: generatedOutline.introducao, color: blueAccent, number: "1" },
+      { title: "2 PARAGRAFO - 1 DESENVOLVIMENTO", shortTitle: "1 Desenvolvimento", data: generatedOutline.desenvolvimento1, color: purpleAccent, number: "2" },
+      { title: "3 PARAGRAFO - 2 DESENVOLVIMENTO", shortTitle: "2 Desenvolvimento", data: generatedOutline.desenvolvimento2, color: amberAccent, number: "3" },
+      { title: "4 PARAGRAFO - CONCLUSAO", shortTitle: "Conclusao", data: generatedOutline.conclusao, color: greenAccent, number: "4" }
     ];
 
     sections.forEach((section) => {
@@ -338,59 +354,73 @@ export function EstruturaRoterizada() {
         yPosition = 20;
       }
 
-      // Fundo colorido para o título da seção
-      doc.setFillColor(section.color[0], section.color[1], section.color[2], 0.1);
-      doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+      // Barra lateral colorida
+      doc.setDrawColor(section.color[0], section.color[1], section.color[2]);
+      doc.setLineWidth(3);
+      doc.line(margin - 5, yPosition, margin - 5, yPosition + 8);
       
-      // Número circular
+      // Número circular grande
       doc.setFillColor(section.color[0], section.color[1], section.color[2]);
-      doc.circle(margin + 4, yPosition + 3, 4, 'F');
-      doc.setFontSize(10);
+      doc.circle(margin + 5, yPosition + 4, 5, 'F');
+      doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(255, 255, 255);
-      doc.text(section.number, margin + 2.5, yPosition + 5);
+      doc.text(section.number, margin + 3.2, yPosition + 6.5);
       
-      doc.setFontSize(14);
+      doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(section.color[0], section.color[1], section.color[2]);
-      doc.text(section.title, margin + 12, yPosition + 5);
-      yPosition += 15;
+      doc.text(section.title, margin + 14, yPosition + 6);
+      yPosition += 16;
 
       doc.setFontSize(10);
 
       if (section.data?.frase1) {
+        // Fundo cinza para a frase
+        const frase1Lines = doc.splitTextToSize(section.data.frase1, maxWidth - 10);
+        doc.setFillColor(248, 248, 248);
+        doc.roundedRect(margin - 1, yPosition - 4, maxWidth + 2, frase1Lines.length * 5 + 8, 1.5, 1.5, 'F');
+        
         doc.setFont("helvetica", "bold");
-        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        doc.text("1ª frase:", margin, yPosition);
+        doc.setTextColor(section.color[0], section.color[1], section.color[2]);
+        doc.text("1a frase:", margin + 2, yPosition);
         yPosition += 5;
+        
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        const frase1Lines = doc.splitTextToSize(section.data.frase1, maxWidth);
-        doc.text(frase1Lines, margin, yPosition);
-        yPosition += frase1Lines.length * 5 + 5;
+        doc.setTextColor(40, 40, 40);
+        doc.text(frase1Lines, margin + 2, yPosition);
+        yPosition += frase1Lines.length * 5 + 8;
       }
 
       if (section.data?.frase2) {
+        const frase2Lines = doc.splitTextToSize(section.data.frase2, maxWidth - 10);
+        doc.setFillColor(248, 248, 248);
+        doc.roundedRect(margin - 1, yPosition - 4, maxWidth + 2, frase2Lines.length * 5 + 8, 1.5, 1.5, 'F');
+        
         doc.setFont("helvetica", "bold");
-        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        doc.text("2ª frase:", margin, yPosition);
+        doc.setTextColor(section.color[0], section.color[1], section.color[2]);
+        doc.text("2a frase:", margin + 2, yPosition);
         yPosition += 5;
+        
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        const frase2Lines = doc.splitTextToSize(section.data.frase2, maxWidth);
-        doc.text(frase2Lines, margin, yPosition);
-        yPosition += frase2Lines.length * 5 + 5;
+        doc.setTextColor(40, 40, 40);
+        doc.text(frase2Lines, margin + 2, yPosition);
+        yPosition += frase2Lines.length * 5 + 8;
       }
 
       if (section.data?.frase3) {
+        const frase3Lines = doc.splitTextToSize(section.data.frase3, maxWidth - 10);
+        doc.setFillColor(248, 248, 248);
+        doc.roundedRect(margin - 1, yPosition - 4, maxWidth + 2, frase3Lines.length * 5 + 8, 1.5, 1.5, 'F');
+        
         doc.setFont("helvetica", "bold");
-        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        doc.text("3ª frase:", margin, yPosition);
+        doc.setTextColor(section.color[0], section.color[1], section.color[2]);
+        doc.text("3a frase:", margin + 2, yPosition);
         yPosition += 5;
+        
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        const frase3Lines = doc.splitTextToSize(section.data.frase3, maxWidth);
-        doc.text(frase3Lines, margin, yPosition);
+        doc.setTextColor(40, 40, 40);
+        doc.text(frase3Lines, margin + 2, yPosition);
         yPosition += frase3Lines.length * 5 + 10;
       }
     });
