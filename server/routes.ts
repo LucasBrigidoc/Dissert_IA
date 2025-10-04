@@ -4360,6 +4360,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ESSAY OUTLINE GENERATION =====================
+  
+  // Generate essay outline using Gemini AI
+  app.post("/api/generate-outline", async (req, res) => {
+    try {
+      const questionnaireData = req.body;
+      
+      // Validate questionnaire data
+      if (!questionnaireData.proposal || !questionnaireData.familiarityLevel || !questionnaireData.detailLevel) {
+        return res.status(400).json({ 
+          message: "Dados do questionário incompletos" 
+        });
+      }
+
+      // Generate outline using Gemini
+      const outline = await geminiService.generateEssayOutline(questionnaireData);
+      
+      res.json({
+        success: true,
+        outline
+      });
+    } catch (error: any) {
+      console.error("Error generating outline:", error);
+      res.status(500).json({ 
+        message: error.message || "Erro ao gerar roteiro. Tente novamente." 
+      });
+    }
+  });
+
 
   const httpServer = createServer(app);
   return httpServer;

@@ -284,6 +284,163 @@ INSTRUÇÕES:
     };
     return alternativeTexts[theme] || 'A construção de uma sociedade mais justa e igualitária requer o comprometimento de todos os setores sociais na implementação de políticas públicas efetivas e na promoção da cidadania plena.';
   }
+
+  async generateEssayOutline(questionnaireData: any): Promise<any> {
+    if (!this.hasApiKey || !this.model) {
+      throw new Error("GEMINI_API_KEY não configurada. Configure a chave da API para usar esta funcionalidade.");
+    }
+
+    try {
+      const prompt = this.buildOutlinePrompt(questionnaireData);
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+
+      return this.parseOutlineResponse(text, questionnaireData.proposal);
+    } catch (error) {
+      console.error("Erro ao gerar roteiro:", error);
+      throw new Error("Erro ao gerar roteiro. Tente novamente.");
+    }
+  }
+
+  private buildOutlinePrompt(data: any): string {
+    const { proposal, familiarityLevel, problemsAndChallenges, knownReferences, detailLevel } = data;
+
+    const familiarityMap: Record<string, string> = {
+      'never-studied': 'nunca estudou esse assunto',
+      'know-little': 'conhece um pouco sobre o tema',
+      'studied-can-develop': 'já estudou e sabe desenvolver',
+      'advanced-mastery': 'tem domínio avançado sobre o tema'
+    };
+    const familiarityText = familiarityMap[familiarityLevel as string] || 'nível não especificado';
+
+    const problemsText = problemsAndChallenges.dontKnow 
+      ? 'não conhece problemas ou desafios relacionados ao tema'
+      : problemsAndChallenges.text;
+
+    const referencesText = knownReferences.hasReferences && knownReferences.references
+      ? knownReferences.references
+      : 'não possui repertório sobre este tema';
+
+    const detailText = detailLevel === 'step-by-step' 
+      ? 'passo a passo detalhado' 
+      : 'direções gerais';
+
+    return `Você é um especialista em redações ENEM nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
+
+**PROPOSTA DA REDAÇÃO:**
+${proposal}
+
+**PERFIL DO ESTUDANTE:**
+- Nível de familiaridade: ${familiarityText}
+- Problemas/desafios conhecidos: ${problemsText}
+- Repertório disponível: ${referencesText}
+- Detalhamento desejado: ${detailText}
+
+**INSTRUÇÕES IMPORTANTES:**
+Garanta que o roteiro evite cenários onde o estudante:
+- Fique no genérico sem aprofundar
+- Cite repertório sem explicar bem
+- Faça conclusão incompleta
+- Perca foco e fuja do tema
+
+**ESTRUTURA DO ROTEIRO:**
+
+1. **ANÁLISE DA PROPOSTA:**
+   - Proposta reformulada claramente
+   - 3-5 palavras-chave obrigatórias
+   - Categoria temática (cultura, direitos humanos, etc.)
+   - Alertas de risco (tangenciamento, fuga ao tema, etc.)
+
+2. **ROTEIRO EM 4 BLOCOS:**
+
+   **1º Parágrafo - Introdução (60-80 palavras):**
+   - 1ª frase: Contextualize com repertório PRODUTIVO (histórico, literário, cultural, filosófico, dados ou fatos atuais)
+   - 2ª frase: Contraste com "entretanto/contudo/todavia" + formule a TESE
+   - 3ª frase: Anuncie os 2 argumentos centrais
+
+   **2º Parágrafo - 1º Desenvolvimento (80-100 palavras):**
+   - 1ª frase: Introduza primeira causa/argumento com dados ou exemplo concreto
+   - 2ª frase: Explique e aprofunde mostrando consequências
+   - 3ª frase: Conclua e conecte com a tese
+
+   **3º Parágrafo - 2º Desenvolvimento (80-100 palavras):**
+   - 1ª frase: Apresente segunda causa/argumento
+   - 2ª frase: Explique com dados, leis, obras culturais ou pesquisas
+   - 3ª frase: Feche e prepare para conclusão
+
+   **4º Parágrafo - Conclusão (60-80 palavras):**
+   - 1ª frase: Retome problema e tese
+   - 2ª frase: Proposta COMPLETA (Quem? O que? Como? Por meio de quê? Para quê?)
+   - 3ª frase: Consequência positiva esperada
+
+Retorne APENAS um JSON com esta estrutura:
+{
+  "proposta": "proposta reformulada",
+  "palavrasChave": ["palavra1", "palavra2", "palavra3"],
+  "categoriaTematica": "categoria",
+  "alertasRisco": ["alerta1", "alerta2"],
+  "introducao": {
+    "frase1": "...",
+    "frase2": "...",
+    "frase3": "..."
+  },
+  "desenvolvimento1": {
+    "frase1": "...",
+    "frase2": "...",
+    "frase3": "..."
+  },
+  "desenvolvimento2": {
+    "frase1": "...",
+    "frase2": "...",
+    "frase3": "..."
+  },
+  "conclusao": {
+    "frase1": "...",
+    "frase2": "...",
+    "frase3": "..."
+  }
+}`;
+  }
+
+  private parseOutlineResponse(text: string, originalProposal: string): any {
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        return parsed;
+      }
+      throw new Error("Formato de resposta inválido");
+    } catch (error) {
+      console.error("Erro ao fazer parse da resposta:", error);
+      return {
+        proposta: originalProposal,
+        palavrasChave: ["tema", "sociedade", "Brasil"],
+        categoriaTematica: "social",
+        alertasRisco: ["Evite generalizações", "Aprofunde os argumentos"],
+        introducao: {
+          frase1: "Contextualize o tema com repertório produtivo",
+          frase2: "Contraste com a realidade e formule sua tese",
+          frase3: "Anuncie os dois argumentos centrais"
+        },
+        desenvolvimento1: {
+          frase1: "Introduza a primeira causa com dados concretos",
+          frase2: "Explique e aprofunde mostrando consequências",
+          frase3: "Conclua e conecte com a tese"
+        },
+        desenvolvimento2: {
+          frase1: "Apresente a segunda causa/argumento",
+          frase2: "Explique com dados, leis ou pesquisas",
+          frase3: "Feche e prepare para conclusão"
+        },
+        conclusao: {
+          frase1: "Retome o problema e a tese",
+          frase2: "Proposta completa: Quem? O que? Como? Por meio de quê? Para quê?",
+          frase3: "Consequência positiva esperada"
+        }
+      };
+    }
+  }
 }
 
 export const geminiService = new GeminiService();

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, FileEdit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, FileEdit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
@@ -19,10 +19,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function EstruturaRoterizada() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const [generatedOutline, setGeneratedOutline] = useState<any>(null);
 
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -54,12 +57,39 @@ export function EstruturaRoterizada() {
     navigate(backUrl);
   };
 
+  const generateOutlineMutation = useMutation({
+    mutationFn: async (data: EssayOutlineQuestionnaire) => {
+      const response = await apiRequest("/api/generate-outline", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response;
+    },
+    onSuccess: (data) => {
+      setGeneratedOutline(data.outline);
+      toast({
+        title: "Roteiro gerado com sucesso!",
+        description: "Seu roteiro personalizado está pronto.",
+      });
+      // Scroll to outline
+      setTimeout(() => {
+        document.getElementById('generated-outline')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao gerar roteiro",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = async (data: EssayOutlineQuestionnaire) => {
-    console.log("Dados do questionário:", data);
-    toast({
-      title: "Roteiro em processamento",
-      description: "Estamos criando seu roteiro personalizado...",
-    });
+    generateOutlineMutation.mutate(data);
   };
 
   const hasReferences = form.watch("knownReferences.hasReferences");
@@ -403,16 +433,136 @@ export function EstruturaRoterizada() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="bg-gradient-to-r from-dark-blue to-bright-blue hover:from-dark-blue/90 hover:to-bright-blue/90 text-white px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                  disabled={generateOutlineMutation.isPending}
+                  className="bg-gradient-to-r from-dark-blue to-bright-blue hover:from-dark-blue/90 hover:to-bright-blue/90 text-white px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
                   data-testid="button-generate-outline"
                 >
-                  <CheckCircle2 className="mr-2" size={20} />
-                  Gerar Roteiro Personalizado
+                  {generateOutlineMutation.isPending ? (
+                    <>
+                      <Sparkles className="mr-2 animate-spin" size={20} />
+                      Gerando Roteiro...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="mr-2" size={20} />
+                      Gerar Roteiro Personalizado
+                    </>
+                  )}
                 </Button>
               </div>
             </LiquidGlassCard>
           </form>
         </Form>
+
+        {/* Generated Outline Display */}
+        {generatedOutline && (
+          <div id="generated-outline" className="mt-8">
+            <LiquidGlassCard className="bg-gradient-to-br from-green-50/50 to-blue-50/50 border-green-200/50">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                  <Sparkles className="text-white" size={20} />
+                </div>
+                <h3 className="text-2xl font-bold text-dark-blue">Roteiro Personalizado</h3>
+              </div>
+
+              {/* Análise da Proposta */}
+              <div className="mb-8 p-4 bg-white/60 rounded-xl border border-bright-blue/20">
+                <h4 className="text-lg font-semibold text-dark-blue mb-4">📋 Análise da Proposta</h4>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium text-soft-gray mb-1">Proposta:</p>
+                    <p className="text-dark-blue">{generatedOutline.proposta}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-soft-gray mb-1">Palavras-chave obrigatórias:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {generatedOutline.palavrasChave?.map((palavra: string, idx: number) => (
+                        <span key={idx} className="px-3 py-1 bg-bright-blue/10 text-bright-blue rounded-full text-sm font-medium">
+                          {palavra}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-soft-gray mb-1">Categoria Temática:</p>
+                    <p className="text-dark-blue capitalize">{generatedOutline.categoriaTematica}</p>
+                  </div>
+                  {generatedOutline.alertasRisco && generatedOutline.alertasRisco.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-soft-gray mb-2 flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-amber-500" />
+                        Alertas de Risco:
+                      </p>
+                      <ul className="space-y-1">
+                        {generatedOutline.alertasRisco.map((alerta: string, idx: number) => (
+                          <li key={idx} className="text-sm text-amber-700 flex items-start gap-2">
+                            <span className="text-amber-500 mt-0.5">•</span>
+                            <span>{alerta}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Roteiro em 4 Blocos */}
+              <div className="space-y-6">
+                {/* Introdução */}
+                <div className="p-4 bg-white/60 rounded-xl border border-blue-200/50">
+                  <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                    <span className="flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-sm">1</span>
+                    1º Parágrafo - Introdução
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.introducao?.frase1}</p>
+                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.introducao?.frase2}</p>
+                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.introducao?.frase3}</p>
+                  </div>
+                </div>
+
+                {/* 1º Desenvolvimento */}
+                <div className="p-4 bg-white/60 rounded-xl border border-purple-200/50">
+                  <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                    <span className="flex items-center justify-center w-6 h-6 bg-purple-500 text-white rounded-full text-sm">2</span>
+                    2º Parágrafo - 1º Desenvolvimento
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.desenvolvimento1?.frase1}</p>
+                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.desenvolvimento1?.frase2}</p>
+                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.desenvolvimento1?.frase3}</p>
+                  </div>
+                </div>
+
+                {/* 2º Desenvolvimento */}
+                <div className="p-4 bg-white/60 rounded-xl border border-amber-200/50">
+                  <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                    <span className="flex items-center justify-center w-6 h-6 bg-amber-500 text-white rounded-full text-sm">3</span>
+                    3º Parágrafo - 2º Desenvolvimento
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.desenvolvimento2?.frase1}</p>
+                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.desenvolvimento2?.frase2}</p>
+                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.desenvolvimento2?.frase3}</p>
+                  </div>
+                </div>
+
+                {/* Conclusão */}
+                <div className="p-4 bg-white/60 rounded-xl border border-green-200/50">
+                  <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                    <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full text-sm">4</span>
+                    4º Parágrafo - Conclusão
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.conclusao?.frase1}</p>
+                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.conclusao?.frase2}</p>
+                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.conclusao?.frase3}</p>
+                  </div>
+                </div>
+              </div>
+            </LiquidGlassCard>
+          </div>
+        )}
       </div>
     </div>
   );
