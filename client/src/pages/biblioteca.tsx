@@ -166,6 +166,23 @@ export default function BibliotecaPage() {
     content: proposal.motivationalTexts || proposal.fullContent
   });
 
+  const transformOutlineToFile = (outline: any) => {
+    const outlineData = outline.outlineData;
+    const content = `**${outline.title}**\n\n**Proposta:** ${outlineData.proposta}\n\n**Categoria Temática:** ${outlineData.categoriaTematica}\n\n**Palavras-chave:** ${outlineData.palavrasChave?.join(', ')}\n\n**INTRODUÇÃO**\n1ª frase: ${outlineData.introducao?.frase1}\n2ª frase: ${outlineData.introducao?.frase2}\n3ª frase: ${outlineData.introducao?.frase3}\n\n**1º DESENVOLVIMENTO**\n1ª frase: ${outlineData.desenvolvimento1?.frase1}\n2ª frase: ${outlineData.desenvolvimento1?.frase2}\n3ª frase: ${outlineData.desenvolvimento1?.frase3}\n\n**2º DESENVOLVIMENTO**\n1ª frase: ${outlineData.desenvolvimento2?.frase1}\n2ª frase: ${outlineData.desenvolvimento2?.frase2}\n3ª frase: ${outlineData.desenvolvimento2?.frase3}\n\n**CONCLUSÃO**\n1ª frase: ${outlineData.conclusao?.frase1}\n2ª frase: ${outlineData.conclusao?.frase2}\n3ª frase: ${outlineData.conclusao?.frase3}`;
+    
+    return {
+      id: outline.id,
+      title: outline.title,
+      category: 'Roteiro',
+      date: outline.createdAt,
+      size: '500 KB',
+      type: 'Roteiro Personalizado',
+      description: outlineData.proposta?.substring(0, 100) + '...' || 'Roteiro de redação personalizado',
+      content,
+      outlineData
+    };
+  };
+
   // Use real data from API or fallback to empty arrays
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
@@ -174,7 +191,8 @@ export default function BibliotecaPage() {
     estilos: savedStructures?.results ? savedStructures.results.map(transformStructureToFile) : [],
     newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
     propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'ENEM' || p.examType === 'Vestibular').map(transformProposalToFile) : [],
-    textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : []
+    textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
+    roteiros: savedOutlines?.results ? savedOutlines.results.map(transformOutlineToFile) : []
   };
 
 
@@ -416,7 +434,8 @@ export default function BibliotecaPage() {
     ...bibliotecaData.estilos,
     ...bibliotecaData.newsletters,
     ...bibliotecaData.propostas,
-    ...bibliotecaData.textosModificados
+    ...bibliotecaData.textosModificados,
+    ...bibliotecaData.roteiros
   ];
 
   // Filter files based on search and category
@@ -430,7 +449,8 @@ export default function BibliotecaPage() {
                           (selectedCategory === "estilos" && file.type === "Estilo") ||
                           (selectedCategory === "newsletters" && file.type === "Newsletter") ||
                           (selectedCategory === "propostas" && file.type === "Proposta") ||
-                          (selectedCategory === "textosModificados" && file.type === "Texto Modificado");
+                          (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
+                          (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado");
     return matchesSearch && matchesCategory;
   });
 
@@ -443,6 +463,7 @@ export default function BibliotecaPage() {
       case "Newsletter": return <Newspaper size={20} className="text-orange-600" />;
       case "Proposta": return <FolderOpen size={20} className="text-indigo-600" />;
       case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
+      case "Roteiro Personalizado": return <Target size={20} className="text-pink-600" />;
       default: return <FileText size={20} className="text-gray-600" />;
     }
   };
@@ -456,6 +477,7 @@ export default function BibliotecaPage() {
       case "Newsletter": return "bg-orange-100 text-orange-800";
       case "Proposta": return "bg-indigo-100 text-indigo-800";
       case "Texto Modificado": return "bg-cyan-100 text-cyan-800";
+      case "Roteiro Personalizado": return "bg-pink-100 text-pink-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -661,12 +683,17 @@ export default function BibliotecaPage() {
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.textosModificados.length}</span>
                   <span className="text-xs text-soft-gray">Txt</span>
                 </div>
+                <div className="flex items-center space-x-2 bg-pink-50 rounded-full px-3 py-1">
+                  <Target className="text-pink-600" size={16} />
+                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.roteiros.length}</span>
+                  <span className="text-xs text-soft-gray">Rot</span>
+                </div>
               </div>
             </LiquidGlassCard>
           </div>
           
           {/* Desktop: Full Grid */}
-          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
@@ -708,6 +735,12 @@ export default function BibliotecaPage() {
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.textosModificados.length}</div>
               <div className="text-sm text-soft-gray">Textos Modificados</div>
             </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <Target className="mx-auto mb-2 text-pink-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.roteiros.length}</div>
+              <div className="text-sm text-soft-gray">Roteiros</div>
+            </LiquidGlassCard>
           </div>
         </div>
 
@@ -746,6 +779,7 @@ export default function BibliotecaPage() {
                         {file.type === "Newsletter" && <Newspaper size={16} className="text-orange-600" />}
                         {file.type === "Proposta" && <FolderOpen size={16} className="text-indigo-600" />}
                         {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
+                        {file.type === "Roteiro Personalizado" && <Target size={16} className="text-pink-600" />}
                       </div>
                       {/* Desktop: Regular icon */}
                       <div className="hidden sm:block">
