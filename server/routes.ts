@@ -4374,12 +4374,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Get identifier for cost tracking (user ID or IP)
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+      
+      // Check weekly cost limit before proceeding
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 150, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
+          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+        
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
+      }
+
+      console.log(`📝 Essay outline generation request for proposal: "${questionnaireData.proposal.substring(0, 50)}..." by ${identifier}`);
+
       // Generate outline using Gemini
-      const outline = await geminiService.generateEssayOutline(questionnaireData);
+      const result = await geminiService.generateEssayOutline(questionnaireData);
+      
+      // Record AI operation with actual token usage
+      await weeklyCostLimitingService.recordAIOperation(
+        identifier,
+        'essay_outline',
+        result.promptTokens || 0,
+        result.outputTokens || 0,
+        planType
+      );
+      
+      console.log(`✅ Essay outline generated successfully - Tokens: ${result.tokensUsed}, Identifier: ${identifier}`);
       
       res.json({
         success: true,
-        outline
+        outline: result.outline
       });
     } catch (error: any) {
       console.error("Error generating outline:", error);
