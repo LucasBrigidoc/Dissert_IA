@@ -362,6 +362,34 @@ Garanta que o roteiro evite cenários onde o estudante:
 - Faça conclusão incompleta
 - Perca foco e fuja do tema
 
+**ANÁLISE CRÍTICA DOS INPUTS DO USUÁRIO:**
+
+1. **Análise dos Repertórios Fornecidos:**
+   ${knownReferences.hasReferences && knownReferences.references ? `
+   O estudante mencionou: "${referencesText}"
+   
+   IMPORTANTE: Avalie se esses repertórios se relacionam DIRETAMENTE com o tema "${proposal}".
+   - Se os repertórios fornecidos forem relevantes e bem relacionados ao tema, inclua-os nas sugestões e explique como usá-los.
+   - Se os repertórios fornecidos NÃO se relacionarem bem com o tema ou forem genéricos demais, SUBSTITUA por repertórios mais adequados e específicos ao tema. Explique por que os alternativos são melhores.
+   - Se os repertórios fornecidos forem parcialmente relevantes, mantenha os bons e complemente com outros mais específicos.
+   ` : `
+   O estudante não possui repertório sobre este tema.
+   Forneça repertórios ALTAMENTE ESPECÍFICOS e relacionados ao tema.
+   `}
+
+2. **Análise dos Problemas/Desafios/Soluções:**
+   ${!problemsAndChallenges.dontKnow && problemsAndChallenges.text ? `
+   O estudante mencionou: "${problemsText}"
+   
+   IMPORTANTE: Avalie se esses problemas/causas/desafios/soluções fazem sentido para o tema "${proposal}" e se podem ser usados na argumentação.
+   - Se as ideias fornecidas forem relevantes e bem articuladas, incorpore-as no roteiro.
+   - Se as ideias fornecidas NÃO se relacionarem bem com o tema ou não fizerem sentido argumentativo, sugira problemas/causas/desafios/soluções MAIS ADEQUADOS ao tema.
+   - No roteiro, use os melhores argumentos (sejam os fornecidos pelo usuário ou os que você sugerir).
+   ` : `
+   O estudante não conhece problemas ou desafios relacionados ao tema.
+   Forneça argumentos sólidos e específicos para este tema.
+   `}
+
 **SUGESTÕES DE REPERTÓRIO:**
 Forneça 3-4 repertórios ESPECÍFICOS e DIRETAMENTE relacionados ao tema da proposta. Para cada repertório, explique CLARAMENTE:
 - Por que ele é relevante para este tema específico
@@ -406,6 +434,8 @@ Retorne APENAS um JSON com esta estrutura:
   "palavrasChave": ["palavra1", "palavra2", "palavra3"],
   "categoriaTematica": "categoria",
   "alertasRisco": ["alerta1", "alerta2"],
+  "analiseRepertorio": "Se o usuário forneceu repertórios, explique aqui se foram mantidos, ajustados ou substituídos e POR QUÊ. Se não forneceu, omita este campo.",
+  "analiseProblemas": "Se o usuário forneceu problemas/causas/soluções, explique aqui se foram incorporados ou se você sugeriu alternativas melhores e POR QUÊ. Se não forneceu, omita este campo.",
   "repertoriosSugeridos": [
     {
       "titulo": "Nome do repertório (ex: Filme 'Pantera Negra', Constituição Federal Art. 216, etc.)",

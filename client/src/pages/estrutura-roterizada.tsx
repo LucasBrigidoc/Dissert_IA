@@ -507,6 +507,36 @@ export function EstruturaRoterizada() {
                 </div>
               </div>
 
+              {/* Análise Crítica dos Inputs do Usuário */}
+              {(generatedOutline.analiseRepertorio || generatedOutline.analiseProblemas) && (
+                <div className="mb-8 p-4 bg-blue-50/60 rounded-xl border border-blue-300/30">
+                  <h4 className="text-lg font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                    <span className="text-blue-600">🔍</span>
+                    Análise dos Seus Inputs
+                  </h4>
+                  <div className="space-y-3">
+                    {generatedOutline.analiseRepertorio && (
+                      <div className="p-3 bg-white/70 rounded-lg border border-blue-200/40">
+                        <p className="text-sm font-semibold text-dark-blue mb-1 flex items-center gap-2">
+                          <span className="text-blue-500">📚</span>
+                          Sobre os Repertórios:
+                        </p>
+                        <p className="text-sm text-soft-gray">{generatedOutline.analiseRepertorio}</p>
+                      </div>
+                    )}
+                    {generatedOutline.analiseProblemas && (
+                      <div className="p-3 bg-white/70 rounded-lg border border-blue-200/40">
+                        <p className="text-sm font-semibold text-dark-blue mb-1 flex items-center gap-2">
+                          <span className="text-blue-500">💭</span>
+                          Sobre os Problemas/Argumentos:
+                        </p>
+                        <p className="text-sm text-soft-gray">{generatedOutline.analiseProblemas}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Repertórios Sugeridos */}
               {generatedOutline.repertoriosSugeridos && generatedOutline.repertoriosSugeridos.length > 0 && (
                 <div className="mb-8 p-4 bg-white/60 rounded-xl border border-emerald-200/50">
