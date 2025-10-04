@@ -68,7 +68,7 @@ export function EstruturaRoterizada() {
         method: "POST",
         body: data,
       });
-      return { outline: response, questionnaireData: data };
+      return { outline: response.outline, questionnaireData: data };
     },
     onSuccess: (data) => {
       setGeneratedOutline(data.outline);
