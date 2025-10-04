@@ -1,16 +1,12 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
-import { Home, Menu, X, User, Settings, LogOut, FileEdit, Sparkles } from "lucide-react";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
+import { ArrowLeft, FileEdit, Sparkles, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
-import { useToast } from "@/hooks/use-toast";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
-import { useQuery } from "@tanstack/react-query";
-import type { User as UserType } from "@shared/schema";
 
 export function EstruturaRoterizada() {
-  const { toast } = useToast();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [, navigate] = useLocation();
 
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -21,207 +17,59 @@ export function EstruturaRoterizada() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Get user data
-  const { data: user } = useQuery<UserType>({
-    queryKey: ['/api/auth/me'],
-  });
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-
-      if (response.ok) {
-        window.location.href = '/login';
-      }
-    } catch (error) {
-      toast({
-        title: "Erro ao sair",
-        description: "Não foi possível fazer logout. Tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const getUserInitials = (user: UserType | undefined) => {
-    if (!user?.name) return 'U';
-    return user.name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+  const handleBack = () => {
+    navigate(backUrl);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
-      {/* Header Sticky - Estilo Controlador de Escrita com Cores da Estrutura Curinga */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-bright-blue to-dark-blue shadow-lg border-b border-white/20">
-        <div className="container mx-auto px-4 sm:px-6">
-          {/* Desktop Header */}
-          <div className="hidden md:flex items-center justify-between py-4">
-            {/* Logo e Nome */}
-            <div className="flex items-center space-x-6">
-              <Link href="/dashboard">
-                <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                    <Sparkles className="text-white" size={20} />
-                  </div>
-                  <span className="text-2xl font-bold text-white">DISSÈRTIA</span>
-                </div>
-              </Link>
-            </div>
-
-            {/* Menu de Navegação Central */}
-            <nav className="flex items-center space-x-6">
-              <Link href="/dashboard">
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-white/10 hover:text-white"
-                  data-testid="link-home"
-                >
-                  <Home size={16} className="mr-2" />
-                  Home
-                </Button>
-              </Link>
-              <Link href="/functionalities">
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-white/10 hover:text-white"
-                  data-testid="link-funcionalidades"
-                >
-                  Funcionalidades
-                </Button>
-              </Link>
-              <Link href="/newsletter">
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-white/10 hover:text-white"
-                  data-testid="link-newsletter"
-                >
-                  Newsletter
-                </Button>
-              </Link>
-              <Link href="/settings">
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-white/10 hover:text-white"
-                  data-testid="link-configuracoes"
-                >
-                  Configurações
-                </Button>
-              </Link>
-            </nav>
-
-            {/* User Menu - Desktop */}
-            <div className="flex items-center space-x-4">
-              <Button
-                onClick={handleLogout}
-                variant="ghost"
-                className="text-white hover:bg-white/10 hover:text-white"
-                data-testid="button-sair"
-              >
-                <LogOut size={16} className="mr-2" />
-                Sair
-              </Button>
-              <Link href="/settings">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
-                  <span className="text-sm font-semibold text-white">
-                    {getUserInitials(user)}
-                  </span>
-                </div>
-              </Link>
-            </div>
-          </div>
-
-          {/* Mobile Header */}
-          <div className="md:hidden flex items-center justify-between py-3">
-            {/* Logo */}
-            <Link href="/dashboard">
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <Sparkles className="text-white" size={16} />
-                </div>
-                <span className="text-lg font-bold text-white">DISSÈRTIA</span>
-              </div>
-            </Link>
-
-            {/* Mobile Menu Button */}
+      {/* Header Sticky - Estilo Controlador de Escrita */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
             <Button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              variant="ghost"
+              onClick={handleBack}
+              variant="outline"
               size="sm"
-              className="text-white hover:bg-white/10"
-              data-testid="button-mobile-menu"
+              className="flex items-center space-x-1 h-8 px-2 text-xs"
+              data-testid="button-back"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <ArrowLeft size={14} />
+              <span>Voltar</span>
             </Button>
-          </div>
-
-          {/* Mobile Menu Dropdown */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-white/20 py-4 space-y-2">
-              <Link href="/dashboard">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-home"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Home size={12} />
-                  <span>Home</span>
-                </Button>
-              </Link>
-              <Link href="/functionalities">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-funcionalidades"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <FileEdit size={12} />
-                  <span>Funcionalidades</span>
-                </Button>
-              </Link>
-              <Link href="/newsletter">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-newsletter"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Settings size={12} />
-                  <span>Newsletter</span>
-                </Button>
-              </Link>
-              <Link href="/settings">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                  data-testid="button-mobile-nav-configuracoes"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Settings size={12} />
-                  <span>Configurações</span>
-                </Button>
-              </Link>
-              <Button
-                onClick={() => {
-                  handleLogout();
-                  setIsMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full justify-start flex items-center space-x-3 px-3 py-3 rounded-lg text-soft-gray hover:text-bright-blue hover:bg-bright-blue/10 transition-all duration-200"
-                data-testid="button-mobile-nav-sair"
-              >
-                <LogOut size={12} />
-                <span>Sair</span>
-              </Button>
+            <div className="flex items-center space-x-2 min-w-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center flex-shrink-0">
+                <FileEdit className="text-white" size={14} />
+              </div>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Estrutura Roterizada</h1>
             </div>
-          )}
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <Button
+                onClick={handleBack}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+                data-testid="button-back"
+              >
+                <ArrowLeft size={16} />
+                <span>Voltar</span>
+              </Button>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
+                  <FileEdit className="text-white" size={20} />
+                </div>
+                <h1 className="text-2xl font-bold text-dark-blue">Estrutura Roterizada</h1>
+              </div>
+            </div>
+            <p className="text-soft-gray">Sistema inteligente de roteirização de redações</p>
+          </div>
         </div>
-
+        
         {/* AI Usage Progress - Integrado no header */}
         <div className="border-t border-white/10">
           <div className="container mx-auto px-4 sm:px-6 py-1.5 sm:py-2">
