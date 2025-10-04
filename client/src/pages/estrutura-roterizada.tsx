@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Edit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save } from "lucide-react";
+import { ArrowLeft, Edit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
@@ -23,6 +23,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import jsPDF from "jspdf";
 
 export function EstruturaRoterizada() {
   const [, navigate] = useLocation();
@@ -137,6 +138,178 @@ export function EstruturaRoterizada() {
       return;
     }
     saveOutlineMutation.mutate({ title: saveTitle });
+  };
+
+  const handleDownloadPDF = () => {
+    if (!generatedOutline) return;
+
+    const doc = new jsPDF();
+    let yPosition = 20;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxWidth = pageWidth - 2 * margin;
+
+    // Título
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("Roteiro Personalizado", margin, yPosition);
+    yPosition += 15;
+
+    // Análise da Proposta
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Análise da Proposta", margin, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Proposta:", margin, yPosition);
+    yPosition += 5;
+    const proposalLines = doc.splitTextToSize(generatedOutline.proposta, maxWidth);
+    doc.text(proposalLines, margin, yPosition);
+    yPosition += proposalLines.length * 5 + 5;
+
+    if (generatedOutline.palavrasChave && generatedOutline.palavrasChave.length > 0) {
+      doc.text("Palavras-chave: " + generatedOutline.palavrasChave.join(", "), margin, yPosition);
+      yPosition += 10;
+    }
+
+    if (generatedOutline.categoriaTematica) {
+      doc.text("Categoria Temática: " + generatedOutline.categoriaTematica, margin, yPosition);
+      yPosition += 10;
+    }
+
+    // Verificar se precisa de nova página
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    // Análise de Ideias
+    const invalidPhrases = ['não forneceu', 'não possui', 'não conhece', 'não sabe', 'não tem', 'usuário não'];
+    const hasValidRepertorio = generatedOutline.analiseRepertorio && 
+      !invalidPhrases.some(phrase => generatedOutline.analiseRepertorio.toLowerCase().includes(phrase));
+    const hasValidProblemas = generatedOutline.analiseProblemas && 
+      !invalidPhrases.some(phrase => generatedOutline.analiseProblemas.toLowerCase().includes(phrase));
+
+    if (hasValidRepertorio || hasValidProblemas) {
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Análise de suas Ideias", margin, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+
+      if (hasValidRepertorio) {
+        doc.setFont("helvetica", "bold");
+        doc.text("Sobre os Repertórios:", margin, yPosition);
+        yPosition += 5;
+        doc.setFont("helvetica", "normal");
+        const repertorioLines = doc.splitTextToSize(generatedOutline.analiseRepertorio, maxWidth);
+        doc.text(repertorioLines, margin, yPosition);
+        yPosition += repertorioLines.length * 5 + 5;
+      }
+
+      if (hasValidProblemas) {
+        doc.setFont("helvetica", "bold");
+        doc.text("Sobre os Problemas/Argumentos:", margin, yPosition);
+        yPosition += 5;
+        doc.setFont("helvetica", "normal");
+        const problemasLines = doc.splitTextToSize(generatedOutline.analiseProblemas, maxWidth);
+        doc.text(problemasLines, margin, yPosition);
+        yPosition += problemasLines.length * 5 + 5;
+      }
+    }
+
+    // Repertórios Sugeridos
+    if (generatedOutline.repertoriosSugeridos && generatedOutline.repertoriosSugeridos.length > 0) {
+      if (yPosition > 230) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Repertórios Sugeridos", margin, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      generatedOutline.repertoriosSugeridos.forEach((rep: any, idx: number) => {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        doc.setFont("helvetica", "bold");
+        doc.text(`${idx + 1}. ${rep.titulo} (${rep.tipo})`, margin, yPosition);
+        yPosition += 5;
+        doc.setFont("helvetica", "normal");
+        const relacaoLines = doc.splitTextToSize(`Como usar: ${rep.relacao}`, maxWidth);
+        doc.text(relacaoLines, margin, yPosition);
+        yPosition += relacaoLines.length * 5 + 5;
+      });
+    }
+
+    // Roteiro em 4 Blocos
+    const sections = [
+      { title: "1º Parágrafo - Introdução", data: generatedOutline.introducao },
+      { title: "2º Parágrafo - 1º Desenvolvimento", data: generatedOutline.desenvolvimento1 },
+      { title: "3º Parágrafo - 2º Desenvolvimento", data: generatedOutline.desenvolvimento2 },
+      { title: "4º Parágrafo - Conclusão", data: generatedOutline.conclusao }
+    ];
+
+    sections.forEach((section) => {
+      if (yPosition > 220) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text(section.title, margin, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+
+      if (section.data?.frase1) {
+        doc.setFont("helvetica", "bold");
+        doc.text("1ª frase:", margin, yPosition);
+        yPosition += 5;
+        doc.setFont("helvetica", "normal");
+        const frase1Lines = doc.splitTextToSize(section.data.frase1, maxWidth);
+        doc.text(frase1Lines, margin, yPosition);
+        yPosition += frase1Lines.length * 5 + 5;
+      }
+
+      if (section.data?.frase2) {
+        doc.setFont("helvetica", "bold");
+        doc.text("2ª frase:", margin, yPosition);
+        yPosition += 5;
+        doc.setFont("helvetica", "normal");
+        const frase2Lines = doc.splitTextToSize(section.data.frase2, maxWidth);
+        doc.text(frase2Lines, margin, yPosition);
+        yPosition += frase2Lines.length * 5 + 5;
+      }
+
+      if (section.data?.frase3) {
+        doc.setFont("helvetica", "bold");
+        doc.text("3ª frase:", margin, yPosition);
+        yPosition += 5;
+        doc.setFont("helvetica", "normal");
+        const frase3Lines = doc.splitTextToSize(section.data.frase3, maxWidth);
+        doc.text(frase3Lines, margin, yPosition);
+        yPosition += frase3Lines.length * 5 + 10;
+      }
+    });
+
+    // Salvar o PDF
+    doc.save("roteiro-personalizado.pdf");
+    
+    toast({
+      title: "PDF baixado!",
+      description: "Seu roteiro foi baixado com sucesso.",
+    });
   };
 
   const onSubmit = async (data: EssayOutlineQuestionnaire) => {
@@ -516,15 +689,26 @@ export function EstruturaRoterizada() {
                   </div>
                   <h3 className="text-2xl font-bold text-dark-blue">Roteiro Personalizado</h3>
                 </div>
-                <Button
-                  onClick={() => setShowSaveDialog(true)}
-                  variant="outline"
-                  className="bg-white hover:bg-blue-50 border-blue-300"
-                  data-testid="button-save-outline"
-                >
-                  <Save className="mr-2" size={16} />
-                  Salvar na Biblioteca
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleDownloadPDF}
+                    variant="outline"
+                    className="bg-white hover:bg-green-50 border-green-300"
+                    data-testid="button-download-pdf"
+                  >
+                    <Download className="mr-2" size={16} />
+                    Baixar PDF
+                  </Button>
+                  <Button
+                    onClick={() => setShowSaveDialog(true)}
+                    variant="outline"
+                    className="bg-white hover:bg-blue-50 border-blue-300"
+                    data-testid="button-save-outline"
+                  >
+                    <Save className="mr-2" size={16} />
+                    Salvar na Biblioteca
+                  </Button>
+                </div>
               </div>
 
               {/* Análise da Proposta */}
