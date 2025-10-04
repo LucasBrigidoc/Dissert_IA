@@ -586,10 +586,22 @@ export function EstruturaRoterizada() {
                     <span className="flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-sm">1</span>
                     1º Parágrafo - Introdução
                   </h4>
-                  <div className="space-y-2 text-sm">
-                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.introducao?.frase1}</p>
-                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.introducao?.frase2}</p>
-                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.introducao?.frase3}</p>
+                  <div className="space-y-3 text-sm">
+                    <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-200/30">
+                      <p className="text-xs font-medium text-blue-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Contextualização com repertório sociocultural que apresente o tema</p>
+                      <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.introducao?.frase1}</p>
+                    </div>
+                    <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-200/30">
+                      <p className="text-xs font-medium text-blue-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Apresentação do problema ou desafio central do tema</p>
+                      <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.introducao?.frase2}</p>
+                    </div>
+                    <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-200/30">
+                      <p className="text-xs font-medium text-blue-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Tese com os dois argumentos que serão desenvolvidos</p>
+                      <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.introducao?.frase3}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -599,10 +611,22 @@ export function EstruturaRoterizada() {
                     <span className="flex items-center justify-center w-6 h-6 bg-purple-500 text-white rounded-full text-sm">2</span>
                     2º Parágrafo - 1º Desenvolvimento
                   </h4>
-                  <div className="space-y-2 text-sm">
-                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.desenvolvimento1?.frase1}</p>
-                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.desenvolvimento1?.frase2}</p>
-                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.desenvolvimento1?.frase3}</p>
+                  <div className="space-y-3 text-sm">
+                    <div className="p-3 bg-purple-50/50 rounded-lg border border-purple-200/30">
+                      <p className="text-xs font-medium text-purple-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Tópico frasal apresentando o primeiro argumento</p>
+                      <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.desenvolvimento1?.frase1}</p>
+                    </div>
+                    <div className="p-3 bg-purple-50/50 rounded-lg border border-purple-200/30">
+                      <p className="text-xs font-medium text-purple-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Repertório legitimado (dados, citações, fatos) que comprove o argumento</p>
+                      <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.desenvolvimento1?.frase2}</p>
+                    </div>
+                    <div className="p-3 bg-purple-50/50 rounded-lg border border-purple-200/30">
+                      <p className="text-xs font-medium text-purple-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Análise crítica conectando o repertório ao tema e mostrando as consequências</p>
+                      <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.desenvolvimento1?.frase3}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -612,10 +636,22 @@ export function EstruturaRoterizada() {
                     <span className="flex items-center justify-center w-6 h-6 bg-amber-500 text-white rounded-full text-sm">3</span>
                     3º Parágrafo - 2º Desenvolvimento
                   </h4>
-                  <div className="space-y-2 text-sm">
-                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.desenvolvimento2?.frase1}</p>
-                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.desenvolvimento2?.frase2}</p>
-                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.desenvolvimento2?.frase3}</p>
+                  <div className="space-y-3 text-sm">
+                    <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200/30">
+                      <p className="text-xs font-medium text-amber-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Tópico frasal apresentando o segundo argumento</p>
+                      <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.desenvolvimento2?.frase1}</p>
+                    </div>
+                    <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200/30">
+                      <p className="text-xs font-medium text-amber-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Repertório legitimado (dados, citações, fatos) que comprove o argumento</p>
+                      <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.desenvolvimento2?.frase2}</p>
+                    </div>
+                    <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200/30">
+                      <p className="text-xs font-medium text-amber-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Análise crítica conectando o repertório ao tema e mostrando as consequências</p>
+                      <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.desenvolvimento2?.frase3}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -625,10 +661,22 @@ export function EstruturaRoterizada() {
                     <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full text-sm">4</span>
                     4º Parágrafo - Conclusão
                   </h4>
-                  <div className="space-y-2 text-sm">
-                    <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.conclusao?.frase1}</p>
-                    <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.conclusao?.frase2}</p>
-                    <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.conclusao?.frase3}</p>
+                  <div className="space-y-3 text-sm">
+                    <div className="p-3 bg-green-50/50 rounded-lg border border-green-200/30">
+                      <p className="text-xs font-medium text-green-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Retomada da tese apresentada na introdução</p>
+                      <p className="text-dark-blue"><strong>1ª frase:</strong> {generatedOutline.conclusao?.frase1}</p>
+                    </div>
+                    <div className="p-3 bg-green-50/50 rounded-lg border border-green-200/30">
+                      <p className="text-xs font-medium text-green-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Proposta de intervenção com agente + ação + meio/modo + finalidade</p>
+                      <p className="text-dark-blue"><strong>2ª frase:</strong> {generatedOutline.conclusao?.frase2}</p>
+                    </div>
+                    <div className="p-3 bg-green-50/50 rounded-lg border border-green-200/30">
+                      <p className="text-xs font-medium text-green-600 mb-1">💡 O que deve ter:</p>
+                      <p className="text-xs text-soft-gray mb-2">Detalhamento da proposta de intervenção (como será feito)</p>
+                      <p className="text-dark-blue"><strong>3ª frase:</strong> {generatedOutline.conclusao?.frase3}</p>
+                    </div>
                   </div>
                 </div>
               </div>
