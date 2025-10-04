@@ -306,14 +306,14 @@ export function EstruturaRoterizada() {
                       <FormItem className="flex flex-row items-start space-x-3 space-y-0 mb-3 p-3 rounded-lg bg-white/50 border border-bright-blue/10">
                         <FormControl>
                           <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            data-testid="checkbox-has-references"
+                            checked={!field.value}
+                            onCheckedChange={(checked) => field.onChange(!checked)}
+                            data-testid="checkbox-no-references"
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="cursor-pointer text-sm font-medium" data-testid="label-checkbox-has-references">
-                            Possuo repertório sobre este tema
+                          <FormLabel className="cursor-pointer text-sm font-medium" data-testid="label-checkbox-no-references">
+                            Não possuo repertório sobre este tema
                           </FormLabel>
                         </div>
                       </FormItem>
