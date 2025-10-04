@@ -149,33 +149,89 @@ export function EstruturaRoterizada() {
     const margin = 20;
     const maxWidth = pageWidth - 2 * margin;
 
-    // Título
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
-    doc.text("Roteiro Personalizado", margin, yPosition);
+    // Cores do DissertIA
+    const brightBlue = [80, 135, 255]; // #5087ff
+    const softGray = [107, 114, 128]; // #6b7280
+    const darkBlue = [5, 8, 53]; // hsl(243 82% 11%)
+    const greenAccent = [34, 197, 94];
+    const purpleAccent = [168, 85, 247];
+    const amberAccent = [245, 158, 11];
+    const blueAccent = [59, 130, 246];
+
+    // Logo DissertIA no topo
+    doc.setFillColor(brightBlue[0], brightBlue[1], brightBlue[2]);
+    doc.roundedRect(margin, yPosition - 3, 8, 8, 2, 2, 'F');
+    
+    // Ícone de estrela simulado (usando texto)
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text("✦", margin + 2.5, yPosition + 3);
+    
+    // Texto DISSERTIA com fonte Times (similar a Playfair)
+    doc.setFontSize(24);
+    doc.setFont("times", "bold");
+    doc.setTextColor(brightBlue[0], brightBlue[1], brightBlue[2]);
+    doc.text("DISSERT", margin + 10, yPosition + 5);
+    
+    doc.setTextColor(softGray[0], softGray[1], softGray[2]);
+    doc.text("IA", margin + 10 + doc.getTextWidth("DISSERT"), yPosition + 5);
+    
     yPosition += 15;
 
-    // Análise da Proposta
+    // Subtítulo "Roteiro Personalizado"
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
+    doc.text("Roteiro Personalizado", margin, yPosition);
+    
+    // Linha decorativa
+    doc.setDrawColor(brightBlue[0], brightBlue[1], brightBlue[2]);
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPosition + 3, pageWidth - margin, yPosition + 3);
+    
+    yPosition += 15;
+
+    // Análise da Proposta com fundo colorido
+    doc.setFillColor(blueAccent[0], blueAccent[1], blueAccent[2], 0.1);
+    doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+    
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("Análise da Proposta", margin, yPosition);
-    yPosition += 10;
+    doc.setTextColor(blueAccent[0], blueAccent[1], blueAccent[2]);
+    doc.text("📋 Análise da Proposta", margin, yPosition + 5);
+    yPosition += 15;
 
     doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
     doc.text("Proposta:", margin, yPosition);
     yPosition += 5;
+    
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(60, 60, 60);
     const proposalLines = doc.splitTextToSize(generatedOutline.proposta, maxWidth);
     doc.text(proposalLines, margin, yPosition);
     yPosition += proposalLines.length * 5 + 5;
 
     if (generatedOutline.palavrasChave && generatedOutline.palavrasChave.length > 0) {
-      doc.text("Palavras-chave: " + generatedOutline.palavrasChave.join(", "), margin, yPosition);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
+      doc.text("Palavras-chave: ", margin, yPosition);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(brightBlue[0], brightBlue[1], brightBlue[2]);
+      doc.text(generatedOutline.palavrasChave.join(", "), margin + doc.getTextWidth("Palavras-chave: "), yPosition);
       yPosition += 10;
     }
 
     if (generatedOutline.categoriaTematica) {
-      doc.text("Categoria Temática: " + generatedOutline.categoriaTematica, margin, yPosition);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
+      doc.text("Categoria Temática: ", margin, yPosition);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(60, 60, 60);
+      doc.text(generatedOutline.categoriaTematica, margin + doc.getTextWidth("Categoria Temática: "), yPosition);
       yPosition += 10;
     }
 
@@ -193,19 +249,24 @@ export function EstruturaRoterizada() {
       !invalidPhrases.some(phrase => generatedOutline.analiseProblemas.toLowerCase().includes(phrase));
 
     if (hasValidRepertorio || hasValidProblemas) {
+      doc.setFillColor(blueAccent[0], blueAccent[1], blueAccent[2], 0.1);
+      doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+      
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
-      doc.text("Análise de suas Ideias", margin, yPosition);
-      yPosition += 10;
+      doc.setTextColor(blueAccent[0], blueAccent[1], blueAccent[2]);
+      doc.text("🔍 Análise de suas Ideias", margin, yPosition + 5);
+      yPosition += 15;
 
       doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
 
       if (hasValidRepertorio) {
         doc.setFont("helvetica", "bold");
-        doc.text("Sobre os Repertórios:", margin, yPosition);
+        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
+        doc.text("📚 Sobre os Repertórios:", margin, yPosition);
         yPosition += 5;
         doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
         const repertorioLines = doc.splitTextToSize(generatedOutline.analiseRepertorio, maxWidth);
         doc.text(repertorioLines, margin, yPosition);
         yPosition += repertorioLines.length * 5 + 5;
@@ -213,9 +274,11 @@ export function EstruturaRoterizada() {
 
       if (hasValidProblemas) {
         doc.setFont("helvetica", "bold");
-        doc.text("Sobre os Problemas/Argumentos:", margin, yPosition);
+        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
+        doc.text("💭 Sobre os Problemas/Argumentos:", margin, yPosition);
         yPosition += 5;
         doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
         const problemasLines = doc.splitTextToSize(generatedOutline.analiseProblemas, maxWidth);
         doc.text(problemasLines, margin, yPosition);
         yPosition += problemasLines.length * 5 + 5;
@@ -229,10 +292,14 @@ export function EstruturaRoterizada() {
         yPosition = 20;
       }
 
+      doc.setFillColor(greenAccent[0], greenAccent[1], greenAccent[2], 0.1);
+      doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+      
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
-      doc.text("Repertórios Sugeridos", margin, yPosition);
-      yPosition += 10;
+      doc.setTextColor(greenAccent[0], greenAccent[1], greenAccent[2]);
+      doc.text("💡 Repertórios Sugeridos", margin, yPosition + 5);
+      yPosition += 15;
 
       doc.setFontSize(10);
       generatedOutline.repertoriosSugeridos.forEach((rep: any, idx: number) => {
@@ -241,21 +308,28 @@ export function EstruturaRoterizada() {
           yPosition = 20;
         }
         doc.setFont("helvetica", "bold");
-        doc.text(`${idx + 1}. ${rep.titulo} (${rep.tipo})`, margin, yPosition);
-        yPosition += 5;
+        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
+        doc.text(`${idx + 1}. ${rep.titulo}`, margin, yPosition);
+        
+        doc.setTextColor(greenAccent[0], greenAccent[1], greenAccent[2]);
         doc.setFont("helvetica", "normal");
+        doc.text(`(${rep.tipo})`, margin + doc.getTextWidth(`${idx + 1}. ${rep.titulo} `), yPosition);
+        yPosition += 5;
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
         const relacaoLines = doc.splitTextToSize(`Como usar: ${rep.relacao}`, maxWidth);
         doc.text(relacaoLines, margin, yPosition);
         yPosition += relacaoLines.length * 5 + 5;
       });
     }
 
-    // Roteiro em 4 Blocos
+    // Roteiro em 4 Blocos com cores
     const sections = [
-      { title: "1º Parágrafo - Introdução", data: generatedOutline.introducao },
-      { title: "2º Parágrafo - 1º Desenvolvimento", data: generatedOutline.desenvolvimento1 },
-      { title: "3º Parágrafo - 2º Desenvolvimento", data: generatedOutline.desenvolvimento2 },
-      { title: "4º Parágrafo - Conclusão", data: generatedOutline.conclusao }
+      { title: "1º Parágrafo - Introdução", data: generatedOutline.introducao, color: blueAccent, number: "1" },
+      { title: "2º Parágrafo - 1º Desenvolvimento", data: generatedOutline.desenvolvimento1, color: purpleAccent, number: "2" },
+      { title: "3º Parágrafo - 2º Desenvolvimento", data: generatedOutline.desenvolvimento2, color: amberAccent, number: "3" },
+      { title: "4º Parágrafo - Conclusão", data: generatedOutline.conclusao, color: greenAccent, number: "4" }
     ];
 
     sections.forEach((section) => {
@@ -264,19 +338,33 @@ export function EstruturaRoterizada() {
         yPosition = 20;
       }
 
+      // Fundo colorido para o título da seção
+      doc.setFillColor(section.color[0], section.color[1], section.color[2], 0.1);
+      doc.roundedRect(margin - 3, yPosition - 2, pageWidth - 2 * margin + 6, 10, 2, 2, 'F');
+      
+      // Número circular
+      doc.setFillColor(section.color[0], section.color[1], section.color[2]);
+      doc.circle(margin + 4, yPosition + 3, 4, 'F');
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(255, 255, 255);
+      doc.text(section.number, margin + 2.5, yPosition + 5);
+      
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
-      doc.text(section.title, margin, yPosition);
-      yPosition += 10;
+      doc.setTextColor(section.color[0], section.color[1], section.color[2]);
+      doc.text(section.title, margin + 12, yPosition + 5);
+      yPosition += 15;
 
       doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
 
       if (section.data?.frase1) {
         doc.setFont("helvetica", "bold");
+        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
         doc.text("1ª frase:", margin, yPosition);
         yPosition += 5;
         doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
         const frase1Lines = doc.splitTextToSize(section.data.frase1, maxWidth);
         doc.text(frase1Lines, margin, yPosition);
         yPosition += frase1Lines.length * 5 + 5;
@@ -284,9 +372,11 @@ export function EstruturaRoterizada() {
 
       if (section.data?.frase2) {
         doc.setFont("helvetica", "bold");
+        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
         doc.text("2ª frase:", margin, yPosition);
         yPosition += 5;
         doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
         const frase2Lines = doc.splitTextToSize(section.data.frase2, maxWidth);
         doc.text(frase2Lines, margin, yPosition);
         yPosition += frase2Lines.length * 5 + 5;
@@ -294,9 +384,11 @@ export function EstruturaRoterizada() {
 
       if (section.data?.frase3) {
         doc.setFont("helvetica", "bold");
+        doc.setTextColor(darkBlue[0], darkBlue[1], darkBlue[2]);
         doc.text("3ª frase:", margin, yPosition);
         yPosition += 5;
         doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
         const frase3Lines = doc.splitTextToSize(section.data.frase3, maxWidth);
         doc.text(frase3Lines, margin, yPosition);
         yPosition += frase3Lines.length * 5 + 10;
