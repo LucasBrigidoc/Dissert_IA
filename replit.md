@@ -2,6 +2,15 @@
 
 DissertIA is an AI-powered SaaS educational platform for Brazilian students preparing for entrance and competitive exams. It offers personalized writing assistance through tools like the Socratic Argument Architect, Intelligent Repertoire Explorer, and custom essay structure creators. The platform integrates AI technology with pedagogical expertise to revolutionize essay writing education, featuring a modern "liquid glass" design with a blue-themed aesthetic.
 
+# Recent Changes
+
+## October 4, 2025 - Replit Environment Setup
+- Successfully configured the application to run in Replit environment
+- Set up PostgreSQL database connection using Replit's DATABASE_URL
+- Pushed database schema using Drizzle Kit migrations
+- Configured development workflow to run on port 5000 with proper host settings (0.0.0.0)
+- Application is running and serving both frontend and backend correctly
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -79,3 +88,49 @@ Preferred communication style: Simple, everyday language.
 ## Replit-Specific
 - **@replit/vite-plugin-runtime-error-modal**: Development error overlay.
 - **@replit/vite-plugin-cartographer**: Replit workspace integration.
+
+# Environment Configuration
+
+## Required Environment Variables
+
+### Essential (Already Configured)
+- **DATABASE_URL**: PostgreSQL connection string (automatically provided by Replit Database)
+- **SESSION_SECRET**: Session encryption key (configured)
+
+### Optional AI & Payment Features
+To enable full functionality, configure these environment variables in Replit Secrets:
+
+- **GEMINI_API_KEY**: Google Gemini API key for AI-powered features (text modification, essay correction)
+  - Without this key, text modification will use fallback mode only
+  - Required for: Socratic Argument Architect, AI essay generation, chat functionality
+  
+- **STRIPE_SECRET_KEY**: Stripe API key for payment processing
+  - Without this key, payment features will be disabled
+  - Required for: Subscription management, payment processing
+  
+- **STRIPE_WEBHOOK_SECRET**: Stripe webhook signing secret
+  - Required for: Processing payment webhooks securely
+  
+- **SENDGRID_API_KEY**: SendGrid API key for email functionality
+  - Required for: Sending transactional emails, newsletters
+
+## Running the Application
+
+### Development
+The application runs automatically via the configured workflow:
+```bash
+npm run dev
+```
+This starts both the Express backend and Vite frontend dev server on port 5000.
+
+### Database Management
+To push schema changes to the database:
+```bash
+npm run db:push
+```
+
+### Production Deployment
+The application is configured for Replit deployment with:
+- Build command: `npm run build`
+- Start command: `npm run start`
+- Deployment type: Autoscale (stateless web app)
