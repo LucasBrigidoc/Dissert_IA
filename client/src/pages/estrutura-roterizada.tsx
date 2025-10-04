@@ -46,7 +46,7 @@ export function EstruturaRoterizada() {
         text: "",
       },
       knownReferences: {
-        hasReferences: false,
+        hasReferences: undefined,
         references: "",
       },
       detailLevel: undefined,
