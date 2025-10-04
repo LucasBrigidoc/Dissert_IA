@@ -63,7 +63,7 @@ export function EstruturaRoterizada() {
   };
 
   const hasReferences = form.watch("knownReferences.hasReferences");
-  const dontKnowProblems = form.watch("problemsAndChallenges.dontKnow");
+  const knowsProblems = !form.watch("problemsAndChallenges.dontKnow");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -260,14 +260,14 @@ export function EstruturaRoterizada() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel className="cursor-pointer text-sm font-medium" data-testid="label-checkbox-dont-know-problems">
-                            Não conheço
+                            Não conheço problemas ou desafios relacionados a este tema
                           </FormLabel>
                         </div>
                       </FormItem>
                     )}
                   />
 
-                  {!dontKnowProblems && (
+                  {knowsProblems && (
                     <FormField
                       control={form.control}
                       name="problemsAndChallenges.text"
