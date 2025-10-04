@@ -440,6 +440,8 @@ export function EstruturaRoterizada() {
 
   const hasReferences = form.watch("knownReferences.hasReferences");
   const knowsProblems = !form.watch("problemsAndChallenges.dontKnow");
+  const selectedFamiliarity = form.watch("familiarityLevel");
+  const proposalText = form.watch("proposal");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -609,6 +611,28 @@ export function EstruturaRoterizada() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Explicação sobre o tema quando familiaridade é selecionada */}
+                  {selectedFamiliarity && proposalText && (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-xl border border-blue-200/50 animate-in fade-in slide-in-from-top-2 duration-300" data-testid="theme-explanation">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Lightbulb className="text-white" size={16} />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-dark-blue mb-2">
+                            Sobre o tema da proposta:
+                          </h4>
+                          <p className="text-sm text-soft-gray leading-relaxed">
+                            <strong className="text-dark-blue">"{proposalText}"</strong>
+                          </p>
+                          <p className="text-xs text-blue-700 mt-2 italic">
+                            💡 Essa é a proposta sobre a qual vamos construir seu roteiro personalizado
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Question 3: Problemas e desafios */}
