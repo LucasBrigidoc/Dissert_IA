@@ -362,29 +362,37 @@ Garanta que o roteiro evite cenários onde o estudante:
 - Faça conclusão incompleta
 - Perca foco e fuja do tema
 
+**SUGESTÕES DE REPERTÓRIO:**
+Forneça 3-4 repertórios ESPECÍFICOS e DIRETAMENTE relacionados ao tema da proposta. Para cada repertório, explique CLARAMENTE:
+- Por que ele é relevante para este tema específico
+- Como ele pode ser usado na argumentação
+- Qual aspecto da proposta ele ajuda a desenvolver
+
+Tipos de repertório: filmes, séries, livros, dados estatísticos, leis/artigos, eventos históricos, pesquisas científicas, obras de arte, músicas, documentários, citações filosóficas/sociológicas.
+
 **ESTRUTURA DO ROTEIRO:**
 
 1. **ANÁLISE DA PROPOSTA:**
    - Proposta reformulada claramente
    - 3-5 palavras-chave obrigatórias
-   - Categoria temática (cultura, direitos humanos, etc.)
-   - Alertas de risco (tangenciamento, fuga ao tema, etc.)
+   - Categoria temática (cultura, direitos humanos, tecnologia, educação, meio ambiente, etc.)
+   - Alertas de risco (tangenciamento, fuga ao tema, generalizações, etc.)
 
 2. **ROTEIRO EM 4 BLOCOS:**
 
    **1º Parágrafo - Introdução (60-80 palavras):**
-   - 1ª frase: Contextualize com repertório PRODUTIVO (histórico, literário, cultural, filosófico, dados ou fatos atuais)
+   - 1ª frase: Contextualize com repertório PRODUTIVO específico ao tema (use um dos repertórios sugeridos ou similar)
    - 2ª frase: Contraste com "entretanto/contudo/todavia" + formule a TESE
    - 3ª frase: Anuncie os 2 argumentos centrais
 
    **2º Parágrafo - 1º Desenvolvimento (80-100 palavras):**
-   - 1ª frase: Introduza primeira causa/argumento com dados ou exemplo concreto
+   - 1ª frase: Introduza primeira causa/argumento com dados ou exemplo concreto específico ao tema
    - 2ª frase: Explique e aprofunde mostrando consequências
    - 3ª frase: Conclua e conecte com a tese
 
    **3º Parágrafo - 2º Desenvolvimento (80-100 palavras):**
    - 1ª frase: Apresente segunda causa/argumento
-   - 2ª frase: Explique com dados, leis, obras culturais ou pesquisas
+   - 2ª frase: Explique com dados, leis, obras culturais ou pesquisas ESPECÍFICAS ao tema
    - 3ª frase: Feche e prepare para conclusão
 
    **4º Parágrafo - Conclusão (60-80 palavras):**
@@ -398,6 +406,13 @@ Retorne APENAS um JSON com esta estrutura:
   "palavrasChave": ["palavra1", "palavra2", "palavra3"],
   "categoriaTematica": "categoria",
   "alertasRisco": ["alerta1", "alerta2"],
+  "repertoriosSugeridos": [
+    {
+      "titulo": "Nome do repertório (ex: Filme 'Pantera Negra', Constituição Federal Art. 216, etc.)",
+      "tipo": "tipo (filme/livro/lei/dado/evento/pesquisa/etc)",
+      "relacao": "Explicação clara e específica de como este repertório se relaciona com o tema da proposta e como pode ser usado na redação"
+    }
+  ],
   "introducao": {
     "frase1": "...",
     "frase2": "...",

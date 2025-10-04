@@ -507,6 +507,38 @@ export function EstruturaRoterizada() {
                 </div>
               </div>
 
+              {/* Repertórios Sugeridos */}
+              {generatedOutline.repertoriosSugeridos && generatedOutline.repertoriosSugeridos.length > 0 && (
+                <div className="mb-8 p-4 bg-white/60 rounded-xl border border-emerald-200/50">
+                  <h4 className="text-lg font-semibold text-dark-blue mb-4 flex items-center gap-2">
+                    <span className="text-emerald-600">💡</span>
+                    Repertórios Sugeridos
+                  </h4>
+                  <div className="space-y-4">
+                    {generatedOutline.repertoriosSugeridos.map((repertorio: any, idx: number) => (
+                      <div key={idx} className="p-3 bg-emerald-50/50 rounded-lg border border-emerald-200/30">
+                        <div className="flex items-start gap-3">
+                          <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-emerald-500 text-white rounded-full text-xs font-bold">
+                            {idx + 1}
+                          </span>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-semibold text-dark-blue">{repertorio.titulo}</p>
+                              <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 rounded text-xs">
+                                {repertorio.tipo}
+                              </span>
+                            </div>
+                            <p className="text-sm text-soft-gray">
+                              <strong className="text-dark-blue">Como usar:</strong> {repertorio.relacao}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Roteiro em 4 Blocos */}
               <div className="space-y-6">
                 {/* Introdução */}
