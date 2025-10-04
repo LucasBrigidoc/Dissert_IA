@@ -1267,3 +1267,33 @@ export const insertUserScheduleSchema = createInsertSchema(userSchedule).omit({
 
 export type UserSchedule = typeof userSchedule.$inferSelect;
 export type InsertUserSchedule = z.infer<typeof insertUserScheduleSchema>;
+
+// ===================== ESSAY OUTLINE QUESTIONNAIRE =====================
+
+export const essayOutlineQuestionnaireSchema = z.object({
+  proposal: z.string().min(10, "A proposta deve ter pelo menos 10 caracteres"),
+  familiarityLevel: z.enum([
+    "never-studied",
+    "know-little", 
+    "studied-can-develop",
+    "advanced-mastery"
+  ], {
+    required_error: "Selecione seu nível de familiaridade",
+  }),
+  problemsAndChallenges: z.string().min(20, "Descreva os problemas com pelo menos 20 caracteres"),
+  knownReferences: z.object({
+    hasReferences: z.boolean(),
+    references: z.string().optional(),
+  }).refine(
+    (data) => !data.hasReferences || (data.references && data.references.length > 0),
+    {
+      message: "Se você conhece referências, descreva-as",
+      path: ["references"],
+    }
+  ),
+  detailLevel: z.enum(["step-by-step", "general-directions"], {
+    required_error: "Selecione o nível de detalhamento desejado",
+  }),
+});
+
+export type EssayOutlineQuestionnaire = z.infer<typeof essayOutlineQuestionnaireSchema>;
