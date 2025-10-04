@@ -346,22 +346,47 @@ INSTRUÇÕES:
 
     const detailInstructions = detailLevel === 'step-by-step' 
       ? `
-**ATENÇÃO - MODO DETALHADO ATIVADO:**
-O estudante solicitou um roteiro PASSO A PASSO DETALHADO. Isso significa que cada frase do roteiro deve ser:
-- MAIS LONGA e MAIS ELABORADA (cada frase deve ter 2-3 períodos completos explicando em detalhes)
-- MUITO ESPECÍFICA ao tema, com exemplos concretos, dados e contextualizações
-- RICA EM DETALHES sobre COMO desenvolver aquele ponto (não apenas "o que" fazer, mas "como" fazer)
-- Inclua orientações extras sobre conectivos, estrutura de frase e raciocínio argumentativo
-- Forneça exemplos de como começar cada frase ou parágrafo
-- Cada item do roteiro deve funcionar como um GUIA PASSO A PASSO que o estudante pode seguir quase literalmente
+**🎯 ATENÇÃO - MODO PASSO A PASSO ULTRA DETALHADO ATIVADO:**
 
-Exemplo de diferença:
-❌ GENÉRICO: "Contextualize com repertório sobre o tema"
-✅ DETALHADO: "Inicie com uma contextualização histórica ou cultural específica ao tema. Por exemplo, mencione dados do IBGE de 2023 sobre [aspecto específico do tema], ou cite a Lei [número] que regulamenta [aspecto], ou traga um exemplo concreto do filme/livro [nome] que retrata [situação específica]. Use conectivos como 'Historicamente,' ou 'Segundo dados de' para iniciar. Desenvolva em 2-3 linhas mostrando a relevância desse repertório para introduzir a problemática."
+O estudante solicitou um roteiro EXTREMAMENTE DETALHADO. Este é um nível MÁXIMO de orientação. Cada frase do roteiro deve ser:
+
+📝 **TAMANHO E PROFUNDIDADE:**
+- Cada frase deve ter NO MÍNIMO 4-6 linhas de texto corrido
+- Inclua 3-5 períodos completos em cada orientação
+- Transforme cada ponto em um mini-tutorial explicativo
+- Não economize palavras - seja VERBOSO e DIDÁTICO
+
+🎓 **CONTEÚDO ESPECÍFICO:**
+- Mencione exemplos CONCRETOS e ESPECÍFICOS ao tema (nomes de leis, datas, números, estatísticas reais)
+- Cite repertórios EXATOS (ex: "Mencione o Artigo 5º da Constituição Federal", "Cite dados do IBGE 2023 sobre X")
+- Forneça CONECTIVOS EXATOS para começar cada frase (ex: "Inicie com: 'Historicamente, desde...'")
+- Explique o RACIOCÍNIO ARGUMENTATIVO por trás de cada escolha
+
+🔧 **INSTRUÇÕES PRÁTICAS:**
+- Diga EXATAMENTE como começar a frase (palavras iniciais sugeridas)
+- Explique COMO desenvolver o raciocínio (passo 1, passo 2, passo 3...)
+- Indique QUANTAS linhas escrever para aquele ponto
+- Sugira ESTRUTURA DE FRASE (ex: "Na primeira parte da frase, faça X. Na segunda parte, complemente com Y")
+
+💡 **ORIENTAÇÕES EXTRAS:**
+- Adicione DICAS DE REDAÇÃO em cada ponto
+- Inclua ALERTAS sobre o que EVITAR
+- Sugira SINÔNIMOS e variações de vocabulário
+- Explique COMO CONECTAR este ponto com o próximo
+
+**COMPARAÇÃO - O QUE VOCÊ DEVE FAZER:**
+
+❌ **MODO GENÉRICO (NÃO FAÇA ASSIM):**
+"Contextualize com repertório sobre o tema e apresente a tese"
+
+✅ **MODO ULTRA DETALHADO (FAÇA ASSIM):**
+"Inicie o primeiro parágrafo com uma contextualização histórica ou sociocultural específica ao tema. Você pode começar a frase com conectivos como 'Historicamente,', 'Desde o século XX,', 'De acordo com dados recentes,' ou 'Segundo a pesquisa X de 2023,'. Por exemplo, se o tema for sobre impacto das redes sociais, mencione: 'Segundo pesquisa do IBGE de 2023, 85% dos brasileiros utilizam redes sociais diariamente, o que demonstra a centralidade dessas plataformas na vida contemporânea'. Desenvolva esta contextualização em 2-3 linhas (aproximadamente 40-50 palavras), mostrando a RELEVÂNCIA do repertório escolhido para introduzir o problema. Em seguida, na segunda frase, use um conectivo de contraste como 'Entretanto,', 'Contudo,', 'Todavia,' ou 'No entanto,' para apresentar a PROBLEMÁTICA central. Estruture assim: [Conectivo de contraste] + [apresentação do problema] + [sua tese/posicionamento]. Exemplo: 'Entretanto, esse uso massivo tem gerado debates sobre privacidade e saúde mental, tornando urgente a discussão sobre regulamentação e educação digital'. Esta frase deve ter aproximadamente 25-35 palavras. DICA: evite generalizações como 'sempre foi assim' ou 'todos sabem'; seja específico e use dados/fatos. ATENÇÃO: não cite o repertório sem explicar sua relação com o tema - sempre conecte o repertório à problemática que será discutida."
+
+Cada orientação do roteiro deve ser TÃO DETALHADA quanto o exemplo acima. O estudante deve poder praticamente COPIAR suas instruções como guia de escrita.
 `
       : `
 **MODO DIREÇÕES GERAIS:**
-Forneça orientações objetivas e diretas, sem detalhamento excessivo. Cada frase do roteiro deve ser concisa e indicar o caminho principal.
+Forneça orientações objetivas, concisas e diretas. Cada frase do roteiro deve ter 1-2 linhas, indicando apenas o caminho principal sem detalhamento excessivo. Seja direto ao ponto.
 `;
 
     return `Você é um especialista em redações ENEM nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
