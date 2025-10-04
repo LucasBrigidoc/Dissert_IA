@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, FileEdit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save } from "lucide-react";
+import { ArrowLeft, Edit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
@@ -164,8 +164,8 @@ export function EstruturaRoterizada() {
               <span>Voltar</span>
             </Button>
             <div className="flex items-center space-x-2 min-w-0">
-              <div className="w-8 h-8 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center flex-shrink-0">
-                <FileEdit className="text-white" size={14} />
+              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center flex-shrink-0">
+                <Edit className="text-white" size={14} />
               </div>
               <h1 className="text-sm font-bold text-dark-blue truncate">Estrutura Roterizada</h1>
             </div>
@@ -185,8 +185,8 @@ export function EstruturaRoterizada() {
                 <span>Voltar</span>
               </Button>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center">
-                  <FileEdit className="text-white" size={20} />
+                <div className="w-12 h-12 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                  <Edit className="text-white" size={20} />
                 </div>
                 <h1 className="text-2xl font-bold text-dark-blue">Estrutura Roterizada</h1>
               </div>
