@@ -68,8 +68,6 @@ export class TextModificationService {
       .replace(/^["']|["']$/g, '') // Remove quotes
       .replace(/^\s*-\s*/, '') // Remove leading dash
       .replace(/```[\s\S]*?```/g, '') // Remove code fences
-      .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove markdown bold formatting
-      .replace(/\*([^*]+)\*/g, '$1') // Remove markdown italic formatting
       .replace(/TEXTO ORIGINAL:[\s\S]*?(?=\n\n|$)/gi, '') // Remove original text echo
       .replace(/TAREFA:[\s\S]*?(?=\n\n|$)/gi, '') // Remove task description
       .replace(/ESTRUTURA[\s\S]*?(?=\n\n|$)/gi, '') // Remove structure descriptions
@@ -110,14 +108,15 @@ export class TextModificationService {
       cleaned = cleaned.replace(regex, '');
     }
 
-    // Ensure single paragraph output (remove internal paragraph breaks for dissertation context)
-    if (cleaned.includes('\n\n')) {
-      // Keep only the first substantial paragraph
-      const paragraphs = cleaned.split('\n\n').filter(p => p.trim().length > 20);
-      if (paragraphs.length > 0) {
-        cleaned = paragraphs[0];
-      }
-    }
+    // Collapse multiple paragraphs into single flowing text for dissertation context
+    // Replace double newlines with single space to maintain flow
+    cleaned = cleaned.replace(/\n\n+/g, ' ');
+    
+    // Remove ALL markdown formatting (**, *, _, etc.) - even unpaired or spanning lines
+    cleaned = cleaned.replace(/\*\*/g, ''); // Remove all ** (bold)
+    cleaned = cleaned.replace(/\*/g, '');   // Remove all * (italic)
+    cleaned = cleaned.replace(/__/g, '');   // Remove all __ (bold)
+    cleaned = cleaned.replace(/_/g, '');    // Remove all _ (italic)
 
     return cleaned.trim();
   }
