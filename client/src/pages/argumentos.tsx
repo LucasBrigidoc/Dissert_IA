@@ -898,7 +898,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                 data-testid="button-view-conversation"
               >
                 <Map className="mr-2" size={16} />
-                {chatState.messages.length > 1 ? "Ver Conversa" : "Inicie uma Conversa"}
+                {chatState.messages.length > 1 ? "Ver Histórico" : "Inicie uma Conversa"}
               </Button>
             </div>
             
