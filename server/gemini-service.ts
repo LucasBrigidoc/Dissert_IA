@@ -197,7 +197,7 @@ Responda APENAS com JSON válido no formato:
           found: true,
           proposals: parsed.proposals.map((p: any) => ({
             ...p,
-            isAiGenerated: true,
+            isAiGenerated: false,
             source: 'gemini_knowledge'
           })),
           similarProposals: [],
@@ -210,7 +210,7 @@ Responda APENAS com JSON válido no formato:
           proposals: [],
           similarProposals: parsed.similarProposals.map((p: any) => ({
             ...p,
-            isAiGenerated: true,
+            isAiGenerated: false,
             source: 'gemini_knowledge_similar'
           })),
           message: parsed.message || `Não encontrei informações sobre ${query}, mas conheço estas provas similares:`
