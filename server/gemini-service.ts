@@ -510,7 +510,7 @@ NÃO inclua marcações de quantidade como "(Aprox. 4-5 linhas)", "(60-80 palavr
 O usuário NÃO DEVE VER essas anotações técnicas.
 `;
 
-    return `Você é um especialista em redações ENEM nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
+    return `Você é um especialista em redações dissertativo-argumentativas nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
 
 **PROPOSTA DA REDAÇÃO:**
 ${proposal}
