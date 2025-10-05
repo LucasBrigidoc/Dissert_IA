@@ -202,13 +202,16 @@ export default function BibliotecaPage() {
   };
 
   // Use real data from API or fallback to empty arrays
+  const allOutlines = savedOutlines?.results ? savedOutlines.results.map(transformOutlineToFile) : [];
+  
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
     redacoes: savedEssays?.results ? savedEssays.results.map(transformEssayToFile) : [],
     newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
     propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'enem' || p.examType === 'vestibular').map(transformProposalToFile) : [],
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
-    roteiros: savedOutlines?.results ? savedOutlines.results.map(transformOutlineToFile) : []
+    roteiros: allOutlines.filter((outline: any) => outline.type === 'Roteiro Personalizado'),
+    brainstormings: allOutlines.filter((outline: any) => outline.type === 'Brainstorming')
   };
 
 
@@ -748,7 +751,8 @@ export default function BibliotecaPage() {
     ...bibliotecaData.newsletters,
     ...bibliotecaData.propostas,
     ...bibliotecaData.textosModificados,
-    ...bibliotecaData.roteiros
+    ...bibliotecaData.roteiros,
+    ...bibliotecaData.brainstormings
   ];
 
   // Filter files based on search and category
@@ -756,12 +760,13 @@ export default function BibliotecaPage() {
     const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          file.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "todos" || 
-                          (selectedCategory === "repertorios" && file.type === "Repertório") ||
-                          (selectedCategory === "redacoes" && file.type === "Redação") ||
-                          (selectedCategory === "newsletters" && file.type === "Newsletter") ||
-                          (selectedCategory === "propostas" && file.type === "Proposta") ||
+                          (selectedCategory === "repertorio" && file.type === "Repertório") ||
+                          (selectedCategory === "redacao" && file.type === "Redação") ||
+                          (selectedCategory === "newsletter" && file.type === "Newsletter") ||
+                          (selectedCategory === "proposta" && file.type === "Proposta") ||
                           (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
-                          (selectedCategory === "roteiros" && (file.type === "Roteiro Personalizado" || file.type === "Brainstorming"));
+                          (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado") ||
+                          (selectedCategory === "brainstormings" && file.type === "Brainstorming");
     return matchesSearch && matchesCategory;
   });
 
@@ -937,6 +942,15 @@ export default function BibliotecaPage() {
                 >
                   Roteiros
                 </Button>
+                <Button
+                  variant={selectedCategory === "brainstormings" ? "default" : "secondary"}
+                  size="sm"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
+                  onClick={() => setSelectedCategory("brainstormings")}
+                  data-testid="filter-brainstormings"
+                >
+                  Brainstormings
+                </Button>
               </div>
             </div>
           </LiquidGlassCard>
@@ -944,7 +958,7 @@ export default function BibliotecaPage() {
 
         {/* Statistics Cards */}
         <div className="mb-4 sm:mb-8">
-          {/* Mobile: Compact Stats Grid - Organizado em 2 linhas de 3 */}
+          {/* Mobile: Compact Stats Grid - Organizado em grid responsivo */}
           <div className="sm:hidden">
             <LiquidGlassCard className="p-3">
               <div className="grid grid-cols-3 gap-2">
@@ -978,12 +992,17 @@ export default function BibliotecaPage() {
                   <span className="text-lg font-bold text-dark-blue">{bibliotecaData.roteiros.length}</span>
                   <span className="text-xs text-soft-gray">Rot</span>
                 </div>
+                <div className="flex flex-col items-center justify-center bg-purple-50 rounded-lg p-2">
+                  <MessageSquare className="text-purple-600 mb-1" size={18} />
+                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.brainstormings.length}</span>
+                  <span className="text-xs text-soft-gray">Brain</span>
+                </div>
               </div>
             </LiquidGlassCard>
           </div>
           
-          {/* Desktop: Full Grid - Centralizado com 6 cards */}
-          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
+          {/* Desktop: Full Grid - Centralizado com 7 cards */}
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 max-w-7xl mx-auto">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
@@ -1018,6 +1037,12 @@ export default function BibliotecaPage() {
               <Target className="mx-auto mb-2 text-pink-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.roteiros.length}</div>
               <div className="text-sm text-soft-gray">Roteiros</div>
+            </LiquidGlassCard>
+            
+            <LiquidGlassCard className="p-4 text-center">
+              <MessageSquare className="mx-auto mb-2 text-purple-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.brainstormings.length}</div>
+              <div className="text-sm text-soft-gray">Brainstormings</div>
             </LiquidGlassCard>
           </div>
         </div>
