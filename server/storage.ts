@@ -3929,13 +3929,23 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedRepertoires(userId: string): Promise<Repertoire[]> {
-    const saved = await db.query.savedRepertoires.findMany({
-      where: eq(schema.savedRepertoires.userId, userId),
-      with: {
-        repertoire: true,
-      },
-    });
-    return saved.map(s => s.repertoire).filter(Boolean) as Repertoire[];
+    const saved = await db
+      .select()
+      .from(schema.savedRepertoires)
+      .where(eq(schema.savedRepertoires.userId, userId));
+    
+    const repertoireIds = saved.map(s => s.repertoireId);
+    
+    if (repertoireIds.length === 0) {
+      return [];
+    }
+    
+    const repertoires = await db
+      .select()
+      .from(schema.repertoires)
+      .where(inArray(schema.repertoires.id, repertoireIds));
+    
+    return repertoires;
   }
 
   async isRepertoireSaved(userId: string, repertoireId: string): Promise<boolean> {
@@ -4011,13 +4021,23 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedProposals(userId: string): Promise<Proposal[]> {
-    const saved = await db.query.savedProposals.findMany({
-      where: eq(schema.savedProposals.userId, userId),
-      with: {
-        proposal: true,
-      },
-    });
-    return saved.map(s => s.proposal).filter(Boolean) as Proposal[];
+    const saved = await db
+      .select()
+      .from(schema.savedProposals)
+      .where(eq(schema.savedProposals.userId, userId));
+    
+    const proposalIds = saved.map(s => s.proposalId);
+    
+    if (proposalIds.length === 0) {
+      return [];
+    }
+    
+    const proposals = await db
+      .select()
+      .from(schema.proposals)
+      .where(inArray(schema.proposals.id, proposalIds));
+    
+    return proposals;
   }
 
   async isProposalSaved(userId: string, proposalId: string): Promise<boolean> {
@@ -4051,13 +4071,23 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedEssays(userId: string): Promise<Essay[]> {
-    const saved = await db.query.savedEssays.findMany({
-      where: eq(schema.savedEssays.userId, userId),
-      with: {
-        essay: true,
-      },
-    });
-    return saved.map(s => s.essay).filter(Boolean) as Essay[];
+    const saved = await db
+      .select()
+      .from(schema.savedEssays)
+      .where(eq(schema.savedEssays.userId, userId));
+    
+    const essayIds = saved.map(s => s.essayId);
+    
+    if (essayIds.length === 0) {
+      return [];
+    }
+    
+    const essays = await db
+      .select()
+      .from(schema.essays)
+      .where(inArray(schema.essays.id, essayIds));
+    
+    return essays;
   }
 
   async isEssaySaved(userId: string, essayId: string): Promise<boolean> {
@@ -4091,13 +4121,23 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedStructures(userId: string): Promise<EssayStructure[]> {
-    const saved = await db.query.savedStructures.findMany({
-      where: eq(schema.savedStructures.userId, userId),
-      with: {
-        structure: true,
-      },
-    });
-    return saved.map(s => s.structure).filter(Boolean) as EssayStructure[];
+    const saved = await db
+      .select()
+      .from(schema.savedStructures)
+      .where(eq(schema.savedStructures.userId, userId));
+    
+    const structureIds = saved.map(s => s.structureId);
+    
+    if (structureIds.length === 0) {
+      return [];
+    }
+    
+    const structures = await db
+      .select()
+      .from(schema.essayStructures)
+      .where(inArray(schema.essayStructures.id, structureIds));
+    
+    return structures;
   }
 
   async isStructureSaved(userId: string, structureId: string): Promise<boolean> {
@@ -4131,13 +4171,23 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedNewsletters(userId: string): Promise<Newsletter[]> {
-    const saved = await db.query.savedNewsletters.findMany({
-      where: eq(schema.savedNewsletters.userId, userId),
-      with: {
-        newsletter: true,
-      },
-    });
-    return saved.map(s => s.newsletter).filter(Boolean) as Newsletter[];
+    const saved = await db
+      .select()
+      .from(schema.savedNewsletters)
+      .where(eq(schema.savedNewsletters.userId, userId));
+    
+    const newsletterIds = saved.map(s => s.newsletterId);
+    
+    if (newsletterIds.length === 0) {
+      return [];
+    }
+    
+    const newsletters = await db
+      .select()
+      .from(schema.newsletters)
+      .where(inArray(schema.newsletters.id, newsletterIds));
+    
+    return newsletters;
   }
 
   async isNewsletterSaved(userId: string, newsletterId: string): Promise<boolean> {

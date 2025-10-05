@@ -202,10 +202,10 @@ export default function BibliotecaPage() {
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
     redacoes: savedEssays?.results ? savedEssays.results.map(transformEssayToFile) : [],
-    temas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType !== 'ENEM' && p.examType !== 'Vestibular').map(transformProposalToFile) : [],
+    temas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType !== 'enem' && p.examType !== 'vestibular').map(transformProposalToFile) : [],
     estilos: savedStructures?.results ? savedStructures.results.map(transformStructureToFile) : [],
     newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
-    propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'ENEM' || p.examType === 'Vestibular').map(transformProposalToFile) : [],
+    propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'enem' || p.examType === 'vestibular').map(transformProposalToFile) : [],
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
     roteiros: savedOutlines?.results ? savedOutlines.results.map(transformOutlineToFile) : []
   };
