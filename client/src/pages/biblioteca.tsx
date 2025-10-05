@@ -158,12 +158,27 @@ export default function BibliotecaPage() {
   const transformProposalToFile = (proposal: any) => ({
     id: proposal.id,
     title: proposal.title,
-    category: proposal.category || 'Proposta',
+    category: proposal.theme === 'social' ? 'Sociedade' :
+              proposal.theme === 'environment' ? 'Meio Ambiente' :
+              proposal.theme === 'technology' ? 'Tecnologia' :
+              proposal.theme === 'education' ? 'Educação' :
+              proposal.theme === 'politics' ? 'Política' :
+              proposal.theme === 'economy' ? 'Economia' :
+              proposal.theme === 'culture' ? 'Cultura' :
+              proposal.theme === 'health' ? 'Saúde' : 'Proposta',
     date: proposal.createdAt,
     size: '650 KB',
     type: 'Proposta',
-    description: `Proposta ${proposal.examType || 'ENEM'} ${proposal.examYear || ''}`,
-    content: proposal.motivationalTexts || proposal.fullContent
+    description: proposal.statement?.substring(0, 100) + '...' || `Proposta ${proposal.examType || 'ENEM'} ${proposal.year || ''}`,
+    content: `**${proposal.title}**\n\n**Comando da Redação:**\n${proposal.statement}\n\n${proposal.supportingText ? `**Textos de Apoio:**\n${proposal.supportingText}\n\n` : ''}**Tipo de Exame:** ${proposal.examType?.toUpperCase() || 'N/A'}\n${proposal.examName ? `**Nome do Exame:** ${proposal.examName}\n` : ''}${proposal.year ? `**Ano:** ${proposal.year}\n` : ''}**Tema:** ${proposal.theme || 'N/A'}\n**Dificuldade:** ${proposal.difficulty || 'N/A'}\n${proposal.isAiGenerated ? '**Origem:** Criada por IA ✨' : '**Origem:** Proposta Real ✓'}`,
+    examType: proposal.examType,
+    examName: proposal.examName,
+    year: proposal.year,
+    difficulty: proposal.difficulty,
+    theme: proposal.theme,
+    isAiGenerated: proposal.isAiGenerated,
+    statement: proposal.statement,
+    supportingText: proposal.supportingText
   });
 
   const transformOutlineToFile = (outline: any) => {

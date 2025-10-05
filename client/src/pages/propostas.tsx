@@ -6,7 +6,7 @@ import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, Star, Clock,
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Proposal } from "@shared/schema";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
@@ -66,6 +66,7 @@ export default function Propostas() {
       });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/proposals/saved'] });
       toast({
         title: "Proposta salva!",
         description: "A proposta foi adicionada à sua biblioteca pessoal.",

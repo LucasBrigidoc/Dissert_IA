@@ -3100,11 +3100,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Save proposal to user's personal library
-  app.post("/api/proposals/:id/save", async (req, res) => {
+  app.post("/api/proposals/:id/save", requireAuth, async (req, res) => {
     try {
       const proposalId = req.params.id;
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId!;
       
       const savedProposal = await storage.saveProposal(userId, proposalId);
       res.json({
@@ -3119,11 +3118,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Remove proposal from user's personal library
-  app.delete("/api/proposals/:id/save", async (req, res) => {
+  app.delete("/api/proposals/:id/save", requireAuth, async (req, res) => {
     try {
       const proposalId = req.params.id;
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId!;
       
       const removed = await storage.removeSavedProposal(userId, proposalId);
       if (removed) {
@@ -3141,10 +3139,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user's saved proposals
-  app.get("/api/proposals/saved", async (req, res) => {
+  app.get("/api/proposals/saved", requireAuth, async (req, res) => {
     try {
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId!;
       
       const savedProposals = await storage.getUserSavedProposals(userId);
       res.json({
@@ -3158,11 +3155,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Check if proposal is saved by user
-  app.get("/api/proposals/:id/saved", async (req, res) => {
+  app.get("/api/proposals/:id/saved", requireAuth, async (req, res) => {
     try {
       const proposalId = req.params.id;
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId!;
       
       const isSaved = await storage.isProposalSaved(userId, proposalId);
       res.json({ isSaved });
