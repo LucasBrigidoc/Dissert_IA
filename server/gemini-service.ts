@@ -122,12 +122,81 @@ export class GeminiService {
   }
 
   // Search for real exam proposals on the web
-  async searchRealProposals(query: string, examType?: string, year?: number): Promise<any[]> {
-    console.log(`🌐 Searching web for real exam proposals: "${query}"`);
-    
-    // This will be implemented with web search
-    // For now, return empty to indicate web search is needed
-    return [];
+  async searchRealProposalsWithAI(query: string, examType?: string, year?: number): Promise<any[]> {
+    if (!this.hasApiKey || !this.model) {
+      console.log('⚠️ Cannot search real proposals: Gemini API not available');
+      return [];
+    }
+
+    try {
+      console.log(`🌐 Searching for real exam proposals with grounding: "${query}"`);
+      
+      // Use Gemini with grounding to search for real exam proposals
+      const searchPrompt = `Busque na internet informações sobre a prova "${query}" e encontre:
+1. Se essa prova realmente aconteceu
+2. Qual foi a proposta de redação cobrada (título e comando completo)
+3. Os textos de apoio fornecidos na prova
+4. O ano da prova
+
+Responda APENAS com JSON válido no formato:
+
+{
+  "found": true ou false,
+  "proposals": [
+    {
+      "title": "Título exato da proposta de redação",
+      "statement": "Comando completo da redação como apareceu na prova",
+      "supportingText": "Textos de apoio fornecidos (dados, citações, contexto)",
+      "examName": "Nome oficial do exame (ex: ENEM, FUVEST 2023)",
+      "examType": "enem, vestibular ou concurso",
+      "theme": "Tema principal (technology, environment, social, education, etc)",
+      "difficulty": "medio",
+      "year": "ano da prova"
+    }
+  ],
+  "message": "Mensagem explicativa se não encontrou"
+}`;
+
+      const result = await this.model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: searchPrompt }] }],
+        tools: [{
+          googleSearchRetrieval: {
+            dynamicRetrievalConfig: {
+              mode: 'MODE_DYNAMIC',
+              dynamicThreshold: 0.3
+            }
+          }
+        }]
+      });
+
+      const response = result.response.text();
+      console.log(`📡 Web search response received`);
+      
+      // Parse response
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        console.log('⚠️ No JSON found in web search response');
+        return [];
+      }
+      
+      const parsed = JSON.parse(jsonMatch[0]);
+      
+      if (parsed.found && parsed.proposals && Array.isArray(parsed.proposals)) {
+        console.log(`✅ Found ${parsed.proposals.length} real exam proposals from web`);
+        return parsed.proposals.map((p: any) => ({
+          ...p,
+          isAiGenerated: false, // Mark as real, not AI generated
+          source: 'web_search'
+        }));
+      }
+      
+      console.log(`ℹ️ No real proposals found: ${parsed.message || 'Not found'}`);
+      return [];
+      
+    } catch (error) {
+      console.error('Error searching real proposals with AI:', error);
+      return [];
+    }
   }
 
   // Generate proposals batch using AI

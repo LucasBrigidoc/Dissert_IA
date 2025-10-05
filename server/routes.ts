@@ -2925,37 +2925,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🔍 Found ${searchResults.length} proposals for "${query}"${isSpecificExamSearch ? ' (specific exam+year search)' : ''}`);
       
-      // Step 3: If limited results, generate new proposals with AI
-      // For specific exam searches, we want to generate contextual proposals with the exam name and year
+      // Step 3: If limited results and this is a specific exam search, try to find real proposals on the web first
       if (searchResults.length < 3) {
         try {
-          // For specific exam searches, enhance keywords with exam name and year
-          let enhancedKeywords = [...localAnalysis.keywords];
+          // For specific exam searches, try to find real proposals on the web
           if (isSpecificExamSearch && searchYear) {
-            enhancedKeywords = [query, ...localAnalysis.keywords];
+            console.log(`🌐 Attempting to find real exam proposals on the web for "${query}"`);
+            const realProposals = await geminiService.searchRealProposalsWithAI(
+              query, 
+              examType || localAnalysis.suggestedExamTypes[0], 
+              searchYear
+            );
+            
+            // Save real proposals found on the web
+            if (realProposals.length > 0) {
+              for (const realProposal of realProposals) {
+                const savedProposal = await storage.createProposal(realProposal);
+                searchResults.push(savedProposal);
+              }
+              console.log(`✅ Found and saved ${realProposals.length} REAL proposals from web search`);
+            }
           }
           
-          const aiProposals = await geminiService.generateProposalsBatch(
-            { 
-              examType: examType || localAnalysis.suggestedExamTypes[0], 
-              theme: theme || localAnalysis.suggestedThemes[0], 
-              difficulty 
-            }, 
-            enhancedKeywords
-          );
-          
-          // Save generated proposals to storage with exam metadata
-          for (const aiProposal of aiProposals) {
-            const proposalToSave = {
-              ...aiProposal,
-              examName: isSpecificExamSearch ? query : aiProposal.examName,
-              year: searchYear || aiProposal.year
-            };
-            const savedProposal = await storage.createProposal(proposalToSave);
-            searchResults.push(savedProposal);
+          // If still have few results, generate with AI as fallback
+          if (searchResults.length < 3) {
+            let enhancedKeywords = [...localAnalysis.keywords];
+            if (isSpecificExamSearch && searchYear) {
+              enhancedKeywords = [query, ...localAnalysis.keywords];
+            }
+            
+            const aiProposals = await geminiService.generateProposalsBatch(
+              { 
+                examType: examType || localAnalysis.suggestedExamTypes[0], 
+                theme: theme || localAnalysis.suggestedThemes[0], 
+                difficulty 
+              }, 
+              enhancedKeywords
+            );
+            
+            // Save generated proposals to storage with exam metadata
+            for (const aiProposal of aiProposals) {
+              const proposalToSave = {
+                ...aiProposal,
+                examName: isSpecificExamSearch ? query : aiProposal.examName,
+                year: searchYear || aiProposal.year
+              };
+              const savedProposal = await storage.createProposal(proposalToSave);
+              searchResults.push(savedProposal);
+            }
+            
+            console.log(`🤖 Generated ${aiProposals.length} AI proposals for "${query}"`);
           }
-          
-          console.log(`🤖 Generated ${aiProposals.length} AI proposals for "${query}"`);
         } catch (aiError) {
           console.error("AI proposal generation failed:", aiError);
         }
