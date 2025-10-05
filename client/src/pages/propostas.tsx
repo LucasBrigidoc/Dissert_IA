@@ -36,8 +36,22 @@ export default function Propostas() {
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
   const [hasShownInitialCacheResults, setHasShownInitialCacheResults] = useState(false);
+  const [expandedProposals, setExpandedProposals] = useState<Set<string>>(new Set());
   
   const { toast } = useToast();
+
+  // Toggle supporting text expansion
+  const toggleSupportingText = (proposalId: string) => {
+    setExpandedProposals(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(proposalId)) {
+        newSet.delete(proposalId);
+      } else {
+        newSet.add(proposalId);
+      }
+      return newSet;
+    });
+  };
 
   // Garantir que a página sempre abra no topo
   useEffect(() => {
@@ -546,9 +560,16 @@ export default function Propostas() {
                       </p>
                       
                       {proposal.supportingText && (
-                        <div className="bg-blue-50/50 rounded-lg p-3 border border-blue-100">
-                          <p className="text-soft-gray text-xs leading-relaxed line-clamp-2">
+                        <div 
+                          className="bg-blue-50/50 rounded-lg p-3 border border-blue-100 cursor-pointer hover:bg-blue-100/50 transition-colors"
+                          onClick={() => toggleSupportingText(proposal.id)}
+                          data-testid={`supporting-text-${proposal.id}`}
+                        >
+                          <p className={`text-soft-gray text-xs leading-relaxed ${expandedProposals.has(proposal.id) ? '' : 'line-clamp-2'}`}>
                             <span className="font-medium text-bright-blue">Texto de apoio:</span> {proposal.supportingText}
+                          </p>
+                          <p className="text-bright-blue text-xs mt-1 font-medium">
+                            {expandedProposals.has(proposal.id) ? '↑ Clique para recolher' : '↓ Clique para ver mais'}
                           </p>
                         </div>
                       )}
