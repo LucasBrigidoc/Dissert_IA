@@ -959,8 +959,8 @@ export default function BibliotecaPage() {
         {/* Statistics Cards */}
         <div className="mb-4 sm:mb-8">
           {/* Mobile: Ultra Compact Stats Grid */}
-          <div className="sm:hidden">
-            <LiquidGlassCard className="p-1.5">
+          <div className="sm:hidden flex justify-center">
+            <LiquidGlassCard className="p-1.5 w-full max-w-md mx-auto">
               <div className="grid grid-cols-4 gap-1">
                 <div className="flex flex-col items-center justify-center bg-blue-50 rounded p-1">
                   <BookOpen className="text-blue-600" size={12} />
