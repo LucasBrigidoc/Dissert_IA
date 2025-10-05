@@ -112,9 +112,44 @@ export default function Simulador() {
     }
   });
 
+  // Função para limpar supportingText de JSON malformado
+  const cleanSupportingText = (supportingText: string): string => {
+    if (!supportingText) return "";
+    
+    try {
+      // Remove JSON structure if present
+      if (supportingText.startsWith('{') || supportingText.startsWith('[')) {
+        const parsed = JSON.parse(supportingText);
+        
+        // Extract content from various JSON structures
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map((item: any) => item.content || item.text || '')
+            .filter(Boolean)
+            .join('\n\n');
+        }
+        
+        if (parsed.type === 'paragraph' && parsed.content) {
+          return parsed.content;
+        }
+        
+        if (parsed.content) {
+          return typeof parsed.content === 'string' ? parsed.content : '';
+        }
+      }
+      
+      // Return as is if it's already clean text
+      return supportingText;
+    } catch (e) {
+      // If parsing fails, return the original text
+      return supportingText;
+    }
+  };
+
   // Função para copiar proposta para o campo de texto
   const copyProposalToField = (proposal: any, index: number) => {
-    const fullText = `${proposal.title}\n\n${proposal.statement}\n\n${proposal.supportingText || ''}`;
+    const cleanedSupportingText = cleanSupportingText(proposal.supportingText || '');
+    const fullText = `${proposal.title}\n\n${proposal.statement}\n\n--- TEXTOS DE APOIO ---\n\n${cleanedSupportingText}`;
     setTextProposal(fullText);
     setSelectedProposal(index);
     toast({
@@ -451,9 +486,9 @@ export default function Simulador() {
                       
                       {proposal.supportingText && (
                         <div className="mt-4 p-4 bg-white/80 rounded-lg border border-bright-blue/30">
-                          <div className="text-xs font-bold text-dark-blue mb-2 uppercase tracking-wide">Textos de Apoio</div>
-                          <div className="text-sm text-dark-blue leading-relaxed font-normal">
-                            {proposal.supportingText}
+                          <div className="text-xs font-bold text-dark-blue mb-2 uppercase tracking-wide">📚 Textos de Apoio</div>
+                          <div className="text-sm text-dark-blue leading-relaxed font-normal whitespace-pre-wrap">
+                            {cleanSupportingText(proposal.supportingText)}
                           </div>
                         </div>
                       )}

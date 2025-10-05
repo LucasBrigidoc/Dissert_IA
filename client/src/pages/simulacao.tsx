@@ -102,12 +102,42 @@ export default function SimulacaoPage() {
   ]);
   const [lastCheckpointTime, setLastCheckpointTime] = useState(0);
   
+  // Parse custom proposal to separate title, instruction, and supporting text
+  const parseCustomProposal = (customProposal: string) => {
+    if (!customProposal) return { title: '', instruction: '', supportingText: '' };
+    
+    // Split by the separator we added
+    const parts = customProposal.split('--- TEXTOS DE APOIO ---');
+    
+    if (parts.length === 2) {
+      // Has supporting text section
+      const mainPart = parts[0].trim();
+      const supportingText = parts[1].trim();
+      
+      // Split main part into title and instruction
+      const lines = mainPart.split('\n\n');
+      const title = lines[0] || '';
+      const instruction = lines.slice(1).join('\n\n') || '';
+      
+      return { title, instruction, supportingText };
+    } else {
+      // No supporting text, just parse title and instruction
+      const lines = customProposal.split('\n\n');
+      const title = lines[0] || '';
+      const instruction = lines.slice(1).join('\n\n') || '';
+      
+      return { title, instruction, supportingText: '' };
+    }
+  };
+
   // Generate topic based on configuration
   const getTopicByTheme = (theme: string, customTheme: string, customProposal: string, examType: string) => {
     if (customProposal) {
+      const parsed = parseCustomProposal(customProposal);
       return {
-        title: customTheme || "Tema Personalizado",
-        instruction: customProposal,
+        title: parsed.title || customTheme || "Tema Personalizado",
+        instruction: parsed.instruction,
+        supportingText: parsed.supportingText,
         examType: examType,
         category: "Personalizado"
       };
@@ -466,8 +496,23 @@ export default function SimulacaoPage() {
                 {topic.category}
               </div>
             </div>
-            <h2 className="text-lg font-bold text-dark-blue mb-3">{topic.title}</h2>
-            <p className="text-sm text-soft-gray leading-relaxed">{topic.instruction}</p>
+            
+            {/* Título da Proposta */}
+            <div className="mb-4 pb-3 border-b border-bright-blue/20">
+              <div className="text-xs font-semibold text-bright-blue mb-2 uppercase tracking-wide">📝 Proposta de Redação</div>
+              <h2 className="text-xl font-bold text-dark-blue mb-2">{topic.title}</h2>
+              <p className="text-sm text-soft-gray leading-relaxed">{topic.instruction}</p>
+            </div>
+            
+            {/* Textos de Apoio (se existir) */}
+            {topic.supportingText && (
+              <div className="mt-4 p-4 bg-white/90 rounded-lg border border-bright-blue/30">
+                <div className="text-xs font-bold text-dark-blue mb-2 uppercase tracking-wide">📚 Textos de Apoio</div>
+                <div className="text-sm text-dark-blue leading-relaxed whitespace-pre-wrap">
+                  {topic.supportingText}
+                </div>
+              </div>
+            )}
           </div>
         </LiquidGlassCard>
       </div>
