@@ -675,7 +675,7 @@ export default function Repertorio() {
                     
                     {/* Title - Better spacing */}
                     <div className="mb-3 sm:mb-4">
-                      <h3 className="font-semibold text-dark-blue text-sm sm:text-base leading-tight line-clamp-2">{repertoire.title}</h3>
+                      <h3 className="font-semibold text-dark-blue text-sm sm:text-base leading-tight">{repertoire.title.replace(/^Pesquisa\s+/i, '').replace(/^['"]/, '').replace(/['"]$/, '')}</h3>
                     </div>
                     
                     {/* Description - Better spacing and readability */}
