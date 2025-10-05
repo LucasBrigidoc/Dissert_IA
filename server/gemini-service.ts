@@ -333,6 +333,43 @@ INSTRUÇÕES:
 - Responda APENAS o JSON, sem texto adicional`;
   }
 
+  private cleanSupportingText(supportingText: string): string {
+    if (!supportingText) return "";
+    
+    try {
+      // Check if it's a JSON string that needs parsing
+      if (supportingText.startsWith('{') || supportingText.startsWith('[')) {
+        const parsed = JSON.parse(supportingText);
+        
+        // If it's an array of content objects
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map((item: any) => item.content || item.text || '')
+            .filter(Boolean)
+            .join('\n\n');
+        }
+        
+        // If it's a single object with content
+        if (parsed.type === 'paragraph' && parsed.content) {
+          return parsed.content;
+        }
+        
+        // If it has a content field
+        if (parsed.content) {
+          return typeof parsed.content === 'string' 
+            ? parsed.content 
+            : JSON.stringify(parsed.content);
+        }
+      }
+      
+      // Return as is if it's already clean text
+      return supportingText;
+    } catch (e) {
+      // If parsing fails, return the original text
+      return supportingText;
+    }
+  }
+
   private parseProposalsResponse(response: string, config: any): any[] {
     try {
       const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -346,7 +383,7 @@ INSTRUÇÕES:
         return parsed.proposals.map((proposal: any) => ({
           title: proposal.title || `Proposta sobre ${config.theme}`,
           statement: proposal.statement || `Redija um texto dissertativo-argumentativo sobre ${config.theme}.`,
-          supportingText: proposal.supportingText || "Considere os aspectos sociais, econômicos e culturais do tema.",
+          supportingText: this.cleanSupportingText(proposal.supportingText) || "Considere os aspectos sociais, econômicos e culturais do tema.",
           examType: config.examType || 'enem',
           theme: config.theme || 'social',
           difficulty: config.difficulty || 'medio',
