@@ -9,7 +9,7 @@ export class PromptOptimizer {
   // Optimized prompts - 60-70% token reduction while maintaining quality
   
   static buildOptimizedPrompt(text: string, type: string, config: TextModificationConfig): string {
-    const commonInstructions = 'IMPORTANTE: NÃO use formatação markdown (**, *, _, etc). Retorne texto puro e corrido. Mantenha tamanho similar ao original (±20%).';
+    const commonInstructions = 'CRÍTICO: Retorne o texto COMPLETO modificado, NUNCA truncado ou incompleto. NÃO use formatação markdown (**, *, _, etc). Texto puro. Mantenha tamanho similar (±20% do original).';
     
     switch (type) {
       case 'formalidade':
@@ -17,15 +17,18 @@ export class PromptOptimizer {
         const dificuldade = config.wordDifficulty || 'medio';
         const preservarSentido = true; // Always preserve meaning by default
         
-        return `Especialista redação ENEM. Reescreva: formalidade ${nivel}%, vocabulário ${dificuldade}.
+        return `Você é especialista em redação ENEM. Sua tarefa: reescrever TODO o texto abaixo com formalidade ${nivel}% e vocabulário ${dificuldade}.
 
+TEXTO PARA REESCREVER POR COMPLETO:
 "${text}"
 
-${preservarSentido ? 'Preserve sentido original' : 'Inverta argumentação'}. Use conectivos acadêmicos, estrutura clara, 3ª pessoa.
+INSTRUÇÕES:
+- ${preservarSentido ? 'Preserve o sentido original' : 'Inverta a argumentação'}
+- Use conectivos acadêmicos adequados
+- Estrutura clara com 3ª pessoa
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas texto otimizado:`;
+RETORNE SOMENTE O TEXTO COMPLETO REESCRITO (sem explicações, sem comentários):`;
 
       case 'argumentativo':
         const tecnica = config.argumentTechnique || 'topico-frasal';
@@ -38,90 +41,112 @@ Apenas texto otimizado:`;
         if (estrutura.arguments) reqs.push('argumentos');
         if (estrutura.conclusion) reqs.push('fechamento');
 
-        return `Parágrafo dissertativo ENEM. Técnica: ${tecnica}, intensidade: ${intensidade}%.
+        return `Você é especialista em redação ENEM. Transforme TODO o texto abaixo em parágrafo dissertativo-argumentativo.
 
+TEXTO BASE:
 "${text}"
 
-Estrutura: Tópico → Desenvolvimento → Fechamento. ${reqs.length ? 'Include: ' + reqs.join(', ') + '.' : ''} Conectivos acadêmicos, 4-6 linhas.
+PARÂMETROS:
+- Técnica: ${tecnica}
+- Intensidade argumentativa: ${intensidade}%
+- Estrutura: Tópico → Desenvolvimento → Fechamento
+${reqs.length ? '- Incluir: ' + reqs.join(', ') : ''}
+- Conectivos acadêmicos, 4-6 linhas
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas parágrafo:`;
+RETORNE SOMENTE O PARÁGRAFO COMPLETO (sem explicações):`;
 
       case 'sinonimos':
-        return `Enriqueça vocabulário acadêmico mantendo sentido exato.
+        return `Você é especialista em redação ENEM. Reescreva TODO o texto abaixo enriquecendo o vocabulário com sinônimos acadêmicos.
 
+TEXTO PARA ENRIQUECER:
 "${text}"
 
-Substitua por sinônimos formais: mostrar→evidenciar, importante→fundamental, grande→significativo. Mantenha precisão semântica.
+INSTRUÇÕES:
+- Substitua palavras simples por sinônimos formais (mostrar→evidenciar, importante→fundamental, grande→significativo)
+- Mantenha precisão semântica exata
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas texto otimizado:`;
+RETORNE SOMENTE O TEXTO COMPLETO COM VOCABULÁRIO ENRIQUECIDO:`;
 
       case 'antonimos':
-        return `Inverta argumentação mantendo qualidade dissertativa.
+        return `Você é especialista em redação ENEM. Reescreva TODO o texto abaixo invertendo a argumentação.
 
+TEXTO BASE:
 "${text}"
 
-Crie argumento oposto fundamentado. Use antônimos inteligentes, conectivos adversativos, estrutura argumentativa.
+INSTRUÇÕES:
+- Crie argumento oposto bem fundamentado
+- Use antônimos inteligentes e conectivos adversativos
+- Mantenha estrutura argumentativa clara
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas texto invertido:`;
+RETORNE SOMENTE O TEXTO COMPLETO COM ARGUMENTAÇÃO INVERTIDA:`;
 
       case 'estrutura-causal':
         const tipoEstruturaCausal = config.structureType || 'tese-argumento';
         const conectivos = this.getCausalConnectives(tipoEstruturaCausal);
         
-        return `Estrutura causal ENEM: ${tipoEstruturaCausal}.
+        return `Você é especialista em redação ENEM. Reorganize TODO o texto abaixo usando estrutura causal: ${tipoEstruturaCausal}.
 
+TEXTO BASE:
 "${text}"
 
-Use: ${conectivos}. Relações causais claras, conectivos variados.
+INSTRUÇÕES:
+- Conectivos essenciais: ${conectivos}
+- Relações de causa-efeito claras
+- Conectivos variados e bem distribuídos
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas parágrafo causal:`;
+RETORNE SOMENTE O PARÁGRAFO COMPLETO COM ESTRUTURA CAUSAL:`;
 
       case 'estrutura-comparativa':
         const tipoComparativa = config.structureType || 'comparacao-paralela';
         const conectivosComp = this.getComparativeConnectives(tipoComparativa);
         
-        return `Estrutura comparativa ENEM: ${tipoComparativa}.
+        return `Você é especialista em redação ENEM. Reorganize TODO o texto abaixo usando estrutura comparativa: ${tipoComparativa}.
 
+TEXTO BASE:
 "${text}"
 
-Use: ${conectivosComp}. Analogias esclarecedoras, comparações equilibradas.
+INSTRUÇÕES:
+- Conectivos essenciais: ${conectivosComp}
+- Analogias esclarecedoras
+- Comparações equilibradas e fundamentadas
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas parágrafo comparativo:`;
+RETORNE SOMENTE O PARÁGRAFO COMPLETO COM ESTRUTURA COMPARATIVA:`;
 
       case 'estrutura-oposicao':
         const tipoOposicao = config.structureType || 'embora-oposicao';
         const conectivosOp = this.getOppositionConnectives(tipoOposicao);
         
-        return `Estrutura de oposição ENEM: ${tipoOposicao}.
+        return `Você é especialista em redação ENEM. Reorganize TODO o texto abaixo usando estrutura de oposição: ${tipoOposicao}.
 
+TEXTO BASE:
 "${text}"
 
-Use: ${conectivosOp}. Maturidade argumentativa, reconhecimento respeitoso de perspectivas.
+INSTRUÇÕES:
+- Conectivos essenciais: ${conectivosOp}
+- Maturidade argumentativa
+- Reconhecimento respeitoso de perspectivas contrárias
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas parágrafo de oposição:`;
+RETORNE SOMENTE O PARÁGRAFO COMPLETO COM ESTRUTURA DE OPOSIÇÃO:`;
 
       default:
-        return `Melhore texto para redação ENEM.
+        return `Você é especialista em redação ENEM. Melhore TODO o texto abaixo para uso em dissertação.
 
+TEXTO BASE:
 "${text}"
 
-Linguagem formal, conectivos acadêmicos, estrutura clara.
+INSTRUÇÕES:
+- Linguagem formal e acadêmica
+- Conectivos apropriados
+- Estrutura clara e coesa
+- ${commonInstructions}
 
-${commonInstructions}
-
-Apenas texto melhorado:`;
+RETORNE SOMENTE O TEXTO COMPLETO MELHORADO:`;
     }
   }
 
