@@ -139,7 +139,8 @@ export default function VisualizadorConversa() {
           title,
           proposalTitle,
           proposalStatement,
-          outlineData
+          outlineData,
+          outlineType: 'brainstorming'
         }),
         headers: {
           'Content-Type': 'application/json'

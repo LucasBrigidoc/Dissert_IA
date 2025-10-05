@@ -3,12 +3,13 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical, MessageSquare } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import jsPDF from 'jspdf';
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 
 
 export default function BibliotecaPage() {
@@ -185,14 +186,16 @@ export default function BibliotecaPage() {
     const outlineData = outline.outlineData;
     const content = `**${outline.title}**\n\n**Proposta:** ${outlineData.proposta}\n\n**Categoria Temática:** ${outlineData.categoriaTematica}\n\n**Palavras-chave:** ${outlineData.palavrasChave?.join(', ')}\n\n**INTRODUÇÃO**\n1ª frase: ${outlineData.introducao?.frase1}\n2ª frase: ${outlineData.introducao?.frase2}\n3ª frase: ${outlineData.introducao?.frase3}\n\n**1º DESENVOLVIMENTO**\n1ª frase: ${outlineData.desenvolvimento1?.frase1}\n2ª frase: ${outlineData.desenvolvimento1?.frase2}\n3ª frase: ${outlineData.desenvolvimento1?.frase3}\n\n**2º DESENVOLVIMENTO**\n1ª frase: ${outlineData.desenvolvimento2?.frase1}\n2ª frase: ${outlineData.desenvolvimento2?.frase2}\n3ª frase: ${outlineData.desenvolvimento2?.frase3}\n\n**CONCLUSÃO**\n1ª frase: ${outlineData.conclusao?.frase1}\n2ª frase: ${outlineData.conclusao?.frase2}\n3ª frase: ${outlineData.conclusao?.frase3}`;
     
+    const isBrainstorming = outline.outlineType === 'brainstorming';
+    
     return {
       id: outline.id,
       title: outline.title,
-      category: 'Roteiro',
+      category: isBrainstorming ? 'Brainstorming' : 'Roteiro',
       date: outline.createdAt,
       size: '500 KB',
-      type: 'Roteiro Personalizado',
-      description: outlineData.proposta?.substring(0, 100) + '...' || 'Roteiro de redação personalizado',
+      type: isBrainstorming ? 'Brainstorming' : 'Roteiro Personalizado',
+      description: outlineData.proposta?.substring(0, 100) + '...' || (isBrainstorming ? 'Conversa de brainstorming' : 'Roteiro de redação personalizado'),
       content,
       outlineData
     };
@@ -275,6 +278,7 @@ export default function BibliotecaPage() {
     // Ícone/emoji baseado no tipo
     let typeIcon = '📄';
     if (file.type === 'Roteiro Personalizado') typeIcon = '✏️';
+    else if (file.type === 'Brainstorming') typeIcon = '💭';
     else if (file.type === 'Texto Modificado') typeIcon = '📝';
     else if (file.type === 'Newsletter') typeIcon = '📰';
     else if (file.type === 'Repertório') typeIcon = '📚';
@@ -302,8 +306,8 @@ export default function BibliotecaPage() {
     doc.text(`📅 ${new Date(file.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`, margin, yPosition);
     yPosition += 15;
 
-    // Se for roteiro personalizado, usar layout especial
-    if (file.type === 'Roteiro Personalizado' && file.outlineData) {
+    // Se for roteiro personalizado ou brainstorming, usar layout especial
+    if ((file.type === 'Roteiro Personalizado' || file.type === 'Brainstorming') && file.outlineData) {
       const outline = file.outlineData;
       
       // Análise da Proposta
@@ -708,6 +712,7 @@ export default function BibliotecaPage() {
           endpoint = `/api/saved-texts/${fileId}`;
           break;
         case 'Roteiro Personalizado':
+        case 'Brainstorming':
           endpoint = `/api/saved-outlines/${fileId}`;
           break;
         default:
@@ -756,7 +761,7 @@ export default function BibliotecaPage() {
                           (selectedCategory === "newsletters" && file.type === "Newsletter") ||
                           (selectedCategory === "propostas" && file.type === "Proposta") ||
                           (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
-                          (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado");
+                          (selectedCategory === "roteiros" && (file.type === "Roteiro Personalizado" || file.type === "Brainstorming"));
     return matchesSearch && matchesCategory;
   });
 
@@ -768,6 +773,7 @@ export default function BibliotecaPage() {
       case "Proposta": return <FolderOpen size={20} className="text-indigo-600" />;
       case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
       case "Roteiro Personalizado": return <Target size={20} className="text-pink-600" />;
+      case "Brainstorming": return <MessageSquare size={20} className="text-purple-600" />;
       default: return <FileText size={20} className="text-gray-600" />;
     }
   };
@@ -780,6 +786,7 @@ export default function BibliotecaPage() {
       case "Proposta": return "bg-indigo-100 text-indigo-800";
       case "Texto Modificado": return "bg-cyan-100 text-cyan-800";
       case "Roteiro Personalizado": return "bg-pink-100 text-pink-800";
+      case "Brainstorming": return "bg-purple-100 text-purple-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -1040,6 +1047,7 @@ export default function BibliotecaPage() {
                         {file.type === "Proposta" && <FolderOpen size={16} className="text-indigo-600" />}
                         {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
                         {file.type === "Roteiro Personalizado" && <Target size={16} className="text-pink-600" />}
+                        {file.type === "Brainstorming" && <MessageSquare size={16} className="text-purple-600" />}
                       </div>
                       {/* Desktop: Regular icon */}
                       <div className="hidden sm:block">
@@ -1319,8 +1327,8 @@ export default function BibliotecaPage() {
                     </div>
                   )}
                 </div>
-              ) : selectedFile.type === 'Roteiro Personalizado' && selectedFile.outlineData ? (
-                /* Exibição especial para roteiros */
+              ) : (selectedFile.type === 'Roteiro Personalizado' || selectedFile.type === 'Brainstorming') && selectedFile.outlineData ? (
+                /* Exibição especial para roteiros e brainstorming */
                 <div className="flex-1 overflow-y-auto space-y-4">
                   {/* Análise da Proposta */}
                   <div className="p-4 bg-white/60 rounded-xl border border-bright-blue/20">
