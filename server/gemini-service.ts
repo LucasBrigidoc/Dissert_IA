@@ -121,81 +121,113 @@ export class GeminiService {
     };
   }
 
-  // Search for real exam proposals on the web
-  async searchRealProposalsWithAI(query: string, examType?: string, year?: number): Promise<any[]> {
+  // Search for real exam proposals using Gemini's knowledge
+  async searchRealProposalsFromKnowledge(query: string, examType?: string, year?: number): Promise<any> {
     if (!this.hasApiKey || !this.model) {
       console.log('⚠️ Cannot search real proposals: Gemini API not available');
-      return [];
+      return { found: false, proposals: [], similarProposals: [] };
     }
 
     try {
-      console.log(`🌐 Searching for real exam proposals with grounding: "${query}"`);
+      console.log(`🧠 Asking Gemini if it knows about real exam: "${query}"`);
       
-      // Use Gemini with grounding to search for real exam proposals
-      const searchPrompt = `Busque na internet informações sobre a prova "${query}" e encontre:
-1. Se essa prova realmente aconteceu
-2. Qual foi a proposta de redação cobrada (título e comando completo)
-3. Os textos de apoio fornecidos na prova
-4. O ano da prova
+      // Ask Gemini directly about its knowledge of this specific exam
+      const searchPrompt = `Você tem conhecimento sobre a prova "${query}"?
+
+IMPORTANTE: Responda com base APENAS no seu conhecimento de treinamento. Não invente informações.
+
+Se você CONHECE essa prova específica:
+- Diga qual foi a proposta de redação REAL cobrada
+- Inclua o título EXATO, comando COMPLETO e textos de apoio
+- Marque found: true
+
+Se você NÃO CONHECE essa prova específica:
+- Marque found: false
+- Sugira propostas de provas SIMILARES que você conhece (mesmo exame de outros anos, ou tema parecido)
 
 Responda APENAS com JSON válido no formato:
 
 {
   "found": true ou false,
+  "message": "breve explicação",
   "proposals": [
     {
-      "title": "Título exato da proposta de redação",
-      "statement": "Comando completo da redação como apareceu na prova",
-      "supportingText": "Textos de apoio fornecidos (dados, citações, contexto)",
-      "examName": "Nome oficial do exame (ex: ENEM, FUVEST 2023)",
-      "examType": "enem, vestibular ou concurso",
-      "theme": "Tema principal (technology, environment, social, education, etc)",
+      "title": "Título EXATO da proposta (se conhece)",
+      "statement": "Comando COMPLETO da redação (se conhece)",
+      "supportingText": "Textos de apoio fornecidos (se conhece)",
+      "examName": "${query}",
+      "examType": "${examType || 'enem'}",
+      "theme": "tema (social, technology, environment, etc)",
       "difficulty": "medio",
-      "year": "ano da prova"
+      "year": "${year || new Date().getFullYear()}"
     }
   ],
-  "message": "Mensagem explicativa se não encontrou"
+  "similarProposals": [
+    // Se NÃO conhece a prova específica, liste propostas PARECIDAS que você conhece
+    {
+      "title": "Título de prova similar",
+      "statement": "Comando da redação",
+      "supportingText": "Textos de apoio",
+      "examName": "Nome da prova similar (ex: ENEM 2018)",
+      "examType": "enem ou vestibular",
+      "theme": "tema",
+      "difficulty": "medio",
+      "year": "ano"
+    }
+  ]
 }`;
 
-      const result = await this.model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: searchPrompt }] }],
-        tools: [{
-          googleSearchRetrieval: {
-            dynamicRetrievalConfig: {
-              mode: 'MODE_DYNAMIC',
-              dynamicThreshold: 0.3
-            }
-          }
-        }]
-      });
-
+      const result = await this.model.generateContent(searchPrompt);
       const response = result.response.text();
-      console.log(`📡 Web search response received`);
+      
+      console.log(`📖 Gemini knowledge response received`);
       
       // Parse response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        console.log('⚠️ No JSON found in web search response');
-        return [];
+        console.log('⚠️ No JSON found in Gemini response');
+        return { found: false, proposals: [], similarProposals: [] };
       }
       
       const parsed = JSON.parse(jsonMatch[0]);
       
-      if (parsed.found && parsed.proposals && Array.isArray(parsed.proposals)) {
-        console.log(`✅ Found ${parsed.proposals.length} real exam proposals from web`);
-        return parsed.proposals.map((p: any) => ({
-          ...p,
-          isAiGenerated: false, // Mark as real, not AI generated
-          source: 'web_search'
-        }));
+      if (parsed.found && parsed.proposals && parsed.proposals.length > 0) {
+        console.log(`✅ Gemini KNOWS this exam! Found ${parsed.proposals.length} REAL proposal(s)`);
+        return {
+          found: true,
+          proposals: parsed.proposals.map((p: any) => ({
+            ...p,
+            isAiGenerated: false, // Mark as real, from Gemini's knowledge
+            source: 'gemini_knowledge'
+          })),
+          similarProposals: [],
+          message: parsed.message
+        };
+      } else if (!parsed.found && parsed.similarProposals && parsed.similarProposals.length > 0) {
+        console.log(`ℹ️ Gemini doesn't know this specific exam. Suggesting ${parsed.similarProposals.length} similar proposal(s)`);
+        return {
+          found: false,
+          proposals: [],
+          similarProposals: parsed.similarProposals.map((p: any) => ({
+            ...p,
+            isAiGenerated: false, // Mark as real, from Gemini's knowledge
+            source: 'gemini_knowledge_similar'
+          })),
+          message: parsed.message || `Não encontrei informações sobre ${query}, mas conheço estas provas similares:`
+        };
       }
       
-      console.log(`ℹ️ No real proposals found: ${parsed.message || 'Not found'}`);
-      return [];
+      console.log(`ℹ️ Gemini doesn't have knowledge about this exam`);
+      return {
+        found: false,
+        proposals: [],
+        similarProposals: [],
+        message: parsed.message || 'Não encontrei essa prova específica no meu conhecimento'
+      };
       
     } catch (error) {
-      console.error('Error searching real proposals with AI:', error);
-      return [];
+      console.error('Error searching real proposals from Gemini knowledge:', error);
+      return { found: false, proposals: [], similarProposals: [] };
     }
   }
 

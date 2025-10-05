@@ -2925,25 +2925,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🔍 Found ${searchResults.length} proposals for "${query}"${isSpecificExamSearch ? ' (specific exam+year search)' : ''}`);
       
-      // Step 3: If limited results and this is a specific exam search, try to find real proposals on the web first
+      // Step 3: If limited results and this is a specific exam search, ask Gemini if it knows the real proposal
       if (searchResults.length < 3) {
         try {
-          // For specific exam searches, try to find real proposals on the web
+          // For specific exam searches, ask Gemini if it knows the real proposal
           if (isSpecificExamSearch && searchYear) {
-            console.log(`🌐 Attempting to find real exam proposals on the web for "${query}"`);
-            const realProposals = await geminiService.searchRealProposalsWithAI(
+            console.log(`🧠 Asking Gemini if it knows the real proposal for "${query}"`);
+            const knowledgeResult = await geminiService.searchRealProposalsFromKnowledge(
               query, 
               examType || localAnalysis.suggestedExamTypes[0], 
               searchYear
             );
             
-            // Save real proposals found on the web
-            if (realProposals.length > 0) {
-              for (const realProposal of realProposals) {
+            // If Gemini knows the real proposal, save it
+            if (knowledgeResult.found && knowledgeResult.proposals.length > 0) {
+              for (const realProposal of knowledgeResult.proposals) {
                 const savedProposal = await storage.createProposal(realProposal);
                 searchResults.push(savedProposal);
               }
-              console.log(`✅ Found and saved ${realProposals.length} REAL proposals from web search`);
+              console.log(`✅ Gemini knows this exam! Saved ${knowledgeResult.proposals.length} REAL proposal(s)`);
+            } 
+            // If Gemini doesn't know but suggests similar proposals, save them
+            else if (!knowledgeResult.found && knowledgeResult.similarProposals.length > 0) {
+              for (const similarProposal of knowledgeResult.similarProposals) {
+                const savedProposal = await storage.createProposal(similarProposal);
+                searchResults.push(savedProposal);
+              }
+              console.log(`ℹ️ Gemini suggested ${knowledgeResult.similarProposals.length} similar proposal(s)`);
             }
           }
           
