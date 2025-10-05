@@ -202,8 +202,6 @@ export default function BibliotecaPage() {
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
     redacoes: savedEssays?.results ? savedEssays.results.map(transformEssayToFile) : [],
-    temas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType !== 'enem' && p.examType !== 'vestibular').map(transformProposalToFile) : [],
-    estilos: savedStructures?.results ? savedStructures.results.map(transformStructureToFile) : [],
     newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
     propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'enem' || p.examType === 'vestibular').map(transformProposalToFile) : [],
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
@@ -701,12 +699,7 @@ export default function BibliotecaPage() {
           endpoint = `/api/essays/${fileId}/save`;
           break;
         case 'Proposta':
-        case 'Tema':
           endpoint = `/api/proposals/${fileId}/save`;
-          break;
-        case 'Estilo':
-        case 'Estrutura':
-          endpoint = `/api/structures/${fileId}/save`;
           break;
         case 'Newsletter':
           endpoint = `/api/newsletters/${fileId}/save`;
@@ -747,8 +740,6 @@ export default function BibliotecaPage() {
   const allFiles = [
     ...bibliotecaData.repertorios,
     ...bibliotecaData.redacoes,
-    ...bibliotecaData.temas,
-    ...bibliotecaData.estilos,
     ...bibliotecaData.newsletters,
     ...bibliotecaData.propostas,
     ...bibliotecaData.textosModificados,
@@ -762,8 +753,6 @@ export default function BibliotecaPage() {
     const matchesCategory = selectedCategory === "todos" || 
                           (selectedCategory === "repertorios" && file.type === "Repertório") ||
                           (selectedCategory === "redacoes" && file.type === "Redação") ||
-                          (selectedCategory === "temas" && file.type === "Tema") ||
-                          (selectedCategory === "estilos" && file.type === "Estilo") ||
                           (selectedCategory === "newsletters" && file.type === "Newsletter") ||
                           (selectedCategory === "propostas" && file.type === "Proposta") ||
                           (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
@@ -775,8 +764,6 @@ export default function BibliotecaPage() {
     switch (type) {
       case "Repertório": return <BookOpen size={20} className="text-blue-600" />;
       case "Redação": return <PenTool size={20} className="text-green-600" />;
-      case "Tema": return <Lightbulb size={20} className="text-yellow-600" />;
-      case "Estilo": return <Target size={20} className="text-purple-600" />;
       case "Newsletter": return <Newspaper size={20} className="text-orange-600" />;
       case "Proposta": return <FolderOpen size={20} className="text-indigo-600" />;
       case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
@@ -789,8 +776,6 @@ export default function BibliotecaPage() {
     switch (type) {
       case "Repertório": return "bg-blue-100 text-blue-800";
       case "Redação": return "bg-green-100 text-green-800";
-      case "Tema": return "bg-yellow-100 text-yellow-800";
-      case "Estilo": return "bg-purple-100 text-purple-800";
       case "Newsletter": return "bg-orange-100 text-orange-800";
       case "Proposta": return "bg-indigo-100 text-indigo-800";
       case "Texto Modificado": return "bg-cyan-100 text-cyan-800";
@@ -910,24 +895,6 @@ export default function BibliotecaPage() {
                   Redações
                 </Button>
                 <Button
-                  variant={selectedCategory === "tema" ? "default" : "secondary"}
-                  size="sm"
-                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
-                  onClick={() => setSelectedCategory("tema")}
-                  data-testid="filter-tema"
-                >
-                  Temas
-                </Button>
-                <Button
-                  variant={selectedCategory === "estilo" ? "default" : "secondary"}
-                  size="sm"
-                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
-                  onClick={() => setSelectedCategory("estilo")}
-                  data-testid="filter-estilo"
-                >
-                  Estilos
-                </Button>
-                <Button
                   variant={selectedCategory === "newsletter" ? "default" : "secondary"}
                   size="sm"
                   className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
@@ -975,16 +942,6 @@ export default function BibliotecaPage() {
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.redacoes.length}</span>
                   <span className="text-xs text-soft-gray">Red</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-yellow-50 rounded-full px-3 py-1">
-                  <Lightbulb className="text-yellow-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.temas.length}</span>
-                  <span className="text-xs text-soft-gray">Tem</span>
-                </div>
-                <div className="flex items-center space-x-2 bg-purple-50 rounded-full px-3 py-1">
-                  <Target className="text-purple-600" size={16} />
-                  <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.estilos.length}</span>
-                  <span className="text-xs text-soft-gray">Est</span>
-                </div>
                 <div className="flex items-center space-x-2 bg-orange-50 rounded-full px-3 py-1">
                   <Newspaper className="text-orange-600" size={16} />
                   <span className="text-sm font-semibold text-dark-blue">{bibliotecaData.newsletters.length}</span>
@@ -1021,18 +978,6 @@ export default function BibliotecaPage() {
               <PenTool className="mx-auto mb-2 text-green-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.redacoes.length}</div>
               <div className="text-sm text-soft-gray">Redações</div>
-            </LiquidGlassCard>
-            
-            <LiquidGlassCard className="p-4 text-center">
-              <Lightbulb className="mx-auto mb-2 text-yellow-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.temas.length}</div>
-              <div className="text-sm text-soft-gray">Temas</div>
-            </LiquidGlassCard>
-            
-            <LiquidGlassCard className="p-4 text-center">
-              <Target className="mx-auto mb-2 text-purple-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.estilos.length}</div>
-              <div className="text-sm text-soft-gray">Estilos</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
@@ -1091,8 +1036,6 @@ export default function BibliotecaPage() {
                       <div className="sm:hidden">
                         {file.type === "Repertório" && <BookOpen size={16} className="text-blue-600" />}
                         {file.type === "Redação" && <PenTool size={16} className="text-green-600" />}
-                        {file.type === "Tema" && <Lightbulb size={16} className="text-yellow-600" />}
-                        {file.type === "Estilo" && <Target size={16} className="text-purple-600" />}
                         {file.type === "Newsletter" && <Newspaper size={16} className="text-orange-600" />}
                         {file.type === "Proposta" && <FolderOpen size={16} className="text-indigo-600" />}
                         {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
