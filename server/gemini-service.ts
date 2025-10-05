@@ -192,25 +192,25 @@ Responda APENAS com JSON válido no formato:
       const parsed = JSON.parse(jsonMatch[0]);
       
       if (parsed.found && parsed.proposals && parsed.proposals.length > 0) {
-        console.log(`✅ Gemini KNOWS this exam! Found ${parsed.proposals.length} REAL proposal(s)`);
+        console.log(`✅ Gemini generated ${parsed.proposals.length} proposal(s) based on knowledge`);
         return {
           found: true,
           proposals: parsed.proposals.map((p: any) => ({
             ...p,
-            isAiGenerated: false, // Mark as real, from Gemini's knowledge
+            isAiGenerated: true,
             source: 'gemini_knowledge'
           })),
           similarProposals: [],
           message: parsed.message
         };
       } else if (!parsed.found && parsed.similarProposals && parsed.similarProposals.length > 0) {
-        console.log(`ℹ️ Gemini doesn't know this specific exam. Suggesting ${parsed.similarProposals.length} similar proposal(s)`);
+        console.log(`ℹ️ Gemini generated ${parsed.similarProposals.length} similar proposal(s)`);
         return {
           found: false,
           proposals: [],
           similarProposals: parsed.similarProposals.map((p: any) => ({
             ...p,
-            isAiGenerated: false, // Mark as real, from Gemini's knowledge
+            isAiGenerated: true,
             source: 'gemini_knowledge_similar'
           })),
           message: parsed.message || `Não encontrei informações sobre ${query}, mas conheço estas provas similares:`
@@ -323,7 +323,8 @@ INSTRUÇÕES:
           examType: config.examType || 'enem',
           theme: config.theme || 'social',
           difficulty: config.difficulty || 'medio',
-          year: '2024'
+          year: '2024',
+          isAiGenerated: true
         }));
       }
       
@@ -347,7 +348,8 @@ INSTRUÇÕES:
         examType,
         theme: config.theme || 'social',
         difficulty: config.difficulty || 'medio',
-        year: '2024'
+        year: '2024',
+        isAiGenerated: true
       },
       {
         title: `Desafios contemporâneos: ${themeTitle.toLowerCase()}`,
@@ -356,7 +358,8 @@ INSTRUÇÕES:
         examType,
         theme: config.theme || 'social',
         difficulty: config.difficulty || 'medio',
-        year: '2024'
+        year: '2024',
+        isAiGenerated: true
       }
     ];
   }
