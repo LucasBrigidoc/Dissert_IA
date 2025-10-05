@@ -2924,19 +2924,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🔍 Found ${searchResults.length} proposals for "${query}"${isSpecificExamSearch ? ' (specific exam+year search)' : ''}`);
       
-      // Step 3: If limited results AND NOT a specific exam search, generate new proposals with AI
-      if (searchResults.length < 3 && !isSpecificExamSearch) {
+      // Step 3: If limited results, generate new proposals with AI
+      // For specific exam searches, we want to generate contextual proposals with the exam name and year
+      if (searchResults.length < 3) {
         try {
+          // For specific exam searches, enhance keywords with exam name and year
+          let enhancedKeywords = [...localAnalysis.keywords];
+          if (isSpecificExamSearch && searchYear) {
+            enhancedKeywords = [query, ...localAnalysis.keywords];
+          }
+          
           const aiProposals = await geminiService.generateProposalsBatch(
-            { examType, theme, difficulty }, 
-            localAnalysis.keywords
+            { 
+              examType: examType || localAnalysis.suggestedExamTypes[0], 
+              theme: theme || localAnalysis.suggestedThemes[0], 
+              difficulty 
+            }, 
+            enhancedKeywords
           );
           
-          // Save generated proposals to storage
+          // Save generated proposals to storage with exam metadata
           for (const aiProposal of aiProposals) {
-            const savedProposal = await storage.createProposal(aiProposal);
+            const proposalToSave = {
+              ...aiProposal,
+              examName: isSpecificExamSearch ? query : aiProposal.examName,
+              year: searchYear || aiProposal.year
+            };
+            const savedProposal = await storage.createProposal(proposalToSave);
             searchResults.push(savedProposal);
           }
+          
+          console.log(`🤖 Generated ${aiProposals.length} AI proposals for "${query}"`);
         } catch (aiError) {
           console.error("AI proposal generation failed:", aiError);
         }
