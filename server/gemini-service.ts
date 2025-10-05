@@ -121,6 +121,15 @@ export class GeminiService {
     };
   }
 
+  // Search for real exam proposals on the web
+  async searchRealProposals(query: string, examType?: string, year?: number): Promise<any[]> {
+    console.log(`🌐 Searching web for real exam proposals: "${query}"`);
+    
+    // This will be implemented with web search
+    // For now, return empty to indicate web search is needed
+    return [];
+  }
+
   // Generate proposals batch using AI
   async generateProposalsBatch(config: any, keywords: string[] = []): Promise<any[]> {
     if (!this.hasApiKey || !this.model) {
