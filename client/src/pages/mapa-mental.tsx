@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Save, MessageSquare, BookOpen, Home, RefreshCw, User, Bot, Clock, Target } from "lucide-react";
 import { useLocation } from "wouter";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 // Função para processar markdown e retornar JSX formatado
 function processMarkdown(text: string) {
@@ -74,6 +76,7 @@ export default function VisualizadorConversa() {
   const [conversationData, setConversationData] = useState<ConversationData | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const { toast } = useToast();
 
   // Garantir que a página sempre abra no topo
   useEffect(() => {
@@ -101,16 +104,62 @@ export default function VisualizadorConversa() {
     }
   }, [setLocation]);
 
-  // Simular salvamento na biblioteca
+  // Salvar conversa na biblioteca
   const handleSaveToLibrary = async () => {
+    if (!conversationData) return;
+
     setIsSaving(true);
     try {
-      // Aqui seria a chamada real para salvar no backend
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simular delay
+      // Preparar dados para salvar
+      const title = `Conversa - ${getSectionName(conversationData.currentSection)}`;
+      const proposalTitle = conversationData.brainstormData?.tema || 'Redação Dissertativo-Argumentativa';
+      const proposalStatement = `Desenvolvimento de redação focado em: ${getSectionName(conversationData.currentSection)}`;
+      
+      const outlineData = {
+        proposta: conversationData.brainstormData?.tema || '',
+        categoriaTematica: conversationData.currentSection,
+        palavrasChave: [],
+        repertoriosSugeridos: [],
+        introducao: conversationData.brainstormData?.paragrafos?.introducao || '',
+        desenvolvimento1: conversationData.brainstormData?.paragrafos?.desenvolvimento1 || '',
+        desenvolvimento2: conversationData.brainstormData?.paragrafos?.desenvolvimento2 || '',
+        conclusao: conversationData.brainstormData?.paragrafos?.conclusao || '',
+        tese: conversationData.brainstormData?.tese || '',
+        conversationMessages: conversationData.messages.map(msg => ({
+          type: msg.type,
+          content: msg.content,
+          section: msg.section,
+          timestamp: msg.timestamp.toISOString()
+        }))
+      };
+
+      await apiRequest('/api/saved-outlines', {
+        method: 'POST',
+        body: JSON.stringify({
+          title,
+          proposalTitle,
+          proposalStatement,
+          outlineData
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
+      
+      toast({
+        title: "Conversa salva!",
+        description: "Sua conversa foi salva na biblioteca com sucesso.",
+      });
     } catch (error) {
       console.error('Erro ao salvar na biblioteca:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a conversa. Tente novamente.",
+        variant: "destructive"
+      });
     } finally {
       setIsSaving(false);
     }
