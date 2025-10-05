@@ -91,7 +91,7 @@ export class GeminiService {
     const suggestedExamTypes = [];
     if (keywords.some(k => ['enem', 'vestibular', 'universidade'].includes(k))) {
       suggestedExamTypes.push('enem', 'vestibular');
-    } else if (keywords.some(k => ['concurso', 'publico', 'cargo'].includes(k))) {
+    } else if (keywords.some(k => ['concurso', 'publico', 'cargo', 'cnu', 'cespe', 'fcc', 'vunesp', 'ibfc', 'quadrix', 'cebraspe'].includes(k))) {
       suggestedExamTypes.push('concurso');
     } else {
       suggestedExamTypes.push('enem', 'vestibular'); // Default
