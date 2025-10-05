@@ -873,7 +873,7 @@ export default function BibliotecaPage() {
             
             {/* Filter Chips - 2 Lines Grid on Mobile, Single Line on Desktop */}
             <div className="-mx-4 sm:mx-0">
-              <div className="grid grid-cols-4 gap-2 px-4 pb-1 sm:flex sm:flex-nowrap sm:overflow-x-auto sm:no-scrollbar sm:px-0">
+              <div className="grid grid-cols-3 gap-2 px-4 pb-1 sm:flex sm:flex-nowrap sm:overflow-x-auto sm:no-scrollbar sm:px-0">
                 <Button
                   variant={selectedCategory === "todos" ? "default" : "secondary"}
                   size="sm"
@@ -927,6 +927,15 @@ export default function BibliotecaPage() {
                   data-testid="filter-textos-modificados"
                 >
                   Textos Modificados
+                </Button>
+                <Button
+                  variant={selectedCategory === "roteiros" ? "default" : "secondary"}
+                  size="sm"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
+                  onClick={() => setSelectedCategory("roteiros")}
+                  data-testid="filter-roteiros"
+                >
+                  Roteiros
                 </Button>
               </div>
             </div>
