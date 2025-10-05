@@ -5,6 +5,47 @@ import { ArrowLeft, Save, MessageSquare, BookOpen, Home, RefreshCw, User, Bot, C
 import { useLocation } from "wouter";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
 
+// Função para processar markdown e retornar JSX formatado
+function processMarkdown(text: string) {
+  const lines = text.split('\n');
+  const elements: JSX.Element[] = [];
+  
+  lines.forEach((line, lineIndex) => {
+    const parts: (string | JSX.Element)[] = [];
+    let currentText = line;
+    let key = 0;
+    
+    // Processar negrito (**texto**)
+    const boldRegex = /\*\*(.+?)\*\*/g;
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = boldRegex.exec(currentText)) !== null) {
+      // Adicionar texto antes do match
+      if (match.index > lastIndex) {
+        parts.push(currentText.substring(lastIndex, match.index));
+      }
+      // Adicionar texto em negrito
+      parts.push(<strong key={`bold-${lineIndex}-${key++}`} className="font-semibold">{match[1]}</strong>);
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Adicionar texto restante
+    if (lastIndex < currentText.length) {
+      parts.push(currentText.substring(lastIndex));
+    }
+    
+    // Se a linha estiver vazia, adicionar quebra de linha
+    if (parts.length === 0) {
+      elements.push(<br key={`br-${lineIndex}`} />);
+    } else {
+      elements.push(<span key={`line-${lineIndex}`}>{parts}{lineIndex < lines.length - 1 && <br />}</span>);
+    }
+  });
+  
+  return <>{elements}</>;
+}
+
 interface ConversationData {
   conversationId: string;
   messages: Array<{
@@ -249,7 +290,7 @@ export default function VisualizadorConversa() {
                       <div className={`text-xs sm:text-sm leading-relaxed ${
                         message.type === 'user' ? 'text-white' : 'text-dark-blue'
                       }`}>
-                        {message.content}
+                        {processMarkdown(message.content)}
                       </div>
                       {message.section && (
                         <div className={`mt-2 text-xs px-2 py-1 rounded-full inline-block ${
