@@ -9,6 +9,8 @@ export class PromptOptimizer {
   // Optimized prompts - 60-70% token reduction while maintaining quality
   
   static buildOptimizedPrompt(text: string, type: string, config: TextModificationConfig): string {
+    const commonInstructions = 'IMPORTANTE: NÃO use formatação markdown (**, *, _, etc). Retorne texto puro e corrido. Mantenha tamanho similar ao original (±20%).';
+    
     switch (type) {
       case 'formalidade':
         const nivel = config.formalityLevel || 50;
@@ -20,6 +22,8 @@ export class PromptOptimizer {
 "${text}"
 
 ${preservarSentido ? 'Preserve sentido original' : 'Inverta argumentação'}. Use conectivos acadêmicos, estrutura clara, 3ª pessoa.
+
+${commonInstructions}
 
 Apenas texto otimizado:`;
 
@@ -40,6 +44,8 @@ Apenas texto otimizado:`;
 
 Estrutura: Tópico → Desenvolvimento → Fechamento. ${reqs.length ? 'Include: ' + reqs.join(', ') + '.' : ''} Conectivos acadêmicos, 4-6 linhas.
 
+${commonInstructions}
+
 Apenas parágrafo:`;
 
       case 'sinonimos':
@@ -49,6 +55,8 @@ Apenas parágrafo:`;
 
 Substitua por sinônimos formais: mostrar→evidenciar, importante→fundamental, grande→significativo. Mantenha precisão semântica.
 
+${commonInstructions}
+
 Apenas texto otimizado:`;
 
       case 'antonimos':
@@ -57,6 +65,8 @@ Apenas texto otimizado:`;
 "${text}"
 
 Crie argumento oposto fundamentado. Use antônimos inteligentes, conectivos adversativos, estrutura argumentativa.
+
+${commonInstructions}
 
 Apenas texto invertido:`;
 
@@ -70,6 +80,8 @@ Apenas texto invertido:`;
 
 Use: ${conectivos}. Relações causais claras, conectivos variados.
 
+${commonInstructions}
+
 Apenas parágrafo causal:`;
 
       case 'estrutura-comparativa':
@@ -81,6 +93,8 @@ Apenas parágrafo causal:`;
 "${text}"
 
 Use: ${conectivosComp}. Analogias esclarecedoras, comparações equilibradas.
+
+${commonInstructions}
 
 Apenas parágrafo comparativo:`;
 
@@ -94,6 +108,8 @@ Apenas parágrafo comparativo:`;
 
 Use: ${conectivosOp}. Maturidade argumentativa, reconhecimento respeitoso de perspectivas.
 
+${commonInstructions}
+
 Apenas parágrafo de oposição:`;
 
       default:
@@ -102,6 +118,8 @@ Apenas parágrafo de oposição:`;
 "${text}"
 
 Linguagem formal, conectivos acadêmicos, estrutura clara.
+
+${commonInstructions}
 
 Apenas texto melhorado:`;
     }

@@ -68,6 +68,8 @@ export class TextModificationService {
       .replace(/^["']|["']$/g, '') // Remove quotes
       .replace(/^\s*-\s*/, '') // Remove leading dash
       .replace(/```[\s\S]*?```/g, '') // Remove code fences
+      .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove markdown bold formatting
+      .replace(/\*([^*]+)\*/g, '$1') // Remove markdown italic formatting
       .replace(/TEXTO ORIGINAL:[\s\S]*?(?=\n\n|$)/gi, '') // Remove original text echo
       .replace(/TAREFA:[\s\S]*?(?=\n\n|$)/gi, '') // Remove task description
       .replace(/ESTRUTURA[\s\S]*?(?=\n\n|$)/gi, '') // Remove structure descriptions
