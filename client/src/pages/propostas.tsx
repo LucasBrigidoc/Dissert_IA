@@ -539,10 +539,17 @@ export default function Propostas() {
                         <h4 className="font-semibold text-dark-blue text-lg leading-tight">
                           {proposal.title}
                         </h4>
-                        {proposal.isAiGenerated && (
+                        {proposal.isAiGenerated ? (
                           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-md mt-2 border border-purple-200">
                             <Sparkles className="w-3 h-3" />
                             Criada por IA
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-md mt-2 border border-green-200">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Proposta Real
                           </span>
                         )}
                         <div className="flex items-center gap-4 mt-2">
