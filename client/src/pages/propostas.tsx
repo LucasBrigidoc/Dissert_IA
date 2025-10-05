@@ -592,13 +592,13 @@ export default function Propostas() {
                     {/* Footer */}
                     <div className="flex items-center justify-between pt-3 border-t border-soft-gray/20">
                       <div className="flex items-center gap-4 text-xs text-soft-gray/70">
-                        {proposal.examName && (
+                        {!proposal.isAiGenerated && proposal.examName && (
                           <div className="flex items-center gap-1">
                             <GraduationCap className="w-3 h-3" />
                             <span>{proposal.examName}</span>
                           </div>
                         )}
-                        {proposal.year && (
+                        {!proposal.isAiGenerated && proposal.year && (
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             <span>{proposal.year}</span>
