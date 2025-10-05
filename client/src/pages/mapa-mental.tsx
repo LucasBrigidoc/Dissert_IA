@@ -343,7 +343,6 @@ export default function VisualizadorConversa() {
               className="text-soft-gray border-soft-gray/40 hover:bg-soft-gray/5 hover:text-dark-blue text-xs sm:text-sm"
               data-testid="button-functionalities"
             >
-              <Home className="mr-1 sm:mr-2" size={14} />
               <span className="hidden sm:inline">Ir para Funcionalidades</span>
               <span className="sm:hidden">Funcionalidades</span>
             </Button>
