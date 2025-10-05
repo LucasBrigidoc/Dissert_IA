@@ -539,6 +539,12 @@ export default function Propostas() {
                         <h4 className="font-semibold text-dark-blue text-lg leading-tight">
                           {proposal.title}
                         </h4>
+                        {proposal.isAiGenerated && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-md mt-2 border border-purple-200">
+                            <Sparkles className="w-3 h-3" />
+                            Criada por IA
+                          </span>
+                        )}
                         <div className="flex items-center gap-4 mt-2">
                           <span className="text-sm px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
                             {getExamTypeLabel(proposal.examType)}
@@ -588,12 +594,6 @@ export default function Propostas() {
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             <span>{proposal.year}</span>
-                          </div>
-                        )}
-                        {proposal.isAiGenerated && (
-                          <div className="flex items-center gap-1 text-purple-400">
-                            <Sparkles className="w-3 h-3" />
-                            <span>IA</span>
                           </div>
                         )}
                       </div>
