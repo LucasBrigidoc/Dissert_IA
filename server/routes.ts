@@ -2894,12 +2894,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const localAnalysis = geminiService.analyzeProposalSearchLocal(query);
       console.log("Local analysis:", localAnalysis);
       
+      // Extract year from query if present and not already in filters
+      const yearMatches = query.match(/(\d{4})/g);
+      const extractedYear = yearMatches && yearMatches.length > 0 ? parseInt(yearMatches[0]) : null;
+      const searchYear = year || extractedYear;
+      
+      // Detect if this is a specific exam+year search (e.g., "ENEM 2022")
+      const isSpecificExamSearch = searchYear !== null && (
+        query.toLowerCase().includes('enem') ||
+        query.toLowerCase().includes('vestibular') ||
+        query.toLowerCase().includes('concurso') ||
+        query.toLowerCase().includes('fuvest') ||
+        query.toLowerCase().includes('unicamp') ||
+        query.toLowerCase().includes('usp')
+      );
+      
       // Step 2: Search existing proposals
       let searchResults = await storage.searchProposals(query, {
         examType: examType || localAnalysis.suggestedExamTypes[0],
         theme: theme || localAnalysis.suggestedThemes[0],
         difficulty,
-        year
+        year: searchYear || undefined
       });
       
       // Filter out excluded IDs
@@ -2907,8 +2922,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         searchResults = searchResults.filter(p => !excludeIds.includes(p.id));
       }
       
-      // Step 3: If limited results, generate new proposals with AI
-      if (searchResults.length < 3) {
+      console.log(`🔍 Found ${searchResults.length} proposals for "${query}"${isSpecificExamSearch ? ' (specific exam+year search)' : ''}`);
+      
+      // Step 3: If limited results AND NOT a specific exam search, generate new proposals with AI
+      if (searchResults.length < 3 && !isSpecificExamSearch) {
         try {
           const aiProposals = await geminiService.generateProposalsBatch(
             { examType, theme, difficulty }, 
@@ -2925,11 +2942,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      // For specific exam searches, return ALL results; otherwise limit to 10
+      const resultsToReturn = isSpecificExamSearch ? searchResults : searchResults.slice(0, 10);
+      
       res.json({
-        results: searchResults.slice(0, 10),
+        results: resultsToReturn,
         count: searchResults.length,
         query: localAnalysis.normalizedQuery,
         futureExamDetected: false,
+        isSpecificExamSearch,
         suggestions: {
           themes: localAnalysis.suggestedThemes,
           examTypes: localAnalysis.suggestedExamTypes

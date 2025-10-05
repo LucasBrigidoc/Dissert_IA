@@ -1014,6 +1014,7 @@ export class MemStorage implements IStorage {
       proposals = proposals.filter(proposal =>
         proposal.title.toLowerCase().includes(normalizedQuery) ||
         proposal.statement.toLowerCase().includes(normalizedQuery) ||
+        (proposal.examName && proposal.examName.toLowerCase().includes(normalizedQuery)) ||
         (Array.isArray(proposal.keywords) && proposal.keywords.some((keyword: any) => 
           typeof keyword === 'string' && keyword.toLowerCase().includes(normalizedQuery)
         )) ||
