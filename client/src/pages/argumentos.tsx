@@ -335,6 +335,14 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       .replace(/\s+/g, ' ') // Replace multiple spaces with single space
       .trim();
 
+    // IMPORTANTE: Detectar se é um exemplo/sugestão da IA (NÃO deve ser salvo automaticamente)
+    const isExample = /(?:exemplo|sugestão|sugiro|poderia ser|você poderia|você pode usar|tente usar|experimente|uma opção seria|considere usar)/gi.test(cleanContent);
+    
+    // Se for claramente um exemplo da IA, NÃO extrair automaticamente
+    if (isExample) {
+      return null;
+    }
+
     // 1. Estratégia prioritária: Buscar por palavras-chave específicas da seção com contexto
     const contextPatterns = {
       tema: [
