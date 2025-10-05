@@ -1280,6 +1280,61 @@ export default function BibliotecaPage() {
                     </div>
                   </div>
                 </div>
+              ) : selectedFile.type === 'Proposta' ? (
+                /* Exibição especial para propostas */
+                <div className="flex-1 overflow-y-auto space-y-4">
+                  {/* Informações da Proposta */}
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="grid md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium text-dark-blue">Data de Criação: </span>
+                        <span className="text-soft-gray">{new Date(selectedFile.date).toLocaleDateString('pt-BR')}</span>
+                      </div>
+                      {selectedFile.examName && (
+                        <div>
+                          <span className="font-medium text-dark-blue">Exame: </span>
+                          <span className="text-soft-gray">{selectedFile.examName}</span>
+                        </div>
+                      )}
+                      {selectedFile.year && (
+                        <div>
+                          <span className="font-medium text-dark-blue">Ano: </span>
+                          <span className="text-soft-gray">{selectedFile.year}</span>
+                        </div>
+                      )}
+                      {selectedFile.difficulty && (
+                        <div>
+                          <span className="font-medium text-dark-blue">Dificuldade: </span>
+                          <span className="text-soft-gray capitalize">{selectedFile.difficulty}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Enunciado da Proposta */}
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <h3 className="font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                      <FileText size={18} className="text-bright-blue" />
+                      Enunciado da Proposta
+                    </h3>
+                    <div className="bg-white rounded p-4 text-sm text-dark-blue whitespace-pre-wrap border border-gray-200">
+                      {selectedFile.statement || selectedFile.description}
+                    </div>
+                  </div>
+
+                  {/* Texto de Apoio */}
+                  {selectedFile.supportingText && (
+                    <div className="bg-purple-50 rounded-lg p-4">
+                      <h3 className="font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                        <BookOpen size={18} className="text-purple-600" />
+                        Textos de Apoio
+                      </h3>
+                      <div className="bg-white rounded p-4 text-sm text-dark-blue whitespace-pre-wrap border border-gray-200 space-y-4">
+                        {selectedFile.supportingText}
+                      </div>
+                    </div>
+                  )}
+                </div>
               ) : selectedFile.type === 'Roteiro Personalizado' && selectedFile.outlineData ? (
                 /* Exibição especial para roteiros */
                 <div className="flex-1 overflow-y-auto space-y-4">
