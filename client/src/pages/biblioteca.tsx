@@ -960,42 +960,42 @@ export default function BibliotecaPage() {
         <div className="mb-4 sm:mb-8">
           {/* Mobile: Compact Stats Grid - Organizado em grid responsivo */}
           <div className="sm:hidden">
-            <LiquidGlassCard className="p-3">
-              <div className="grid grid-cols-3 gap-2">
-                <div className="flex flex-col items-center justify-center bg-blue-50 rounded-lg p-2">
-                  <BookOpen className="text-blue-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.repertorios.length}</span>
-                  <span className="text-xs text-soft-gray">Rep</span>
+            <LiquidGlassCard className="p-2">
+              <div className="grid grid-cols-4 gap-1.5">
+                <div className="flex flex-col items-center justify-center bg-blue-50 rounded-lg p-1.5">
+                  <BookOpen className="text-blue-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.repertorios.length}</span>
+                  <span className="text-[10px] text-soft-gray">Rep</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-green-50 rounded-lg p-2">
-                  <PenTool className="text-green-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.redacoes.length}</span>
-                  <span className="text-xs text-soft-gray">Red</span>
+                <div className="flex flex-col items-center justify-center bg-green-50 rounded-lg p-1.5">
+                  <PenTool className="text-green-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.redacoes.length}</span>
+                  <span className="text-[10px] text-soft-gray">Red</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-orange-50 rounded-lg p-2">
-                  <Newspaper className="text-orange-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.newsletters.length}</span>
-                  <span className="text-xs text-soft-gray">News</span>
+                <div className="flex flex-col items-center justify-center bg-orange-50 rounded-lg p-1.5">
+                  <Newspaper className="text-orange-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.newsletters.length}</span>
+                  <span className="text-[10px] text-soft-gray">News</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-indigo-50 rounded-lg p-2">
-                  <FolderOpen className="text-indigo-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.propostas.length}</span>
-                  <span className="text-xs text-soft-gray">Prop</span>
+                <div className="flex flex-col items-center justify-center bg-indigo-50 rounded-lg p-1.5">
+                  <FolderOpen className="text-indigo-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.propostas.length}</span>
+                  <span className="text-[10px] text-soft-gray">Prop</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-cyan-50 rounded-lg p-2">
-                  <FileText className="text-cyan-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.textosModificados.length}</span>
-                  <span className="text-xs text-soft-gray">Textos</span>
+                <div className="flex flex-col items-center justify-center bg-cyan-50 rounded-lg p-1.5">
+                  <FileText className="text-cyan-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.textosModificados.length}</span>
+                  <span className="text-[10px] text-soft-gray">Textos</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-pink-50 rounded-lg p-2">
-                  <Target className="text-pink-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.roteiros.length}</span>
-                  <span className="text-xs text-soft-gray">Rot</span>
+                <div className="flex flex-col items-center justify-center bg-pink-50 rounded-lg p-1.5">
+                  <Target className="text-pink-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.roteiros.length}</span>
+                  <span className="text-[10px] text-soft-gray">Rot</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-purple-50 rounded-lg p-2">
-                  <MessageSquare className="text-purple-600 mb-1" size={18} />
-                  <span className="text-lg font-bold text-dark-blue">{bibliotecaData.brainstormings.length}</span>
-                  <span className="text-xs text-soft-gray">Brain</span>
+                <div className="flex flex-col items-center justify-center bg-purple-50 rounded-lg p-1.5">
+                  <MessageSquare className="text-purple-600 mb-0.5" size={14} />
+                  <span className="text-sm font-bold text-dark-blue">{bibliotecaData.brainstormings.length}</span>
+                  <span className="text-[10px] text-soft-gray">Brain</span>
                 </div>
               </div>
             </LiquidGlassCard>
