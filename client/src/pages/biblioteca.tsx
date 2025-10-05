@@ -849,9 +849,9 @@ export default function BibliotecaPage() {
 
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-8 pt-16 sm:pt-24">
-        {/* Search and Filter Bar - Sticky on Mobile */}
-        <div className="sm:static sticky top-16 sm:top-20 z-40 -mx-4 sm:mx-0 mb-4 sm:mb-8">
-          <LiquidGlassCard className="mx-4 sm:mx-0 p-3 sm:p-6">
+        {/* Search and Filter Bar */}
+        <div className="mb-4 sm:mb-8">
+          <LiquidGlassCard className="p-3 sm:p-6">
             {/* Search Input */}
             <div className="mb-3 sm:mb-4">
               <div className="relative">
