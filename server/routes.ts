@@ -2625,9 +2625,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Save repertoire to user's personal library
   app.post("/api/repertoires/:id/save", async (req, res) => {
     try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
       const repertoireId = req.params.id;
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId;
       
       const savedRepertoire = await storage.saveRepertoire(userId, repertoireId);
       res.json({
@@ -2643,9 +2645,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Remove repertoire from user's personal library
   app.delete("/api/repertoires/:id/save", async (req, res) => {
     try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
       const repertoireId = req.params.id;
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId;
       
       const removed = await storage.removeSavedRepertoire(userId, repertoireId);
       if (removed) {
@@ -2662,8 +2666,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's saved repertoires
   app.get("/api/repertoires/saved", async (req, res) => {
     try {
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+      const userId = req.session.userId;
       
       const savedRepertoires = await storage.getUserSavedRepertoires(userId);
       res.json({
@@ -2679,9 +2685,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Check if repertoire is saved by user
   app.get("/api/repertoires/:id/saved", async (req, res) => {
     try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
       const repertoireId = req.params.id;
-      // For now, we'll use a hardcoded user ID since we don't have authentication yet
-      const userId = "default-user"; // TODO: Replace with actual user from session
+      const userId = req.session.userId;
       
       const isSaved = await storage.isRepertoireSaved(userId, repertoireId);
       res.json({ isSaved });
