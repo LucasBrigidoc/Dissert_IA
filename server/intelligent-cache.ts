@@ -232,6 +232,15 @@ export class IntelligentCache {
     
     return 0;
   }
+
+  // Clear all caches
+  clearAll(): void {
+    this.userSessionCache.clear();
+    this.globalSemanticCache.clear();
+    this.templateCache.clear();
+    this.repertoireCache.clear();
+    console.log('🗑️ All caches cleared');
+  }
 }
 
 // Singleton instance

@@ -8,6 +8,7 @@ import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
 import { geminiService } from "./gemini-service";
+import { intelligentCache } from "./intelligent-cache";
 import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
 import { SubscriptionService } from "./subscription-service";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
@@ -3427,6 +3428,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Text modification stats error:", error);
       res.status(500).json({ message: "Failed to get stats" });
+    }
+  });
+
+  // Clear all caches (for development/debugging)
+  app.post("/api/admin/clear-cache", async (req, res) => {
+    try {
+      intelligentCache.clearAll();
+      res.json({ 
+        success: true, 
+        message: "All caches cleared successfully" 
+      });
+    } catch (error) {
+      console.error("Cache clear error:", error);
+      res.status(500).json({ message: "Failed to clear cache" });
     }
   });
 
