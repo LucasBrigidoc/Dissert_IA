@@ -687,18 +687,59 @@ export default function BibliotecaPage() {
     doc.save(fileName);
   };
 
-  // Function to delete saved repertoire
-  const deleteFile = async (fileId: string) => {
+  // Function to delete saved file
+  const deleteFile = async (fileId: string, fileType?: string) => {
     try {
-      const response = await fetch(`/api/repertoires/${fileId}/save`, {
+      let endpoint = '';
+      
+      // Determine the correct API endpoint based on file type
+      switch (fileType) {
+        case 'Repertório':
+          endpoint = `/api/repertoires/${fileId}/save`;
+          break;
+        case 'Redação':
+          endpoint = `/api/essays/${fileId}/save`;
+          break;
+        case 'Proposta':
+        case 'Tema':
+          endpoint = `/api/proposals/${fileId}/save`;
+          break;
+        case 'Estilo':
+        case 'Estrutura':
+          endpoint = `/api/structures/${fileId}/save`;
+          break;
+        case 'Newsletter':
+          endpoint = `/api/newsletters/${fileId}/save`;
+          break;
+        case 'Texto Modificado':
+          endpoint = `/api/saved-texts/${fileId}`;
+          break;
+        case 'Roteiro Personalizado':
+          endpoint = `/api/saved-outlines/${fileId}`;
+          break;
+        default:
+          console.error('Unknown file type:', fileType);
+          return;
+      }
+
+      const response = await fetch(endpoint, {
         method: 'DELETE'
       });
+      
       if (response.ok) {
-        // Refresh the page to update the list
-        window.location.reload();
+        // Invalidate cache and refresh
+        queryClient.invalidateQueries({ queryKey: ['/api/repertoires/saved'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/essays/saved'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/proposals/saved'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/structures/saved'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/newsletters/saved'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/saved-texts'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/saved-outlines'] });
+      } else {
+        console.error('Failed to delete file');
       }
     } catch (error) {
-      console.error('Error deleting repertoire:', error);
+      console.error('Error deleting file:', error);
     }
   };
 
@@ -1148,7 +1189,7 @@ export default function BibliotecaPage() {
                           Baixar PDF
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          onClick={() => deleteFile(file.id)}
+                          onClick={() => deleteFile(file.id, file.type)}
                           className="flex items-center gap-2 p-3 text-red-600 hover:text-red-700 hover:bg-red-50"
                           data-testid={`menu-delete-${file.id}`}
                         >
@@ -1184,7 +1225,7 @@ export default function BibliotecaPage() {
                       size="sm" 
                       variant="ghost" 
                       className="text-red-600 hover:text-red-700" 
-                      onClick={() => deleteFile(file.id)}
+                      onClick={() => deleteFile(file.id, file.type)}
                       data-testid={`button-delete-${file.id}`}
                     >
                       <Trash2 size={16} />
@@ -1226,7 +1267,7 @@ export default function BibliotecaPage() {
                 className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 onClick={() => {
                   if (selectedFile) {
-                    deleteFile(selectedFile.id);
+                    deleteFile(selectedFile.id, selectedFile.type);
                     setShowFileDetails(false);
                   }
                 }}
