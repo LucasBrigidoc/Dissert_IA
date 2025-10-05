@@ -878,7 +878,7 @@ FORMATO JSON OBRIGATÓRIO:
 [
   {
     "title": "Nome completo e específico (obra, lei, evento, teoria, etc.)",
-    "description": "Descrição detalhada: contexto histórico/social + como aplicar na redação + exemplo de argumento (150-250 caracteres)",
+    "description": "APRESENTE OS DADOS E INFORMAÇÕES CONCRETAS: estatísticas, percentuais, números, fatos específicos, resultados de pesquisas, conclusões principais (150-250 caracteres). Exemplo: 'Segundo o IBGE (2020), 23,9% das pessoas com deficiência estão empregadas, enquanto a taxa geral é de 66,3%' ao invés de apenas 'apresenta dados sobre empregabilidade'",
     "applicationExample": "Exemplo prático: 'Esse repertório fortalece o argumento sobre [tema] porque demonstra que [explicação específica e conexão direta com a tese]'",
     "type": "${userFilters.type || 'books'}",
     "category": "${userFilters.category || 'education'}",
