@@ -2970,7 +2970,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               enhancedKeywords = [query, ...localAnalysis.keywords];
             }
             
-            const aiProposals = await geminiService.generateProposalsBatch(
+            const aiResult = await geminiService.generateProposalsBatch(
               { 
                 examType: examType || localAnalysis.suggestedExamTypes[0], 
                 theme: theme || localAnalysis.suggestedThemes[0], 
@@ -2978,6 +2978,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               }, 
               enhancedKeywords
             );
+            
+            const aiProposals = aiResult.proposals;
             
             // Save generated proposals to storage with exam metadata
             for (const aiProposal of aiProposals) {
@@ -3058,16 +3060,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`🎯 Proposal generation request: ${validatedData.theme}, identifier: ${identifier}`);
       
       // Generate proposals using AI
-      const aiProposals = await geminiService.generateProposalsBatch(
+      const aiResult = await geminiService.generateProposalsBatch(
         validatedData, 
         validatedData.keywords || []
       );
       
-      // Record AI operation usage
-      await weeklyCostLimitingService.recordAIOperation(
+      const { proposals: aiProposals, promptTokens, outputTokens, tokensUsed } = aiResult;
+      
+      // Record AI operation usage with actual token counts
+      console.log(`💰 Proposal generation - Tokens: ${promptTokens} input + ${outputTokens} output = ${tokensUsed} total`);
+      
+      await weeklyCostLimitingService.recordAIOperationWithTokens(
         identifier,
         'proposal_generation',
-        100,
+        promptTokens,
+        outputTokens,
         planType
       );
       

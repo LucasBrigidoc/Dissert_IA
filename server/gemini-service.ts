@@ -232,10 +232,15 @@ Responda APENAS com JSON válido no formato:
   }
 
   // Generate proposals batch using AI
-  async generateProposalsBatch(config: any, keywords: string[] = []): Promise<any[]> {
+  async generateProposalsBatch(config: any, keywords: string[] = []): Promise<{ proposals: any[], tokensUsed: number, promptTokens: number, outputTokens: number }> {
     if (!this.hasApiKey || !this.model) {
       // Fallback proposals without AI
-      return this.getFallbackProposals(config);
+      return {
+        proposals: this.getFallbackProposals(config),
+        tokensUsed: 0,
+        promptTokens: 0,
+        outputTokens: 0
+      };
     }
 
     try {
@@ -246,15 +251,37 @@ Responda APENAS com JSON válido no formato:
       const result = await this.model.generateContent(prompt);
       const response = result.response.text();
       
+      // Extract token usage metadata from Gemini response
+      const usageMetadata = result.response.usageMetadata || {};
+      const promptTokens = usageMetadata.promptTokenCount || 0;
+      const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
+      const outputTokens = Array.isArray(rawOutputTokensValue) 
+        ? rawOutputTokensValue.reduce((sum: number, count: number) => sum + (count || 0), 0)
+        : (rawOutputTokensValue || 0);
+      const totalTokens = usageMetadata.totalTokenCount || 0;
+      
+      console.log(`📊 Gemini Proposal Generation - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens}`);
+      
       // Parse AI response
       const proposals = this.parseProposalsResponse(response, config);
       
       console.log(`✅ Generated ${proposals.length} proposals successfully`);
-      return proposals;
+      
+      return {
+        proposals,
+        tokensUsed: totalTokens,
+        promptTokens,
+        outputTokens
+      };
       
     } catch (error) {
       console.error("Error in AI proposal generation:", error);
-      return this.getFallbackProposals(config);
+      return {
+        proposals: this.getFallbackProposals(config),
+        tokensUsed: 0,
+        promptTokens: 0,
+        outputTokens: 0
+      };
     }
   }
 
