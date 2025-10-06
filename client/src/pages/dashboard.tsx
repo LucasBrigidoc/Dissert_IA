@@ -116,6 +116,9 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  // State for simulator time period filter (must be declared before useMemo)
+  const [simulatorPeriod, setSimulatorPeriod] = useState<string>('all');
+
   // Fetch user simulations for average time calculation
   const { data: simulationsData, isLoading: simulationsLoading } = useQuery<{
     results: Array<{
@@ -136,7 +139,25 @@ export default function Dashboard() {
 
   // Calculate average simulation time and check if we have data
   const userSimulations = simulationsData?.results || [];
-  const completedSimulationsWithTime = userSimulations.filter(s => s.timeTaken !== null && s.timeTaken !== undefined && s.isCompleted);
+  
+  // Filter simulations by period
+  const filteredSimulations = useMemo(() => {
+    const now = new Date();
+    const periodDays = {
+      'all': null,
+      '7days': 7,
+      '15days': 15,
+      '1month': 30,
+      '3months': 90,
+    }[simulatorPeriod];
+    
+    if (!periodDays) return userSimulations;
+    
+    const cutoffDate = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
+    return userSimulations.filter(sim => new Date(sim.createdAt) >= cutoffDate);
+  }, [userSimulations, simulatorPeriod]);
+  
+  const completedSimulationsWithTime = filteredSimulations.filter(s => s.timeTaken !== null && s.timeTaken !== undefined && s.isCompleted);
   const hasSimulationTimeData = completedSimulationsWithTime.length > 0;
   const averageSimulationTimeMinutes = hasSimulationTimeData
     ? Math.round(completedSimulationsWithTime.reduce((sum, s) => sum + (s.timeTaken || 0), 0) / completedSimulationsWithTime.length)
@@ -1992,11 +2013,25 @@ export default function Dashboard() {
 
           {/* Simulator Time Card */}
           <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20 py-2 px-6" data-testid="card-simulator-time">
-            <div className="flex items-center mb-3 md:mb-4">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
-                <Clock className="text-white" size={14} />
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <div className="flex items-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                  <Clock className="text-white" size={14} />
+                </div>
+                <h4 className="text-sm md:text-base font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
               </div>
-              <h4 className="text-sm md:text-base font-semibold text-dark-blue">Tempo Médio no Simulador</h4>
+              <Select value={simulatorPeriod} onValueChange={setSimulatorPeriod} data-testid="select-simulator-period">
+                <SelectTrigger className="w-32 h-8 text-xs border-bright-blue/30">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas</SelectItem>
+                  <SelectItem value="7days">7 dias</SelectItem>
+                  <SelectItem value="15days">15 dias</SelectItem>
+                  <SelectItem value="1month">1 mês</SelectItem>
+                  <SelectItem value="3months">3 meses</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
             {simulationsLoading ? (
