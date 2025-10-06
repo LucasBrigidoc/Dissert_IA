@@ -2523,8 +2523,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (results.length < 4) {
         console.log(`🚀 OPTIMIZED: Generating batch of repertoires for: "${query}" (current: ${results.length}, excluded: ${excludeIds.length})`);
         
+        // Get titles of already displayed repertoires to avoid duplicates
+        const excludeTitles: string[] = [];
+        if (excludeIds.length > 0) {
+          const existingRepertoires = await storage.getRepertoires(1000);
+          excludeTitles.push(...existingRepertoires
+            .filter(rep => excludeIds.includes(rep.id))
+            .map(rep => rep.title));
+        }
+        
         // Single OPTIMIZED AI call that generates 6 repertoires
-        const repertoireResult = await optimizedAnalysisService.generateRepertoiresBatchOptimized(query, filters, 6);
+        const repertoireResult = await optimizedAnalysisService.generateRepertoiresBatchOptimized(query, filters, 6, excludeTitles);
         const generatedRepertoires = repertoireResult.repertoires;
         
         // Record AI operation usage with real token counts from API

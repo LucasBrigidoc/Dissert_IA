@@ -704,7 +704,8 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
   async generateRepertoiresBatchOptimized(
     query: string, 
     userFilters: { type?: string; category?: string; popularity?: string } = {}, 
-    batchSize: number = 6
+    batchSize: number = 6,
+    excludeTitles: string[] = []
   ): Promise<any> {
     if (!this.model || !this.hasApiKey) {
       return {
@@ -717,33 +718,38 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
       // 1. Generate semantic cache key for repertoire batch
       const cacheKey = this.generateRepertoireCacheKey(query, userFilters, batchSize);
       
-      // 2. Check intelligent cache first
-      const cachedResult = intelligentCache.getTextModification(
-        `repertoires_${query.substring(0, 50)}`, 
-        'repertoire-batch', 
-        { userFilters, batchSize }, 
-        'anonymous'
-      );
-      if (cachedResult) {
-        console.log("📦 Cache hit for repertoire batch");
-        try {
-          const repertoires = JSON.parse(cachedResult.modifiedText);
-          if (Array.isArray(repertoires)) {
-            return {
-              repertoires: repertoires,
-              source: 'cache'
-            };
+      // 2. Check intelligent cache first (skip cache if excluding titles to ensure fresh results)
+      const shouldUseCache = excludeTitles.length === 0;
+      if (shouldUseCache) {
+        const cachedResult = intelligentCache.getTextModification(
+          `repertoires_${query.substring(0, 50)}`, 
+          'repertoire-batch', 
+          { userFilters, batchSize }, 
+          'anonymous'
+        );
+        if (cachedResult) {
+          console.log("📦 Cache hit for repertoire batch");
+          try {
+            const repertoires = JSON.parse(cachedResult.modifiedText);
+            if (Array.isArray(repertoires)) {
+              return {
+                repertoires: repertoires,
+                source: 'cache'
+              };
+            }
+          } catch (error) {
+            console.warn("Failed to parse cached repertoire data, regenerating...");
+            // Continue to regenerate if cache is corrupted
           }
-        } catch (error) {
-          console.warn("Failed to parse cached repertoire data, regenerating...");
-          // Continue to regenerate if cache is corrupted
         }
+      } else {
+        console.log(`⚡ Skipping cache to generate fresh repertoires (excluding ${excludeTitles.length} previous titles)`);
       }
 
       // 3. Build ultra-compressed prompt (75% token reduction)
-      const optimizedPrompt = this.buildOptimizedRepertoirePrompt(query, userFilters, batchSize);
+      const optimizedPrompt = this.buildOptimizedRepertoirePrompt(query, userFilters, batchSize, excludeTitles);
       
-      console.log(`🚀 OPTIMIZED: Repertoire batch generation (${this.estimateTokens(optimizedPrompt)} tokens)`);
+      console.log(`🚀 OPTIMIZED: Repertoire batch generation (${this.estimateTokens(optimizedPrompt)} tokens, excluding ${excludeTitles.length} previous titles)`);
       
       // 4. Execute AI generation
       const result = await this.model.generateContent(optimizedPrompt);
@@ -850,11 +856,16 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
     return `rep_batch_${queryHash}_${filtersHash}_${batchSize}`;
   }
 
-  private buildOptimizedRepertoirePrompt(query: string, userFilters: any, batchSize: number): string {
+  private buildOptimizedRepertoirePrompt(query: string, userFilters: any, batchSize: number, excludeTitles: string[] = []): string {
     // Enhanced prompt for higher quality repertoires with detailed pedagogical context
     const typeFilter = userFilters.type && userFilters.type !== 'all' 
       ? `Tipo OBRIGATÓRIO: "${userFilters.type}"`
       : 'Tipos disponíveis: movies, laws, books, series, data, research';
+    
+    // Add exclusion list if provided
+    const exclusionNote = excludeTitles.length > 0
+      ? `\n\n⚠️ NÃO GERAR OS SEGUINTES REPERTÓRIOS JÁ EXIBIDOS:\n${excludeTitles.slice(0, 20).map(t => `- ${t}`).join('\n')}\n\nGere repertórios DIFERENTES e COMPLEMENTARES aos listados acima.`
+      : '';
     
     const categoryFilter = userFilters.category && userFilters.category !== 'all'
       ? `Categoria OBRIGATÓRIA: "${userFilters.category}"`
@@ -897,6 +908,7 @@ CRITÉRIOS DE QUALIDADE:
 ✅ Diversidade de tipos e perspectivas quando aplicável
 ✅ Linguagem acessível mas tecnicamente precisa
 ✅ Foco na competência 2 do ENEM (demonstrar conhecimento de mundo)
+${exclusionNote}
 
 IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada repertório deve ser genuinamente útil para argumentação em redações do ENEM sobre o tema "${query}".`;
   }
