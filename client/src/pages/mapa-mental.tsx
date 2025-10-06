@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Save, MessageSquare, BookOpen, Home, RefreshCw, User, Bot, Clock, Target } from "lucide-react";
 import { useLocation } from "wouter";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 // Função para processar markdown e retornar JSX formatado
@@ -135,17 +135,17 @@ export default function VisualizadorConversa() {
 
       await apiRequest('/api/saved-outlines', {
         method: 'POST',
-        body: JSON.stringify({
+        body: {
           title,
           proposalTitle,
           proposalStatement,
           outlineData,
           outlineType: 'brainstorming'
-        }),
-        headers: {
-          'Content-Type': 'application/json'
         }
       });
+
+      // Invalidate the cache to refresh the biblioteca
+      await queryClient.invalidateQueries({ queryKey: ['/api/saved-outlines'] });
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
