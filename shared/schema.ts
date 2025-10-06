@@ -1187,7 +1187,7 @@ export const createMaterialComplementarSchema = z.object({
   content: z.string().min(1, "Conteúdo é obrigatório"),
   category: z.string().min(1, "Categoria é obrigatória"), // Permite categorias personalizadas
   readTime: z.string().optional(), // Opcional - permite não mostrar tempo de leitura
-  pdfUrl: z.string().url("URL do PDF deve ser válida").optional(), // URL do PDF (opcional)
+  pdfUrl: z.string().min(1).optional(), // URL ou caminho do PDF (opcional)
   icon: z.enum(["FileText", "Target", "BookOpen", "Lightbulb", "PenTool", "Eye"]).default("FileText"),
   colorScheme: z.enum(["green", "blue", "purple", "orange", "indigo", "amber"]).default("green"),
   isPublished: z.boolean().default(true),
