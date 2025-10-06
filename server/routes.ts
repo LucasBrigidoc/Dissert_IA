@@ -3722,6 +3722,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== DASHBOARD ROUTES =====================
+
+  // Get user score history for evolution graph
+  app.get("/api/dashboard/scores", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const scores = await storage.getUserScores(req.session.userId);
+      
+      const formattedScores = scores.map(score => ({
+        id: score.id,
+        score: score.score,
+        date: score.scoreDate,
+        examName: score.examName,
+        source: score.source
+      }));
+
+      res.json({
+        success: true,
+        scores: formattedScores
+      });
+    } catch (error) {
+      console.error("Get dashboard scores error:", error);
+      res.status(500).json({ message: "Falha ao carregar histórico de notas" });
+    }
+  });
+
+  // Get competency averages for competencies breakdown graph
+  app.get("/api/dashboard/competencies", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const scores = await storage.getUserScores(req.session.userId);
+      
+      if (scores.length === 0) {
+        return res.json({
+          success: true,
+          competencies: []
+        });
+      }
+
+      const competencies = [
+        { name: 'Competência I', key: 'competence1', description: 'Domínio da norma culta' },
+        { name: 'Competência II', key: 'competence2', description: 'Compreensão do tema' },
+        { name: 'Competência III', key: 'competence3', description: 'Argumentação' },
+        { name: 'Competência IV', key: 'competence4', description: 'Coesão' },
+        { name: 'Competência V', key: 'competence5', description: 'Proposta de intervenção' }
+      ];
+
+      const averages = competencies.map(comp => {
+        const validScores = scores
+          .map(s => s[comp.key as keyof typeof s] as number)
+          .filter(val => val !== null && val !== undefined);
+        
+        const average = validScores.length > 0
+          ? Math.round(validScores.reduce((sum, val) => sum + val, 0) / validScores.length)
+          : 0;
+
+        return {
+          name: comp.name,
+          description: comp.description,
+          average,
+          maxScore: 200
+        };
+      });
+
+      res.json({
+        success: true,
+        competencies: averages
+      });
+    } catch (error) {
+      console.error("Get competencies error:", error);
+      res.status(500).json({ message: "Falha ao carregar competências" });
+    }
+  });
+
+  // Get general dashboard statistics
+  app.get("/api/dashboard/stats", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const [userProgress, scores] = await Promise.all([
+        storage.getUserProgress(req.session.userId),
+        storage.getUserScores(req.session.userId)
+      ]);
+
+      const stats = {
+        averageScore: userProgress?.averageScore || 0,
+        essaysCount: userProgress?.essaysCount || scores.length,
+        targetScore: userProgress?.targetScore || 900,
+        studyHours: userProgress?.studyHours || 0,
+        streak: userProgress?.streak || 0,
+        lastEssayDate: scores.length > 0 ? scores[0].scoreDate : null,
+        recentScores: scores.slice(0, 5).map(s => ({
+          score: s.score,
+          date: s.scoreDate,
+          examName: s.examName
+        }))
+      };
+
+      res.json({
+        success: true,
+        stats
+      });
+    } catch (error) {
+      console.error("Get dashboard stats error:", error);
+      res.status(500).json({ message: "Falha ao carregar estatísticas" });
+    }
+  });
+
   // ===================== OPTIMIZATION TELEMETRY ROUTES =====================
 
   // Get optimization statistics and telemetry
