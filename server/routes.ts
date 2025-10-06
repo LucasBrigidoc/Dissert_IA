@@ -10,6 +10,7 @@ import { optimizationTelemetry } from "./optimization-telemetry";
 import { geminiService } from "./gemini-service";
 import { intelligentCache } from "./intelligent-cache";
 import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
+import { CostTrackingService } from "./cost-tracking-service";
 import { SubscriptionService } from "./subscription-service";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
@@ -28,7 +29,45 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 // Initialize services
 const weeklyCostLimitingService = new WeeklyCostLimitingService(storage);
+const costTrackingService = new CostTrackingService(storage);
 const subscriptionService = new SubscriptionService(storage);
+
+// Helper function to track AI operations for both rate limiting and analytics
+async function trackAIUsage(params: {
+  identifier: string;
+  operation: string;
+  costCentavos: number;
+  planType: string;
+  tokensInput: number;
+  tokensOutput: number;
+  userId?: string;
+  ipAddress: string;
+  source: 'ai' | 'cache' | 'fallback';
+  modelUsed?: string;
+  processingTime?: number;
+}): Promise<void> {
+  const validPlanType = (params.planType === 'pro' || params.planType === 'free') ? params.planType : 'free';
+  
+  // Track for weekly rate limiting
+  await weeklyCostLimitingService.recordAIOperation(
+    params.identifier,
+    params.operation,
+    params.costCentavos,
+    validPlanType
+  );
+  
+  // Track for admin analytics dashboard
+  await costTrackingService.trackAIOperation({
+    userId: params.userId,
+    ipAddress: params.ipAddress,
+    operation: params.operation,
+    tokensInput: params.tokensInput,
+    tokensOutput: params.tokensOutput,
+    modelUsed: params.modelUsed,
+    source: params.source,
+    processingTime: params.processingTime,
+  });
+}
 
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.userId) {
