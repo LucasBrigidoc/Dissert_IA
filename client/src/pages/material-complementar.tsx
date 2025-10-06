@@ -78,14 +78,24 @@ export default function MaterialComplementarPage() {
   };
 
   const downloadAsPDF = (material: MaterialComplementar) => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(material.title, 20, 20);
-    doc.setFontSize(12);
-    doc.text(`Categoria: ${material.category}`, 20, 35);
-    doc.text(`Tempo: ${material.readTime}`, 20, 45);
-    doc.text(material.content, 20, 60, { maxWidth: 170 });
-    doc.save(`${material.title}.pdf`);
+    if (material.pdfUrl) {
+      const link = document.createElement('a');
+      link.href = material.pdfUrl;
+      link.download = `${material.title}.pdf`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text(material.title, 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Categoria: ${material.category}`, 20, 35);
+      doc.text(`Tempo: ${material.readTime}`, 20, 45);
+      doc.text(material.content, 20, 60, { maxWidth: 170 });
+      doc.save(`${material.title}.pdf`);
+    }
   };
 
   return (
