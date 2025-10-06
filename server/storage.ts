@@ -145,6 +145,7 @@ export interface IStorage {
     activeUsers: number;
     totalOperations: number;
     totalCostBrl: number;
+    totalTokens: number;
     averageCostPerUser: number;
     topOperations: Array<{ operation: string; count: number; cost: number }>;
     dailyTrends: Array<{ date: string; operations: number; cost: number; users: number }>;
@@ -1781,6 +1782,7 @@ export class MemStorage implements IStorage {
     const activeUsers = uniqueIdentifiers.size;
     const totalOperations = costs.length;
     const totalCostBrl = costs.reduce((sum, cost) => sum + cost.costBrl, 0);
+    const totalTokens = costs.reduce((sum, cost) => sum + cost.tokensInput + cost.tokensOutput, 0);
     const averageCostPerUser = activeUsers > 0 ? totalCostBrl / activeUsers : 0;
 
     // Top operations
@@ -1830,6 +1832,7 @@ export class MemStorage implements IStorage {
       activeUsers,
       totalOperations,
       totalCostBrl,
+      totalTokens,
       averageCostPerUser,
       topOperations,
       dailyTrends,
@@ -4655,6 +4658,7 @@ export class DbStorage implements IStorage {
     const activeUsers = uniqueIdentifiers.size;
     
     const totalCostBrl = costs.reduce((sum, c) => sum + c.costBrl, 0);
+    const totalTokens = costs.reduce((sum, c) => sum + c.tokensInput + c.tokensOutput, 0);
     const totalOperations = costs.length;
     const averageCostPerUser = activeUsers > 0 ? totalCostBrl / activeUsers : 0;
     
@@ -4703,6 +4707,7 @@ export class DbStorage implements IStorage {
       activeUsers,
       totalOperations,
       totalCostBrl,
+      totalTokens,
       averageCostPerUser,
       topOperations,
       dailyTrends,

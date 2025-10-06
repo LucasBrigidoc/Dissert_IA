@@ -13,6 +13,7 @@ interface BusinessOverview {
   activeUsers: number;
   totalOperations: number;
   totalCostBrl: number;
+  totalTokens: number;
   averageCostPerUser: number;
   topOperations: Array<{ operation: string; count: number; cost: number }>;
   dailyTrends: Array<{ date: string; operations: number; cost: number; users: number }>;
@@ -381,7 +382,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Real-time metrics cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <Card data-testid="card-total-users">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
@@ -423,6 +424,21 @@ export default function AdminDashboard() {
             </div>
             <p className="text-xs text-muted-foreground">
               Média: {formatCurrency(overview?.averageCostPerUser || 0)}/usuário ativo
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-total-tokens">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tokens Totais</CardTitle>
+            <Brain className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold" data-testid="text-total-tokens">
+              {(overview?.totalTokens || 0).toLocaleString('pt-BR')}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Uso total de todos os usuários
             </p>
           </CardContent>
         </Card>
