@@ -1424,7 +1424,7 @@ export default function Dashboard() {
                   <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
                     <TrendingUp className="text-white" size={14} />
                   </div>
-                  <h4 className="text-xs md:text-sm font-semibold text-dark-blue">Pontos a Melhorar</h4>
+                  <h4 className="text-xs md:text-sm font-semibold text-dark-blue">Pontos por Competência</h4>
                 </div>
                 <Select value={competencyPeriod} onValueChange={setCompetencyPeriod} data-testid="select-competency-period">
                   <SelectTrigger className="w-32 h-8 text-xs border-bright-blue/30">
