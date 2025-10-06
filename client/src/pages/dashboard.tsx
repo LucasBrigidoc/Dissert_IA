@@ -142,6 +142,31 @@ export default function Dashboard() {
     ? Math.round(completedSimulationsWithTime.reduce((sum, s) => sum + (s.timeTaken || 0), 0) / completedSimulationsWithTime.length)
     : 0;
 
+  // Calculate average time breakdown by checkpoint
+  const simulationsWithBreakdown = completedSimulationsWithTime.filter((s: any) => s.timeBreakdown);
+  const hasBreakdownData = simulationsWithBreakdown.length > 0;
+  
+  const averageBreakdown = hasBreakdownData ? {
+    brainstorm: Math.round(
+      simulationsWithBreakdown.reduce((sum: number, s: any) => {
+        const breakdown = s.timeBreakdown as any;
+        return sum + (breakdown?.brainstorm || 0);
+      }, 0) / simulationsWithBreakdown.length / 60 // Convert seconds to minutes
+    ),
+    rascunho: Math.round(
+      simulationsWithBreakdown.reduce((sum: number, s: any) => {
+        const breakdown = s.timeBreakdown as any;
+        return sum + (breakdown?.rascunho || 0);
+      }, 0) / simulationsWithBreakdown.length / 60
+    ),
+    passaLimpo: Math.round(
+      simulationsWithBreakdown.reduce((sum: number, s: any) => {
+        const breakdown = s.timeBreakdown as any;
+        return sum + (breakdown?.passaLimpo || 0);
+      }, 0) / simulationsWithBreakdown.length / 60
+    ),
+  } : { brainstorm: 0, rascunho: 0, passaLimpo: 0 };
+
   // State for competency period filter
   const [competencyPeriod, setCompetencyPeriod] = useState<string>('all');
   
@@ -1965,16 +1990,50 @@ export default function Dashboard() {
                 <p className="text-xs text-soft-gray">Faça simulações para ver seu tempo médio aqui</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
+                {/* Total Time */}
                 <div className="text-center p-3 bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
                   <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="text-total-time">
                     {formatTime(Math.floor(averageSimulationTimeMinutes / 60), averageSimulationTimeMinutes % 60)}
                   </div>
                   <div className="text-xs text-soft-gray font-medium">Tempo Médio Total</div>
                 </div>
+
+                {/* Breakdown by checkpoints */}
+                {hasBreakdownData && (
+                  <div className="space-y-2">
+                    <div className="text-xs font-semibold text-dark-blue text-center mb-2">Média por Etapa</div>
+                    
+                    {/* Brainstorm */}
+                    <div className="flex items-center justify-between p-2 bg-gradient-to-r from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-700">
+                      <span className="text-xs font-medium text-dark-blue dark:text-white">💭 Brainstorm</span>
+                      <span className="text-sm font-bold text-purple-600 dark:text-purple-400" data-testid="text-avg-brainstorm">
+                        {averageBreakdown.brainstorm} min
+                      </span>
+                    </div>
+
+                    {/* Rascunho */}
+                    <div className="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                      <span className="text-xs font-medium text-dark-blue dark:text-white">✏️ Rascunho</span>
+                      <span className="text-sm font-bold text-blue-600 dark:text-blue-400" data-testid="text-avg-rascunho">
+                        {averageBreakdown.rascunho} min
+                      </span>
+                    </div>
+
+                    {/* Passa a Limpo */}
+                    <div className="flex items-center justify-between p-2 bg-gradient-to-r from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border border-green-200 dark:border-green-700">
+                      <span className="text-xs font-medium text-dark-blue dark:text-white">📝 Passa a Limpo</span>
+                      <span className="text-sm font-bold text-green-600 dark:text-green-400" data-testid="text-avg-passalimpo">
+                        {averageBreakdown.passaLimpo} min
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="text-center p-2 bg-gradient-to-r from-soft-gray/5 to-bright-blue/5 rounded border border-bright-blue/10">
                   <p className="text-xs text-soft-gray">
                     Baseado em {completedSimulationsWithTime.length} {completedSimulationsWithTime.length === 1 ? 'simulação' : 'simulações'}
+                    {hasBreakdownData && ` (${simulationsWithBreakdown.length} com dados detalhados)`}
                   </p>
                 </div>
               </div>
