@@ -1120,9 +1120,9 @@ export const createNewsletterSchema = z.object({
   readTime: z.string().min(1, "Tempo de leitura é obrigatório"),
   category: z.string().min(1, "Categoria é obrigatória"),
   isNew: z.boolean().optional(),
-  publishDate: z.date().optional(),
+  publishDate: z.coerce.date().optional(),
   tags: z.array(z.string()).optional(),
-  scheduledAt: z.date().optional(),
+  scheduledAt: z.coerce.date().optional(),
 });
 
 export const updateNewsletterSchema = createNewsletterSchema.partial();
@@ -1130,7 +1130,7 @@ export const updateNewsletterSchema = createNewsletterSchema.partial();
 export const sendNewsletterSchema = z.object({
   newsletterId: z.string(),
   sendImmediately: z.boolean().optional(),
-  scheduledAt: z.date().optional(),
+  scheduledAt: z.coerce.date().optional(),
 });
 
 // Newsletter type definitions
