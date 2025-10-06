@@ -2576,7 +2576,7 @@ export default function Dashboard() {
                                   className="w-16 px-2 py-1 text-sm border border-bright-blue/30 rounded focus:outline-none focus:border-bright-blue"
                                   min="0"
                                   max={goal.target}
-                                  step="0.1"
+                                  step="1"
                                   data-testid={`input-goal-progress-${goal.id}`}
                                 />
                                 <span className="text-sm text-soft-gray">/ {goal.target} {goal.unit}</span>
