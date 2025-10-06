@@ -3600,25 +3600,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Save score to userScores table if user is authenticated
       if (req.session.userId && correction.totalScore !== undefined) {
         try {
+          const competencies = correction.competencies || [];
+          
           await storage.createUserScore({
             userId: req.session.userId,
             score: correction.totalScore,
-            competence1: correction.competencies?.[0]?.score || null,
-            competence2: correction.competencies?.[1]?.score || null,
-            competence3: correction.competencies?.[2]?.score || null,
-            competence4: correction.competencies?.[3]?.score || null,
-            competence5: correction.competencies?.[4]?.score || null,
+            competence1: competencies[0]?.score ?? null,
+            competence2: competencies[1]?.score ?? null,
+            competence3: competencies[2]?.score ?? null,
+            competence4: competencies[3]?.score ?? null,
+            competence5: competencies[4]?.score ?? null,
             examName: topic || 'Redação ENEM',
             source: simulationId ? 'simulation' : 'essay',
             sourceId: simulationId || null,
             scoreDate: new Date()
           });
-          console.log(`✅ Saved score to userScores for user ${req.session.userId}`);
+          console.log(`✅ Saved score ${correction.totalScore} with competencies [${competencies.map((c: any) => c?.score).join(', ')}] to userScores for user ${req.session.userId}`);
 
           // Update user progress (average score and essay count)
           await storage.updateUserProgressAfterCorrection(req.session.userId);
+          console.log(`✅ Updated user progress for user ${req.session.userId}`);
         } catch (saveError) {
-          console.error('Error saving user score:', saveError);
+          console.error('❌ Error saving user score:', saveError);
         }
       }
       
