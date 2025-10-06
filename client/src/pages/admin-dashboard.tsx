@@ -181,6 +181,93 @@ const operationNames: Record<string, string> = {
 
 const COLORS = ['#5087ff', '#3b82f6', '#1d4ed8', '#1e40af', '#1e3a8a', '#172554'];
 
+function UsersTable() {
+  const { data: usersData, isLoading } = useQuery<{
+    users: Array<{
+      id: string;
+      name: string;
+      email: string;
+      phone: string;
+      userType: string;
+      createdAt: Date;
+      subscription: {
+        planName: string;
+        status: string;
+        startDate: Date | null;
+        isPro: boolean;
+        price: string;
+      };
+      usage: {
+        totalCost: number;
+        totalTokens: number;
+        operationCount: number;
+      };
+    }>;
+    total: number;
+  }>({
+    queryKey: ['/api/admin/all-users'],
+  });
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+  };
+
+  const formatDate = (date: Date | string | null) => {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('pt-BR');
+  };
+
+  if (isLoading) {
+    return <div className="text-center py-8">Carregando...</div>;
+  }
+
+  if (!usersData?.users || usersData.users.length === 0) {
+    return <div className="text-center py-8 text-gray-500">Nenhum usuário encontrado</div>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="border-b bg-gray-50">
+            <th className="text-left p-3 font-medium">Nome</th>
+            <th className="text-left p-3 font-medium">Email</th>
+            <th className="text-left p-3 font-medium">Telefone</th>
+            <th className="text-left p-3 font-medium">Plano</th>
+            <th className="text-left p-3 font-medium">Criado em</th>
+            <th className="text-left p-3 font-medium">Pro desde</th>
+            <th className="text-left p-3 font-medium">Tokens</th>
+            <th className="text-left p-3 font-medium">Gasto (R$)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {usersData.users.map((user) => (
+            <tr key={user.id} className="border-b hover:bg-gray-50">
+              <td className="p-3">{user.name}</td>
+              <td className="p-3 text-sm">{user.email}</td>
+              <td className="p-3 text-sm">{user.phone}</td>
+              <td className="p-3">
+                <Badge variant={user.subscription.isPro ? "default" : "secondary"}>
+                  {user.subscription.planName}
+                </Badge>
+              </td>
+              <td className="p-3 text-sm">{formatDate(user.createdAt)}</td>
+              <td className="p-3 text-sm">
+                {user.subscription.isPro ? formatDate(user.subscription.startDate) : '-'}
+              </td>
+              <td className="p-3 text-sm">{user.usage.totalTokens.toLocaleString('pt-BR')}</td>
+              <td className="p-3 text-sm font-medium">{formatCurrency(user.usage.totalCost)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const [timeRange, setTimeRange] = useState('30');
   const [isGeneratingMetrics, setIsGeneratingMetrics] = useState(false);
@@ -623,36 +710,12 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="users">
-          <Card data-testid="card-top-users">
+          <Card data-testid="card-all-users">
             <CardHeader>
-              <CardTitle>Usuários com Maior Custo (Últimos 7 dias)</CardTitle>
+              <CardTitle>Todos os Usuários</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {topUsers?.map((user, index) => (
-                  <div key={user.ipAddress} className="flex items-center justify-between p-4 border rounded-lg" data-testid={`user-item-${index}`}>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline">#{index + 1}</Badge>
-                        <span className="font-medium">
-                          {user.userId ? `User ${user.userId.slice(0, 8)}...` : user.ipAddress}
-                        </span>
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        IP: {user.ipAddress} | Principal: {operationNames[user.topOperation] || user.topOperation}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold" data-testid={`user-cost-${index}`}>
-                        {formatCurrency(user.totalCost)}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-300">
-                        {user.totalOperations} ops | Média: {formatCurrency(user.averageOperationCost)}
-                      </div>
-                    </div>
-                  </div>
-                )) || <div className="text-center text-gray-500 py-8">Nenhum dado disponível</div>}
-              </div>
+              <UsersTable />
             </CardContent>
           </Card>
         </TabsContent>

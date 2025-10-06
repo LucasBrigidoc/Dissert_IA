@@ -19,6 +19,8 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import "./session-types";
+import { db } from "./db";
+import { eq, gte, desc } from "drizzle-orm";
 
 // Initialize Stripe (optional in development)
 let stripe: Stripe | null = null;
@@ -4385,6 +4387,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error getting access frequency:', error);
       res.status(500).json({ message: 'Failed to get access frequency' });
+    }
+  });
+
+  // Get all users with complete information
+  app.get('/api/admin/all-users', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - days);
+
+      const allUsers = await db.query.users.findMany({
+        orderBy: (users, { desc }) => [desc(users.createdAt)]
+      });
+
+      const usersList = await Promise.all(allUsers.map(async (user) => {
+        const subscription = await db.query.userSubscriptions.findFirst({
+          where: (subs, { eq }) => eq(subs.userId, user.id),
+          orderBy: (subs, { desc }) => [desc(subs.createdAt)],
+          with: {
+            plan: true
+          }
+        });
+
+        const costs = await db.query.userCosts.findMany({
+          where: (costs, { eq, gte }) => {
+            return eq(costs.userId, user.id) && gte(costs.createdAt, startDate);
+          }
+        });
+
+        const totalCost = costs.reduce((sum, cost) => sum + (cost.costBrl || 0), 0);
+        const totalTokens = costs.reduce((sum, cost) => sum + (cost.inputTokens || 0) + (cost.outputTokens || 0), 0);
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          userType: user.userType,
+          createdAt: user.createdAt,
+          subscription: subscription ? {
+            planName: subscription.plan?.name || 'Free',
+            status: subscription.status,
+            startDate: subscription.startDate,
+            isPro: subscription.status === 'active' && subscription.plan?.name !== 'Free',
+            price: subscription.plan?.priceMonthly ? (subscription.plan.priceMonthly / 100).toFixed(2) : '0.00'
+          } : {
+            planName: 'Free',
+            status: 'none',
+            startDate: null,
+            isPro: false,
+            price: '0.00'
+          },
+          usage: {
+            totalCost,
+            totalTokens,
+            operationCount: costs.length
+          }
+        };
+      }));
+
+      res.json({
+        users: usersList,
+        total: usersList.length,
+        period: { start: startDate, end: endDate }
+      });
+    } catch (error) {
+      console.error('Error getting all users:', error);
+      res.status(500).json({ message: 'Failed to get all users' });
     }
   });
 
