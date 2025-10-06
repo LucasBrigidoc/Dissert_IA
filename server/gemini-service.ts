@@ -315,7 +315,7 @@ Responda APENAS com JSON válido no formato:
   "proposals": [
     {
       "title": "Título específico da proposta",
-      "statement": "Comando da redação completo como em provas reais",
+      "statement": "Comando CURTO da redação (máximo 2-3 linhas, direto ao ponto)",
       "supportingText": "Textos de apoio com dados, citações ou contexto relevante",
       "examType": "${config.examType}",
       "theme": "${config.theme}",
@@ -325,9 +325,11 @@ Responda APENAS com JSON válido no formato:
   ]
 }
 
-INSTRUÇÕES:
+INSTRUÇÕES IMPORTANTES:
 - Propostas realistas como em provas oficiais
-- Comandos claros e específicos
+- "statement" deve ser MUITO CURTO (máximo 2-3 linhas), apenas a instrução principal
+- Exemplo de "statement" curto: "Redija um texto dissertativo-argumentativo sobre os impactos da tecnologia digital na democracia moderna."
+- NÃO faça o "statement" longo com várias frases explicativas
 - Textos de apoio informativos e atuais
 - Temas relevantes para ${config.examType}
 - Responda APENAS o JSON, sem texto adicional`;

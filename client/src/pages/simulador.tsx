@@ -483,7 +483,7 @@ export default function Simulador() {
                           <h4 className="font-bold text-dark-blue text-lg mb-2">{proposal.title}</h4>
                           <div className="mt-2 mb-3">
                             <div className="text-[10px] font-bold text-dark-blue/70 mb-1 uppercase tracking-wide">📝 Enunciado</div>
-                            <p className="text-[11px] text-soft-gray font-normal leading-relaxed">{proposal.statement}</p>
+                            <p className="text-sm text-dark-blue font-normal leading-relaxed">{proposal.statement}</p>
                           </div>
                         </div>
                         <Button
