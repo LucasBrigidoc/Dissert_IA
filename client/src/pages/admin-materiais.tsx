@@ -608,7 +608,6 @@ export default function AdminMateriais() {
                     value={formData.pdfUrl}
                     onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
                     placeholder="Cole URL ou faça upload de um PDF"
-                    type="url"
                     data-testid="input-material-pdf"
                     className="flex-1"
                   />
@@ -946,7 +945,6 @@ export default function AdminMateriais() {
                   value={formData.pdfUrl}
                   onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
                   placeholder="Cole URL ou faça upload de um PDF"
-                  type="url"
                   data-testid="input-edit-material-pdf"
                   className="flex-1"
                 />
