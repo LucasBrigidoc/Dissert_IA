@@ -760,8 +760,8 @@ export default function BibliotecaPage() {
     const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          file.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "todos" || 
-                          (selectedCategory === "repertorio" && file.type === "Repertório") ||
-                          (selectedCategory === "redacao" && file.type === "Redação") ||
+                          (selectedCategory === "repertório" && file.type === "Repertório") ||
+                          (selectedCategory === "redação" && file.type === "Redação") ||
                           (selectedCategory === "newsletter" && file.type === "Newsletter") ||
                           (selectedCategory === "proposta" && file.type === "Proposta") ||
                           (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
