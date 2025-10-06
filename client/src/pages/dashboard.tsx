@@ -418,16 +418,19 @@ export default function Dashboard() {
   }, [userProgress?.targetScore]);
   
   // Map user exams from API to local state format with UUID mapping
-  const exams = userExams?.map(exam => ({
-    id: parseInt(exam.id.slice(0, 8), 16), // Convert UUID to number for compatibility
-    uuid: exam.id, // Keep the original UUID for API calls
-    name: exam.name,
-    date: new Date(exam.examAt).toISOString().split('T')[0],
-    time: new Date(exam.examAt).toTimeString().slice(0, 5),
-    location: exam.location || '',
-    type: exam.type,
-    description: exam.description || ''
-  })) || [];
+  const exams = userExams?.map(exam => {
+    const timeString = new Date(exam.examAt).toTimeString().slice(0, 5);
+    return {
+      id: parseInt(exam.id.slice(0, 8), 16), // Convert UUID to number for compatibility
+      uuid: exam.id, // Keep the original UUID for API calls
+      name: exam.name,
+      date: new Date(exam.examAt).toISOString().split('T')[0],
+      time: timeString === '00:00' ? '' : timeString,
+      location: exam.location || '',
+      type: exam.type,
+      description: exam.description || ''
+    };
+  }) || [];
   
   const [newExam, setNewExam] = useState({ name: '', date: '', time: '', location: '', type: '', description: '' });
   
@@ -512,9 +515,9 @@ export default function Dashboard() {
   const addNewExam = () => {
     if (newExam.name && newExam.date && newExam.type) {
       // Combine date and time into a Date object
-      const dateTime = newExam.time 
+      const dateTime = newExam.time && newExam.time.trim()
         ? new Date(`${newExam.date}T${newExam.time}:00`)
-        : new Date(`${newExam.date}T09:00:00`);
+        : new Date(`${newExam.date}T00:00:00`);
       
       createExamMutation.mutate({
         name: newExam.name,
