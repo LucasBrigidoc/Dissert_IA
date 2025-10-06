@@ -3,13 +3,54 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical, MessageSquare } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical, MessageSquare, User, Bot } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import jsPDF from 'jspdf';
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
+
+// Função para processar markdown e retornar JSX formatado
+function processMarkdown(text: string) {
+  const lines = text.split('\n');
+  const elements: JSX.Element[] = [];
+  
+  lines.forEach((line, lineIndex) => {
+    const parts: (string | JSX.Element)[] = [];
+    let currentText = line;
+    let key = 0;
+    
+    // Processar negrito (**texto**)
+    const boldRegex = /\*\*(.+?)\*\*/g;
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = boldRegex.exec(currentText)) !== null) {
+      // Adicionar texto antes do match
+      if (match.index > lastIndex) {
+        parts.push(currentText.substring(lastIndex, match.index));
+      }
+      // Adicionar texto em negrito
+      parts.push(<strong key={`bold-${lineIndex}-${key++}`} className="font-semibold">{match[1]}</strong>);
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Adicionar texto restante
+    if (lastIndex < currentText.length) {
+      parts.push(currentText.substring(lastIndex));
+    }
+    
+    // Se a linha estiver vazia, adicionar quebra de linha
+    if (parts.length === 0) {
+      elements.push(<br key={`br-${lineIndex}`} />);
+    } else {
+      elements.push(<span key={`line-${lineIndex}`}>{parts}{lineIndex < lines.length - 1 && <br />}</span>);
+    }
+  });
+  
+  return <>{elements}</>;
+}
 
 
 export default function BibliotecaPage() {
@@ -19,6 +60,34 @@ export default function BibliotecaPage() {
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [showFileDetails, setShowFileDetails] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
+
+  // Função para obter ícone da seção
+  const getSectionIcon = (section: string) => {
+    const icons: Record<string, string> = {
+      tema: '🎯',
+      tese: '💡', 
+      introducao: '📝',
+      desenvolvimento1: '🔍',
+      desenvolvimento2: '📊',
+      conclusao: '✅',
+      finalizacao: '🎉'
+    };
+    return icons[section] || '💬';
+  };
+
+  // Função para obter nome da seção
+  const getSectionName = (section: string) => {
+    const names: Record<string, string> = {
+      tema: 'Desenvolvimento do Tema',
+      tese: 'Construção da Tese',
+      introducao: 'Introdução',
+      desenvolvimento1: 'Primeiro Desenvolvimento',
+      desenvolvimento2: 'Segundo Desenvolvimento', 
+      conclusao: 'Conclusão',
+      finalizacao: 'Finalização'
+    };
+    return names[section] || 'Conversa Geral';
+  };
 
   // Sistema inteligente de detecção de origem
   const getBackUrl = () => {
@@ -1387,52 +1456,150 @@ export default function BibliotecaPage() {
                     </div>
                   )}
 
-                  {/* Histórico da Conversa */}
+                  {/* Histórico da Conversa - Estilo Mapa Mental */}
                   {showConversationHistory && selectedFile.conversationId && conversation && (
-                    <div className="p-4 bg-gradient-to-br from-purple-50/80 to-blue-50/80 rounded-xl border border-purple-200/50">
-                      <h4 className="text-lg font-semibold text-dark-blue mb-4 flex items-center gap-2">
-                        <MessageSquare className="text-purple-600" size={20} />
-                        Histórico da Conversa
-                      </h4>
-                      <div className="space-y-3 max-h-96 overflow-y-auto">
+                    <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
+                      <div className="space-y-4 sm:space-y-6">
+                        
+                        {/* Header da Conversa */}
+                        <div className="text-center border-b border-bright-blue/10 pb-4 sm:pb-6">
+                          <div className="inline-flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 px-4 sm:px-6 py-2 sm:py-3 rounded-full">
+                            <MessageSquare className="text-bright-blue" size={16} />
+                            <span className="text-sm sm:text-lg font-bold text-dark-blue">
+                              {conversation.currentSection ? getSectionName(conversation.currentSection) : 'Histórico da Conversa'}
+                            </span>
+                            <span className="text-lg sm:text-2xl">{conversation.currentSection ? getSectionIcon(conversation.currentSection) : '💬'}</span>
+                          </div>
+                          <div className="mt-2 text-xs sm:text-sm text-soft-gray">
+                            {conversation.messages?.length || 0} mensagens trocadas
+                          </div>
+                        </div>
+
+                        {/* Timeline da Conversa */}
                         {loadingConversation ? (
-                          <div className="text-center py-4 text-soft-gray">Carregando conversa...</div>
+                          <div className="text-center py-8">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-bright-blue mx-auto mb-4"></div>
+                            <p className="text-soft-gray">Carregando conversa...</p>
+                          </div>
                         ) : conversation?.messages && Array.isArray(conversation.messages) && conversation.messages.length > 0 ? (
-                          conversation.messages.map((message: any, idx: number) => (
-                            <div
-                              key={idx}
-                              className={`p-3 rounded-lg ${
-                                message.type === 'user'
-                                  ? 'bg-bright-blue/10 border border-bright-blue/20 ml-8'
-                                  : 'bg-white/60 border border-purple-200/30 mr-8'
-                              }`}
-                              data-testid={`message-${idx}`}
-                            >
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className={`text-xs font-semibold ${
-                                  message.type === 'user' ? 'text-bright-blue' : 'text-purple-600'
-                                }`}>
-                                  {message.type === 'user' ? 'Você' : 'IA'}
-                                </span>
-                                {message.section && (
-                                  <span className="text-xs text-soft-gray">
-                                    • {message.section.charAt(0).toUpperCase() + message.section.slice(1)}
-                                  </span>
-                                )}
+                          <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
+                            {conversation.messages.map((message: any, index: number) => (
+                              <div key={message.id || index} className={`flex ${
+                                message.type === 'user' ? 'justify-end' : 'justify-start'
+                              }`}>
+                                <div className={`max-w-[90%] sm:max-w-[80%] rounded-2xl px-3 sm:px-4 py-2 sm:py-3 ${
+                                  message.type === 'user' 
+                                    ? 'bg-gradient-to-r from-bright-blue to-dark-blue text-white'
+                                    : 'bg-gradient-to-r from-gray-50 to-gray-100 text-dark-blue border border-gray-200'
+                                }`} data-testid={`message-${index}`}>
+                                  <div className="flex items-center space-x-2 mb-2">
+                                    {message.type === 'user' ? (
+                                      <User size={14} className="text-white/80" />
+                                    ) : (
+                                      <Bot size={14} className="text-bright-blue" />
+                                    )}
+                                    <span className={`text-xs font-medium ${
+                                      message.type === 'user' ? 'text-white/80' : 'text-soft-gray'
+                                    }`}>
+                                      {message.type === 'user' ? 'Você' : 'IA Assistant'}
+                                    </span>
+                                    <Clock size={12} className={message.type === 'user' ? 'text-white/60' : 'text-soft-gray/60'} />
+                                    <span className={`text-xs ${
+                                      message.type === 'user' ? 'text-white/60' : 'text-soft-gray/60'
+                                    }`}>
+                                      {message.timestamp ? new Date(message.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
+                                    </span>
+                                  </div>
+                                  <div className={`text-xs sm:text-sm leading-relaxed ${
+                                    message.type === 'user' ? 'text-white' : 'text-dark-blue'
+                                  }`}>
+                                    {processMarkdown(message.content)}
+                                  </div>
+                                  {message.section && (
+                                    <div className={`mt-2 text-xs px-2 py-1 rounded-full inline-block ${
+                                      message.type === 'user' 
+                                        ? 'bg-white/20 text-white/80'
+                                        : 'bg-bright-blue/10 text-bright-blue'
+                                    }`}>
+                                      {getSectionIcon(message.section)} {getSectionName(message.section)}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                              <p className="text-sm text-dark-blue whitespace-pre-wrap">{message.content}</p>
-                              {message.timestamp && (
-                                <p className="text-xs text-soft-gray mt-1">
-                                  {new Date(message.timestamp).toLocaleString('pt-BR')}
-                                </p>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 text-soft-gray">Nenhuma mensagem encontrada</div>
+                        )}
+
+                        {/* Progresso Construído */}
+                        {conversation.brainstormData && (
+                          <div className="border-t border-bright-blue/10 pt-4 sm:pt-6">
+                            <h3 className="text-base sm:text-lg font-bold text-dark-blue mb-3 sm:mb-4 text-center">
+                              🎯 Progresso da Redação
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                              
+                              {/* Tema */}
+                              {conversation.brainstormData.tema && (
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+                                  <div className="text-xs sm:text-sm font-semibold text-blue-700 mb-1 sm:mb-2">🎯 Tema</div>
+                                  <div className="text-xs sm:text-sm text-dark-blue">{conversation.brainstormData.tema}</div>
+                                </div>
+                              )}
+                              
+                              {/* Tese */}
+                              {conversation.brainstormData.tese && (
+                                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 sm:p-4">
+                                  <div className="text-xs sm:text-sm font-semibold text-purple-700 mb-1 sm:mb-2">💡 Tese</div>
+                                  <div className="text-xs sm:text-sm text-dark-blue">{conversation.brainstormData.tese}</div>
+                                </div>
+                              )}
+                              
+                              {/* Introdução */}
+                              {conversation.brainstormData.paragrafos?.introducao && (
+                                <div className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4">
+                                  <div className="text-xs sm:text-sm font-semibold text-green-700 mb-1 sm:mb-2">📝 Introdução</div>
+                                  <div className="text-xs sm:text-sm text-dark-blue">{conversation.brainstormData.paragrafos.introducao}</div>
+                                </div>
+                              )}
+                              
+                              {/* Desenvolvimento 1 */}
+                              {conversation.brainstormData.paragrafos?.desenvolvimento1 && (
+                                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 sm:p-4">
+                                  <div className="text-xs sm:text-sm font-semibold text-orange-700 mb-1 sm:mb-2">🔍 Desenvolvimento I</div>
+                                  <div className="text-xs sm:text-sm text-dark-blue">{conversation.brainstormData.paragrafos.desenvolvimento1}</div>
+                                </div>
+                              )}
+                              
+                              {/* Desenvolvimento 2 */}
+                              {conversation.brainstormData.paragrafos?.desenvolvimento2 && (
+                                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 sm:p-4">
+                                  <div className="text-xs sm:text-sm font-semibold text-indigo-700 mb-1 sm:mb-2">📊 Desenvolvimento II</div>
+                                  <div className="text-xs sm:text-sm text-dark-blue">{conversation.brainstormData.paragrafos.desenvolvimento2}</div>
+                                </div>
+                              )}
+                              
+                              {/* Conclusão */}
+                              {conversation.brainstormData.paragrafos?.conclusao && (
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 sm:col-span-2">
+                                  <div className="text-xs sm:text-sm font-semibold text-red-700 mb-1 sm:mb-2">✅ Conclusão</div>
+                                  <div className="text-xs sm:text-sm text-dark-blue">{conversation.brainstormData.paragrafos.conclusao}</div>
+                                </div>
                               )}
                             </div>
-                          ))
-                        ) : (
-                          <div className="text-center py-4 text-soft-gray">Nenhuma mensagem encontrada</div>
+                          </div>
                         )}
+
+                        {/* Informações da Conversa */}
+                        <div className="text-center border-t border-bright-blue/10 pt-4">
+                          <div className="text-xs text-soft-gray">
+                            Conversa {conversation.createdAt ? `criada em: ${new Date(conversation.createdAt).toLocaleString('pt-BR')}` : ''}
+                          </div>
+                        </div>
+
                       </div>
-                    </div>
+                    </LiquidGlassCard>
                   )}
 
                   {/* Análise da Proposta */}
