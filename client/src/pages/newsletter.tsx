@@ -490,27 +490,6 @@ export default function NewsletterPage() {
             )}
           </div>
         </div>
-
-        {/* Call to Action */}
-        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20 text-center" data-testid="card-newsletter-cta">
-          <div className="py-6 md:py-8 px-4 md:px-6">
-            <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
-              <Newspaper className="text-white" size={20} />
-            </div>
-            <h3 className="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">Não perca nenhuma newsletter!</h3>
-            <p className="text-sm md:text-base text-soft-gray mb-4 md:mb-6 max-w-2xl mx-auto">
-              Receba notificações toda semana quando uma nova newsletter for publicada. 
-              Conteúdo sempre atualizado com os temas mais relevantes para suas redações.
-            </p>
-            <Button 
-              className="w-full md:w-auto bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
-              data-testid="button-enable-notifications"
-            >
-              <Newspaper className="mr-2" size={14} />
-              <span className="text-sm md:text-base">Ativar Notificações</span>
-            </Button>
-          </div>
-        </LiquidGlassCard>
       </div>
     </div>
   );
