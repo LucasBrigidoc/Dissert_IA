@@ -56,6 +56,7 @@ export default function AdminMateriais() {
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialComplementar | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -74,6 +75,65 @@ export default function AdminMateriais() {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Handle PDF file upload
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: "Arquivo inválido",
+        description: "Apenas arquivos PDF são permitidos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "O arquivo deve ter no máximo 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setUploadingPdf(true);
+      const formDataUpload = new FormData();
+      formDataUpload.append('pdf', file);
+
+      const response = await fetch('/api/upload/pdf', {
+        method: 'POST',
+        body: formDataUpload,
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao fazer upload');
+      }
+
+      const data = await response.json();
+      setFormData(prev => ({ ...prev, pdfUrl: data.url }));
+      toast({
+        title: "Upload concluído!",
+        description: `PDF "${data.filename}" enviado com sucesso`,
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({
+        title: "Erro no upload",
+        description: "Não foi possível fazer upload do PDF",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingPdf(false);
+      // Reset file input
+      e.target.value = '';
+    }
+  };
 
   // Fetch materiais complementares
   const { data: materials = [], isLoading: loadingMaterials } = useQuery<MaterialComplementar[]>({
@@ -542,16 +602,47 @@ export default function AdminMateriais() {
 
               <div>
                 <Label htmlFor="pdfUrl">PDF para Download (Opcional)</Label>
-                <Input
-                  id="pdfUrl"
-                  value={formData.pdfUrl}
-                  onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
-                  placeholder="Cole aqui a URL do PDF para download"
-                  type="url"
-                  data-testid="input-material-pdf"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="pdfUrl"
+                    value={formData.pdfUrl}
+                    onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+                    placeholder="Cole URL ou faça upload de um PDF"
+                    type="url"
+                    data-testid="input-material-pdf"
+                    className="flex-1"
+                  />
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={handlePdfUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      disabled={uploadingPdf}
+                      data-testid="input-upload-pdf-create"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={uploadingPdf}
+                      className="whitespace-nowrap"
+                    >
+                      {uploadingPdf ? (
+                        <>
+                          <Loader2 className="animate-spin mr-2" size={16} />
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Download size={16} className="mr-2" />
+                          Upload PDF
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Se fornecido, um botão de download aparecerá no material
+                  Faça upload de um arquivo PDF (máx. 10MB) ou cole uma URL
                 </p>
               </div>
 
@@ -849,16 +940,47 @@ export default function AdminMateriais() {
 
             <div>
               <Label htmlFor="edit-pdfUrl">PDF para Download (Opcional)</Label>
-              <Input
-                id="edit-pdfUrl"
-                value={formData.pdfUrl}
-                onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
-                placeholder="Cole aqui a URL do PDF para download"
-                type="url"
-                data-testid="input-edit-material-pdf"
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="edit-pdfUrl"
+                  value={formData.pdfUrl}
+                  onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+                  placeholder="Cole URL ou faça upload de um PDF"
+                  type="url"
+                  data-testid="input-edit-material-pdf"
+                  className="flex-1"
+                />
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    onChange={handlePdfUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    disabled={uploadingPdf}
+                    data-testid="input-upload-pdf"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={uploadingPdf}
+                    className="whitespace-nowrap"
+                  >
+                    {uploadingPdf ? (
+                      <>
+                        <Loader2 className="animate-spin mr-2" size={16} />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Download size={16} className="mr-2" />
+                        Upload PDF
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
               <p className="text-sm text-muted-foreground mt-1">
-                Se fornecido, um botão de download aparecerá no material
+                Faça upload de um arquivo PDF (máx. 10MB) ou cole uma URL
               </p>
             </div>
 

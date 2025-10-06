@@ -15,6 +15,9 @@ import { SubscriptionService } from "./subscription-service";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import "./session-types";
 
 // Initialize Stripe (optional in development)
@@ -118,7 +121,61 @@ function getAITrackingIdentifier(req: Request): string {
   return `ip_${clientIP}`;
 }
 
+// Configure multer for PDF uploads
+const storage_multer = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'public/uploads/pdfs';
+    // Ensure directory exists
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename with timestamp
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage_multer,
+  fileFilter: (req, file, cb) => {
+    // Only allow PDF files
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas arquivos PDF são permitidos'));
+    }
+  },
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // ===================== FILE UPLOAD ENDPOINTS =====================
+  
+  // PDF upload endpoint
+  app.post("/api/upload/pdf", requireAuth, upload.single('pdf'), (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Nenhum arquivo foi enviado" });
+      }
+      
+      // Return the public URL of the uploaded file
+      const fileUrl = `/uploads/pdfs/${req.file.filename}`;
+      res.json({ 
+        url: fileUrl,
+        filename: req.file.originalname,
+        size: req.file.size
+      });
+    } catch (error) {
+      console.error("PDF upload error:", error);
+      res.status(500).json({ message: "Erro ao fazer upload do PDF" });
+    }
+  });
+  
   // ===================== NEWSLETTER MANAGEMENT ENDPOINTS =====================
   
   // Newsletter subscription endpoint (updated to save to database)
