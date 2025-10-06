@@ -144,6 +144,29 @@ export default function AdminNewsletter() {
     },
   });
 
+  // Publish newsletter mutation (without sending emails)
+  const publishNewsletter = useMutation({
+    mutationFn: (id: string) => 
+      apiRequest(`/api/admin/newsletter/newsletters/${id}/publish`, {
+        method: "POST",
+      }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/newsletter/newsletters"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/newsletter/feed"] });
+      toast({
+        title: "Newsletter publicada! 🎉",
+        description: data.message,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro ao publicar newsletter",
+        description: error?.message || "Tente novamente.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Delete newsletter mutation
   const deleteNewsletter = useMutation({
     mutationFn: (id: string) => 
@@ -522,11 +545,26 @@ export default function AdminNewsletter() {
                             <Edit size={16} />
                           </Button>
                           <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => publishNewsletter.mutate(newsletter.id)}
+                            disabled={publishNewsletter.isPending}
+                            data-testid={`button-publish-${newsletter.id}`}
+                            title="Publicar na página pública sem enviar emails"
+                          >
+                            {publishNewsletter.isPending ? (
+                              <Loader2 className="animate-spin" size={16} />
+                            ) : (
+                              <Eye size={16} />
+                            )}
+                          </Button>
+                          <Button
                             variant="default"
                             size="sm"
                             onClick={() => sendNewsletter.mutate(newsletter.id)}
                             disabled={sendNewsletter.isPending}
                             data-testid={`button-send-${newsletter.id}`}
+                            title="Enviar por email para todos os assinantes"
                           >
                             {sendNewsletter.isPending ? (
                               <Loader2 className="animate-spin" size={16} />
