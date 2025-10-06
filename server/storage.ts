@@ -12,6 +12,7 @@ export interface IStorage {
   getUserProgress(userId: string): Promise<UserProgress | undefined>;
   createUserProgress(progress: InsertUserProgress): Promise<UserProgress>;
   updateUserProgress(userId: string, progress: Partial<UserProgress>): Promise<UserProgress>;
+  updateUserProgressAfterCorrection(userId: string): Promise<void>;
   
   // Essay operations
   getEssaysByUser(userId: string): Promise<Essay[]>;
@@ -644,6 +645,29 @@ export class MemStorage implements IStorage {
     
     this.userProgress.set(existing.id, updated);
     return updated;
+  }
+
+  async updateUserProgressAfterCorrection(userId: string): Promise<void> {
+    const userScores = await this.getUserScores(userId);
+    if (userScores.length === 0) return;
+
+    const totalScore = userScores.reduce((sum, score) => sum + score.score, 0);
+    const averageScore = Math.round(totalScore / userScores.length);
+    const essaysCount = userScores.length;
+
+    const existingProgress = await this.getUserProgress(userId);
+    if (existingProgress) {
+      await this.updateUserProgress(userId, {
+        averageScore,
+        essaysCount,
+      });
+    } else {
+      await this.createUserProgress({
+        userId,
+        averageScore,
+        essaysCount,
+      });
+    }
   }
 
   async getEssaysByUser(userId: string): Promise<Essay[]> {
@@ -3697,6 +3721,29 @@ export class DbStorage implements IStorage {
     
     if (!updated) throw new Error("Failed to update user progress");
     return updated;
+  }
+
+  async updateUserProgressAfterCorrection(userId: string): Promise<void> {
+    const userScores = await this.getUserScores(userId);
+    if (userScores.length === 0) return;
+
+    const totalScore = userScores.reduce((sum, score) => sum + score.score, 0);
+    const averageScore = Math.round(totalScore / userScores.length);
+    const essaysCount = userScores.length;
+
+    const existingProgress = await this.getUserProgress(userId);
+    if (existingProgress) {
+      await this.updateUserProgress(userId, {
+        averageScore,
+        essaysCount,
+      });
+    } else {
+      await this.createUserProgress({
+        userId,
+        averageScore,
+        essaysCount,
+      });
+    }
   }
 
   // ===================== ESSAY OPERATIONS =====================
