@@ -920,6 +920,31 @@ export default function Dashboard() {
 
   const handleAddScore = () => {
     if (newScore.scoreDate && newScore.score) {
+      // Verificar se pelo menos uma competência foi preenchida
+      const hasCompetencies = newScore.competence1 || newScore.competence2 || newScore.competence3 || 
+                              newScore.competence4 || newScore.competence5;
+      
+      if (hasCompetencies) {
+        // Calcular soma das competências
+        const comp1 = Number(newScore.competence1) || 0;
+        const comp2 = Number(newScore.competence2) || 0;
+        const comp3 = Number(newScore.competence3) || 0;
+        const comp4 = Number(newScore.competence4) || 0;
+        const comp5 = Number(newScore.competence5) || 0;
+        const totalCompetencies = comp1 + comp2 + comp3 + comp4 + comp5;
+        const totalScore = Number(newScore.score);
+        
+        // Verificar se a soma das competências bate com a nota total
+        if (totalCompetencies !== totalScore) {
+          toast({
+            title: "Erro na pontuação",
+            description: `A soma das competências (${totalCompetencies}) não corresponde à nota total (${totalScore}). Por favor, corrija os valores.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
       if (editingScore) {
         updateScoreMutation.mutate({ id: editingScore, data: newScore });
       } else {
