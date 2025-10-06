@@ -2711,8 +2711,8 @@ export default function Dashboard() {
                             )}
                             <div className="flex items-center space-x-4 text-sm text-soft-gray">
                               <span>📅 {exam.date.split('-').reverse().join('/')}</span>
-                              {exam.time && <span>🕐 {exam.time}</span>}
-                              {exam.location && <span>📍 {exam.location}</span>}
+                              {exam.time && exam.time.trim() && <span>🕐 {exam.time}</span>}
+                              {exam.location && exam.location.trim() && <span>📍 {exam.location}</span>}
                             </div>
                           </div>
                         </div>
