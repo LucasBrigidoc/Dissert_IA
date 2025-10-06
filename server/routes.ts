@@ -353,6 +353,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Publish newsletter without sending emails (admin only)
+  app.post("/api/admin/newsletter/newsletters/:id/publish", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Get newsletter
+      const newsletter = await storage.getNewsletter(id);
+      if (!newsletter) {
+        return res.status(404).json({ message: "Newsletter não encontrada" });
+      }
+
+      if (newsletter.status === "sent") {
+        return res.status(400).json({ message: "Esta newsletter já foi publicada" });
+      }
+
+      // Update newsletter status to sent without sending emails
+      await storage.updateNewsletter(id, {
+        status: "sent",
+        sentAt: new Date(),
+        sentCount: 0,
+      });
+
+      res.json({
+        message: "Newsletter publicada com sucesso! Ela agora está visível na página pública.",
+      });
+    } catch (error) {
+      console.error("Publish newsletter error:", error);
+      res.status(500).json({ message: "Erro ao publicar newsletter" });
+    }
+  });
+
   // Get newsletter statistics (admin only)
   app.get("/api/admin/newsletter/newsletters/:id/stats", async (req, res) => {
     try {
