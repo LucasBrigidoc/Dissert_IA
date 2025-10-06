@@ -138,11 +138,23 @@ export default function Simulador() {
         }
       }
       
-      // Return as is if it's already clean text
-      return supportingText;
+      // Clean up escaped characters and JSON artifacts
+      let cleaned = supportingText
+        .replace(/^\{\\"/g, '')  // Remove {\" at start
+        .replace(/\\"}/g, '')     // Remove \"} at end
+        .replace(/\\"/g, '"')     // Replace \" with "
+        .replace(/\\n/g, '\n')    // Replace \n with actual newlines
+        .replace(/^["']|["']$/g, ''); // Remove quotes at start/end
+      
+      return cleaned;
     } catch (e) {
-      // If parsing fails, return the original text
-      return supportingText;
+      // If parsing fails, clean the text anyway
+      return supportingText
+        .replace(/^\{\\"/g, '')
+        .replace(/\\"}/g, '')
+        .replace(/\\"/g, '"')
+        .replace(/\\n/g, '\n')
+        .replace(/^["']|["']$/g, '');
     }
   };
 
@@ -487,7 +499,7 @@ export default function Simulador() {
                       {proposal.supportingText && (
                         <div className="mt-4 p-4 bg-white/80 rounded-lg border border-bright-blue/30">
                           <div className="text-xs font-bold text-dark-blue mb-2 uppercase tracking-wide">📚 Textos de Apoio</div>
-                          <div className="text-sm text-dark-blue leading-relaxed font-normal whitespace-pre-wrap">
+                          <div className="text-base text-dark-blue leading-relaxed font-normal whitespace-pre-wrap">
                             {cleanSupportingText(proposal.supportingText)}
                           </div>
                         </div>
