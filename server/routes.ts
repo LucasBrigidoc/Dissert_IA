@@ -2538,6 +2538,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Record AI operation usage with real token counts from API
         if (repertoireResult.source === 'optimized_ai' && repertoireResult.tokensInput && repertoireResult.tokensOutput) {
+          // Record for weekly cost limiting (plan limits)
           await weeklyCostLimitingService.recordAIOperationWithTokens(
             identifier,
             'repertoire_generation',
@@ -2545,6 +2546,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
             repertoireResult.tokensOutput,
             planType
           );
+          
+          // Record for admin dashboard analytics
+          const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+          await costTrackingService.trackAIOperation({
+            userId: req.user?.id,
+            ipAddress: ipAddress,
+            operation: 'repertoire_generation',
+            tokensInput: repertoireResult.tokensInput,
+            tokensOutput: repertoireResult.tokensOutput,
+            modelUsed: 'gemini-2.5-flash-lite',
+            source: 'ai',
+            processingTime: 0
+          });
         } else {
           // Fallback for cache hits or fallback mode (no cost)
           console.log(`📦 Repertoire source: ${repertoireResult.source} - no cost recorded`);
@@ -3065,6 +3079,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record AI operation usage with actual token counts
       console.log(`💰 Proposal generation - Tokens: ${promptTokens} input + ${outputTokens} output = ${tokensUsed} total`);
       
+      // Record for weekly cost limiting (plan limits)
       await weeklyCostLimitingService.recordAIOperationWithTokens(
         identifier,
         'proposal_generation',
@@ -3072,6 +3087,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         outputTokens,
         planType
       );
+      
+      // Record for admin dashboard analytics
+      const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+      await costTrackingService.trackAIOperation({
+        userId: req.user?.id,
+        ipAddress: ipAddress,
+        operation: 'proposal_generation',
+        tokensInput: promptTokens,
+        tokensOutput: outputTokens,
+        modelUsed: 'gemini-2.5-flash-lite',
+        source: 'ai',
+        processingTime: 0
+      });
       
       // Save generated proposals to storage
       const savedProposals = [];
@@ -4876,6 +4904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await geminiService.generateEssayOutline(questionnaireData);
       
       // Record AI operation with actual token usage
+      // Record for weekly cost limiting (plan limits)
       await weeklyCostLimitingService.recordAIOperationWithTokens(
         identifier,
         'essay_outline',
@@ -4883,6 +4912,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         result.outputTokens || 0,
         planType
       );
+      
+      // Record for admin dashboard analytics
+      const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+      await costTrackingService.trackAIOperation({
+        userId: req.user?.id,
+        ipAddress: ipAddress,
+        operation: 'essay_outline',
+        tokensInput: result.promptTokens || 0,
+        tokensOutput: result.outputTokens || 0,
+        modelUsed: 'gemini-2.5-flash-lite',
+        source: 'ai',
+        processingTime: 0
+      });
       
       console.log(`✅ Essay outline generated successfully - Tokens: ${result.tokensUsed}, Identifier: ${identifier}`);
       
