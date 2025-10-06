@@ -970,35 +970,84 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
     ];
 
     const detailedInstructions = examType === 'ENEM' ? `
-CRITÉRIOS ESPECÍFICOS DO ENEM:
-- Nota 0: Fuga ao tema, não atendimento ao tipo textual, texto com até 7 linhas, cópia dos textos motivadores, impropérios, desenhos
-- Nota 40: Demonstra conhecimento precário da norma-padrão, com muitos desvios gramaticais
-- Nota 80: Demonstra conhecimento razoável da norma-padrão, com poucos desvios gramaticais
-- Nota 120: Demonstra bom domínio da norma-padrão, com poucos desvios gramaticais leves
-- Nota 160: Demonstra muito bom domínio da norma-padrão, com eventuais deslizes
-- Nota 200: Demonstra excelente domínio da norma-padrão
+CRITÉRIOS OFICIAIS ENEM 2025 - MATRIZ DE REFERÊNCIA:
 
-ANÁLISE OBRIGATÓRIA:
-1. ESTRUTURA: Verifique se há introdução (contextualização + tese), desenvolvimento (2+ argumentos com repertório) e conclusão (retomada + proposta)
-2. REPERTÓRIO: Avalie se há uso de dados, estatísticas, citações, exemplos históricos, referências culturais legitimadoras
-3. PROPOSTA DE INTERVENÇÃO: Deve conter agente (quem), ação (o que), modo/meio (como), finalidade (para que) e detalhamento
-4. DIREITOS HUMANOS: Verifique se a proposta respeita os direitos humanos fundamentais
-5. COESÃO: Analise o uso de conectivos, referenciação, substituições lexicais
-6. COERÊNCIA: Avalie a progressão temática, não contradição, adequação ao tema` : `
+🎯 COMPETÊNCIA I - Modalidade Escrita Formal (0-200 pontos):
+200pts: Excelente domínio. Desvios aceitos apenas como excepcionalidade
+160pts: Bom domínio com poucos desvios
+120pts: Domínio mediano com alguns desvios
+80pts: Domínio insuficiente com muitos desvios
+40pts: Domínio precário com desvios sistemáticos e frequentes
+0pts: Desconhecimento da modalidade formal
+▸ Avalie: ortografia, acentuação, concordância, regência, pontuação, estrutura sintática, registro formal, vocabulário preciso
+
+🎯 COMPETÊNCIA II - Compreensão do Tema e Tipo Textual (0-200 pontos):
+200pts: Argumentação consistente com repertório sociocultural PRODUTIVO e excelente domínio dissertativo
+160pts: Bom domínio dissertativo com proposição, argumentação e conclusão
+120pts: Domínio mediano com argumentação previsível
+80pts: Cópia de motivadores OU domínio insuficiente da estrutura
+40pts: Tangenciamento ao tema OU traços de outros tipos textuais
+0pts: Fuga ao tema OU não atendimento ao tipo dissertativo-argumentativo
+▸ CRÍTICO: Repertório deve ser LEGITIMAMENTE relacionado, não "repertório de bolso" decorado
+▸ Avalie autoria e articulação crítica própria, não mera citação genérica
+
+🎯 COMPETÊNCIA III - Seleção e Organização de Argumentos (0-200 pontos):
+200pts: Informações consistentes e organizadas configurando AUTORIA
+160pts: Informações organizadas com indícios de autoria
+120pts: Limitado aos motivadores, pouco organizadas
+80pts: Desorganizadas/contraditórias, limitadas aos motivadores
+40pts: Pouco relacionadas ou incoerentes
+0pts: Não relacionadas ao tema, sem defesa de ponto de vista
+▸ Verifique projeto de texto, progressão fluente, coerência introdução-conclusão, desenvolvimento sem lacunas
+
+🎯 COMPETÊNCIA IV - Mecanismos Linguísticos e Coesão (0-200 pontos):
+200pts: Articula BEM com repertório DIVERSIFICADO de recursos coesivos
+160pts: Articula com poucas inadequações e repertório diversificado
+120pts: Articula medianamente com inadequações e repertório pouco diversificado
+80pts: Articula insuficientemente com muitas inadequações e repertório limitado
+40pts: Articula de forma precária
+0pts: Não articula as informações
+▸ Avalie: conectivos variados, referenciação, estruturação de parágrafos, períodos complexos, progressão textual
+
+🎯 COMPETÊNCIA V - Proposta de Intervenção e Direitos Humanos (0-200 pontos):
+200pts: Proposta MUITO BEM elaborada, detalhada, relacionada e articulada
+160pts: Proposta BEM elaborada, relacionada e articulada
+120pts: Proposta mediana, relacionada e articulada
+80pts: Proposta insuficiente OU não articulada
+40pts: Proposta vaga, precária ou só relacionada ao assunto
+0pts: Sem proposta OU desrespeita direitos humanos OU não relacionada
+▸ OBRIGATÓRIO: Agente (quem) + Ação (o quê) + Modo/Meio (como) + Finalidade (para quê) + Detalhamento
+▸ Deve respeitar: dignidade humana, igualdade, diversidade, democracia, sustentabilidade
+
+⚠️ ANÁLISE OBRIGATÓRIA PARA CORREÇÃO ENEM:
+1. ESTRUTURA: Introdução (contextualização + tese) + Desenvolvimento (2+ argumentos fundamentados) + Conclusão (retomada + proposta completa)
+2. REPERTÓRIO: Dados, estatísticas, citações, exemplos históricos/culturais LEGITIMAMENTE articulados (NÃO use repertório decorado genérico!)
+3. COESÃO: Conectivos variados, referenciação eficiente, sem repetições inadequadas
+4. COERÊNCIA: Progressão temática fluente, sem contradições, adequação plena ao tema proposto
+5. PROPOSTA: Verificar os 5 elementos obrigatórios e articulação com a argumentação desenvolvida
+6. DIREITOS HUMANOS: Garantir que não há propostas de violência, discriminação ou desrespeito à dignidade humana
+
+⚖️ CRITÉRIOS DE ANULAÇÃO (Nota 0 total):
+- Fuga TOTAL ao tema proposto
+- Não atendimento ao tipo dissertativo-argumentativo
+- Até 7 linhas escritas (texto insuficiente)
+- Cópia integral/majoritária dos textos motivadores
+- Impropérios, desenhos, identificação do candidato
+- Parte deliberadamente desconectada do tema` : `
 CRITÉRIOS ESPECÍFICOS DE VESTIBULAR/CONCURSO:
 - Foque na consistência argumentativa e fundamentação teórica
 - Valorize o uso de repertório cultural e conhecimento interdisciplinar
 - Avalie a originalidade e criatividade na abordagem
 - Verifique a adequação do registro linguístico formal acadêmico`;
 
-    return `Você é um corretor profissional de redações com mais de 15 anos de experiência em ${examType}, especialista em bancas avaliadoras como INEP, VUNESP, FCC, CESPE. Analise esta redação com o rigor de uma correção oficial.
+    return `Você é um corretor oficial do ENEM com 15+ anos de experiência avaliando redações pelo INEP. Sua missão é corrigir esta redação com os critérios oficiais do ENEM 2025, oferecendo feedback profissional, detalhado e construtivo como um professor especialista.
 
 ═══════════════════════════════════════════════════════════════════════════════
-📋 DADOS DA REDAÇÃO
+📋 REDAÇÃO PARA CORREÇÃO ENEM 2025
 ═══════════════════════════════════════════════════════════════════════════════
-TEMA: ${topic}
-EXAME: ${examType}
-CANDIDATO: Texto para avaliação oficial
+📝 TEMA: ${topic}
+🎓 TIPO DE EXAME: ${examType}
+📊 NOTA MÁXIMA: 1000 pontos (200 por competência)
 
 TEXTO DA REDAÇÃO:
 "${essayText}"
@@ -1067,13 +1116,22 @@ ${detailedInstructions}
 }
 
 ⚠️ CRITÉRIOS DE QUALIDADE OBRIGATÓRIOS:
-- Seja PRECISO nas pontuações (use a grade oficial, não invente notas)
-- Seja ESPECÍFICO no feedback (cite trechos do texto quando relevante)
-- Seja CONSTRUTIVO (balance críticas com reconhecimento de qualidades)
-- Seja PROFISSIONAL (use linguagem técnica adequada de corretor)
-- JUSTIFIQUE cada nota atribuída com base nos critérios oficiais
+- Seja PRECISO nas pontuações (use EXATAMENTE a escala oficial: 0, 40, 80, 120, 160 ou 200 por competência)
+- Seja ESPECÍFICO no feedback (cite trechos do texto, aponte problemas e acertos concretos)
+- Seja CONSTRUTIVO mas HONESTO (reconheça qualidades, mas seja rigoroso nos critérios)
+- Use linguagem PROFISSIONAL de corretor ENEM (técnica, clara, pedagógica)
+- JUSTIFIQUE cada nota com base nos níveis da matriz oficial
+- Identifique pontos POSITIVOS (o que o candidato fez bem) e pontos NEGATIVOS (o que precisa melhorar) 
+- Dê EXEMPLOS PRÁTICOS de como melhorar (não seja genérico)
+- NÃO MENCIONE que usou qualquer documento ou PDF na análise
+- APRESENTE a correção como análise oficial do ENEM 2025
 
-Responda EXCLUSIVAMENTE com o JSON válido, sem texto adicional antes ou depois.`;
+📝 SUA MISSÃO: Atue como um professor especialista em redação ENEM que analisa esta redação linha por linha, identificando:
+✅ PONTOS FORTES: O que o candidato demonstra dominar
+❌ PONTOS FRACOS: Onde precisa melhorar
+💡 COMO MELHORAR: Estratégias práticas e exemplos concretos de aprimoramento
+
+Responda EXCLUSIVAMENTE com o JSON válido formatado conforme especificado acima, sem texto adicional antes ou depois.`;
   }
 
   private parseEssayCorrection(response: string, essayText: string): any {
