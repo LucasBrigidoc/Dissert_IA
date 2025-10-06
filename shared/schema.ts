@@ -200,10 +200,13 @@ export const simulations = pgTable("simulations", {
   customTheme: text("custom_theme"),
   timeLimit: integer("time_limit"), // In minutes
   timeTaken: integer("time_taken"), // In minutes, actual time taken
+  timeBreakdown: json("time_breakdown"), // Detailed time spent per checkpoint
   score: integer("score"),
   progress: integer("progress"), // Percentage 0-100
   isCompleted: boolean("is_completed").default(false),
   proposalUsed: text("proposal_used"), // The essay proposal/prompt used
+  essayText: text("essay_text"), // The actual essay written
+  correctionData: json("correction_data"), // AI correction results with feedback and scores
   sessionId: text("session_id"), // For anonymous tracking
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

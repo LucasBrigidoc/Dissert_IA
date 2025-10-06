@@ -3510,10 +3510,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { essayText, topic, examType } = req.body;
+      const { essayText, topic, examType, simulationId, timeBreakdown } = req.body;
       
       if (!essayText || !topic) {
         return res.status(400).json({ message: "Essay text and topic are required" });
+      }
+      
+      // Save time breakdown and essay text to simulation if simulationId is provided
+      if (simulationId) {
+        try {
+          await storage.updateSimulation(simulationId, {
+            essayText,
+            timeBreakdown,
+            timeTaken: timeBreakdown?.totalUsed ? Math.floor(timeBreakdown.totalUsed / 60) : null
+          });
+          console.log(`✅ Saved time breakdown and essay text for simulation ${simulationId}`);
+        } catch (saveError) {
+          console.error('Error saving simulation data:', saveError);
+        }
       }
       
       // Validate minimum length - equivalent to 10 lines of normal essay writing
@@ -3567,6 +3581,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
       
       console.log(`💰 Essay correction cost: ${promptTokens} input + ${outputTokens} output = ${costEstimate.estimatedCostBRL}`);
+      
+      // Save correction data to simulation if simulationId is provided
+      if (simulationId) {
+        try {
+          await storage.updateSimulation(simulationId, {
+            correctionData: correction,
+            score: correction.totalScore || null,
+            isCompleted: true,
+            progress: 100
+          });
+          console.log(`✅ Saved correction data for simulation ${simulationId}`);
+        } catch (saveError) {
+          console.error('Error saving correction data:', saveError);
+        }
+      }
       
       res.json({
         success: true,

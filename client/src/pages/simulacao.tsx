@@ -51,6 +51,7 @@ export default function SimulacaoPage() {
           customTheme: parsedConfig.customTheme || '',
           textProposal: parsedConfig.textProposal || '',
           timerDisplay: parsedConfig.timerDisplay || 'always',
+          simulationId: parsedConfig.simulationId || null,
           showWordCount: true,
           autoSave: true,
           spellCheck: true,
@@ -71,6 +72,7 @@ export default function SimulacaoPage() {
       customTheme: '',
       textProposal: '',
       timerDisplay: 'always',
+      simulationId: null,
       showWordCount: true,
       autoSave: true,
       spellCheck: true,
@@ -350,12 +352,24 @@ export default function SimulacaoPage() {
         throw new Error('Sua redação deve ter pelo menos 100 caracteres para ser corrigida.');
       }
       
+      // Prepare time breakdown data
+      const timeBreakdown = {
+        totalUsed: config.timeLimit * 60 - timeLeft,
+        brainstorm: checkpoints.find(c => c.id === 'brainstorm')?.timeSpent || 0,
+        rascunho: checkpoints.find(c => c.id === 'rascunho')?.timeSpent || 0,
+        passaLimpo: checkpoints.find(c => c.id === 'limpo')?.timeSpent || 0,
+      };
+
+      const simulationId = config.simulationId; // Get from saved config
+      
       return apiRequest('/api/essays/correct', {
         method: 'POST',
         body: {
           essayText: essayText.trim(),
           topic: topic.title,
-          examType: config.examType
+          examType: config.examType,
+          simulationId: simulationId,
+          timeBreakdown: timeBreakdown
         }
       });
     },
