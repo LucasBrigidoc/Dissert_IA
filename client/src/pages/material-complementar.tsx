@@ -217,15 +217,15 @@ export default function MaterialComplementarPage() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <div className="flex items-center space-x-3 mb-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center">
-                <GraduationCap className="text-white" size={16} />
+              <div className={`w-10 h-10 bg-gradient-to-br ${selectedMaterial ? iconColorMap[selectedMaterial.colorScheme as keyof typeof iconColorMap] : 'from-green-500 to-green-700'} rounded-full flex items-center justify-center`}>
+                {selectedMaterial ? getIconComponent(selectedMaterial.icon) : <GraduationCap className="text-white" size={16} />}
               </div>
               <div>
                 <DialogTitle className="text-xl font-bold text-dark-blue">
                   {selectedMaterial?.title}
                 </DialogTitle>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge className="bg-green-100 text-green-800 text-xs">
+                  <Badge className={`${selectedMaterial ? (categoryColorMap[selectedMaterial.category as keyof typeof categoryColorMap] || categoryColorMap.Fundamental) : 'bg-green-100 text-green-800'} text-xs`}>
                     {selectedMaterial?.category}
                   </Badge>
                   <span className="text-xs text-gray-500 flex items-center gap-1">
