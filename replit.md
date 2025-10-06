@@ -4,6 +4,20 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 # Recent Changes
 
+## October 6, 2025 - Dashboard Integration with Database
+- **Essay Correction Auto-Save**: Essay corrections now automatically save scores to `userScores` table when user is authenticated
+- **Score Management API**: Created complete REST API for score management
+  - GET `/api/user-scores` - Retrieves all user scores with competency breakdown
+  - POST `/api/user-scores` - Manual score entry for external exams
+  - PATCH `/api/user-scores/:id` - Update existing scores
+  - DELETE `/api/user-scores/:id` - Remove scores
+- **Competency Analysis API**: Created GET `/api/user-competencies` endpoint with period filters (30/90/365 days)
+- **Automatic Progress Updates**: After each essay correction, user progress (averageScore, essaysCount) is automatically recalculated
+- **Dashboard Data Integration**: Dashboard now displays real data from database:
+  - Evolution graph shows actual essay scores over time
+  - Competency breakdown calculated from stored competency data
+  - Progress metrics sync with database automatically
+
 ## October 4, 2025 - GitHub Import Setup
 - Successfully imported GitHub repository to Replit environment
 - Verified existing configuration (already set up for Replit)
