@@ -18,6 +18,7 @@ export default function BibliotecaPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos");
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [showFileDetails, setShowFileDetails] = useState(false);
+  const [showConversationHistory, setShowConversationHistory] = useState(false);
 
   // Sistema inteligente de detecção de origem
   const getBackUrl = () => {
@@ -82,6 +83,12 @@ export default function BibliotecaPage() {
 
   const { data: savedOutlines, isLoading: loadingOutlines } = useQuery({
     queryKey: ['/api/saved-outlines'],
+  });
+
+  // Fetch conversation history when selected file has conversationId
+  const { data: conversation, isLoading: loadingConversation } = useQuery({
+    queryKey: ['/api/conversations', selectedFile?.conversationId],
+    enabled: !!selectedFile?.conversationId,
   });
 
   const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts || loadingOutlines;
@@ -1364,6 +1371,70 @@ export default function BibliotecaPage() {
               ) : (selectedFile.type === 'Roteiro Personalizado' || selectedFile.type === 'Brainstorming') && selectedFile.outlineData ? (
                 /* Exibição especial para roteiros e brainstorming */
                 <div className="flex-1 overflow-y-auto space-y-4">
+                  {/* Botão para ver histórico da conversa */}
+                  {selectedFile.conversationId && (
+                    <div className="flex justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowConversationHistory(!showConversationHistory)}
+                        className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                        data-testid="button-toggle-conversation"
+                      >
+                        <MessageSquare size={16} className="mr-2" />
+                        {showConversationHistory ? 'Ocultar' : 'Ver'} Histórico da Conversa
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Histórico da Conversa */}
+                  {showConversationHistory && selectedFile.conversationId && conversation && (
+                    <div className="p-4 bg-gradient-to-br from-purple-50/80 to-blue-50/80 rounded-xl border border-purple-200/50">
+                      <h4 className="text-lg font-semibold text-dark-blue mb-4 flex items-center gap-2">
+                        <MessageSquare className="text-purple-600" size={20} />
+                        Histórico da Conversa
+                      </h4>
+                      <div className="space-y-3 max-h-96 overflow-y-auto">
+                        {loadingConversation ? (
+                          <div className="text-center py-4 text-soft-gray">Carregando conversa...</div>
+                        ) : conversation?.messages && Array.isArray(conversation.messages) && conversation.messages.length > 0 ? (
+                          conversation.messages.map((message: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className={`p-3 rounded-lg ${
+                                message.type === 'user'
+                                  ? 'bg-bright-blue/10 border border-bright-blue/20 ml-8'
+                                  : 'bg-white/60 border border-purple-200/30 mr-8'
+                              }`}
+                              data-testid={`message-${idx}`}
+                            >
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-xs font-semibold ${
+                                  message.type === 'user' ? 'text-bright-blue' : 'text-purple-600'
+                                }`}>
+                                  {message.type === 'user' ? 'Você' : 'IA'}
+                                </span>
+                                {message.section && (
+                                  <span className="text-xs text-soft-gray">
+                                    • {message.section.charAt(0).toUpperCase() + message.section.slice(1)}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-dark-blue whitespace-pre-wrap">{message.content}</p>
+                              {message.timestamp && (
+                                <p className="text-xs text-soft-gray mt-1">
+                                  {new Date(message.timestamp).toLocaleString('pt-BR')}
+                                </p>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-4 text-soft-gray">Nenhuma mensagem encontrada</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Análise da Proposta */}
                   <div className="p-4 bg-white/60 rounded-xl border border-bright-blue/20">
                     <h4 className="text-lg font-semibold text-dark-blue mb-4">📋 Análise da Proposta</h4>

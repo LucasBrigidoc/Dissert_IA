@@ -187,6 +187,7 @@ export const savedOutlines = pgTable("saved_outlines", {
   proposalStatement: text("proposal_statement").notNull(),
   outlineData: json("outline_data").notNull(),
   outlineType: varchar("outline_type", { enum: ["roteiro", "brainstorming"] }).notNull().default("roteiro"),
+  conversationId: varchar("conversation_id").references(() => conversations.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

@@ -2033,6 +2033,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get conversation by ID
+  app.get("/api/conversations/:id", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const { id } = req.params;
+      const conversation = await storage.getConversation(id);
+
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversa não encontrada" });
+      }
+
+      // Check if user has access to this conversation
+      if (conversation.userId && conversation.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Acesso negado" });
+      }
+
+      res.json(conversation);
+    } catch (error) {
+      console.error("Get conversation error:", error);
+      res.status(500).json({ message: "Erro ao buscar conversa" });
+    }
+  });
+
   // Get user essays endpoint
   app.get("/api/users/:userId/essays", async (req, res) => {
     try {
