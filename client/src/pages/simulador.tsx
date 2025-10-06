@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -72,6 +72,21 @@ export default function Simulador() {
   // Estados para propostas geradas com IA
   const [generatedProposals, setGeneratedProposals] = useState<any[]>([]);
   const [showAllSimulations, setShowAllSimulations] = useState(false);
+  
+  // Estado para controlar expansão de simulações
+  const [expandedSimulations, setExpandedSimulations] = useState<Set<string>>(new Set());
+  
+  const toggleSimulationExpansion = (simulationId: string) => {
+    setExpandedSimulations(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(simulationId)) {
+        newSet.delete(simulationId);
+      } else {
+        newSet.add(simulationId);
+      }
+      return newSet;
+    });
+  };
   
   // Verificar se todos os campos obrigatórios estão preenchidos
   // Incluindo a obrigatoriedade de ter uma proposta (personalizada ou selecionada)
@@ -678,44 +693,147 @@ export default function Simulador() {
                   </div>
                 </div>
               ) : (
-                simulationsToShow.map((simulation: any, index: number) => (
-                  <div key={simulation.id} className={`p-4 rounded-lg border ${
-                    index % 2 === 0 
-                      ? 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
-                      : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
-                  }`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-dark-blue">{simulation.title}</h4>
-                      <div className="flex items-center space-x-1">
-                        <Award className={index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"} size={16} />
-                        <span className={`font-semibold ${index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"}`}>
-                          {simulation.score || '--'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-soft-gray mb-2">
-                      <span>Realizado em {formatDate(simulation.createdAt)}</span>
-                      <span>Tempo: {formatTime(simulation.timeTaken)}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={simulation.progress || 0} className="flex-1 h-2" />
-                      <span className={`text-xs font-medium ${index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"}`}>
-                        {simulation.progress || 0}%
-                      </span>
-                    </div>
-                    <div className="mt-2 flex items-center space-x-2 text-xs text-soft-gray">
-                      <span className="capitalize">{simulation.examType}</span>
-                      <span>•</span>
-                      <span>{simulation.theme}</span>
-                      {simulation.isCompleted && (
-                        <>
+                simulationsToShow.map((simulation: any, index: number) => {
+                  const isExpanded = expandedSimulations.has(simulation.id);
+                  const hasCorrectionData = simulation.isCompleted && simulation.correctionData;
+                  const correctionData = hasCorrectionData ? simulation.correctionData : null;
+                  
+                  return (
+                    <div key={simulation.id} className={`rounded-lg border ${
+                      index % 2 === 0 
+                        ? 'bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 border-bright-blue/20'
+                        : 'bg-gradient-to-r from-dark-blue/10 to-soft-gray/10 border-dark-blue/20'
+                    }`} data-testid={`card-simulation-${simulation.id}`}>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-dark-blue" data-testid={`text-simulation-title-${simulation.id}`}>
+                            {simulation.title}
+                          </h4>
+                          <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1">
+                              <Award className={index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"} size={16} />
+                              <span className={`font-semibold ${index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"}`} data-testid={`text-simulation-score-${simulation.id}`}>
+                                {simulation.score || '--'}
+                              </span>
+                            </div>
+                            {hasCorrectionData && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toggleSimulationExpansion(simulation.id)}
+                                className="h-6 w-6 p-0"
+                                data-testid={`button-toggle-details-${simulation.id}`}
+                              >
+                                {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-soft-gray mb-2">
+                          <span data-testid={`text-simulation-date-${simulation.id}`}>
+                            Realizado em {formatDate(simulation.createdAt)}
+                          </span>
+                          <span data-testid={`text-simulation-time-${simulation.id}`}>
+                            Tempo: {formatTime(simulation.timeTaken)}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Progress value={simulation.progress || 0} className="flex-1 h-2" />
+                          <span className={`text-xs font-medium ${index % 2 === 0 ? "text-bright-blue" : "text-dark-blue"}`}>
+                            {simulation.progress || 0}%
+                          </span>
+                        </div>
+                        <div className="mt-2 flex items-center space-x-2 text-xs text-soft-gray">
+                          <span className="capitalize">{simulation.examType}</span>
                           <span>•</span>
-                          <span className="text-green-600">✓ Concluída</span>
-                        </>
+                          <span>{simulation.theme}</span>
+                          {simulation.isCompleted && (
+                            <>
+                              <span>•</span>
+                              <span className="text-green-600">✓ Concluída</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Seção expandida com detalhes da correção */}
+                      {isExpanded && hasCorrectionData && (
+                        <div className="border-t border-gray-200 p-4 space-y-4 bg-white/30" data-testid={`section-details-${simulation.id}`}>
+                          {/* Competências */}
+                          {correctionData.competencies && correctionData.competencies.length > 0 && (
+                            <div>
+                              <div className="flex items-center space-x-2 mb-3">
+                                <TrendingUp className="text-bright-blue" size={16} />
+                                <h5 className="font-semibold text-dark-blue text-sm">Competências</h5>
+                              </div>
+                              <div className="space-y-2">
+                                {correctionData.competencies.map((competency: any, idx: number) => (
+                                  <div key={idx} className="bg-white/50 rounded-lg p-3 border border-gray-200" data-testid={`card-competency-${simulation.id}-${idx}`}>
+                                    <div className="flex justify-between items-start mb-1">
+                                      <span className="text-xs font-medium text-dark-blue" data-testid={`text-competency-name-${simulation.id}-${idx}`}>
+                                        {competency.name}
+                                      </span>
+                                      <span className="text-xs font-bold text-bright-blue" data-testid={`text-competency-score-${simulation.id}-${idx}`}>
+                                        {competency.score?.toFixed(1)}
+                                      </span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+                                      <div 
+                                        className="bg-gradient-to-r from-bright-blue to-dark-blue h-1.5 rounded-full"
+                                        style={{ width: `${(competency.score / 10) * 100}%` }}
+                                      />
+                                    </div>
+                                    {competency.feedback && (
+                                      <p className="text-xs text-gray-600 mt-1" data-testid={`text-competency-feedback-${simulation.id}-${idx}`}>
+                                        {competency.feedback}
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Pontos Bons */}
+                          {correctionData.strengths && correctionData.strengths.length > 0 && (
+                            <div>
+                              <div className="flex items-center space-x-2 mb-3">
+                                <ThumbsUp className="text-green-600" size={16} />
+                                <h5 className="font-semibold text-dark-blue text-sm">Pontos Bons</h5>
+                              </div>
+                              <div className="space-y-2">
+                                {correctionData.strengths.map((strength: string, idx: number) => (
+                                  <div key={idx} className="flex items-start space-x-2 text-xs text-gray-700" data-testid={`text-strength-${simulation.id}-${idx}`}>
+                                    <CheckCircle className="text-green-600 flex-shrink-0 mt-0.5" size={12} />
+                                    <span>{strength}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Pontos a Melhorar */}
+                          {correctionData.improvements && correctionData.improvements.length > 0 && (
+                            <div>
+                              <div className="flex items-center space-x-2 mb-3">
+                                <Lightbulb className="text-orange-500" size={16} />
+                                <h5 className="font-semibold text-dark-blue text-sm">Pontos a Melhorar</h5>
+                              </div>
+                              <div className="space-y-2">
+                                {correctionData.improvements.map((improvement: string, idx: number) => (
+                                  <div key={idx} className="flex items-start space-x-2 text-xs text-gray-700" data-testid={`text-improvement-${simulation.id}-${idx}`}>
+                                    <Lightbulb className="text-orange-500 flex-shrink-0 mt-0.5" size={12} />
+                                    <span>{improvement}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
               
               {!isLoadingSimulations && showAllSimulations && allSimulations.length > 6 && (
