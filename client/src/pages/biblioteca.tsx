@@ -1069,8 +1069,8 @@ export default function BibliotecaPage() {
             </LiquidGlassCard>
           ) : (
             filteredFiles.map((file: any) => (
-              <LiquidGlassCard key={file.id} className="p-3 sm:p-6 hover:shadow-lg smooth-transition">
-                <div className="flex items-start justify-between">
+              <LiquidGlassCard key={file.id} className="p-3 sm:p-6 hover:shadow-lg smooth-transition overflow-hidden">
+                <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
                     <div className="flex-shrink-0">
                       {/* Mobile: Smaller icon */}
@@ -1093,8 +1093,8 @@ export default function BibliotecaPage() {
                       {/* Mobile: Compact header */}
                       <div className="sm:hidden">
                         <div className="flex items-start gap-2 mb-1">
-                          <h3 className="text-sm font-semibold text-dark-blue truncate flex-1">{file.title}</h3>
-                          <Badge className={`text-xs flex-shrink-0 ${getTypeColor(file.type)}`}>
+                          <h3 className="text-sm font-semibold text-dark-blue truncate flex-1 min-w-0">{file.title}</h3>
+                          <Badge className={`text-xs flex-shrink-0 whitespace-nowrap ${getTypeColor(file.type)}`}>
                             {file.type}
                           </Badge>
                         </div>
@@ -1103,38 +1103,38 @@ export default function BibliotecaPage() {
                             Nota: {(file as any).grade}
                           </Badge>
                         )}
-                        <p className="text-xs text-soft-gray mb-2 line-clamp-2">{file.description}</p>
-                        <div className="flex items-center text-xs text-gray-500">
+                        <p className="text-xs text-soft-gray mb-2 line-clamp-2 break-words">{file.description}</p>
+                        <div className="flex items-center text-xs text-gray-500 flex-wrap gap-1">
                           <Clock size={10} className="mr-1" />
-                          <span>{new Date(file.date).toLocaleDateString('pt-BR')}</span>
-                          <span className="mx-2">•</span>
-                          <span>{file.size}</span>
+                          <span className="whitespace-nowrap">{new Date(file.date).toLocaleDateString('pt-BR')}</span>
+                          <span>•</span>
+                          <span className="break-all">{file.size}</span>
                         </div>
                       </div>
                       
                       {/* Desktop: Full layout */}
                       <div className="hidden sm:block">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-dark-blue truncate">{file.title}</h3>
-                          <Badge className={`text-xs ${getTypeColor(file.type)}`}>
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <h3 className="font-semibold text-dark-blue truncate min-w-0 max-w-full">{file.title}</h3>
+                          <Badge className={`text-xs flex-shrink-0 whitespace-nowrap ${getTypeColor(file.type)}`}>
                             {file.type}
                           </Badge>
                           {(file as any).grade && (
-                            <Badge className="bg-green-100 text-green-800 text-xs">
+                            <Badge className="bg-green-100 text-green-800 text-xs flex-shrink-0">
                               Nota: {(file as any).grade}
                             </Badge>
                           )}
                         </div>
                         
-                        <p className="text-sm text-soft-gray mb-2">{file.description}</p>
+                        <p className="text-sm text-soft-gray mb-2 break-words">{file.description}</p>
                         
-                        <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span className="flex items-center">
+                        <div className="flex items-center flex-wrap gap-2 text-xs text-gray-500">
+                          <span className="flex items-center whitespace-nowrap">
                             <Clock size={12} className="mr-1" />
                             {new Date(file.date).toLocaleDateString('pt-BR')}
                           </span>
-                          <span>{file.size}</span>
-                          <span>{file.category}</span>
+                          <span className="break-all">{file.size}</span>
+                          <span className="break-words">{file.category}</span>
                         </div>
                       </div>
                     </div>
