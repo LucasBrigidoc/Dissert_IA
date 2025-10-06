@@ -3722,6 +3722,189 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== USER SCORES ROUTES =====================
+
+  // Get all user scores (used by dashboard)
+  app.get("/api/user-scores", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const scores = await storage.getUserScores(req.session.userId);
+      
+      res.json(scores);
+    } catch (error) {
+      console.error("Get user scores error:", error);
+      res.status(500).json({ message: "Falha ao carregar notas" });
+    }
+  });
+
+  // Create a new user score (manual entry)
+  app.post("/api/user-scores", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const { score, competence1, competence2, competence3, competence4, competence5, examName, scoreDate } = req.body;
+
+      const newScore = await storage.createUserScore({
+        userId: req.session.userId,
+        score,
+        competence1: competence1 || null,
+        competence2: competence2 || null,
+        competence3: competence3 || null,
+        competence4: competence4 || null,
+        competence5: competence5 || null,
+        examName: examName || 'Nota Manual',
+        source: 'manual',
+        sourceId: null,
+        scoreDate: new Date(scoreDate)
+      });
+
+      // Update user progress
+      await storage.updateUserProgressAfterCorrection(req.session.userId);
+
+      res.status(201).json(newScore);
+    } catch (error) {
+      console.error("Create user score error:", error);
+      res.status(500).json({ message: "Falha ao adicionar nota" });
+    }
+  });
+
+  // Update a user score
+  app.patch("/api/user-scores/:id", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const { id } = req.params;
+      const updateData = req.body;
+
+      const updatedScore = await storage.updateUserScore(id, updateData);
+
+      // Update user progress after score update
+      await storage.updateUserProgressAfterCorrection(req.session.userId);
+
+      res.json(updatedScore);
+    } catch (error) {
+      console.error("Update user score error:", error);
+      res.status(500).json({ message: "Falha ao atualizar nota" });
+    }
+  });
+
+  // Delete a user score
+  app.delete("/api/user-scores/:id", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const { id } = req.params;
+      const deleted = await storage.deleteUserScore(id);
+
+      if (!deleted) {
+        return res.status(404).json({ message: "Nota não encontrada" });
+      }
+
+      // Update user progress after score deletion
+      await storage.updateUserProgressAfterCorrection(req.session.userId);
+
+      res.json({ success: true, message: "Nota removida com sucesso" });
+    } catch (error) {
+      console.error("Delete user score error:", error);
+      res.status(500).json({ message: "Falha ao remover nota" });
+    }
+  });
+
+  // Get user competencies analysis
+  app.get("/api/user-competencies", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Não autenticado" });
+      }
+
+      const period = req.query.period as string || 'all';
+      const scores = await storage.getUserScores(req.session.userId);
+
+      // Filter scores by period
+      let filteredScores = scores;
+      if (period !== 'all') {
+        const now = new Date();
+        const periodDays = period === '7d' ? 7 : period === '30d' ? 30 : period === '90d' ? 90 : 0;
+        
+        if (periodDays > 0) {
+          const cutoffDate = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
+          filteredScores = scores.filter(s => new Date(s.scoreDate) >= cutoffDate);
+        } else if (period === 'last') {
+          // Get only the most recent score
+          filteredScores = scores.length > 0 ? [scores[0]] : [];
+        }
+      }
+
+      if (filteredScores.length === 0) {
+        return res.json({
+          hasData: false,
+          weakestCompetencies: [],
+          averages: {
+            competence1: 0,
+            competence2: 0,
+            competence3: 0,
+            competence4: 0,
+            competence5: 0
+          },
+          overallAverage: 0,
+          essaysAnalyzed: 0
+        });
+      }
+
+      // Calculate averages for each competency
+      const competencies = ['competence1', 'competence2', 'competence3', 'competence4', 'competence5'] as const;
+      const averages: any = {};
+      
+      competencies.forEach((comp) => {
+        const validScores = filteredScores
+          .map(s => s[comp])
+          .filter(val => val !== null && val !== undefined) as number[];
+        
+        averages[comp] = validScores.length > 0
+          ? Math.round(validScores.reduce((sum, val) => sum + val, 0) / validScores.length)
+          : 0;
+      });
+
+      // Find weakest competencies (lowest 3 averages)
+      const competencyData = [
+        { id: 1, name: 'Competência I', key: 'competence1', score: averages.competence1, feedback: 'Domínio da norma culta da língua portuguesa' },
+        { id: 2, name: 'Competência II', key: 'competence2', score: averages.competence2, feedback: 'Compreensão do tema e tipo textual' },
+        { id: 3, name: 'Competência III', key: 'competence3', score: averages.competence3, feedback: 'Seleção e organização de argumentos' },
+        { id: 4, name: 'Competência IV', key: 'competence4', score: averages.competence4, feedback: 'Conhecimento dos mecanismos linguísticos' },
+        { id: 5, name: 'Competência V', key: 'competence5', score: averages.competence5, feedback: 'Elaboração de proposta de intervenção' }
+      ];
+
+      const weakestCompetencies = competencyData
+        .filter(c => c.score > 0)
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 3);
+
+      const overallAverage = Math.round(
+        Object.values(averages).reduce((sum: number, val: any) => sum + val, 0) / 5
+      );
+
+      res.json({
+        hasData: true,
+        weakestCompetencies,
+        averages,
+        overallAverage,
+        essaysAnalyzed: filteredScores.length
+      });
+    } catch (error) {
+      console.error("Get competencies error:", error);
+      res.status(500).json({ message: "Falha ao carregar competências" });
+    }
+  });
+
   // ===================== DASHBOARD ROUTES =====================
 
   // Get user score history for evolution graph
