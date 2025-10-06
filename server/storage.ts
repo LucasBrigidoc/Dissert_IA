@@ -1775,11 +1775,13 @@ export class MemStorage implements IStorage {
     });
 
     const totalUsers = this.users.size;
-    const activeUserIds = new Set(costs.filter(c => c.userId).map(c => c.userId!));
-    const activeUsers = activeUserIds.size;
+    const uniqueIdentifiers = new Set(
+      costs.map(c => c.userId || c.ipAddress).filter(Boolean)
+    );
+    const activeUsers = uniqueIdentifiers.size;
     const totalOperations = costs.length;
     const totalCostBrl = costs.reduce((sum, cost) => sum + cost.costBrl, 0);
-    const averageCostPerUser = activeUsers > 0 ? Math.round(totalCostBrl / activeUsers) : 0;
+    const averageCostPerUser = activeUsers > 0 ? totalCostBrl / activeUsers : 0;
 
     // Top operations
     const operationStats: Record<string, { count: number; cost: number }> = {};
@@ -1806,7 +1808,8 @@ export class MemStorage implements IStorage {
       }
       dailyData[date].operations++;
       dailyData[date].cost += cost.costBrl;
-      if (cost.userId) dailyData[date].users.add(cost.userId);
+      const userIdentifier = cost.userId || cost.ipAddress;
+      if (userIdentifier) dailyData[date].users.add(userIdentifier);
     });
 
     const dailyTrends = Object.entries(dailyData)
@@ -4646,8 +4649,10 @@ export class DbStorage implements IStorage {
     const [totalUsersResult] = await db.select({ count: count() }).from(schema.users);
     const totalUsers = Number(totalUsersResult?.count || 0);
     
-    const uniqueUserIds = new Set(costs.map(c => c.userId).filter(Boolean));
-    const activeUsers = uniqueUserIds.size;
+    const uniqueIdentifiers = new Set(
+      costs.map(c => c.userId || c.ipAddress).filter(Boolean)
+    );
+    const activeUsers = uniqueIdentifiers.size;
     
     const totalCostBrl = costs.reduce((sum, c) => sum + c.costBrl, 0);
     const totalOperations = costs.length;
@@ -4677,7 +4682,8 @@ export class DbStorage implements IStorage {
       }
       dailyStats[date].operations++;
       dailyStats[date].cost += cost.costBrl;
-      if (cost.userId) dailyStats[date].users.add(cost.userId);
+      const userIdentifier = cost.userId || cost.ipAddress;
+      if (userIdentifier) dailyStats[date].users.add(userIdentifier);
     });
     
     const dailyTrends = Object.entries(dailyStats)
