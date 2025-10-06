@@ -481,7 +481,10 @@ export default function Simulador() {
                         <div className="flex-1">
                           <div className="text-xs font-semibold text-bright-blue mb-1">PROPOSTA DE REDAÇÃO</div>
                           <h4 className="font-bold text-dark-blue text-lg mb-2">{proposal.title}</h4>
-                          <p className="text-xs text-soft-gray font-medium leading-tight">{proposal.statement}</p>
+                          <div className="mt-2 mb-3">
+                            <div className="text-[10px] font-bold text-dark-blue/70 mb-1 uppercase tracking-wide">📝 Enunciado</div>
+                            <p className="text-[11px] text-soft-gray font-normal leading-relaxed">{proposal.statement}</p>
+                          </div>
                         </div>
                         <Button
                           type="button"
