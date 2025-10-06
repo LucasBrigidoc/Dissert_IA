@@ -950,6 +950,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
       });
       
+      // Automatically subscribe user to newsletter
+      try {
+        // Check if already subscribed
+        const existingSubscriber = await storage.getNewsletterSubscriberByEmail(user.email);
+        if (!existingSubscriber) {
+          await storage.createNewsletterSubscriber({
+            email: user.email,
+            name: user.name,
+          });
+          console.log(`User ${user.email} automatically subscribed to newsletter`);
+        }
+      } catch (newsletterError) {
+        // Log error but don't fail registration if newsletter subscription fails
+        console.error("Newsletter subscription error during registration:", newsletterError);
+      }
+      
       // Regenerate session to prevent session fixation attacks
       req.session.regenerate((err) => {
         if (err) {
