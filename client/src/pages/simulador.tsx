@@ -202,6 +202,32 @@ export default function Simulador() {
   const allSimulations = Array.isArray(simulationsData) ? simulationsData : [];
   const simulationsToShow = showAllSimulations ? allSimulations : allSimulations.slice(0, 2);
 
+  // Calcular estatísticas reais do usuário
+  const calculateStats = () => {
+    const completedSimulations = allSimulations.filter((sim: any) => sim.isCompleted);
+    const totalSimulations = allSimulations.length;
+    
+    // Calcular nota média (apenas simulações com score)
+    const simulationsWithScore = completedSimulations.filter((sim: any) => sim.score != null);
+    const averageScore = simulationsWithScore.length > 0
+      ? Math.round(simulationsWithScore.reduce((sum: number, sim: any) => sum + sim.score, 0) / simulationsWithScore.length)
+      : 0;
+    
+    // Calcular tempo médio (apenas simulações com tempo registrado)
+    const simulationsWithTime = completedSimulations.filter((sim: any) => sim.timeTaken != null && sim.timeTaken > 0);
+    const averageTime = simulationsWithTime.length > 0
+      ? Math.round(simulationsWithTime.reduce((sum: number, sim: any) => sum + sim.timeTaken, 0) / simulationsWithTime.length)
+      : 0;
+    
+    return {
+      totalSimulations,
+      averageScore,
+      averageTime
+    };
+  };
+
+  const stats = calculateStats();
+
   // Função para formatar data
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -291,17 +317,23 @@ export default function Simulador() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-bright-blue/10 rounded-lg">
-              <div className="text-2xl font-bold text-bright-blue mb-1">12</div>
+              <div className="text-2xl font-bold text-bright-blue mb-1" data-testid="stat-total-simulations">
+                {isLoadingSimulations ? '...' : stats.totalSimulations}
+              </div>
               <div className="text-xs text-soft-gray">Simulações Realizadas</div>
             </div>
             
             <div className="text-center p-4 bg-dark-blue/10 rounded-lg">
-              <div className="text-2xl font-bold text-dark-blue mb-1">876</div>
+              <div className="text-2xl font-bold text-dark-blue mb-1" data-testid="stat-average-score">
+                {isLoadingSimulations ? '...' : stats.averageScore || '--'}
+              </div>
               <div className="text-xs text-soft-gray">Nota Média</div>
             </div>
             
             <div className="text-center p-4 bg-soft-gray/10 rounded-lg">
-              <div className="text-2xl font-bold text-dark-blue mb-1">68min</div>
+              <div className="text-2xl font-bold text-dark-blue mb-1" data-testid="stat-average-time">
+                {isLoadingSimulations ? '...' : stats.averageTime ? `${stats.averageTime}min` : '--'}
+              </div>
               <div className="text-xs text-soft-gray">Tempo Médio</div>
             </div>
           </div>
