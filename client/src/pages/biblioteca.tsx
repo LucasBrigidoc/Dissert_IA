@@ -1059,7 +1059,7 @@ export default function BibliotecaPage() {
               </p>
               {!searchTerm && (
                 <Button 
-                  onClick={() => setLocation('/funcionalidades')}
+                  onClick={() => setLocation('/functionalities')}
                   className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
                   data-testid="button-create-files"
                 >
