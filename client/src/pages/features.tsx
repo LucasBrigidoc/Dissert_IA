@@ -186,15 +186,15 @@ export default function Features() {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                     <FileText className="text-white" size={20} />
                   </div>
-                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Estrutura Coringa Personalizada</h4>
+                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Estrutura Roteirizada</h4>
                 </div>
-                <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">Sistema que analisa seu estilo de escrita e cria estruturas de redação modelo adaptadas às suas preferências, estilo e ao tipo de prova que você vai fazer.</p>
+                <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">Assistente inteligente que guia você na construção de um roteiro completo para sua redação através de conversas direcionadas, organizando suas ideias de forma estruturada e progressiva.</p>
                 <ul className="text-xs sm:text-sm text-soft-gray space-y-0.5 sm:space-y-1">
-                  <li>• Análise do seu estilo pessoal de escrita</li>
-                  <li>• Estruturas adaptadas por tipo de prova (ENEM, vestibulares, concursos)</li>
-                  <li>• Templates personalizados </li>
-                  <li>• Sugestões de transições e conectivos adequados</li>
-                  <li>• Evolução contínua baseada no seu progresso</li>
+                  <li>• Construção guiada por etapas (tema, tese, argumentos, conclusão)</li>
+                  <li>• Diálogo interativo com IA para desenvolver ideias</li>
+                  <li>• Organização automática do roteiro completo</li>
+                  <li>• Sugestões contextualizadas em cada seção</li>
+                  <li>• Salvamento e recuperação de roteiros anteriores</li>
                 </ul>
               </LiquidGlassCard>
 
