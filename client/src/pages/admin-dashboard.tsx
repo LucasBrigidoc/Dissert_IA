@@ -208,11 +208,11 @@ function UsersTable() {
     queryKey: ['/api/admin/all-users'],
   });
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (centavos: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-    }).format(value);
+    }).format(centavos / 100);
   };
 
   const formatDate = (date: Date | string | null) => {
