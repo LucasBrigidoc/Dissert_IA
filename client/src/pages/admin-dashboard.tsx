@@ -208,6 +208,7 @@ function UsersTable() {
     total: number;
   }>({
     queryKey: ['/api/admin/all-users'],
+    refetchInterval: 30000,
   });
 
   const formatCurrency = (centavos: number) => {
