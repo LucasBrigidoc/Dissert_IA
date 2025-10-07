@@ -83,7 +83,7 @@ export default function AdminCoupons() {
     mutationFn: async (data: any) => {
       return apiRequest('/api/admin/coupons', {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
@@ -109,7 +109,7 @@ export default function AdminCoupons() {
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
       return apiRequest(`/api/admin/coupons/${id}`, {
         method: 'PATCH',
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
