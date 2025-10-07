@@ -993,6 +993,8 @@ export const insertTransactionSchema = createInsertSchema(transactions).omit({ i
 export const insertCouponSchema = createInsertSchema(coupons).omit({ id: true, createdAt: true, updatedAt: true }).extend({
   code: z.string().min(1).transform(val => val.toUpperCase()),
   eligiblePlanIds: z.array(z.string()).default([]),
+  validFrom: z.coerce.date(),
+  validUntil: z.coerce.date().nullable(),
 }).refine(
   (data) => {
     if (data.discountType === "percent") {
