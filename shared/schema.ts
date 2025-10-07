@@ -1,5 +1,5 @@
 import { sql, relations } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, json, jsonb, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, json, jsonb, uniqueIndex, index, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -105,7 +105,9 @@ export const weeklyUsage = pgTable("weekly_usage", {
   lastOperation: timestamp("last_operation").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  uniqueIdentifierWeek: unique().on(table.identifier, table.weekStart),
+}));
 
 // Saved repertoires for user's personal library
 export const savedRepertoires = pgTable("saved_repertoires", {
