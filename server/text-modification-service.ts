@@ -1030,7 +1030,7 @@ ${detailedInstructions}
       "score": [pontuação específica baseada na grade oficial],
       "maxScore": [pontuação máxima possível],
       "criteria": "[critério principal avaliado]",
-      "feedback": "[análise detalhada com exemplos específicos do texto, mencionando localização dos problemas/acertos]",
+      "feedback": "[análise detalhada com exemplos específicos do texto. OBRIGATÓRIO: Se a nota for menor que 200, você DEVE explicar CLARAMENTE e EXPLICITAMENTE o que faltou ou o que está impedindo a nota máxima. Não basta elogiar - diga exatamente qual elemento está ausente ou insuficiente]",
       "level": "[Excelente/Muito Bom/Bom/Regular/Insuficiente/Nulo]"
     }
   ],
@@ -1069,6 +1069,19 @@ ${detailedInstructions}
 - Dê EXEMPLOS PRÁTICOS de como melhorar (não seja genérico)
 - NÃO MENCIONE que usou qualquer documento ou PDF na análise
 - APRESENTE a correção como análise oficial do ENEM 2025
+
+🚨 REGRA CRÍTICA PARA NOTAS ABAIXO DE 200:
+Quando der uma nota MENOR QUE 200 em qualquer competência, você DEVE OBRIGATORIAMENTE:
+1. EXPLICAR CLARAMENTE o que IMPEDIU a nota máxima
+2. ESPECIFICAR exatamente qual elemento está AUSENTE, INSUFICIENTE ou INADEQUADO
+3. DAR EXEMPLOS CONCRETOS de como CORRIGIR o problema
+4. NÃO apenas elogiar - APONTAR a FALHA mesmo que sutil
+
+Exemplo CORRETO (nota 160):
+"A proposta apresenta 4 dos 5 elementos obrigatórios (agente, ação, modo e finalidade), porém FALTA o detalhamento específico da ação. Para alcançar 200 pontos, seria necessário detalhar COMO exatamente a ação será implementada (ex: 'por meio de campanhas educativas em escolas públicas e privadas, com distribuição de material didático')."
+
+Exemplo ERRADO (nota 160):
+"A proposta está bem elaborada e articulada com o texto." ❌ (não explica por que não é 200)
 
 📝 SUA MISSÃO: Atue como um professor especialista em redação ENEM que analisa esta redação linha por linha, identificando:
 ✅ PONTOS FORTES: O que o candidato demonstra dominar
