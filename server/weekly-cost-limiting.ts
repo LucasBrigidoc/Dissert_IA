@@ -197,37 +197,37 @@ export class WeeklyCostLimitingService {
     // Calculate real cost based on actual token usage
     const costCentavos = await this.calculateCostCentavos(tokensInput, tokensOutput);
     
-    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
+    const periodStart = this.getPeriodStart(planType);
     
-    // Update usage counters
-    const newTotalCost = (usageRecord.totalCostCentavos || 0) + costCentavos;
-    const newOperationCount = (usageRecord.operationCount || 0) + 1;
+    // Use UPSERT to avoid race conditions and duplicates
+    const operationBreakdown: Record<string, number> = {};
+    operationBreakdown[operation] = 1;
     
-    const operationBreakdown = { ...(usageRecord.operationBreakdown as any || {}) };
-    const costBreakdown = { ...(usageRecord.costBreakdown as any || {}) };
-    
-    operationBreakdown[operation] = (operationBreakdown[operation] || 0) + 1;
-    costBreakdown[operation] = (costBreakdown[operation] || 0) + costCentavos;
+    const costBreakdown: Record<string, number> = {};
+    costBreakdown[operation] = costCentavos;
 
-    // Update the usage record
-    const updatedUsage = await this.storage.updateWeeklyUsage(usageRecord.id, {
-      totalCostCentavos: newTotalCost,
-      operationCount: newOperationCount,
+    // UPSERT: Insert or update atomically
+    const updatedUsage = await this.storage.upsertWeeklyUsage({
+      identifier,
+      weekStart: periodStart,
+      totalCostCentavos: costCentavos,
+      operationCount: 1,
       operationBreakdown,
       costBreakdown,
       lastOperation: new Date(),
     });
 
     const limitCentavos = this.getLimitCentavos(planType);
-    const usagePercentage = Math.min(100, (newTotalCost / limitCentavos) * 100);
-    const remaining = Math.max(0, limitCentavos - newTotalCost);
+    const totalCost = updatedUsage.totalCostCentavos || 0;
+    const usagePercentage = Math.min(100, (totalCost / limitCentavos) * 100);
+    const remaining = Math.max(0, limitCentavos - totalCost);
 
     return {
       success: true,
       newUsage: updatedUsage,
       costCentavos,
       usageStats: {
-        currentUsageCentavos: newTotalCost,
+        currentUsageCentavos: totalCost,
         limitCentavos,
         remainingCentavos: remaining,
         usagePercentage

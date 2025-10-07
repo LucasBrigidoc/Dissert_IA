@@ -42,6 +42,7 @@ export interface IStorage {
   // Weekly usage operations for unified cost limiting
   findWeeklyUsage(identifier: string, weekStart: Date): Promise<WeeklyUsage | undefined>;
   insertWeeklyUsage(usage: InsertWeeklyUsage): Promise<WeeklyUsage>;
+  upsertWeeklyUsage(usage: InsertWeeklyUsage): Promise<WeeklyUsage>;
   updateWeeklyUsage(id: string, usage: Partial<WeeklyUsage>): Promise<WeeklyUsage>;
   getWeeklyUsageHistory(identifier: string, weeks: number): Promise<WeeklyUsage[]>;
   
@@ -2164,6 +2165,35 @@ export class MemStorage implements IStorage {
     return weeklyUsage;
   }
 
+  async upsertWeeklyUsage(usage: InsertWeeklyUsage): Promise<WeeklyUsage> {
+    // Find existing record
+    const existing = Array.from(this.weeklyUsages.values()).find(
+      wu => wu.identifier === usage.identifier && 
+      wu.weekStart.getTime() === usage.weekStart.getTime()
+    );
+
+    if (existing) {
+      // Update existing record with merged values
+      const operationBreakdown = { ...existing.operationBreakdown as any, ...usage.operationBreakdown as any };
+      const costBreakdown = { ...existing.costBreakdown as any, ...usage.costBreakdown as any };
+      
+      const updated: WeeklyUsage = {
+        ...existing,
+        totalCostCentavos: (existing.totalCostCentavos || 0) + (usage.totalCostCentavos || 0),
+        operationCount: (existing.operationCount || 0) + (usage.operationCount || 0),
+        operationBreakdown,
+        costBreakdown,
+        lastOperation: usage.lastOperation || new Date(),
+        updatedAt: new Date(),
+      };
+      this.weeklyUsages.set(existing.id, updated);
+      return updated;
+    } else {
+      // Insert new record
+      return this.insertWeeklyUsage(usage);
+    }
+  }
+
   async updateWeeklyUsage(id: string, usage: Partial<WeeklyUsage>): Promise<WeeklyUsage> {
     const existing = this.weeklyUsages.get(id);
     if (!existing) {
@@ -3933,6 +3963,25 @@ export class DbStorage implements IStorage {
 
   async insertWeeklyUsage(insertUsage: InsertWeeklyUsage): Promise<WeeklyUsage> {
     const [usage] = await db.insert(schema.weeklyUsage).values(insertUsage).returning();
+    return usage;
+  }
+
+  async upsertWeeklyUsage(insertUsage: InsertWeeklyUsage): Promise<WeeklyUsage> {
+    const [usage] = await db
+      .insert(schema.weeklyUsage)
+      .values(insertUsage)
+      .onConflictDoUpdate({
+        target: [schema.weeklyUsage.identifier, schema.weeklyUsage.weekStart],
+        set: {
+          totalCostCentavos: sql`weekly_usage.total_cost_centavos + ${insertUsage.totalCostCentavos || 0}`,
+          operationCount: sql`weekly_usage.operation_count + ${insertUsage.operationCount || 0}`,
+          operationBreakdown: sql`weekly_usage.operation_breakdown || ${insertUsage.operationBreakdown || {}}::jsonb`,
+          costBreakdown: sql`weekly_usage.cost_breakdown || ${insertUsage.costBreakdown || {}}::jsonb`,
+          lastOperation: insertUsage.lastOperation || new Date(),
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
     return usage;
   }
 
