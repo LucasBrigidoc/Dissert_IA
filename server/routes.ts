@@ -20,7 +20,7 @@ import path from "path";
 import fs from "fs";
 import "./session-types";
 import { db } from "./db";
-import { eq, gte, desc } from "drizzle-orm";
+import { eq, gte, desc, and, isNotNull } from "drizzle-orm";
 
 // Initialize Stripe (optional in development)
 let stripe: Stripe | null = null;
@@ -4417,13 +4417,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const costs = await db.query.userCosts.findMany({
-          where: (costs, { eq, gte }) => {
-            return eq(costs.userId, user.id) && gte(costs.createdAt, startDate);
-          }
+          where: (costs, { eq, gte, and, isNotNull }) => 
+            and(
+              isNotNull(costs.userId),
+              eq(costs.userId, user.id),
+              gte(costs.createdAt, startDate)
+            )
         });
 
-        const totalCost = costs.reduce((sum, cost) => sum + (cost.costBrl || 0), 0);
-        const totalTokens = costs.reduce((sum, cost) => sum + (cost.inputTokens || 0) + (cost.outputTokens || 0), 0);
+        const totalCostCentavos = costs.reduce((sum, cost) => sum + (cost.costBrl || 0), 0);
+        const totalCost = totalCostCentavos / 100;
+        const totalTokens = costs.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
 
         return {
           id: user.id,
