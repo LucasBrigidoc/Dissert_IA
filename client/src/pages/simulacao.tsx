@@ -1040,14 +1040,14 @@ export default function SimulacaoPage() {
                 <Button 
                   onClick={() => {
                     setShowCorrectionResult(false);
-                    setLocation('/resultado');
+                    setLocation('/simulador');
                   }}
                   variant="outline"
                   className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
-                  data-testid="button-view-results"
+                  data-testid="button-new-simulation"
                 >
                   <Award className="mr-2" size={16} />
-                  Ver Histórico
+                  Fazer Novo Simulado
                 </Button>
               </div>
             </div>
