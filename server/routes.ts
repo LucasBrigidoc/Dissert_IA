@@ -4405,11 +4405,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const usersList = await Promise.all(allUsers.map(async (user) => {
         const subscription = await db.query.userSubscriptions.findFirst({
           where: (subs, { eq }) => eq(subs.userId, user.id),
-          orderBy: (subs, { desc }) => [desc(subs.createdAt)],
-          with: {
-            plan: true
-          }
+          orderBy: (subs, { desc }) => [desc(subs.createdAt)]
         });
+
+        // Get the plan separately if subscription exists
+        let plan = null;
+        if (subscription) {
+          plan = await db.query.subscriptionPlans.findFirst({
+            where: (plans, { eq }) => eq(plans.id, subscription.planId)
+          });
+        }
 
         const costs = await db.query.userCosts.findMany({
           where: (costs, { eq, gte }) => {
@@ -4428,11 +4433,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userType: user.userType,
           createdAt: user.createdAt,
           subscription: subscription ? {
-            planName: subscription.plan?.name || 'Free',
+            planName: plan?.name || 'Free',
             status: subscription.status,
             startDate: subscription.startDate,
-            isPro: subscription.status === 'active' && subscription.plan?.name !== 'Free',
-            price: subscription.plan?.priceMonthly ? (subscription.plan.priceMonthly / 100).toFixed(2) : '0.00'
+            isPro: subscription.status === 'active' && plan?.name !== 'Free',
+            price: plan?.priceMonthly ? (plan.priceMonthly / 100).toFixed(2) : '0.00'
           } : {
             planName: 'Free',
             status: 'none',
