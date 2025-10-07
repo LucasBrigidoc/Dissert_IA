@@ -1711,8 +1711,9 @@ export class MemStorage implements IStorage {
     
     const activeUserIds = new Set(
       Array.from(this.userCosts.values())
-        .filter(cost => cost.createdAt && new Date(cost.createdAt) >= cutoffDate && cost.userId)
-        .map(cost => cost.userId!)
+        .filter(cost => cost.createdAt && new Date(cost.createdAt) >= cutoffDate)
+        .map(cost => cost.userId || cost.ipAddress)
+        .filter(Boolean)
     );
     
     return {
