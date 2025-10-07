@@ -193,6 +193,9 @@ export default function Dashboard() {
   
   // State for average score period filter
   const [averagePeriod, setAveragePeriod] = useState<string>('all');
+  
+  // State for score chart period filter
+  const [scorePeriod, setScorePeriod] = useState<string>('30-days');
 
   // Fetch user competencies analysis
   const { data: userCompetencies } = useQuery<{
@@ -1011,17 +1014,36 @@ export default function Dashboard() {
     });
   };
 
-  const chartData = scores.map(score => ({
-    date: score.date.split('-').reverse().join('/').slice(0, 5), // DD/MM format
-    nota: score.totalScore,
-    nome: score.examName
-  })).sort((a, b) => new Date(scores.find(s => s.totalScore === a.nota)?.date || 0).getTime() - new Date(scores.find(s => s.totalScore === b.nota)?.date || 0).getTime());
-
-  // Calculate dynamic Y-axis domain based on score values
-  const calculateYAxisDomain = () => {
-    if (scores.length === 0) return [0, 1000];
+  // Filter scores by selected period
+  const filteredScores = useMemo(() => {
+    const now = new Date();
+    const periodDays = {
+      '7-days': 7,
+      '30-days': 30,
+      '6-months': 180,
+    }[scorePeriod];
     
-    const scoreValues = scores.map(s => s.totalScore);
+    if (!periodDays) return scores;
+    
+    const cutoffDate = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
+    return scores.filter(score => new Date(score.date) >= cutoffDate);
+  }, [scores, scorePeriod]);
+
+  const chartData = filteredScores
+    .map(score => ({
+      date: score.date.split('-').reverse().join('/').slice(0, 5), // DD/MM format
+      nota: score.totalScore,
+      nome: score.examName,
+      fullDate: score.date // Keep original date for sorting
+    }))
+    .sort((a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime())
+    .map(({ date, nota, nome }) => ({ date, nota, nome })); // Remove fullDate from final data
+
+  // Calculate dynamic Y-axis domain based on filtered score values
+  const calculateYAxisDomain = () => {
+    if (filteredScores.length === 0) return [0, 1000];
+    
+    const scoreValues = filteredScores.map(s => s.totalScore);
     const minScore = Math.min(...scoreValues);
     const maxScore = Math.max(...scoreValues);
     
@@ -1989,7 +2011,7 @@ export default function Dashboard() {
             
             {/* Bottom Actions Row */}
             <div className="mt-4 flex items-center justify-between gap-4">
-              <Select defaultValue="30-days" data-testid="select-chart-period">
+              <Select value={scorePeriod} onValueChange={setScorePeriod} data-testid="select-chart-period">
                 <SelectTrigger className="w-40 border-bright-blue/30">
                   <SelectValue />
                 </SelectTrigger>
