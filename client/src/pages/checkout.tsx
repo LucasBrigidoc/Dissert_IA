@@ -61,10 +61,10 @@ export default function Checkout() {
     try {
       const response = await apiRequest(`/api/coupons/validate`, {
         method: "POST",
-        body: JSON.stringify({ 
+        body: { 
           code: couponCode.trim().toUpperCase(),
           planId: planAtValidate 
-        }),
+        },
       });
 
       // Only apply coupon if plan hasn't changed during validation
