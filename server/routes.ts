@@ -3592,6 +3592,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         planType
       );
       
+      // Record for admin dashboard analytics (this was missing - causing text modifications to not appear in dashboard)
+      const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+      await costTrackingService.trackAIOperation({
+        userId: req.session.userId,
+        ipAddress: ipAddress,
+        operation: `text_modification_${type}`,
+        tokensInput: promptTokens,
+        tokensOutput: outputTokens,
+        modelUsed: 'gemini-2.5-flash-lite',
+        source: result.source === 'cache' ? 'cache' : 'ai',
+        processingTime: 0
+      });
+      
       console.log(`💰 Text modification cost: ${promptTokens} input + ${outputTokens} output = ${costEstimate.estimatedCostBRL}`);
 
       res.json({

@@ -480,71 +480,39 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
       const response = result.response.text();
       
       // Extract real token counts from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
       const rawPromptTokens = usageMetadata.promptTokenCount || 0;
-      // Normalize candidatesTokenCount (can be array or number)
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
       const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
-      const rawTotalTokens = usageMetadata.totalTokenCount || 0;
+      const totalTokens = usageMetadata.totalTokenCount || 0;
       
-      // Calculate final values ensuring consistency: finalPromptTokens + finalOutputTokens = finalTotalTokens ALWAYS
-      let finalPromptTokens: number, finalOutputTokens: number, finalTotalTokens: number;
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let promptTokens = rawPromptTokens;
+      let outputTokens = rawOutputTokens;
       
-      if (rawTotalTokens > 0) {
-        // Total is authoritative, reconcile components to match it
-        finalTotalTokens = rawTotalTokens;
-        
-        if (rawPromptTokens > 0 && rawOutputTokens > 0) {
-          // All values present - reconcile if inconsistent
-          const rawSum = rawPromptTokens + rawOutputTokens;
-          if (Math.abs(rawSum - rawTotalTokens) <= 1) {
-            // Close enough (off by 1 due to rounding), use raw values
-            finalPromptTokens = rawPromptTokens;
-            finalOutputTokens = rawTotalTokens - finalPromptTokens; // Ensure exact match
-          } else if (rawSum > rawTotalTokens) {
-            // Components exceed total - scale down proportionally
-            const ratio = rawTotalTokens / rawSum;
-            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          } else {
-            // Components less than total - scale up proportionally
-            const ratio = rawTotalTokens / rawSum;
-            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          }
-        } else if (rawPromptTokens > 0) {
-          // Have total and prompt only
-          finalPromptTokens = Math.min(rawPromptTokens, rawTotalTokens);
-          finalOutputTokens = rawTotalTokens - finalPromptTokens;
-        } else if (rawOutputTokens > 0) {
-          // Have total and output only
-          finalOutputTokens = Math.min(rawOutputTokens, rawTotalTokens);
-          finalPromptTokens = rawTotalTokens - finalOutputTokens;
+      if (totalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== totalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = totalTokens / rawSum;
+          promptTokens = Math.round(rawPromptTokens * ratio);
+          outputTokens = totalTokens - promptTokens; // Ensure exact match
         } else {
-          // Only have total, use typical 60/40 split for chat
-          finalPromptTokens = Math.floor(rawTotalTokens * 0.6);
-          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+          // No component data, estimate 60/40 split for chat
+          promptTokens = Math.floor(totalTokens * 0.6);
+          outputTokens = totalTokens - promptTokens;
         }
-      } else if (rawPromptTokens > 0 || rawOutputTokens > 0) {
-        // No total but have at least one component - their sum IS the total
-        finalPromptTokens = Math.max(0, rawPromptTokens || 0);
-        finalOutputTokens = Math.max(0, rawOutputTokens || 0);
-        finalTotalTokens = finalPromptTokens + finalOutputTokens;
-      } else {
+      } else if (totalTokens === 0 && (rawPromptTokens === 0 && rawOutputTokens === 0)) {
         // No metadata at all, fallback to estimate
         const estimatedTokens = this.estimateTokens(optimizedPrompt);
-        finalTotalTokens = estimatedTokens;
-        finalPromptTokens = Math.floor(estimatedTokens * 0.6);
-        finalOutputTokens = estimatedTokens - finalPromptTokens;
+        promptTokens = Math.floor(estimatedTokens * 0.6);
+        outputTokens = estimatedTokens - promptTokens;
       }
       
-      const promptTokens = finalPromptTokens;
-      const outputTokens = finalOutputTokens;
-      const totalTokens = finalTotalTokens;
-      
-      console.log(`✅ Chat response generated (${promptTokens} in + ${outputTokens} out = ${totalTokens} tokens)`);
+      console.log(`✅ Chat response generated (${promptTokens} in + ${outputTokens} out = ${totalTokens} tokens) (Google AI Studio compatible)`);
       
       // 6. Store in intelligent cache
       intelligentCache.setTextModification(
@@ -756,62 +724,41 @@ Sua resposta deve ser completa e incluir orientação de próximos passos de for
       const response = result.response.text();
       
       // Extract real token counts from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
       console.log(`📊 Raw Gemini usage metadata:`, JSON.stringify(usageMetadata, null, 2));
       
       const rawPromptTokens = usageMetadata.promptTokenCount || 0;
-      // Normalize candidatesTokenCount (can be array or number)
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
       const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
-      const rawTotalTokens = usageMetadata.totalTokenCount || 0;
+      const finalTotalTokens = usageMetadata.totalTokenCount || 0;
       
-      // Calculate final values - prioritize component counts (prompt + output) over total
-      let finalPromptTokens: number, finalOutputTokens: number, finalTotalTokens: number;
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let finalPromptTokens = rawPromptTokens;
+      let finalOutputTokens = rawOutputTokens;
       
-      // Check if we have ANY real metadata from Gemini
-      if (rawPromptTokens > 0 || rawOutputTokens > 0 || rawTotalTokens > 0) {
-        // We have at least some real data - use it
-        if (rawPromptTokens > 0 && rawOutputTokens > 0) {
-          // Best case: we have both component counts - use them directly
-          finalPromptTokens = rawPromptTokens;
-          finalOutputTokens = rawOutputTokens;
-          finalTotalTokens = rawPromptTokens + rawOutputTokens;
-          
-          // If total is also provided, validate consistency
-          if (rawTotalTokens > 0 && Math.abs(finalTotalTokens - rawTotalTokens) > 1) {
-            console.warn(`⚠️ Token count mismatch: sum=${finalTotalTokens} vs total=${rawTotalTokens}, using sum`);
-          }
-        } else if (rawTotalTokens > 0) {
-          // We have total but not components - use total and distribute
-          finalTotalTokens = rawTotalTokens;
-          if (rawPromptTokens > 0) {
-            finalPromptTokens = Math.min(rawPromptTokens, rawTotalTokens);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          } else if (rawOutputTokens > 0) {
-            finalOutputTokens = Math.min(rawOutputTokens, rawTotalTokens);
-            finalPromptTokens = rawTotalTokens - finalOutputTokens;
-          } else {
-            // Only total available - estimate split (60% input, 40% output is typical)
-            finalPromptTokens = Math.floor(rawTotalTokens * 0.6);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          }
+      if (finalTotalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== finalTotalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = finalTotalTokens / rawSum;
+          finalPromptTokens = Math.round(rawPromptTokens * ratio);
+          finalOutputTokens = finalTotalTokens - finalPromptTokens; // Ensure exact match
         } else {
-          // We have one component but no total - use what we have
-          finalPromptTokens = rawPromptTokens || 0;
-          finalOutputTokens = rawOutputTokens || 0;
-          finalTotalTokens = finalPromptTokens + finalOutputTokens;
+          // No component data, estimate 60/40 split
+          finalPromptTokens = Math.floor(finalTotalTokens * 0.6);
+          finalOutputTokens = finalTotalTokens - finalPromptTokens;
         }
-      } else {
+      } else if (finalTotalTokens === 0 && (rawPromptTokens === 0 && rawOutputTokens === 0)) {
         // No metadata at all - use estimates as fallback
         console.warn(`⚠️ No Gemini usage metadata available, falling back to estimates`);
         finalPromptTokens = this.estimateTokens(optimizedPrompt);
         finalOutputTokens = this.estimateTokens(response);
-        finalTotalTokens = finalPromptTokens + finalOutputTokens;
       }
       
-      console.log(`💰 Token usage for repertoire generation: ${finalPromptTokens} input + ${finalOutputTokens} output = ${finalTotalTokens} total`);
+      console.log(`💰 Token usage for repertoire generation: ${finalPromptTokens} input + ${finalOutputTokens} output = ${finalTotalTokens} total (Google AI Studio compatible)`);
       
       // 5. Parse and validate repertoires
       const repertoires = this.parseRepertoireResponse(response, userFilters);

@@ -654,66 +654,38 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       const response = result.response.text().trim();
       
       // Extract real token counts from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
       const rawPromptTokens = usageMetadata.promptTokenCount || 0;
-      // Normalize candidatesTokenCount (can be array or number)
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
       const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
-      const rawTotalTokens = usageMetadata.totalTokenCount || 0;
+      const finalTotalTokens = usageMetadata.totalTokenCount || 0;
       
-      // Calculate final values ensuring consistency: finalPromptTokens + finalOutputTokens = finalTotalTokens ALWAYS
-      let finalPromptTokens: number, finalOutputTokens: number, finalTotalTokens: number;
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let finalPromptTokens = rawPromptTokens;
+      let finalOutputTokens = rawOutputTokens;
       
-      if (rawTotalTokens > 0) {
-        // Total is authoritative, reconcile components to match it
-        finalTotalTokens = rawTotalTokens;
-        
-        if (rawPromptTokens > 0 && rawOutputTokens > 0) {
-          // All values present - reconcile if inconsistent
-          const rawSum = rawPromptTokens + rawOutputTokens;
-          if (Math.abs(rawSum - rawTotalTokens) <= 1) {
-            // Close enough (off by 1 due to rounding), use raw values
-            finalPromptTokens = rawPromptTokens;
-            finalOutputTokens = rawTotalTokens - finalPromptTokens; // Ensure exact match
-          } else if (rawSum > rawTotalTokens) {
-            // Components exceed total - scale down proportionally
-            const ratio = rawTotalTokens / rawSum;
-            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          } else {
-            // Components less than total - scale up proportionally
-            const ratio = rawTotalTokens / rawSum;
-            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          }
-        } else if (rawPromptTokens > 0) {
-          // Have total and prompt only
-          finalPromptTokens = Math.min(rawPromptTokens, rawTotalTokens);
-          finalOutputTokens = rawTotalTokens - finalPromptTokens;
-        } else if (rawOutputTokens > 0) {
-          // Have total and output only
-          finalOutputTokens = Math.min(rawOutputTokens, rawTotalTokens);
-          finalPromptTokens = rawTotalTokens - finalOutputTokens;
+      if (finalTotalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== finalTotalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = finalTotalTokens / rawSum;
+          finalPromptTokens = Math.round(rawPromptTokens * ratio);
+          finalOutputTokens = finalTotalTokens - finalPromptTokens; // Ensure exact match
         } else {
-          // Only have total, use typical 70/30 split for text modification
-          finalPromptTokens = Math.floor(rawTotalTokens * 0.7);
-          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+          // No component data, estimate 70/30 split for text modification
+          finalPromptTokens = Math.floor(finalTotalTokens * 0.7);
+          finalOutputTokens = finalTotalTokens - finalPromptTokens;
         }
-      } else if (rawPromptTokens > 0 || rawOutputTokens > 0) {
-        // No total but have at least one component - their sum IS the total
-        finalPromptTokens = Math.max(0, rawPromptTokens || 0);
-        finalOutputTokens = Math.max(0, rawOutputTokens || 0);
-        finalTotalTokens = finalPromptTokens + finalOutputTokens;
-      } else {
+      } else if (finalTotalTokens === 0 && (rawPromptTokens === 0 && rawOutputTokens === 0)) {
         // No metadata at all, fallback to estimate
-        finalTotalTokens = Math.max(1, optimizedTokens);
-        finalPromptTokens = Math.floor(finalTotalTokens * 0.7);
-        finalOutputTokens = finalTotalTokens - finalPromptTokens;
+        finalPromptTokens = Math.max(1, Math.floor(optimizedTokens * 0.7));
+        finalOutputTokens = Math.max(1, optimizedTokens - finalPromptTokens);
       }
       
-      console.log(`✅ Text modification (${finalPromptTokens} in + ${finalOutputTokens} out = ${finalTotalTokens} tokens)`);
+      console.log(`✅ Text modification (${finalPromptTokens} in + ${finalOutputTokens} out = ${finalTotalTokens} tokens) (Google AI Studio compatible)`);
       
       // Enhanced cleanup of AI response
       const modifiedText = this.cleanAIResponse(response);
@@ -791,69 +763,41 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       const response = result.response.text();
       
       // Extract real token counts from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
       const rawPromptTokens = usageMetadata.promptTokenCount || 0;
-      // Normalize candidatesTokenCount (can be array or number)
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
       const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
-      const rawTotalTokens = usageMetadata.totalTokenCount || 0;
+      const finalTotalTokens = usageMetadata.totalTokenCount || 0;
       
       // Parse AI response
       const correction = this.parseEssayCorrection(response, essayText);
       
-      // Calculate final values ensuring consistency: finalPromptTokens + finalOutputTokens = finalTotalTokens ALWAYS
-      let finalPromptTokens: number, finalOutputTokens: number, finalTotalTokens: number;
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let finalPromptTokens = rawPromptTokens;
+      let finalOutputTokens = rawOutputTokens;
       
-      if (rawTotalTokens > 0) {
-        // Total is authoritative, reconcile components to match it
-        finalTotalTokens = rawTotalTokens;
-        
-        if (rawPromptTokens > 0 && rawOutputTokens > 0) {
-          // All values present - reconcile if inconsistent
-          const rawSum = rawPromptTokens + rawOutputTokens;
-          if (Math.abs(rawSum - rawTotalTokens) <= 1) {
-            // Close enough (off by 1 due to rounding), use raw values
-            finalPromptTokens = rawPromptTokens;
-            finalOutputTokens = rawTotalTokens - finalPromptTokens; // Ensure exact match
-          } else if (rawSum > rawTotalTokens) {
-            // Components exceed total - scale down proportionally
-            const ratio = rawTotalTokens / rawSum;
-            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          } else {
-            // Components less than total - scale up proportionally
-            const ratio = rawTotalTokens / rawSum;
-            finalPromptTokens = Math.floor(rawPromptTokens * ratio);
-            finalOutputTokens = rawTotalTokens - finalPromptTokens;
-          }
-        } else if (rawPromptTokens > 0) {
-          // Have total and prompt only
-          finalPromptTokens = Math.min(rawPromptTokens, rawTotalTokens);
-          finalOutputTokens = rawTotalTokens - finalPromptTokens;
-        } else if (rawOutputTokens > 0) {
-          // Have total and output only
-          finalOutputTokens = Math.min(rawOutputTokens, rawTotalTokens);
-          finalPromptTokens = rawTotalTokens - finalOutputTokens;
+      if (finalTotalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== finalTotalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = finalTotalTokens / rawSum;
+          finalPromptTokens = Math.round(rawPromptTokens * ratio);
+          finalOutputTokens = finalTotalTokens - finalPromptTokens; // Ensure exact match
         } else {
-          // Only have total, use typical 75/25 split for essay correction
-          finalPromptTokens = Math.floor(rawTotalTokens * 0.75);
-          finalOutputTokens = rawTotalTokens - finalPromptTokens;
+          // No component data, estimate 75/25 split for essay correction
+          finalPromptTokens = Math.floor(finalTotalTokens * 0.75);
+          finalOutputTokens = finalTotalTokens - finalPromptTokens;
         }
-      } else if (rawPromptTokens > 0 || rawOutputTokens > 0) {
-        // No total but have at least one component - their sum IS the total
-        finalPromptTokens = Math.max(0, rawPromptTokens || 0);
-        finalOutputTokens = Math.max(0, rawOutputTokens || 0);
-        finalTotalTokens = finalPromptTokens + finalOutputTokens;
-      } else {
+      } else if (finalTotalTokens === 0 && (rawPromptTokens === 0 && rawOutputTokens === 0)) {
         // No metadata at all, fallback to estimate (essay correction typically uses ~800 tokens)
-        finalTotalTokens = 800;
         finalPromptTokens = 600;
         finalOutputTokens = 200;
       }
       
-      console.log(`✅ Essay correction (${finalPromptTokens} in + ${finalOutputTokens} out = ${finalTotalTokens} tokens, Score: ${correction.totalScore || 'N/A'})`);
+      console.log(`✅ Essay correction (${finalPromptTokens} in + ${finalOutputTokens} out = ${finalTotalTokens} tokens, Score: ${correction.totalScore || 'N/A'}) (Google AI Studio compatible)`);
       
       // Attach token usage to correction result
       correction.tokensUsed = finalTotalTokens;

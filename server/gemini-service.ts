@@ -181,15 +181,34 @@ Responda APENAS com JSON válido no formato:
       const response = result.response.text();
       
       // Extract token usage metadata from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
-      const promptTokens = usageMetadata.promptTokenCount || 0;
+      const rawPromptTokens = usageMetadata.promptTokenCount || 0;
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
-      const outputTokens = Array.isArray(rawOutputTokensValue) 
+      const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum: number, count: number) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
       const totalTokens = usageMetadata.totalTokenCount || 0;
       
-      console.log(`📖 Gemini knowledge response received - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens}`);
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let promptTokens = rawPromptTokens;
+      let outputTokens = rawOutputTokens;
+      
+      if (totalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== totalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = totalTokens / rawSum;
+          promptTokens = Math.round(rawPromptTokens * ratio);
+          outputTokens = totalTokens - promptTokens; // Ensure exact match
+        } else {
+          // No component data, estimate 70/30 split
+          promptTokens = Math.floor(totalTokens * 0.7);
+          outputTokens = totalTokens - promptTokens;
+        }
+      }
+      
+      console.log(`📖 Gemini knowledge response - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens} (Google AI Studio compatible)`);
       
       // Parse response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -270,15 +289,34 @@ Responda APENAS com JSON válido no formato:
       const response = result.response.text();
       
       // Extract token usage metadata from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
-      const promptTokens = usageMetadata.promptTokenCount || 0;
+      const rawPromptTokens = usageMetadata.promptTokenCount || 0;
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
-      const outputTokens = Array.isArray(rawOutputTokensValue) 
+      const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum: number, count: number) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
       const totalTokens = usageMetadata.totalTokenCount || 0;
       
-      console.log(`📊 Gemini Proposal Generation - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens}`);
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let promptTokens = rawPromptTokens;
+      let outputTokens = rawOutputTokens;
+      
+      if (totalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== totalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = totalTokens / rawSum;
+          promptTokens = Math.round(rawPromptTokens * ratio);
+          outputTokens = totalTokens - promptTokens; // Ensure exact match
+        } else {
+          // No component data, estimate 70/30 split
+          promptTokens = Math.floor(totalTokens * 0.7);
+          outputTokens = totalTokens - promptTokens;
+        }
+      }
+      
+      console.log(`📊 Gemini Proposal Generation - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens} (Google AI Studio compatible)`);
       
       // Parse AI response
       const proposals = this.parseProposalsResponse(response, config);
@@ -494,15 +532,34 @@ INSTRUÇÕES IMPORTANTES:
       const text = response.text();
 
       // Extract token usage metadata from Gemini response
+      // Use totalTokenCount as authoritative source (matches Google AI Studio exactly)
       const usageMetadata = result.response.usageMetadata || {};
-      const promptTokens = usageMetadata.promptTokenCount || 0;
+      const rawPromptTokens = usageMetadata.promptTokenCount || 0;
       const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
-      const outputTokens = Array.isArray(rawOutputTokensValue) 
+      const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
         ? rawOutputTokensValue.reduce((sum, count) => sum + (count || 0), 0)
         : (rawOutputTokensValue || 0);
       const totalTokens = usageMetadata.totalTokenCount || 0;
+      
+      // Reconcile component tokens to match official totalTokenCount (includes system tokens)
+      let promptTokens = rawPromptTokens;
+      let outputTokens = rawOutputTokens;
+      
+      if (totalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== totalTokens) {
+        // Total is authoritative - adjust components proportionally to match
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = totalTokens / rawSum;
+          promptTokens = Math.round(rawPromptTokens * ratio);
+          outputTokens = totalTokens - promptTokens; // Ensure exact match
+        } else {
+          // No component data, estimate 70/30 split
+          promptTokens = Math.floor(totalTokens * 0.7);
+          outputTokens = totalTokens - promptTokens;
+        }
+      }
 
-      console.log(`📊 Gemini Essay Outline - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens}`);
+      console.log(`📊 Gemini Essay Outline - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens} (Google AI Studio compatible)`);
 
       const outline = this.parseOutlineResponse(text, questionnaireData.proposal);
       
