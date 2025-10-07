@@ -4416,18 +4416,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
-        const costs = await db.query.userCosts.findMany({
-          where: (costs, { eq, gte, and, isNotNull }) => 
+        // Get plan type for weekly usage
+        const planType = subscription?.status === 'active' && plan?.name !== 'Free' ? 'pro' : 'free';
+
+        // Get current period usage from weekly_usage table (same as shown in progress bar)
+        const periodStart = planType === 'pro' 
+          ? (() => {
+              const date = new Date();
+              const dayOfWeek = date.getDay();
+              const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+              date.setDate(date.getDate() - daysToMonday);
+              date.setHours(0, 0, 0, 0);
+              return date;
+            })()
+          : (() => {
+              const date = new Date();
+              const dayOfMonth = date.getDate();
+              const periodIndex = Math.floor((dayOfMonth - 1) / 15);
+              const periodStartDay = (periodIndex * 15) + 1;
+              date.setDate(periodStartDay);
+              date.setHours(0, 0, 0, 0);
+              return date;
+            })();
+
+        const weeklyUsage = await db.query.weeklyUsage.findFirst({
+          where: (usage, { eq, and }) => 
             and(
-              isNotNull(costs.userId),
-              eq(costs.userId, user.id),
-              gte(costs.createdAt, startDate)
+              eq(usage.identifier, `user_${user.id}`),
+              eq(usage.weekStart, periodStart)
             )
         });
 
-        const totalCostCentavos = costs.reduce((sum, cost) => sum + (cost.costBrl || 0), 0);
-        const totalCost = totalCostCentavos / 100;
-        const totalTokens = costs.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
+        // Get all-time tokens from user_costs
+        const allCosts = await db.query.userCosts.findMany({
+          where: (costs, { eq, and, isNotNull }) => 
+            and(
+              isNotNull(costs.userId),
+              eq(costs.userId, user.id)
+            )
+        });
+
+        const totalTokens = allCosts.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
 
         return {
           id: user.id,
@@ -4450,9 +4479,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             price: '0.00'
           },
           usage: {
-            totalCost,
+            totalCost: (weeklyUsage?.totalCostCentavos || 0) / 100,
             totalTokens,
-            operationCount: costs.length
+            operationCount: weeklyUsage?.operationCount || 0
           }
         };
       }));
