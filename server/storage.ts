@@ -3973,10 +3973,10 @@ export class DbStorage implements IStorage {
       .onConflictDoUpdate({
         target: [schema.weeklyUsage.identifier, schema.weeklyUsage.weekStart],
         set: {
-          totalCostCentavos: sql`weekly_usage.total_cost_centavos + ${insertUsage.totalCostCentavos || 0}`,
-          operationCount: sql`weekly_usage.operation_count + ${insertUsage.operationCount || 0}`,
-          operationBreakdown: sql`weekly_usage.operation_breakdown || ${insertUsage.operationBreakdown || {}}::jsonb`,
-          costBreakdown: sql`weekly_usage.cost_breakdown || ${insertUsage.costBreakdown || {}}::jsonb`,
+          totalCostCentavos: sqlQuery`weekly_usage.total_cost_centavos + ${insertUsage.totalCostCentavos || 0}`,
+          operationCount: sqlQuery`weekly_usage.operation_count + ${insertUsage.operationCount || 0}`,
+          operationBreakdown: sqlQuery`weekly_usage.operation_breakdown || ${insertUsage.operationBreakdown || {}}::jsonb`,
+          costBreakdown: sqlQuery`weekly_usage.cost_breakdown || ${insertUsage.costBreakdown || {}}::jsonb`,
           lastOperation: insertUsage.lastOperation || new Date(),
           updatedAt: new Date(),
         },

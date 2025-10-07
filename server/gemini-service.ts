@@ -180,13 +180,22 @@ Responda APENAS com JSON válido no formato:
       const result = await this.model.generateContent(searchPrompt);
       const response = result.response.text();
       
-      console.log(`📖 Gemini knowledge response received`);
+      // Extract token usage metadata from Gemini response
+      const usageMetadata = result.response.usageMetadata || {};
+      const promptTokens = usageMetadata.promptTokenCount || 0;
+      const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
+      const outputTokens = Array.isArray(rawOutputTokensValue) 
+        ? rawOutputTokensValue.reduce((sum: number, count: number) => sum + (count || 0), 0)
+        : (rawOutputTokensValue || 0);
+      const totalTokens = usageMetadata.totalTokenCount || 0;
+      
+      console.log(`📖 Gemini knowledge response received - Tokens: prompt=${promptTokens}, output=${outputTokens}, total=${totalTokens}`);
       
       // Parse response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         console.log('⚠️ No JSON found in Gemini response');
-        return { found: false, proposals: [], similarProposals: [] };
+        return { found: false, proposals: [], similarProposals: [], tokensUsed: totalTokens, promptTokens, outputTokens };
       }
       
       const parsed = JSON.parse(jsonMatch[0]);
@@ -201,7 +210,10 @@ Responda APENAS com JSON válido no formato:
             source: 'gemini_knowledge'
           })),
           similarProposals: [],
-          message: parsed.message
+          message: parsed.message,
+          tokensUsed: totalTokens,
+          promptTokens,
+          outputTokens
         };
       } else if (!parsed.found && parsed.similarProposals && parsed.similarProposals.length > 0) {
         console.log(`ℹ️ Gemini generated ${parsed.similarProposals.length} similar proposal(s)`);
@@ -213,7 +225,10 @@ Responda APENAS com JSON válido no formato:
             isAiGenerated: false,
             source: 'gemini_knowledge_similar'
           })),
-          message: parsed.message || `Não encontrei informações sobre ${query}, mas conheço estas provas similares:`
+          message: parsed.message || `Não encontrei informações sobre ${query}, mas conheço estas provas similares:`,
+          tokensUsed: totalTokens,
+          promptTokens,
+          outputTokens
         };
       }
       
@@ -222,12 +237,15 @@ Responda APENAS com JSON válido no formato:
         found: false,
         proposals: [],
         similarProposals: [],
-        message: parsed.message || 'Não encontrei essa prova específica no meu conhecimento'
+        message: parsed.message || 'Não encontrei essa prova específica no meu conhecimento',
+        tokensUsed: totalTokens,
+        promptTokens,
+        outputTokens
       };
       
     } catch (error) {
       console.error('Error searching real proposals from Gemini knowledge:', error);
-      return { found: false, proposals: [], similarProposals: [] };
+      return { found: false, proposals: [], similarProposals: [], tokensUsed: 0, promptTokens: 0, outputTokens: 0 };
     }
   }
 

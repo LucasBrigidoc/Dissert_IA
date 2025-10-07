@@ -2974,6 +2974,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const futureExamDetection = detectFutureExam(query);
       
       const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
       
       console.log(`🔍 Proposal search request: "${query}", identifier: ${identifier}${futureExamDetection.isFuture ? ' [FUTURE EXAM DETECTED]' : ''}`);
       
@@ -3071,6 +3074,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
               searchYear
             );
             
+            // Track AI usage for knowledge search
+            if (knowledgeResult.tokensUsed > 0) {
+              const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+              await costTrackingService.trackAIOperation({
+                userId: req.user?.id,
+                ipAddress: ipAddress,
+                operation: 'proposal_knowledge_search',
+                tokensInput: knowledgeResult.promptTokens || 0,
+                tokensOutput: knowledgeResult.outputTokens || 0,
+                modelUsed: 'gemini-2.5-flash-lite',
+                source: 'ai',
+                processingTime: 0
+              });
+              
+              await weeklyCostLimitingService.recordAIOperationWithTokens(
+                identifier,
+                'proposal_knowledge_search',
+                knowledgeResult.promptTokens || 0,
+                knowledgeResult.outputTokens || 0,
+                planType
+              );
+            }
+            
             // If Gemini knows the real proposal, save it
             if (knowledgeResult.found && knowledgeResult.proposals.length > 0) {
               for (const realProposal of knowledgeResult.proposals) {
@@ -3105,7 +3131,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
               enhancedKeywords
             );
             
-            const aiProposals = aiResult.proposals;
+            const { proposals: aiProposals, promptTokens, outputTokens, tokensUsed } = aiResult;
+            
+            // Track AI usage for proposal generation in search
+            if (tokensUsed > 0) {
+              const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+              await costTrackingService.trackAIOperation({
+                userId: req.user?.id,
+                ipAddress: ipAddress,
+                operation: 'proposal_search_generate',
+                tokensInput: promptTokens || 0,
+                tokensOutput: outputTokens || 0,
+                modelUsed: 'gemini-2.5-flash-lite',
+                source: 'ai',
+                processingTime: 0
+              });
+              
+              await weeklyCostLimitingService.recordAIOperationWithTokens(
+                identifier,
+                'proposal_search_generate',
+                promptTokens || 0,
+                outputTokens || 0,
+                planType
+              );
+            }
             
             // Save generated proposals to storage with exam metadata
             for (const aiProposal of aiProposals) {
