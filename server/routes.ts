@@ -4478,18 +4478,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
-        // Get user costs for the same time period as the dashboard overview
+        // Get ALL user costs (historical total, not filtered by time)
         const userCosts = await db.query.userCosts.findMany({
-          where: (costs, { eq, and, isNotNull, gte, lte }) => 
+          where: (costs, { eq, and, isNotNull }) => 
             and(
               isNotNull(costs.userId),
-              eq(costs.userId, user.id),
-              gte(costs.createdAt, startDate),
-              lte(costs.createdAt, endDate)
+              eq(costs.userId, user.id)
             )
         });
 
-        // Calculate totals from user_costs (same as overview)
+        // Calculate historical totals from all user_costs
         const totalCostCentavos = userCosts.reduce((sum, cost) => sum + cost.costBrl, 0);
         const totalTokens = userCosts.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
         const operationCount = userCosts.length;
