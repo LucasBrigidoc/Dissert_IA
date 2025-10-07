@@ -4637,6 +4637,9 @@ export class DbStorage implements IStorage {
     activeUsers: number;
     totalOperations: number;
     totalCostBrl: number;
+    totalTokens: number;
+    totalInputTokens: number;
+    totalOutputTokens: number;
     averageCostPerUser: number;
     topOperations: Array<{ operation: string; count: number; cost: number }>;
     dailyTrends: Array<{ date: string; operations: number; cost: number; users: number }>;
@@ -4658,7 +4661,9 @@ export class DbStorage implements IStorage {
     const activeUsers = uniqueIdentifiers.size;
     
     const totalCostBrl = costs.reduce((sum, c) => sum + c.costBrl, 0);
-    const totalTokens = costs.reduce((sum, c) => sum + c.tokensInput + c.tokensOutput, 0);
+    const totalInputTokens = costs.reduce((sum, c) => sum + c.tokensInput, 0);
+    const totalOutputTokens = costs.reduce((sum, c) => sum + c.tokensOutput, 0);
+    const totalTokens = totalInputTokens + totalOutputTokens;
     const totalOperations = costs.length;
     const averageCostPerUser = activeUsers > 0 ? totalCostBrl / activeUsers : 0;
     
@@ -4708,6 +4713,8 @@ export class DbStorage implements IStorage {
       totalOperations,
       totalCostBrl,
       totalTokens,
+      totalInputTokens,
+      totalOutputTokens,
       averageCostPerUser,
       topOperations,
       dailyTrends,

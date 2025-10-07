@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -14,6 +14,8 @@ interface BusinessOverview {
   totalOperations: number;
   totalCostBrl: number;
   totalTokens: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
   averageCostPerUser: number;
   topOperations: Array<{ operation: string; count: number; cost: number }>;
   dailyTrends: Array<{ date: string; operations: number; cost: number; users: number }>;
@@ -525,7 +527,7 @@ export default function AdminDashboard() {
               {(overview?.totalTokens || 0).toLocaleString('pt-BR')}
             </div>
             <p className="text-xs text-muted-foreground">
-              Uso total de todos os usuários
+              Entrada + Saída
             </p>
           </CardContent>
         </Card>
@@ -541,6 +543,39 @@ export default function AdminDashboard() {
             </div>
             <p className="text-xs text-muted-foreground">
               Economia de custos por cache hits
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Token breakdown cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <Card data-testid="card-input-tokens">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">📥 Tokens de Entrada (Input)</CardTitle>
+            <ArrowDownToLine className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold" data-testid="text-input-tokens">
+              {(overview?.totalInputTokens || 0).toLocaleString('pt-BR')}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Compatível com Google AI Studio
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-output-tokens">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">📤 Tokens de Saída (Output)</CardTitle>
+            <ArrowUpFromLine className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold" data-testid="text-output-tokens">
+              {(overview?.totalOutputTokens || 0).toLocaleString('pt-BR')}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Respostas geradas pela IA
             </p>
           </CardContent>
         </Card>
