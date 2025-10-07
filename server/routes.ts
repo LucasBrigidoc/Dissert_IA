@@ -4478,8 +4478,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
-        // Get ALL user costs (historical total, not filtered by time)
-        const userCosts = await db.query.userCosts.findMany({
+        // Get ALL user costs (by userId)
+        const userCostsById = await db.query.userCosts.findMany({
           where: (costs, { eq, and, isNotNull }) => 
             and(
               isNotNull(costs.userId),
@@ -4487,10 +4487,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
             )
         });
 
+        // Get unique IPs this user has used when authenticated
+        const userIps = new Set(userCostsById.map(cost => cost.ipAddress).filter(Boolean));
+
+        // Get costs from those same IPs ONLY IF userId is null (unauthenticated) - separate query
+        let costsByIp: any[] = [];
+        if (userIps.size > 0) {
+          costsByIp = await db.query.userCosts.findMany({
+            where: (costs, { inArray, isNull, and }) => 
+              and(
+                isNull(costs.userId),  // Only costs without userId
+                inArray(costs.ipAddress, Array.from(userIps))
+              )
+          });
+        }
+
+        // Combine and deduplicate costs
+        const allCostsMap = new Map();
+        [...userCostsById, ...costsByIp].forEach(cost => {
+          allCostsMap.set(cost.id, cost);
+        });
+        const uniqueCosts = Array.from(allCostsMap.values());
+
         // Calculate historical totals from all user_costs
-        const totalCostCentavos = userCosts.reduce((sum, cost) => sum + cost.costBrl, 0);
-        const totalTokens = userCosts.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
-        const operationCount = userCosts.length;
+        const totalCostCentavos = uniqueCosts.reduce((sum, cost) => sum + cost.costBrl, 0);
+        const totalTokens = uniqueCosts.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
+        const operationCount = uniqueCosts.length;
 
         return {
           id: user.id,
