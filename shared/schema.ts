@@ -1,5 +1,5 @@
 import { sql, relations } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, json, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, json, jsonb, uniqueIndex, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -100,8 +100,8 @@ export const weeklyUsage = pgTable("weekly_usage", {
   weekStart: timestamp("week_start").notNull(), // Start of the week (Monday 00:00)
   totalCostCentavos: integer("total_cost_centavos").default(0), // Total cost in centavos
   operationCount: integer("operation_count").default(0), // Total operations count
-  operationBreakdown: json("operation_breakdown").default({}), // Count by operation type
-  costBreakdown: json("cost_breakdown").default({}), // Cost by operation type
+  operationBreakdown: jsonb("operation_breakdown").default({}), // Count by operation type
+  costBreakdown: jsonb("cost_breakdown").default({}), // Cost by operation type
   lastOperation: timestamp("last_operation").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

@@ -109,11 +109,10 @@ export class WeeklyCostLimitingService {
     weekEnd: Date;
     daysUntilReset: number;
   }> {
-    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
-    const currentUsage = usageRecord.totalCostCentavos || 0;
-    const projectedUsage = currentUsage + estimatedCostCentavos;
-    
     const periodStart = this.getPeriodStart(planType);
+    const usageRecord = await this.storage.findWeeklyUsage(identifier, periodStart);
+    const currentUsage = usageRecord?.totalCostCentavos || 0;
+    const projectedUsage = currentUsage + estimatedCostCentavos;
     const periodEnd = new Date(periodStart);
     
     if (planType === 'free' && periodStart.getDate() >= 16) {
@@ -253,36 +252,35 @@ export class WeeklyCostLimitingService {
       usagePercentage: number;
     };
   }> {
-    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
+    const periodStart = this.getPeriodStart(planType);
     
-    // Update usage counters
-    const newTotalCost = (usageRecord.totalCostCentavos || 0) + costCentavos;
-    const newOperationCount = (usageRecord.operationCount || 0) + 1;
+    // Use UPSERT to avoid race conditions
+    const operationBreakdown: Record<string, number> = {};
+    operationBreakdown[operation] = 1;
     
-    const operationBreakdown = { ...(usageRecord.operationBreakdown as any || {}) };
-    const costBreakdown = { ...(usageRecord.costBreakdown as any || {}) };
-    
-    operationBreakdown[operation] = (operationBreakdown[operation] || 0) + 1;
-    costBreakdown[operation] = (costBreakdown[operation] || 0) + costCentavos;
+    const costBreakdown: Record<string, number> = {};
+    costBreakdown[operation] = costCentavos;
 
-    // Update the usage record
-    const updatedUsage = await this.storage.updateWeeklyUsage(usageRecord.id, {
-      totalCostCentavos: newTotalCost,
-      operationCount: newOperationCount,
+    const updatedUsage = await this.storage.upsertWeeklyUsage({
+      identifier,
+      weekStart: periodStart,
+      totalCostCentavos: costCentavos,
+      operationCount: 1,
       operationBreakdown,
       costBreakdown,
       lastOperation: new Date(),
     });
 
     const limitCentavos = this.getLimitCentavos(planType);
-    const usagePercentage = Math.min(100, (newTotalCost / limitCentavos) * 100);
-    const remaining = Math.max(0, limitCentavos - newTotalCost);
+    const totalCost = updatedUsage.totalCostCentavos || 0;
+    const usagePercentage = Math.min(100, (totalCost / limitCentavos) * 100);
+    const remaining = Math.max(0, limitCentavos - totalCost);
 
     return {
       success: true,
       newUsage: updatedUsage,
       usageStats: {
-        currentUsageCentavos: newTotalCost,
+        currentUsageCentavos: totalCost,
         limitCentavos,
         remainingCentavos: remaining,
         usagePercentage
@@ -311,10 +309,10 @@ export class WeeklyCostLimitingService {
       remainingBRL: string;
     };
   }> {
-    const usageRecord = await this.getOrCreateUsageRecord(identifier, planType);
-    const currentUsage = usageRecord.totalCostCentavos || 0;
-    
     const periodStart = this.getPeriodStart(planType);
+    const usageRecord = await this.storage.findWeeklyUsage(identifier, periodStart);
+    const currentUsage = usageRecord?.totalCostCentavos || 0;
+    
     const periodEnd = new Date(periodStart);
     periodEnd.setDate(periodEnd.getDate() + this.getPeriodDays(planType));
     
@@ -338,9 +336,9 @@ export class WeeklyCostLimitingService {
       remainingCentavos: remaining,
       usagePercentage,
       remainingPercentage,
-      operationCount: usageRecord.operationCount || 0,
-      operationBreakdown: usageRecord.operationBreakdown as any || {},
-      costBreakdown: usageRecord.costBreakdown as any || {},
+      operationCount: usageRecord?.operationCount || 0,
+      operationBreakdown: (usageRecord?.operationBreakdown as any) || {},
+      costBreakdown: (usageRecord?.costBreakdown as any) || {},
       weekStart: periodStart,
       weekEnd: periodEnd,
       daysUntilReset,
