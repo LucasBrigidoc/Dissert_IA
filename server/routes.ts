@@ -2656,7 +2656,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Record for admin dashboard analytics
           const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
           await costTrackingService.trackAIOperation({
-            userId: req.user?.id,
+            userId: req.session.userId,
             ipAddress: ipAddress,
             operation: 'repertoire_generation',
             tokensInput: repertoireResult.tokensInput,
@@ -3078,7 +3078,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (knowledgeResult.tokensUsed > 0) {
               const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
               await costTrackingService.trackAIOperation({
-                userId: req.user?.id,
+                userId: req.session.userId,
                 ipAddress: ipAddress,
                 operation: 'proposal_knowledge_search',
                 tokensInput: knowledgeResult.promptTokens || 0,
@@ -3137,7 +3137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (tokensUsed > 0) {
               const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
               await costTrackingService.trackAIOperation({
-                userId: req.user?.id,
+                userId: req.session.userId,
                 ipAddress: ipAddress,
                 operation: 'proposal_search_generate',
                 tokensInput: promptTokens || 0,
@@ -3246,7 +3246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record for admin dashboard analytics
       const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
       await costTrackingService.trackAIOperation({
-        userId: req.user?.id,
+        userId: req.session.userId,
         ipAddress: ipAddress,
         operation: 'proposal_generation',
         tokensInput: promptTokens,
@@ -5185,7 +5185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record for admin dashboard analytics
       const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
       await costTrackingService.trackAIOperation({
-        userId: req.user?.id,
+        userId: req.session.userId,
         ipAddress: ipAddress,
         operation: 'essay_outline',
         tokensInput: result.promptTokens || 0,
