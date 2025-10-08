@@ -1892,7 +1892,7 @@ export default function Dashboard() {
               </div>
               <h4 className="text-sm md:text-base font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
-            <div className="h-56 md:h-72 bg-white rounded-2xl border-2 border-bright-blue/20 p-3 md:p-6 shadow-lg" data-testid="chart-evolution">
+            <div className="relative h-56 md:h-72 bg-white rounded-2xl border-2 border-bright-blue/20 p-3 md:p-6 shadow-lg z-10" data-testid="chart-evolution">
               {scoresLoading ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="animate-pulse text-center">
@@ -1960,7 +1960,7 @@ export default function Dashboard() {
                     tickCount={6}
                   />
                   <Tooltip 
-                    wrapperStyle={{ zIndex: 9999 }}
+                    wrapperStyle={{ zIndex: 99999, position: 'relative' }}
                     contentStyle={{ 
                       backgroundColor: 'rgba(255, 255, 255, 0.98)', 
                       border: '2px solid #5087ff',
