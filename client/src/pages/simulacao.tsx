@@ -1046,36 +1046,6 @@ export default function SimulacaoPage() {
                 </div>
               )}
 
-              {/* Statistics */}
-              {correctionData.statistics && (
-                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <div className="flex items-center mb-3">
-                    <BarChart3 className="text-gray-600 mr-2" size={18} />
-                    <h4 className="font-semibold text-gray-800">Estatísticas da Redação</h4>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
-                      <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.wordCount}</div>
-                      <div className="text-xs text-gray-500">Palavras</div>
-                    </div>
-                    {correctionData.statistics.paragraphCount && (
-                      <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
-                        <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.paragraphCount}</div>
-                        <div className="text-xs text-gray-500">Parágrafos</div>
-                      </div>
-                    )}
-                    <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
-                      <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.averageWordsPerSentence}</div>
-                      <div className="text-xs text-gray-500">Palavras/Frase</div>
-                    </div>
-                    <div className="text-center p-3 bg-white rounded-lg border border-gray-100">
-                      <div className="text-2xl font-bold text-gray-700">{correctionData.statistics.readingTime}</div>
-                      <div className="text-xs text-gray-500">Tempo Leitura</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button 
