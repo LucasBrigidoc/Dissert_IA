@@ -109,6 +109,7 @@ export interface IStorage {
   
   // User scores operations
   getUserScores(userId: string): Promise<UserScore[]>;
+  getUserScoreBySourceId(userId: string, sourceId: string): Promise<UserScore | undefined>;
   createUserScore(score: InsertUserScore): Promise<UserScore>;
   updateUserScore(id: string, score: Partial<UserScore>): Promise<UserScore>;
   deleteUserScore(id: string): Promise<boolean>;
@@ -1535,6 +1536,11 @@ export class MemStorage implements IStorage {
       .filter(score => score.userId === userId)
       .sort((a, b) => new Date(b.scoreDate).getTime() - new Date(a.scoreDate).getTime());
     return scores;
+  }
+
+  async getUserScoreBySourceId(userId: string, sourceId: string): Promise<UserScore | undefined> {
+    return Array.from(this.userScores.values())
+      .find(score => score.userId === userId && score.sourceId === sourceId);
   }
 
   async createUserScore(score: InsertUserScore): Promise<UserScore> {
@@ -4496,6 +4502,16 @@ export class DbStorage implements IStorage {
       orderBy: [desc(schema.userScores.scoreDate)],
     });
     return scores;
+  }
+
+  async getUserScoreBySourceId(userId: string, sourceId: string): Promise<UserScore | undefined> {
+    const score = await db.query.userScores.findFirst({
+      where: and(
+        eq(schema.userScores.userId, userId),
+        eq(schema.userScores.sourceId, sourceId)
+      ),
+    });
+    return score;
   }
 
   async createUserScore(insertScore: InsertUserScore): Promise<UserScore> {

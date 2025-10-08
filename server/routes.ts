@@ -3793,7 +3793,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           const competencies = correction.competencies || [];
           
-          await storage.createUserScore({
+          const scoreData = {
             userId: req.session.userId,
             score: correction.totalScore,
             competence1: competencies[0]?.score ?? null,
@@ -3802,11 +3802,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
             competence4: competencies[3]?.score ?? null,
             competence5: competencies[4]?.score ?? null,
             examName: topic || 'Redação ENEM',
-            source: simulationId ? 'simulation' : 'essay',
+            source: (simulationId ? 'simulation' : 'essay') as 'simulation' | 'essay' | 'manual',
             sourceId: simulationId || null,
             scoreDate: new Date()
-          });
-          console.log(`✅ Saved score ${correction.totalScore} with competencies [${competencies.map((c: any) => c?.score).join(', ')}] to userScores for user ${req.session.userId}`);
+          };
+
+          // Check if score already exists for this simulation
+          if (simulationId) {
+            console.log(`🔍 Checking for existing score with simulationId: ${simulationId}, userId: ${req.session.userId}`);
+            const existingScore = await storage.getUserScoreBySourceId(req.session.userId, simulationId);
+            
+            if (existingScore) {
+              // Update existing score
+              await storage.updateUserScore(existingScore.id, scoreData);
+              console.log(`✅ Updated existing score ${correction.totalScore} (ID: ${existingScore.id}) for simulation ${simulationId}`);
+            } else {
+              // Create new score
+              await storage.createUserScore(scoreData);
+              console.log(`✅ Created new score ${correction.totalScore} for simulation ${simulationId}`);
+            }
+          } else {
+            // No simulation ID, always create new score
+            await storage.createUserScore(scoreData);
+            console.log(`✅ Saved score ${correction.totalScore} without simulationId to userScores for user ${req.session.userId}`);
+          }
 
           // Update user progress (average score and essay count)
           await storage.updateUserProgressAfterCorrection(req.session.userId);
