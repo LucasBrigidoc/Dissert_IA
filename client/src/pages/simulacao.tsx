@@ -744,7 +744,7 @@ export default function SimulacaoPage() {
               value={essayText}
               onChange={(e) => setEssayText(e.target.value)}
               placeholder="Digite sua redação aqui... Lembre-se de seguir a estrutura dissertativo-argumentativa: introdução, desenvolvimento e conclusão com proposta de intervenção."
-              className={`w-full h-96 p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60 ${config.focusMode ? 'focus:bg-white focus:shadow-2xl' : ''}`}
+              className={`w-full h-[600px] p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60 ${config.focusMode ? 'focus:bg-white focus:shadow-2xl' : ''}`}
               disabled={!isActive || isPaused}
               data-testid="textarea-essay"
               spellCheck={config.spellCheck}
