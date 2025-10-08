@@ -39,7 +39,7 @@ export default function NewsletterPage() {
   // Save newsletter mutation
   const saveNewsletter = useMutation({
     mutationFn: async (newsletterId: string) => {
-      return await apiRequest("POST", `/api/newsletters/${newsletterId}/save`);
+      return await apiRequest(`/api/newsletters/${newsletterId}/save`, { method: "POST" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/newsletters/saved"] });
@@ -60,7 +60,7 @@ export default function NewsletterPage() {
   // Remove saved newsletter mutation
   const removeSavedNewsletter = useMutation({
     mutationFn: async (newsletterId: string) => {
-      return await apiRequest("DELETE", `/api/newsletters/${newsletterId}/save`);
+      return await apiRequest(`/api/newsletters/${newsletterId}/save`, { method: "DELETE" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/newsletters/saved"] });
