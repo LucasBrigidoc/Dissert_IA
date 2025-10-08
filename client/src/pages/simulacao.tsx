@@ -386,11 +386,6 @@ export default function SimulacaoPage() {
       
       // Atualizar barra de progresso de IA após uso de tokens
       refreshAIUsageStats();
-      
-      toast({
-        title: "Redação corrigida com sucesso!",
-        description: `Sua nota foi ${data.correction.totalScore}/1000. Confira o feedback detalhado.`,
-      });
     },
     onError: (error: any) => {
       toast({
