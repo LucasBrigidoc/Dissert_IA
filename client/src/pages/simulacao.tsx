@@ -744,12 +744,24 @@ export default function SimulacaoPage() {
               ref={textareaRef}
               value={essayText}
               onChange={(e) => setEssayText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Tab') {
+                  e.preventDefault();
+                  const start = e.currentTarget.selectionStart;
+                  const end = e.currentTarget.selectionEnd;
+                  const newText = essayText.substring(0, start) + '\t' + essayText.substring(end);
+                  setEssayText(newText);
+                  setTimeout(() => {
+                    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 1;
+                  }, 0);
+                }
+              }}
               placeholder="Digite sua redação aqui... Lembre-se de seguir a estrutura dissertativo-argumentativa: introdução, desenvolvimento e conclusão com proposta de intervenção."
               className={`w-full h-[600px] p-4 border border-bright-blue/30 rounded-lg resize-none focus:outline-none focus:border-bright-blue focus:ring-2 focus:ring-bright-blue/20 bg-white/80 backdrop-blur-sm text-dark-blue placeholder-soft-gray/60 ${config.focusMode ? 'focus:bg-white focus:shadow-2xl' : ''}`}
               disabled={!isActive || isPaused}
               data-testid="textarea-essay"
               spellCheck={config.spellCheck}
-              style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6' }}
+              style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6', whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
             />
 
             {/* Writing Guidelines */}
