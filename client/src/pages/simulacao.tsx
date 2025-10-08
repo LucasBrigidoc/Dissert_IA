@@ -761,7 +761,7 @@ export default function SimulacaoPage() {
               disabled={!isActive || isPaused}
               data-testid="textarea-essay"
               spellCheck={config.spellCheck}
-              style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6', whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+              style={{ fontFamily: 'serif', fontSize: getFontSize(), lineHeight: '1.6', whiteSpace: 'pre-wrap', wordWrap: 'break-word', textAlign: 'justify' }}
             />
 
             {/* Writing Guidelines */}
