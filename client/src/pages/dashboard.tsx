@@ -1892,7 +1892,7 @@ export default function Dashboard() {
               </div>
               <h4 className="text-sm md:text-base font-semibold text-dark-blue">Evolução das Notas</h4>
             </div>
-            <div className="relative h-56 md:h-72 bg-white rounded-2xl border-2 border-bright-blue/20 p-3 md:p-6 shadow-lg z-10" data-testid="chart-evolution">
+            <div className="relative h-56 md:h-72 bg-white rounded-2xl border-2 border-bright-blue/20 p-3 md:p-6 shadow-lg overflow-visible" style={{ zIndex: 50 }} data-testid="chart-evolution">
               {scoresLoading ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="animate-pulse text-center">
@@ -1960,26 +1960,32 @@ export default function Dashboard() {
                     tickCount={6}
                   />
                   <Tooltip 
-                    wrapperStyle={{ zIndex: 99999, position: 'relative' }}
+                    wrapperStyle={{ zIndex: 999999 }}
                     contentStyle={{ 
                       backgroundColor: 'rgba(255, 255, 255, 0.98)', 
                       border: '2px solid #5087ff',
-                      borderRadius: '16px',
-                      fontSize: '14px',
+                      borderRadius: '12px',
+                      fontSize: '12px',
                       fontWeight: '600',
                       boxShadow: '0 20px 40px rgba(80, 135, 255, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
-                      padding: '12px 16px'
+                      padding: '8px 12px',
+                      maxWidth: '200px',
+                      wordWrap: 'break-word',
+                      whiteSpace: 'normal'
                     }}
                     formatter={(value: any, name: any, props: any) => [
-                      `${value} pontos`, 
+                      `${value} pts`, 
                       props.payload.nome || 'Nota'
                     ]}
                     labelStyle={{ 
                       color: '#09072e', 
                       fontWeight: '700',
-                      marginBottom: '4px',
+                      marginBottom: '2px',
                       borderBottom: '1px solid #e5e7eb',
-                      paddingBottom: '4px'
+                      paddingBottom: '2px',
+                      fontSize: '11px',
+                      whiteSpace: 'normal',
+                      wordWrap: 'break-word'
                     }}
                   />
                   <Line 
