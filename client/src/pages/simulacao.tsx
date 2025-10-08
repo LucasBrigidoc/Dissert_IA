@@ -295,7 +295,43 @@ export default function SimulacaoPage() {
 
   // Count words and lines
   const wordCount = essayText.trim().split(/\s+/).filter(word => word.length > 0).length;
-  const lineCount = essayText.split('\n').length;
+  
+  // Calculate actual visible lines in textarea (considering word wrap)
+  const calculateLineCount = () => {
+    if (!textareaRef.current || !essayText) return 0;
+    
+    const textarea = textareaRef.current;
+    const computedStyle = window.getComputedStyle(textarea);
+    const lineHeight = parseFloat(computedStyle.lineHeight);
+    
+    // Create a temporary div with the same styling to measure height
+    const tempDiv = document.createElement('div');
+    tempDiv.style.cssText = `
+      position: absolute;
+      visibility: hidden;
+      width: ${textarea.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight)}px;
+      font-family: ${computedStyle.fontFamily};
+      font-size: ${computedStyle.fontSize};
+      line-height: ${computedStyle.lineHeight};
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-align: justify;
+    `;
+    tempDiv.textContent = essayText;
+    document.body.appendChild(tempDiv);
+    
+    const height = tempDiv.scrollHeight;
+    document.body.removeChild(tempDiv);
+    
+    return Math.ceil(height / lineHeight);
+  };
+  
+  const [lineCount, setLineCount] = useState(0);
+  
+  useEffect(() => {
+    setLineCount(calculateLineCount());
+  }, [essayText]);
+  
   const charCount = essayText.length;
 
   // Checkpoint functions
