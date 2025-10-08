@@ -30,7 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { AIUsageProgress, refreshAIUsageStats } from '@/components/ai-usage-progress';
 
@@ -377,6 +377,12 @@ export default function SimulacaoPage() {
       setCorrectionData(data.correction);
       setShowCorrectionResult(true);
       setIsActive(false); // Pause the timer when showing results
+      
+      // Invalidar cache de simulações para atualizar estatísticas
+      queryClient.invalidateQueries({ queryKey: ['/api/simulations'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-scores'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-progress'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-competencies'] });
       
       // Atualizar barra de progresso de IA após uso de tokens
       refreshAIUsageStats();

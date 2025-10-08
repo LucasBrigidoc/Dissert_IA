@@ -188,7 +188,6 @@ export default function Simulador() {
   // Buscar simulações da API usando React Query
   const { data: simulationsData, isLoading: isLoadingSimulations } = useQuery({
     queryKey: ['/api/simulations'],
-    staleTime: 60000, // Cache por 1 minuto
   });
 
   // Mutation para criar uma nova simulação
