@@ -5742,6 +5742,10 @@ export class DbStorage implements IStorage {
   }
 
   async deleteNewsletter(id: string): Promise<void> {
+    // First delete all related newsletter sends to avoid foreign key constraint violation
+    await db.delete(schema.newsletterSends).where(eq(schema.newsletterSends.newsletterId, id));
+    
+    // Then delete the newsletter
     await db.delete(schema.newsletters).where(eq(schema.newsletters.id, id));
   }
 
