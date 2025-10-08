@@ -1050,9 +1050,35 @@ export default function SimulacaoPage() {
                   Continuar Escrevendo
                 </Button>
                 <Button 
-                  onClick={() => {
-                    setShowCorrectionResult(false);
-                    setLocation('/simulador');
+                  onClick={async () => {
+                    try {
+                      // Salvar dados da correção no banco de dados
+                      if (config.simulationId && correctionData) {
+                        await apiRequest(`/api/simulations/${config.simulationId}`, {
+                          method: 'PUT',
+                          body: {
+                            correctionData: correctionData,
+                            score: correctionData.totalScore,
+                            isCompleted: true,
+                            essayText: essayText,
+                            proposalUsed: config.textProposal,
+                            timeTaken: Math.floor((config.timeLimit * 60 - timeLeft) / 60),
+                            progress: 100
+                          }
+                        });
+                        
+                        // Invalidar cache para atualizar a lista de simulações
+                        queryClient.invalidateQueries({ queryKey: ['/api/simulations'] });
+                      }
+                      
+                      setShowCorrectionResult(false);
+                      setLocation('/simulador');
+                    } catch (error) {
+                      console.error('Erro ao salvar correção:', error);
+                      // Mesmo com erro, redirecionar
+                      setShowCorrectionResult(false);
+                      setLocation('/simulador');
+                    }
                   }}
                   variant="outline"
                   className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
