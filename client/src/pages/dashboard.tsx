@@ -1960,6 +1960,7 @@ export default function Dashboard() {
                     tickCount={6}
                   />
                   <Tooltip 
+                    wrapperStyle={{ zIndex: 9999 }}
                     contentStyle={{ 
                       backgroundColor: 'rgba(255, 255, 255, 0.98)', 
                       border: '2px solid #5087ff',
@@ -1967,8 +1968,7 @@ export default function Dashboard() {
                       fontSize: '14px',
                       fontWeight: '600',
                       boxShadow: '0 20px 40px rgba(80, 135, 255, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
-                      padding: '12px 16px',
-                      zIndex: 9999
+                      padding: '12px 16px'
                     }}
                     formatter={(value: any, name: any, props: any) => [
                       `${value} pontos`, 
