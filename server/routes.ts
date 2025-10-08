@@ -338,6 +338,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const validatedData = updateNewsletterSchema.parse(req.body);
+      
+      // If this newsletter is being marked as "Newsletter da Semana" (isNew=true)
+      // Remove the "Newsletter da Semana" flag from all other newsletters
+      if (validatedData.isNew === true) {
+        const allNewsletters = await storage.getAllNewsletters();
+        for (const n of allNewsletters) {
+          if (n.id !== id && n.isNew === true) {
+            await storage.updateNewsletter(n.id, { isNew: false });
+          }
+        }
+      }
+      
       const newsletter = await storage.updateNewsletter(id, validatedData);
       res.json(newsletter);
     } catch (error) {

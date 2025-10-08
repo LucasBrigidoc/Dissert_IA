@@ -534,16 +534,17 @@ export default function AdminNewsletter() {
                     </div>
                     
                     <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditClick(newsletter)}
+                        data-testid={`button-edit-${newsletter.id}`}
+                      >
+                        <Edit size={16} />
+                      </Button>
+                      
                       {newsletter.status !== "sent" && (
                         <>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEditClick(newsletter)}
-                            data-testid={`button-edit-${newsletter.id}`}
-                          >
-                            <Edit size={16} />
-                          </Button>
                           <Button
                             variant="secondary"
                             size="sm"
