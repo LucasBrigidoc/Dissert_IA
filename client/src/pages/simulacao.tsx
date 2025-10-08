@@ -300,7 +300,7 @@ export default function SimulacaoPage() {
 
   // Checkpoint functions
   const handleCheckpointComplete = (checkpointId: string) => {
-    const currentTime = 90 * 60 - timeLeft;
+    const currentTime = config.timeLimit * 60 - timeLeft;
     const timeSpent = currentTime - lastCheckpointTime;
     
     setCheckpoints(prev => prev.map(checkpoint => {
