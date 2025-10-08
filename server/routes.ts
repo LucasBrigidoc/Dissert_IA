@@ -2120,7 +2120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const userId = req.session.userId;
-      const { title, proposalTitle, proposalStatement, outlineData, outlineType } = req.body;
+      const { title, proposalTitle, proposalStatement, outlineData, outlineType, conversationId } = req.body;
 
       if (!title || !proposalTitle || !proposalStatement || !outlineData) {
         return res.status(400).json({ message: "Todos os campos são obrigatórios" });
@@ -2133,6 +2133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         proposalStatement,
         outlineData,
         outlineType: outlineType || 'roteiro',
+        conversationId: conversationId || null,
       });
 
       res.status(201).json(savedOutline);

@@ -140,7 +140,8 @@ export default function VisualizadorConversa() {
           proposalTitle,
           proposalStatement,
           outlineData,
-          outlineType: 'brainstorming'
+          outlineType: 'brainstorming',
+          conversationId: conversationData.conversationId
         }
       });
 
