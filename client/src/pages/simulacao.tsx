@@ -747,12 +747,15 @@ export default function SimulacaoPage() {
               onKeyDown={(e) => {
                 if (e.key === 'Tab') {
                   e.preventDefault();
-                  const start = e.currentTarget.selectionStart;
-                  const end = e.currentTarget.selectionEnd;
+                  const target = e.currentTarget;
+                  const start = target.selectionStart;
+                  const end = target.selectionEnd;
                   const newText = essayText.substring(0, start) + '\t' + essayText.substring(end);
                   setEssayText(newText);
                   setTimeout(() => {
-                    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 1;
+                    if (target) {
+                      target.selectionStart = target.selectionEnd = start + 1;
+                    }
                   }, 0);
                 }
               }}
