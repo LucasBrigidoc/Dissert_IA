@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb } from "lucide-react";
+import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb, Edit3 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -250,6 +250,18 @@ export default function Simulador() {
       day: '2-digit',
       month: '2-digit', 
       year: 'numeric'
+    });
+  };
+  
+  // Função para formatar data e hora completa
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -731,7 +743,7 @@ export default function Simulador() {
                         </div>
                         <div className="flex items-center justify-between text-sm text-soft-gray mb-2">
                           <span data-testid={`text-simulation-date-${simulation.id}`}>
-                            Realizado em {formatDate(simulation.createdAt)}
+                            {formatDateTime(simulation.createdAt)}
                           </span>
                           <span data-testid={`text-simulation-time-${simulation.id}`}>
                             Tempo: {formatTime(simulation.timeTaken)}
@@ -759,6 +771,36 @@ export default function Simulador() {
                       {/* Seção expandida com detalhes da correção */}
                       {isExpanded && hasCorrectionData && (
                         <div className="border-t border-gray-200 p-4 space-y-4 bg-white/30" data-testid={`section-details-${simulation.id}`}>
+                          {/* Proposta da Redação */}
+                          {simulation.proposalUsed && (
+                            <div>
+                              <div className="flex items-center space-x-2 mb-3">
+                                <FileText className="text-dark-blue" size={16} />
+                                <h5 className="font-semibold text-dark-blue text-sm">Proposta da Redação</h5>
+                              </div>
+                              <div className="bg-white/50 rounded-lg p-3 border border-gray-200">
+                                <p className="text-xs text-gray-700 whitespace-pre-wrap" data-testid={`text-proposal-${simulation.id}`}>
+                                  {simulation.proposalUsed}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Redação Escrita */}
+                          {simulation.essayText && (
+                            <div>
+                              <div className="flex items-center space-x-2 mb-3">
+                                <Edit3 className="text-bright-blue" size={16} />
+                                <h5 className="font-semibold text-dark-blue text-sm">Redação Escrita</h5>
+                              </div>
+                              <div className="bg-white/50 rounded-lg p-3 border border-gray-200 max-h-60 overflow-y-auto">
+                                <p className="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed" data-testid={`text-essay-${simulation.id}`}>
+                                  {simulation.essayText}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                          
                           {/* Competências */}
                           {correctionData.competencies && correctionData.competencies.length > 0 && (
                             <div>
