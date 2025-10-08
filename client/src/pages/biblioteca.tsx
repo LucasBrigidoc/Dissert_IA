@@ -975,15 +975,6 @@ export default function BibliotecaPage() {
                   Repertórios
                 </Button>
                 <Button
-                  variant={selectedCategory === "redação" ? "default" : "secondary"}
-                  size="sm"
-                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
-                  onClick={() => setSelectedCategory("redação")}
-                  data-testid="filter-redacao"
-                >
-                  Redações
-                </Button>
-                <Button
                   variant={selectedCategory === "newsletter" ? "default" : "secondary"}
                   size="sm"
                   className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
@@ -1038,16 +1029,11 @@ export default function BibliotecaPage() {
           {/* Mobile: Ultra Compact Stats Grid */}
           <div className="sm:hidden">
             <LiquidGlassCard className="p-1.5">
-              <div className="grid grid-cols-4 gap-1">
+              <div className="grid grid-cols-3 gap-1">
                 <div className="flex flex-col items-center justify-center bg-blue-50 rounded p-1">
                   <BookOpen className="text-blue-600" size={12} />
                   <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.repertorios.length}</span>
                   <span className="text-[9px] text-soft-gray leading-tight">Rep</span>
-                </div>
-                <div className="flex flex-col items-center justify-center bg-green-50 rounded p-1">
-                  <PenTool className="text-green-600" size={12} />
-                  <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.redacoes.length}</span>
-                  <span className="text-[9px] text-soft-gray leading-tight">Red</span>
                 </div>
                 <div className="flex flex-col items-center justify-center bg-orange-50 rounded p-1">
                   <Newspaper className="text-orange-600" size={12} />
@@ -1078,18 +1064,12 @@ export default function BibliotecaPage() {
             </LiquidGlassCard>
           </div>
           
-          {/* Desktop: Full Grid - Centralizado com 7 cards */}
-          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 max-w-7xl mx-auto">
+          {/* Desktop: Full Grid - Centralizado com 6 cards */}
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
               <div className="text-sm text-soft-gray">Repertórios</div>
-            </LiquidGlassCard>
-            
-            <LiquidGlassCard className="p-4 text-center">
-              <PenTool className="mx-auto mb-2 text-green-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.redacoes.length}</div>
-              <div className="text-sm text-soft-gray">Redações</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
