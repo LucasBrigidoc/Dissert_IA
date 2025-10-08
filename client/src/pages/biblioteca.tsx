@@ -1418,6 +1418,44 @@ export default function BibliotecaPage() {
                     </div>
                   )}
                 </div>
+              ) : selectedFile.type === 'Newsletter' ? (
+                /* Exibição especial para Newsletter */
+                <div className="flex-1 overflow-y-auto space-y-6">
+                  {/* Informações da Newsletter em Grid */}
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="grid md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium text-dark-blue">Categoria: </span>
+                        <span className="text-soft-gray">{selectedFile.category}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-dark-blue">Data de Criação: </span>
+                        <span className="text-soft-gray">{new Date(selectedFile.date).toLocaleDateString('pt-BR')}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-dark-blue">Tamanho: </span>
+                        <span className="text-soft-gray">{selectedFile.size}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-dark-blue">Tipo: </span>
+                        <span className="text-soft-gray">{selectedFile.type}</span>
+                      </div>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <span className="font-medium text-dark-blue">Descrição: </span>
+                      <span className="text-soft-gray">{selectedFile.description}</span>
+                    </div>
+                  </div>
+
+                  {/* Conteúdo da Newsletter */}
+                  <div className="p-6 bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 rounded-xl border border-bright-blue/20">
+                    <div className="prose prose-sm max-w-none">
+                      <div className="whitespace-pre-line text-dark-blue leading-relaxed">
+                        {selectedFile.content}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ) : (selectedFile.type === 'Roteiro Personalizado' || selectedFile.type === 'Brainstorming') && selectedFile.outlineData ? (
                 /* Exibição especial para roteiros e brainstorming */
                 <div className="flex-1 overflow-y-auto space-y-4">
