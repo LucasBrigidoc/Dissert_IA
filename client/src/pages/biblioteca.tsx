@@ -1304,18 +1304,12 @@ export default function BibliotecaPage() {
                 </div>
               </div>
               <Button
-                variant="ghost"
-                size="sm"
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                onClick={() => {
-                  if (selectedFile) {
-                    deleteFile(selectedFile.id, selectedFile.type);
-                    setShowFileDetails(false);
-                  }
-                }}
-                data-testid="button-delete-header"
+                variant="outline"
+                onClick={() => setShowFileDetails(false)}
+                className="text-soft-gray border-soft-gray/30 hover:border-bright-blue hover:text-bright-blue"
+                data-testid="button-close-details"
               >
-                <Trash2 size={18} />
+                Fechar
               </Button>
             </div>
           </DialogHeader>
@@ -1824,12 +1818,18 @@ export default function BibliotecaPage() {
               {/* Botões de Ação */}
               <div className="flex justify-between items-center pt-6 border-t border-gray-200 mt-4">
                 <Button
-                  variant="outline"
-                  onClick={() => setShowFileDetails(false)}
-                  className="text-soft-gray border-soft-gray/30 hover:border-bright-blue hover:text-bright-blue"
-                  data-testid="button-close-details"
+                  variant="ghost"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  onClick={() => {
+                    if (selectedFile) {
+                      deleteFile(selectedFile.id, selectedFile.type);
+                      setShowFileDetails(false);
+                    }
+                  }}
+                  data-testid="button-delete-header"
                 >
-                  Fechar
+                  <Trash2 size={18} className="mr-2" />
+                  Excluir
                 </Button>
                 <div className="flex space-x-3">
                   <Button
