@@ -385,6 +385,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Esta newsletter já foi enviada" });
       }
 
+      // If this newsletter is marked as "Newsletter da Semana" (isNew=true)
+      // Remove the "Newsletter da Semana" flag from all other newsletters
+      if (newsletter.isNew === true) {
+        const allNewsletters = await storage.getAllNewsletters();
+        for (const n of allNewsletters) {
+          if (n.id !== id && n.isNew === true) {
+            await storage.updateNewsletter(n.id, { isNew: false });
+          }
+        }
+      }
+
       // Get active subscribers
       const subscribers = await storage.getActiveNewsletterSubscribers();
       if (subscribers.length === 0) {
@@ -437,6 +448,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (newsletter.status === "sent") {
         return res.status(400).json({ message: "Esta newsletter já foi publicada" });
+      }
+
+      // If this newsletter is marked as "Newsletter da Semana" (isNew=true)
+      // Remove the "Newsletter da Semana" flag from all other newsletters
+      if (newsletter.isNew === true) {
+        const allNewsletters = await storage.getAllNewsletters();
+        for (const n of allNewsletters) {
+          if (n.id !== id && n.isNew === true) {
+            await storage.updateNewsletter(n.id, { isNew: false });
+          }
+        }
       }
 
       // Update newsletter status to sent without sending emails
