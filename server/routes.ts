@@ -3884,10 +3884,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const simulations = await storage.getSimulations(userId, sessionId, limit, offset);
       
+      // Convert snake_case to camelCase for frontend compatibility
+      const formattedSimulations = simulations.map((sim: any) => ({
+        id: sim.id,
+        userId: sim.user_id || sim.userId,
+        title: sim.title,
+        examType: sim.exam_type || sim.examType,
+        theme: sim.theme,
+        customTheme: sim.custom_theme || sim.customTheme,
+        timeLimit: sim.time_limit || sim.timeLimit,
+        timeTaken: sim.time_taken || sim.timeTaken,
+        timeBreakdown: sim.time_breakdown || sim.timeBreakdown,
+        score: sim.score,
+        progress: sim.progress,
+        isCompleted: sim.is_completed ?? sim.isCompleted,
+        proposalUsed: sim.proposal_used || sim.proposalUsed,
+        essayText: sim.essay_text || sim.essayText,
+        correctionData: sim.correction_data || sim.correctionData,
+        sessionId: sim.session_id || sim.sessionId,
+        createdAt: sim.created_at || sim.createdAt,
+        updatedAt: sim.updated_at || sim.updatedAt,
+      }));
+      
       res.json({
-        results: simulations,
-        count: simulations.length,
-        hasMore: simulations.length === limit
+        results: formattedSimulations,
+        count: formattedSimulations.length,
+        hasMore: formattedSimulations.length === limit
       });
     } catch (error) {
       console.error("Get simulations error:", error);

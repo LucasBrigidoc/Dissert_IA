@@ -12,10 +12,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Simulador() {
   const [location] = useLocation();
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   
   // Sistema inteligente de detecção de origem
   const getBackUrl = () => {
@@ -592,6 +594,7 @@ export default function Simulador() {
                       textProposal,
                       progress: 0,
                       isCompleted: false,
+                      userId: user?.id || null,
                       sessionId: `sim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
                     });
 
