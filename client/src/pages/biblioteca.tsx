@@ -273,7 +273,8 @@ export default function BibliotecaPage() {
       type: isBrainstorming ? 'Brainstorming' : 'Roteiro Personalizado',
       description: outlineData.proposta?.substring(0, 100) + '...' || (isBrainstorming ? 'Conversa de brainstorming' : 'Roteiro de redação personalizado'),
       content,
-      outlineData
+      outlineData,
+      conversationId: outline.conversationId
     };
   };
 
