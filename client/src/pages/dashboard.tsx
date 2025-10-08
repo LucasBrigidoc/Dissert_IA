@@ -1967,7 +1967,8 @@ export default function Dashboard() {
                       fontSize: '14px',
                       fontWeight: '600',
                       boxShadow: '0 20px 40px rgba(80, 135, 255, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
-                      padding: '12px 16px'
+                      padding: '12px 16px',
+                      zIndex: 9999
                     }}
                     formatter={(value: any, name: any, props: any) => [
                       `${value} pontos`, 
