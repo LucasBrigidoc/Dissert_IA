@@ -1143,6 +1143,15 @@ Responda EXCLUSIVAMENTE com o JSON válido formatado conforme especificado acima
           ...comp,
           level: comp.level || this.getScoreLevel(comp.score, comp.maxScore)
         }));
+        
+        // Recalculate totalScore as sum of all competency scores to ensure accuracy
+        const calculatedTotal = correction.competencies.reduce((sum: number, comp: any) => sum + (comp.score || 0), 0);
+        
+        // Only update if there's a discrepancy
+        if (calculatedTotal !== correction.totalScore) {
+          console.log(`⚠️ Corrigindo totalScore: IA retornou ${correction.totalScore}, mas soma das competências é ${calculatedTotal}`);
+          correction.totalScore = calculatedTotal;
+        }
       }
       
       return correction;
