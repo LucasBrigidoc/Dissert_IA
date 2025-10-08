@@ -906,20 +906,10 @@ export default function SimulacaoPage() {
       <Dialog open={showCorrectionResult} onOpenChange={setShowCorrectionResult}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="dialog-correction-result">
           <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-2xl font-bold text-dark-blue flex items-center">
-                <Award className="mr-3 text-yellow-600" size={24} />
-                Resultado da Correção
-              </DialogTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowCorrectionResult(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X size={20} />
-              </Button>
-            </div>
+            <DialogTitle className="text-2xl font-bold text-dark-blue flex items-center">
+              <Award className="mr-3 text-yellow-600" size={24} />
+              Resultado da Correção
+            </DialogTitle>
           </DialogHeader>
           
           {correctionData && (
