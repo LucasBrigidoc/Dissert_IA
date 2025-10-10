@@ -1147,6 +1147,11 @@ export default function BibliotecaPage() {
                   <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.brainstormings.length}</span>
                   <span className="text-[9px] text-soft-gray leading-tight">Brain</span>
                 </div>
+                <div className="flex flex-col items-center justify-center bg-amber-50 rounded p-1">
+                  <GraduationCap className="text-amber-600" size={12} />
+                  <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.simulados.length}</span>
+                  <span className="text-[9px] text-soft-gray leading-tight">Sim</span>
+                </div>
               </div>
             </LiquidGlassCard>
           </div>
