@@ -498,34 +498,14 @@ export default function NewsletterPage() {
                   <Calendar className="mr-2" size={14} />
                   <span>Publicada em {new Date(latestNewsletter.publishDate || latestNewsletter.createdAt!).toLocaleDateString('pt-BR')}</span>
                 </div>
-                <div className="flex space-x-2 w-full md:w-auto">
-                  <Button 
-                    onClick={() => handleToggleSave(latestNewsletter.id)}
-                    variant="outline"
-                    className={`flex-1 md:flex-initial ${isNewsletterSaved(latestNewsletter.id) 
-                      ? "border-bright-blue text-bright-blue" 
-                      : "border-soft-gray/30 text-soft-gray hover:border-bright-blue hover:text-bright-blue"
-                    }`}
-                    disabled={saveNewsletter.isPending || removeSavedNewsletter.isPending}
-                    data-testid={`button-save-${latestNewsletter.id}`}
-                  >
-                    {saveNewsletter.isPending || removeSavedNewsletter.isPending ? (
-                      <Loader2 className="animate-spin" size={14} />
-                    ) : isNewsletterSaved(latestNewsletter.id) ? (
-                      <BookmarkCheck size={14} />
-                    ) : (
-                      <Bookmark size={14} />
-                    )}
-                  </Button>
-                  <Button 
-                    onClick={() => handleReadNewsletter(latestNewsletter.id)}
-                    className="flex-1 md:flex-initial bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
-                    data-testid={`button-read-newsletter-${latestNewsletter.id}`}
-                  >
-                    <Eye className="mr-2" size={14} />
-                    <span className="text-sm md:text-base">Ler</span>
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => handleReadNewsletter(latestNewsletter.id)}
+                  className="w-full md:w-auto bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90"
+                  data-testid={`button-read-newsletter-${latestNewsletter.id}`}
+                >
+                  <Eye className="mr-2" size={14} />
+                  <span className="text-sm md:text-base">Ler</span>
+                </Button>
               </div>
             </LiquidGlassCard>
           ) : (
@@ -569,40 +549,16 @@ export default function NewsletterPage() {
                     <div className="text-xs text-soft-gray">
                       {new Date(newsletter.publishDate || newsletter.createdAt!).toLocaleDateString('pt-BR')}
                     </div>
-                    <div className="flex space-x-2 w-full md:w-auto">
-                      <Button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleSave(newsletter.id);
-                        }}
-                        variant="outline"
-                        size="sm"
-                        className={`flex-1 md:flex-initial ${isNewsletterSaved(newsletter.id) 
-                          ? "border-bright-blue text-bright-blue" 
-                          : "border-soft-gray/30 text-soft-gray hover:border-bright-blue hover:text-bright-blue"
-                        }`}
-                        disabled={saveNewsletter.isPending || removeSavedNewsletter.isPending}
-                        data-testid={`button-save-${newsletter.id}`}
-                      >
-                        {saveNewsletter.isPending || removeSavedNewsletter.isPending ? (
-                          <Loader2 className="animate-spin" size={12} />
-                        ) : isNewsletterSaved(newsletter.id) ? (
-                          <BookmarkCheck size={12} />
-                        ) : (
-                          <Bookmark size={12} />
-                        )}
-                      </Button>
-                      <Button 
-                        onClick={() => handleReadNewsletter(newsletter.id)}
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 md:flex-initial text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 group-hover:border-bright-blue/50"
-                        data-testid={`button-read-newsletter-${newsletter.id}`}
-                      >
-                        <Eye className="mr-2" size={12} />
-                        <span className="text-xs md:text-sm">Ler</span>
-                      </Button>
-                    </div>
+                    <Button 
+                      onClick={() => handleReadNewsletter(newsletter.id)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full md:w-auto text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10 group-hover:border-bright-blue/50"
+                      data-testid={`button-read-newsletter-${newsletter.id}`}
+                    >
+                      <Eye className="mr-2" size={12} />
+                      <span className="text-xs md:text-sm">Ler</span>
+                    </Button>
                   </div>
                 </LiquidGlassCard>
               ))
