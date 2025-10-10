@@ -1520,6 +1520,149 @@ export default function BibliotecaPage() {
                     </div>
                   </div>
                 </div>
+              ) : selectedFile.type === 'Simulados' && selectedFile.correctionData ? (
+                /* Exibição especial para Simulados */
+                <div className="flex-1 overflow-y-auto space-y-6">
+                  {/* Header com Nota Final */}
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-amber-600 mb-2">
+                        {selectedFile.grade || 0}/1000
+                      </div>
+                      <div className="text-sm text-amber-700">Nota Final</div>
+                      <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="font-medium text-dark-blue">Tipo: </span>
+                          <span className="text-soft-gray">{selectedFile.simulation?.examType?.toUpperCase() || 'N/A'}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium text-dark-blue">Tema: </span>
+                          <span className="text-soft-gray">{selectedFile.simulation?.theme || 'N/A'}</span>
+                        </div>
+                        {selectedFile.simulation?.timeLimit && (
+                          <div>
+                            <span className="font-medium text-dark-blue">Tempo Limite: </span>
+                            <span className="text-soft-gray">{selectedFile.simulation.timeLimit} min</span>
+                          </div>
+                        )}
+                        {selectedFile.simulation?.timeTaken && (
+                          <div>
+                            <span className="font-medium text-dark-blue">Tempo Usado: </span>
+                            <span className="text-soft-gray">{selectedFile.simulation.timeTaken} min</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Competências */}
+                  {selectedFile.correctionData.competencies && selectedFile.correctionData.competencies.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-bold text-dark-blue flex items-center gap-2">
+                        <span>📊</span>
+                        Competências Avaliadas
+                      </h3>
+                      {selectedFile.correctionData.competencies.map((comp: any, index: number) => (
+                        <div key={index} className="p-4 bg-white rounded-lg border border-gray-200">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-semibold text-dark-blue">Competência {index + 1}</span>
+                            <span className="text-lg font-bold text-bright-blue">{comp.score || 0}/200</span>
+                          </div>
+                          <p className="text-sm text-soft-gray">{comp.feedback || 'Sem feedback disponível'}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Pontos Fortes */}
+                  {selectedFile.correctionData.strengths && (
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                        <span>✅</span>
+                        Pontos Fortes
+                      </h4>
+                      <p className="text-sm text-green-700 leading-relaxed">{selectedFile.correctionData.strengths}</p>
+                    </div>
+                  )}
+
+                  {/* Pontos a Melhorar */}
+                  {selectedFile.correctionData.improvements && (
+                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                      <h4 className="font-semibold text-orange-800 mb-2 flex items-center gap-2">
+                        <span>📈</span>
+                        Pontos a Melhorar
+                      </h4>
+                      <p className="text-sm text-orange-700 leading-relaxed">{selectedFile.correctionData.improvements}</p>
+                    </div>
+                  )}
+
+                  {/* Recomendação */}
+                  {selectedFile.correctionData.recommendation && (
+                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                      <h4 className="font-semibold text-purple-800 mb-2 flex items-center gap-2">
+                        <span>💡</span>
+                        Recomendação do Professor
+                      </h4>
+                      <p className="text-sm text-purple-700 leading-relaxed">{selectedFile.correctionData.recommendation}</p>
+                    </div>
+                  )}
+
+                  {/* Análise Estrutural */}
+                  {selectedFile.correctionData.structureAnalysis && (
+                    <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                      <h4 className="font-semibold text-indigo-800 mb-3 flex items-center gap-2">
+                        <span>📝</span>
+                        Análise Estrutural
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {selectedFile.correctionData.structureAnalysis.introduction && (
+                          <div className="p-3 bg-white rounded-lg border border-indigo-100">
+                            <h5 className="font-medium text-indigo-900 text-xs mb-2">INTRODUÇÃO</h5>
+                            <p className="text-xs text-indigo-700">{selectedFile.correctionData.structureAnalysis.introduction}</p>
+                          </div>
+                        )}
+                        {selectedFile.correctionData.structureAnalysis.development && (
+                          <div className="p-3 bg-white rounded-lg border border-indigo-100">
+                            <h5 className="font-medium text-indigo-900 text-xs mb-2">DESENVOLVIMENTO</h5>
+                            <p className="text-xs text-indigo-700">{selectedFile.correctionData.structureAnalysis.development}</p>
+                          </div>
+                        )}
+                        {selectedFile.correctionData.structureAnalysis.conclusion && (
+                          <div className="p-3 bg-white rounded-lg border border-indigo-100">
+                            <h5 className="font-medium text-indigo-900 text-xs mb-2">CONCLUSÃO</h5>
+                            <p className="text-xs text-indigo-700">{selectedFile.correctionData.structureAnalysis.conclusion}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Proposta Utilizada */}
+                  {selectedFile.simulation?.proposalUsed && (
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                        <span>📋</span>
+                        Proposta Utilizada
+                      </h4>
+                      <p className="text-sm text-blue-700 leading-relaxed whitespace-pre-line">{selectedFile.simulation.proposalUsed}</p>
+                    </div>
+                  )}
+
+                  {/* Redação Completa */}
+                  {selectedFile.essayText && (
+                    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                      <h4 className="font-semibold text-dark-blue mb-4 flex items-center gap-2">
+                        <span>✍️</span>
+                        Redação Completa
+                      </h4>
+                      <div className="prose prose-sm max-w-none">
+                        <div className="whitespace-pre-line text-dark-blue leading-relaxed">
+                          {selectedFile.essayText}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ) : (selectedFile.type === 'Roteiro Personalizado' || selectedFile.type === 'Brainstorming') && selectedFile.outlineData ? (
                 /* Exibição especial para roteiros e brainstorming */
                 <div className="flex-1 overflow-y-auto space-y-4">
