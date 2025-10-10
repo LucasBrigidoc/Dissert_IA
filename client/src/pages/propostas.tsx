@@ -2,7 +2,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, Star, Clock, Loader2, Trophy, GraduationCap, Lightbulb } from "lucide-react";
+import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, BookmarkPlus, Clock, Loader2, Trophy, GraduationCap, Lightbulb } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -671,7 +671,7 @@ export default function Propostas() {
                         {saveProposalMutation.isPending ? (
                           <Loader2 className="w-4 h-4 animate-spin mr-2" />
                         ) : (
-                          <Star className="w-4 h-4 mr-2" />
+                          <BookmarkPlus className="w-4 h-4 mr-2" />
                         )}
                         Salvar na Biblioteca
                       </Button>
