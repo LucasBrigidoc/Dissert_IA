@@ -60,6 +60,8 @@ export default function BibliotecaPage() {
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [showFileDetails, setShowFileDetails] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState<{ id: string; type: string; title: string } | null>(null);
 
   // Função para obter ícone da seção
   const getSectionIcon = (section: string) => {
@@ -824,34 +826,47 @@ export default function BibliotecaPage() {
     doc.save(fileName);
   };
 
-  // Function to delete saved file
-  const deleteFile = async (fileId: string, fileType?: string) => {
+  // Function to open delete confirmation dialog
+  const deleteFile = (fileId: string, fileType?: string, fileName?: string) => {
+    setFileToDelete({ id: fileId, type: fileType || '', title: fileName || 'este arquivo' });
+    setShowDeleteDialog(true);
+  };
+
+  // Function to confirm and execute deletion
+  const confirmDelete = async () => {
+    if (!fileToDelete) return;
+
     try {
       let endpoint = '';
       
       // Determine the correct API endpoint based on file type
-      switch (fileType) {
+      switch (fileToDelete.type) {
         case 'Repertório':
-          endpoint = `/api/repertoires/${fileId}/save`;
+          endpoint = `/api/repertoires/${fileToDelete.id}/save`;
           break;
         case 'Redação':
-          endpoint = `/api/essays/${fileId}/save`;
+          endpoint = `/api/essays/${fileToDelete.id}/save`;
           break;
         case 'Proposta':
-          endpoint = `/api/proposals/${fileId}/save`;
+          endpoint = `/api/proposals/${fileToDelete.id}/save`;
           break;
         case 'Newsletter':
-          endpoint = `/api/newsletters/${fileId}/save`;
+          endpoint = `/api/newsletters/${fileToDelete.id}/save`;
           break;
         case 'Texto Modificado':
-          endpoint = `/api/saved-texts/${fileId}`;
+          endpoint = `/api/saved-texts/${fileToDelete.id}`;
           break;
         case 'Roteiro Personalizado':
         case 'Brainstorming':
-          endpoint = `/api/saved-outlines/${fileId}`;
+          endpoint = `/api/saved-outlines/${fileToDelete.id}`;
+          break;
+        case 'Simulados':
+          endpoint = `/api/simulations/${fileToDelete.id}`;
           break;
         default:
-          console.error('Unknown file type:', fileType);
+          console.error('Unknown file type:', fileToDelete.type);
+          setShowDeleteDialog(false);
+          setFileToDelete(null);
           return;
       }
 
@@ -868,11 +883,15 @@ export default function BibliotecaPage() {
         queryClient.invalidateQueries({ queryKey: ['/api/newsletters/saved'] });
         queryClient.invalidateQueries({ queryKey: ['/api/saved-texts'] });
         queryClient.invalidateQueries({ queryKey: ['/api/saved-outlines'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/simulations'] });
       } else {
         console.error('Failed to delete file');
       }
     } catch (error) {
       console.error('Error deleting file:', error);
+    } finally {
+      setShowDeleteDialog(false);
+      setFileToDelete(null);
     }
   };
 
@@ -1306,7 +1325,7 @@ export default function BibliotecaPage() {
                           Baixar PDF
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          onClick={() => deleteFile(file.id, file.type)}
+                          onClick={() => deleteFile(file.id, file.type, file.title)}
                           className="flex items-center gap-2 p-3 text-red-600 hover:text-red-700 hover:bg-red-50"
                           data-testid={`menu-delete-${file.id}`}
                         >
@@ -1342,7 +1361,7 @@ export default function BibliotecaPage() {
                       size="sm" 
                       variant="ghost" 
                       className="text-red-600 hover:text-red-700" 
-                      onClick={() => deleteFile(file.id, file.type)}
+                      onClick={() => deleteFile(file.id, file.type, file.title)}
                       data-testid={`button-delete-${file.id}`}
                     >
                       <Trash2 size={16} />
@@ -2040,7 +2059,7 @@ export default function BibliotecaPage() {
                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                   onClick={() => {
                     if (selectedFile) {
-                      deleteFile(selectedFile.id, selectedFile.type);
+                      deleteFile(selectedFile.id, selectedFile.type, selectedFile.title);
                       setShowFileDetails(false);
                     }
                   }}
@@ -2072,6 +2091,49 @@ export default function BibliotecaPage() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="max-w-md" aria-describedby="delete-confirmation-description">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+              <Trash2 className="mr-3 text-red-600" size={20} />
+              Confirmar Exclusão
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div id="delete-confirmation-description" className="space-y-4">
+            <p className="text-soft-gray">
+              Tem certeza que deseja excluir <strong className="text-dark-blue">"{fileToDelete?.title}"</strong>?
+            </p>
+            <p className="text-sm text-red-600">
+              Esta ação não pode ser desfeita.
+            </p>
+            
+            <div className="flex space-x-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowDeleteDialog(false);
+                  setFileToDelete(null);
+                }}
+                className="flex-1"
+                data-testid="button-cancel-delete"
+              >
+                Cancelar
+              </Button>
+              <Button 
+                onClick={confirmDelete}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                data-testid="button-confirm-delete"
+              >
+                <Trash2 size={16} className="mr-2" />
+                Excluir
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
