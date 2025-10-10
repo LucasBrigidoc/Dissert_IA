@@ -94,6 +94,7 @@ export interface IStorage {
   // Simulation operations
   createSimulation(simulation: InsertSimulation): Promise<Simulation>;
   updateSimulation(id: string, simulation: Partial<Simulation>): Promise<Simulation>;
+  deleteSimulation(id: string, userId: string): Promise<void>;
   getSimulation(id: string): Promise<Simulation | undefined>;
   getSimulations(userId?: string, sessionId?: string, limit?: number, offset?: number): Promise<Simulation[]>;
   getUserSimulations(userId: string): Promise<Simulation[]>;
@@ -1393,6 +1394,19 @@ export class MemStorage implements IStorage {
 
     this.simulations.set(id, updated);
     return updated;
+  }
+
+  async deleteSimulation(id: string, userId: string): Promise<void> {
+    const existing = this.simulations.get(id);
+    if (!existing) {
+      throw new Error("Simulation not found");
+    }
+    
+    if (existing.userId !== userId) {
+      throw new Error("Unauthorized to delete this simulation");
+    }
+    
+    this.simulations.delete(id);
   }
 
   async getSimulation(id: string): Promise<Simulation | undefined> {
@@ -4377,6 +4391,20 @@ export class DbStorage implements IStorage {
     
     if (!updated) throw new Error("Simulation not found");
     return updated;
+  }
+
+  async deleteSimulation(id: string, userId: string): Promise<void> {
+    const result = await db
+      .delete(schema.simulations)
+      .where(and(
+        eq(schema.simulations.id, id),
+        eq(schema.simulations.userId, userId)
+      ))
+      .returning();
+    
+    if (result.length === 0) {
+      throw new Error("Simulation not found");
+    }
   }
 
   async getSimulation(id: string): Promise<Simulation | undefined> {

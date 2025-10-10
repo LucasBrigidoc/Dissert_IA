@@ -3940,6 +3940,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete a simulation
+  app.delete("/api/simulations/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = (req as any).user.id;
+      
+      await storage.deleteSimulation(id, userId);
+      
+      res.json({
+        success: true,
+        message: "Simulation deleted successfully"
+      });
+    } catch (error) {
+      console.error("Delete simulation error:", error);
+      if (error instanceof Error && error.message === "Simulation not found") {
+        res.status(404).json({ message: "Simulation not found" });
+      } else {
+        res.status(500).json({ message: "Failed to delete simulation" });
+      }
+    }
+  });
+
   // Get a specific simulation
   app.get("/api/simulations/:id", async (req, res) => {
     try {
