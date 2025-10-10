@@ -880,7 +880,6 @@ export default function BibliotecaPage() {
         queryClient.invalidateQueries({ queryKey: ['/api/essays/saved'] });
         queryClient.invalidateQueries({ queryKey: ['/api/proposals/saved'] });
         queryClient.invalidateQueries({ queryKey: ['/api/structures/saved'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/newsletters/saved'] });
         queryClient.invalidateQueries({ queryKey: ['/api/saved-texts'] });
         queryClient.invalidateQueries({ queryKey: ['/api/saved-outlines'] });
         queryClient.invalidateQueries({ queryKey: ['/api/simulations'] });
@@ -899,7 +898,6 @@ export default function BibliotecaPage() {
   const allFiles = [
     ...bibliotecaData.repertorios,
     ...bibliotecaData.redacoes,
-    ...bibliotecaData.newsletters,
     ...bibliotecaData.propostas,
     ...bibliotecaData.textosModificados,
     ...bibliotecaData.roteiros,
@@ -914,7 +912,6 @@ export default function BibliotecaPage() {
     const matchesCategory = selectedCategory === "todos" || 
                           (selectedCategory === "repertório" && file.type === "Repertório") ||
                           (selectedCategory === "redação" && file.type === "Redação") ||
-                          (selectedCategory === "newsletter" && file.type === "Newsletter") ||
                           (selectedCategory === "proposta" && file.type === "Proposta") ||
                           (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
                           (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado") ||
@@ -927,7 +924,6 @@ export default function BibliotecaPage() {
     switch (type) {
       case "Repertório": return <BookOpen size={20} className="text-blue-600" />;
       case "Redação": return <PenTool size={20} className="text-green-600" />;
-      case "Newsletter": return <Newspaper size={20} className="text-orange-600" />;
       case "Proposta": return <FolderOpen size={20} className="text-indigo-600" />;
       case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
       case "Roteiro Personalizado": return <Target size={20} className="text-pink-600" />;
@@ -941,7 +937,6 @@ export default function BibliotecaPage() {
     switch (type) {
       case "Repertório": return "bg-blue-100 text-blue-800";
       case "Redação": return "bg-green-100 text-green-800";
-      case "Newsletter": return "bg-orange-100 text-orange-800";
       case "Proposta": return "bg-indigo-100 text-indigo-800";
       case "Texto Modificado": return "bg-cyan-100 text-cyan-800";
       case "Roteiro Personalizado": return "bg-pink-100 text-pink-800";
@@ -1053,15 +1048,6 @@ export default function BibliotecaPage() {
                   Repertórios
                 </Button>
                 <Button
-                  variant={selectedCategory === "newsletter" ? "default" : "secondary"}
-                  size="sm"
-                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
-                  onClick={() => setSelectedCategory("newsletter")}
-                  data-testid="filter-newsletter"
-                >
-                  Newsletters
-                </Button>
-                <Button
                   variant={selectedCategory === "proposta" ? "default" : "secondary"}
                   size="sm"
                   className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
@@ -1122,11 +1108,6 @@ export default function BibliotecaPage() {
                   <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.repertorios.length}</span>
                   <span className="text-[9px] text-soft-gray leading-tight">Rep</span>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-orange-50 rounded p-1">
-                  <Newspaper className="text-orange-600" size={12} />
-                  <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.newsletters.length}</span>
-                  <span className="text-[9px] text-soft-gray leading-tight">News</span>
-                </div>
                 <div className="flex flex-col items-center justify-center bg-indigo-50 rounded p-1">
                   <FolderOpen className="text-indigo-600" size={12} />
                   <span className="text-xs font-bold text-dark-blue leading-tight">{bibliotecaData.propostas.length}</span>
@@ -1156,18 +1137,12 @@ export default function BibliotecaPage() {
             </LiquidGlassCard>
           </div>
           
-          {/* Desktop: Full Grid - Centralizado com 7 cards */}
-          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 max-w-7xl mx-auto">
+          {/* Desktop: Full Grid - Centralizado com 6 cards */}
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
               <div className="text-sm text-soft-gray">Repertórios</div>
-            </LiquidGlassCard>
-            
-            <LiquidGlassCard className="p-4 text-center">
-              <Newspaper className="mx-auto mb-2 text-orange-600" size={24} />
-              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.newsletters.length}</div>
-              <div className="text-sm text-soft-gray">Newsletters</div>
             </LiquidGlassCard>
             
             <LiquidGlassCard className="p-4 text-center">
@@ -1232,7 +1207,6 @@ export default function BibliotecaPage() {
                       <div className="sm:hidden">
                         {file.type === "Repertório" && <BookOpen size={16} className="text-blue-600" />}
                         {file.type === "Redação" && <PenTool size={16} className="text-green-600" />}
-                        {file.type === "Newsletter" && <Newspaper size={16} className="text-orange-600" />}
                         {file.type === "Proposta" && <FolderOpen size={16} className="text-indigo-600" />}
                         {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
                         {file.type === "Roteiro Personalizado" && <Target size={16} className="text-pink-600" />}
