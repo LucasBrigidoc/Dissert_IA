@@ -311,9 +311,14 @@ export default function BibliotecaPage() {
       content += `\n\n**REDAÇÃO:**\n${simulation.essayText}`;
     }
 
+    // Extrair primeira linha ou primeiros caracteres da proposta para o título
+    const proposalPreview = simulation.proposalUsed 
+      ? simulation.proposalUsed.split('\n')[0].substring(0, 80) + (simulation.proposalUsed.length > 80 ? '...' : '')
+      : simulation.theme || 'Simulado';
+    
     return {
       id: simulation.id,
-      title: simulation.title,
+      title: `Simulado: ${proposalPreview}`,
       category: 'Simulados',
       date: simulation.createdAt,
       size: '1.2 MB',
