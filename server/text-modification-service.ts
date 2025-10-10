@@ -873,7 +873,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
     ] : [
       {
         name: "Competência 1: Adequação ao tema e ao tipo textual",
-        maxPoints: 250,
+        maxPoints: 200,
         criteria: [
           "Compreensão adequada do tema proposto",
           "Atendimento ao gênero dissertativo-argumentativo",
@@ -883,7 +883,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       },
       {
         name: "Competência 2: Organização textual e coerência",
-        maxPoints: 250,
+        maxPoints: 200,
         criteria: [
           "Estrutura dissertativa clara (introdução, desenvolvimento, conclusão)",
           "Progressão lógica das ideias",
@@ -893,7 +893,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       },
       {
         name: "Competência 3: Argumentação e desenvolvimento",
-        maxPoints: 250,
+        maxPoints: 200,
         criteria: [
           "Qualidade e consistência dos argumentos",
           "Uso adequado de exemplos e repertório",
@@ -903,12 +903,22 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       },
       {
         name: "Competência 4: Domínio da norma culta e coesão",
-        maxPoints: 250,
+        maxPoints: 200,
         criteria: [
           "Correção gramatical (sintaxe, morfologia, ortografia)",
           "Adequação do registro linguístico",
           "Uso eficiente de mecanismos coesivos",
           "Clareza e precisão na expressão"
+        ]
+      },
+      {
+        name: "Competência 5: Proposta de solução e síntese argumentativa",
+        maxPoints: 200,
+        criteria: [
+          "Elaboração de proposta de solução para o problema",
+          "Síntese coerente dos argumentos apresentados",
+          "Conclusão articulada e bem fundamentada",
+          "Fechamento eficaz do texto dissertativo"
         ]
       }
     ];
@@ -1225,35 +1235,43 @@ Responda EXCLUSIVAMENTE com o JSON válido formatado conforme especificado acima
     ] : [
       { 
         name: "Competência 1: Adequação ao tema e ao tipo textual", 
-        score: Math.round(baseScore * 0.25), 
-        maxScore: 250, 
+        score: Math.round(baseScore * 0.20), 
+        maxScore: 200, 
         criteria: "Adequação temática e textual", 
         feedback: "Mantenha foco no tema e no gênero dissertativo-argumentativo durante todo o desenvolvimento.",
-        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+        level: this.getScoreLevel(Math.round(baseScore * 0.20), 200)
       },
       { 
         name: "Competência 2: Organização textual e coerência", 
-        score: Math.round(baseScore * 0.25), 
-        maxScore: 250, 
+        score: Math.round(baseScore * 0.20), 
+        maxScore: 200, 
         criteria: "Estrutura e coerência", 
         feedback: "Organize melhor a estrutura com introdução clara, desenvolvimento consistente e conclusão articulada.",
-        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+        level: this.getScoreLevel(Math.round(baseScore * 0.20), 200)
       },
       { 
         name: "Competência 3: Argumentação e desenvolvimento", 
-        score: Math.round(baseScore * 0.25), 
-        maxScore: 250, 
+        score: Math.round(baseScore * 0.20), 
+        maxScore: 200, 
         criteria: "Desenvolvimento argumentativo", 
         feedback: "Desenvolva argumentos mais consistentes e persuasivos. Use exemplos concretos e dados quando possível.",
-        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+        level: this.getScoreLevel(Math.round(baseScore * 0.20), 200)
       },
       { 
         name: "Competência 4: Domínio da norma culta e coesão", 
-        score: Math.round(baseScore * 0.25), 
-        maxScore: 250, 
+        score: Math.round(baseScore * 0.20), 
+        maxScore: 200, 
         criteria: "Correção gramatical e coesão", 
         feedback: "Revise aspectos gramaticais, ortográficos e conectivos de coesão para maior fluência textual.",
-        level: this.getScoreLevel(Math.round(baseScore * 0.25), 250)
+        level: this.getScoreLevel(Math.round(baseScore * 0.20), 200)
+      },
+      { 
+        name: "Competência 5: Proposta de solução e síntese argumentativa", 
+        score: Math.round(baseScore * 0.20), 
+        maxScore: 200, 
+        criteria: "Elaboração de proposta e conclusão", 
+        feedback: "Fortaleça a conclusão com síntese argumentativa clara e propostas de solução bem fundamentadas.",
+        level: this.getScoreLevel(Math.round(baseScore * 0.20), 200)
       }
     ];
 
