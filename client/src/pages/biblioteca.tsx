@@ -3,7 +3,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical, MessageSquare, User, Bot } from "lucide-react";
+import { Search, Download, FileText, BookOpen, PenTool, Lightbulb, Clock, Target, Archive, Eye, Trash2, ArrowLeft, Newspaper, FolderOpen, MoreVertical, MessageSquare, User, Bot, GraduationCap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import jsPDF from 'jspdf';
@@ -913,7 +913,7 @@ export default function BibliotecaPage() {
       case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
       case "Roteiro Personalizado": return <Target size={20} className="text-pink-600" />;
       case "Brainstorming": return <MessageSquare size={20} className="text-purple-600" />;
-      case "Simulados": return <Clock size={20} className="text-amber-600" />;
+      case "Simulados": return <GraduationCap size={20} className="text-amber-600" />;
       default: return <FileText size={20} className="text-gray-600" />;
     }
   };
@@ -1171,7 +1171,7 @@ export default function BibliotecaPage() {
             </LiquidGlassCard>
 
             <LiquidGlassCard className="p-4 text-center">
-              <Clock className="mx-auto mb-2 text-amber-600" size={24} />
+              <GraduationCap className="mx-auto mb-2 text-amber-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.simulados.length}</div>
               <div className="text-sm text-soft-gray">Simulados</div>
             </LiquidGlassCard>
@@ -1213,7 +1213,7 @@ export default function BibliotecaPage() {
                         {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
                         {file.type === "Roteiro Personalizado" && <Target size={16} className="text-pink-600" />}
                         {file.type === "Brainstorming" && <MessageSquare size={16} className="text-purple-600" />}
-                        {file.type === "Simulados" && <Clock size={16} className="text-amber-600" />}
+                        {file.type === "Simulados" && <GraduationCap size={16} className="text-amber-600" />}
                       </div>
                       {/* Desktop: Regular icon */}
                       <div className="hidden sm:block">
