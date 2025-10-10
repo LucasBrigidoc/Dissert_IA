@@ -154,13 +154,17 @@ export default function BibliotecaPage() {
     queryKey: ['/api/saved-outlines'],
   });
 
+  const { data: savedSimulations, isLoading: loadingSimulations } = useQuery({
+    queryKey: ['/api/simulations'],
+  });
+
   // Fetch conversation history when selected file has conversationId
   const { data: conversation, isLoading: loadingConversation } = useQuery({
     queryKey: ['/api/conversations', selectedFile?.conversationId],
     enabled: !!selectedFile?.conversationId,
   });
 
-  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts || loadingOutlines;
+  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts || loadingOutlines || loadingSimulations;
 
   // Transform data to match biblioteca format
   const transformRepertoireToFile = (repertoire: any) => ({
@@ -278,6 +282,51 @@ export default function BibliotecaPage() {
     };
   };
 
+  const transformSimulationToFile = (simulation: any) => {
+    const correctionData = simulation.correctionData;
+    const competencies = correctionData?.competencies || [];
+    
+    let content = `**${simulation.title}**\n\n**Proposta:** ${simulation.proposalUsed || 'N/A'}\n\n**Tipo de Exame:** ${simulation.examType?.toUpperCase() || 'N/A'}\n**Tema:** ${simulation.theme || 'N/A'}\n${simulation.customTheme ? `**Tema Personalizado:** ${simulation.customTheme}\n` : ''}**Tempo Limite:** ${simulation.timeLimit ? `${simulation.timeLimit} minutos` : 'N/A'}\n**Tempo Utilizado:** ${simulation.timeTaken ? `${simulation.timeTaken} minutos` : 'N/A'}\n\n**PONTUAÇÃO FINAL:** ${simulation.score || 0}/1000\n\n`;
+
+    if (competencies.length > 0) {
+      content += `**COMPETÊNCIAS:**\n`;
+      competencies.forEach((comp: any, index: number) => {
+        content += `\nCompetência ${index + 1}: ${comp.score || 0}/200\n${comp.feedback || ''}\n`;
+      });
+    }
+
+    if (correctionData?.strengths) {
+      content += `\n**PONTOS FORTES:**\n${correctionData.strengths}\n`;
+    }
+
+    if (correctionData?.improvements) {
+      content += `\n**PONTOS A MELHORAR:**\n${correctionData.improvements}\n`;
+    }
+
+    if (correctionData?.recommendation) {
+      content += `\n**RECOMENDAÇÃO:**\n${correctionData.recommendation}\n`;
+    }
+
+    if (simulation.essayText) {
+      content += `\n\n**REDAÇÃO:**\n${simulation.essayText}`;
+    }
+
+    return {
+      id: simulation.id,
+      title: simulation.title,
+      category: 'Simulados',
+      date: simulation.createdAt,
+      size: '1.2 MB',
+      type: 'Simulados',
+      description: `${simulation.examType?.toUpperCase() || 'Simulado'} - Nota: ${simulation.score || 0}/1000`,
+      grade: simulation.score,
+      content,
+      essayText: simulation.essayText,
+      correctionData: simulation.correctionData,
+      simulation
+    };
+  };
+
   // Use real data from API or fallback to empty arrays
   const allOutlines = savedOutlines?.results ? savedOutlines.results.map(transformOutlineToFile) : [];
   
@@ -288,7 +337,8 @@ export default function BibliotecaPage() {
     propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'enem' || p.examType === 'vestibular').map(transformProposalToFile) : [],
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
     roteiros: allOutlines.filter((outline: any) => outline.type === 'Roteiro Personalizado'),
-    brainstormings: allOutlines.filter((outline: any) => outline.type === 'Brainstorming')
+    brainstormings: allOutlines.filter((outline: any) => outline.type === 'Brainstorming'),
+    simulados: savedSimulations?.results ? savedSimulations.results.filter((s: any) => s.isCompleted).map(transformSimulationToFile) : []
   };
 
 
@@ -829,7 +879,8 @@ export default function BibliotecaPage() {
     ...bibliotecaData.propostas,
     ...bibliotecaData.textosModificados,
     ...bibliotecaData.roteiros,
-    ...bibliotecaData.brainstormings
+    ...bibliotecaData.brainstormings,
+    ...bibliotecaData.simulados
   ];
 
   // Filter files based on search and category
@@ -843,7 +894,8 @@ export default function BibliotecaPage() {
                           (selectedCategory === "proposta" && file.type === "Proposta") ||
                           (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
                           (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado") ||
-                          (selectedCategory === "brainstormings" && file.type === "Brainstorming");
+                          (selectedCategory === "brainstormings" && file.type === "Brainstorming") ||
+                          (selectedCategory === "simulados" && file.type === "Simulados");
     return matchesSearch && matchesCategory;
   });
 
@@ -856,6 +908,7 @@ export default function BibliotecaPage() {
       case "Texto Modificado": return <FileText size={20} className="text-cyan-600" />;
       case "Roteiro Personalizado": return <Target size={20} className="text-pink-600" />;
       case "Brainstorming": return <MessageSquare size={20} className="text-purple-600" />;
+      case "Simulados": return <Clock size={20} className="text-amber-600" />;
       default: return <FileText size={20} className="text-gray-600" />;
     }
   };
@@ -869,6 +922,7 @@ export default function BibliotecaPage() {
       case "Texto Modificado": return "bg-cyan-100 text-cyan-800";
       case "Roteiro Personalizado": return "bg-pink-100 text-pink-800";
       case "Brainstorming": return "bg-purple-100 text-purple-800";
+      case "Simulados": return "bg-amber-100 text-amber-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -1019,6 +1073,15 @@ export default function BibliotecaPage() {
                 >
                   Brainstormings
                 </Button>
+                <Button
+                  variant={selectedCategory === "simulados" ? "default" : "secondary"}
+                  size="sm"
+                  className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
+                  onClick={() => setSelectedCategory("simulados")}
+                  data-testid="filter-simulados"
+                >
+                  Simulados
+                </Button>
               </div>
             </div>
           </LiquidGlassCard>
@@ -1064,8 +1127,8 @@ export default function BibliotecaPage() {
             </LiquidGlassCard>
           </div>
           
-          {/* Desktop: Full Grid - Centralizado com 6 cards */}
-          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
+          {/* Desktop: Full Grid - Centralizado com 7 cards */}
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 max-w-7xl mx-auto">
             <LiquidGlassCard className="p-4 text-center">
               <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.repertorios.length}</div>
@@ -1100,6 +1163,12 @@ export default function BibliotecaPage() {
               <MessageSquare className="mx-auto mb-2 text-purple-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.brainstormings.length}</div>
               <div className="text-sm text-soft-gray">Brainstormings</div>
+            </LiquidGlassCard>
+
+            <LiquidGlassCard className="p-4 text-center">
+              <Clock className="mx-auto mb-2 text-amber-600" size={24} />
+              <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.simulados.length}</div>
+              <div className="text-sm text-soft-gray">Simulados</div>
             </LiquidGlassCard>
           </div>
         </div>
@@ -1139,6 +1208,7 @@ export default function BibliotecaPage() {
                         {file.type === "Texto Modificado" && <FileText size={16} className="text-cyan-600" />}
                         {file.type === "Roteiro Personalizado" && <Target size={16} className="text-pink-600" />}
                         {file.type === "Brainstorming" && <MessageSquare size={16} className="text-purple-600" />}
+                        {file.type === "Simulados" && <Clock size={16} className="text-amber-600" />}
                       </div>
                       {/* Desktop: Regular icon */}
                       <div className="hidden sm:block">
