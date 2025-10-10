@@ -346,7 +346,7 @@ export default function Propostas() {
               </div>
             </div>
             <div>
-              <p className="text-sm text-soft-gray">Ferramenta para elaborar e pesquisar temas de redação</p>
+              <p className="text-sm text-soft-gray">Busque propostas reais de ENEM, vestibulares e concursos do Brasil</p>
             </div>
           </div>
         </div>
@@ -367,13 +367,19 @@ export default function Propostas() {
           <div className="space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
               <Search className="w-4 h-4 sm:w-5 sm:h-5 text-bright-blue" />
-              <h2 className="text-lg sm:text-xl font-semibold text-dark-blue">Buscar Propostas de Redação</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-dark-blue">Buscar Propostas Reais de Provas Brasileiras</h2>
+            </div>
+            
+            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-blue-800">
+                <span className="font-semibold">💡 Como buscar:</span> Digite o tema (ex: "meio ambiente"), palavras-chave (ex: "sustentabilidade"), tipo de exame (ex: "ENEM 2023") ou instituição (ex: "FUVEST"). O sistema irá buscar propostas reais que foram utilizadas em provas oficiais do Brasil.
+              </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-1">
                 <Input
-                  placeholder="Digite o tema, palavras-chave ou tipo de exame..."
+                  placeholder="Ex: educação, tecnologia, ENEM 2023, sustentabilidade..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -526,99 +532,148 @@ export default function Propostas() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               {displayProposals.map((proposal) => (
                 <LiquidGlassCard 
                   key={proposal.id} 
-                  className="p-6 hover:scale-[1.02] transition-transform cursor-pointer"
+                  className="p-6 hover:shadow-lg transition-all"
                   data-testid={`card-proposal-${proposal.id}`}
                 >
                   <div className="space-y-4">
-                    {/* Header */}
-                    <div className="flex items-start justify-between">
+                    {/* Header com Badge de Proposta Real ou IA */}
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-dark-blue text-lg leading-tight">
-                          {proposal.title}
-                        </h4>
-                        {proposal.isAiGenerated ? (
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-md mt-2 border border-purple-200">
-                            <Sparkles className="w-3 h-3" />
-                            Criada por IA
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-md mt-2 border border-green-200">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Proposta Real
-                          </span>
+                        {/* Informações da Prova (para propostas reais) */}
+                        {!proposal.isAiGenerated && (proposal.examName || proposal.year) && (
+                          <div className="flex flex-wrap items-center gap-2 mb-3">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg font-semibold text-sm shadow-md">
+                              <Trophy className="w-4 h-4" />
+                              <span>PROPOSTA REAL DE PROVA</span>
+                            </div>
+                            {proposal.examName && (
+                              <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg font-medium text-sm border border-blue-200">
+                                <GraduationCap className="w-4 h-4" />
+                                <span>{proposal.examName}</span>
+                              </div>
+                            )}
+                            {proposal.year && (
+                              <div className="flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 rounded-lg font-medium text-sm border border-purple-200">
+                                <Calendar className="w-4 h-4" />
+                                <span>Ano: {proposal.year}</span>
+                              </div>
+                            )}
+                          </div>
                         )}
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="text-sm px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        
+                        {/* Badge de IA */}
+                        {proposal.isAiGenerated && (
+                          <div className="mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold text-sm shadow-md">
+                              <Sparkles className="w-4 h-4" />
+                              Criada por Inteligência Artificial
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Título da Proposta */}
+                        <h3 className="text-xl font-bold text-dark-blue leading-tight mb-3">
+                          {proposal.title}
+                        </h3>
+                        
+                        {/* Tags de Categoria */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-300 font-medium">
                             {getExamTypeLabel(proposal.examType)}
                           </span>
-                          <span className="text-sm px-2 py-1 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
+                          <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-300 font-medium">
                             {getThemeLabel(proposal.theme)}
                           </span>
-                          <span className="text-sm px-2 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          <span className="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-300 font-medium">
                             {getDifficultyLabel(proposal.difficulty)}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Content Preview */}
-                    <div className="space-y-3">
-                      <p className="text-soft-gray text-sm leading-relaxed line-clamp-3">
+                    {/* Enunciado da Proposta */}
+                    <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 rounded-lg p-4 border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FileText className="w-4 h-4 text-slate-600" />
+                        <span className="font-semibold text-slate-700 text-sm">Enunciado da Proposta:</span>
+                      </div>
+                      <p className="text-slate-700 text-sm leading-relaxed">
                         {proposal.statement}
                       </p>
-                      
-                      {proposal.supportingText && (
+                    </div>
+                    
+                    {/* Textos de Apoio */}
+                    {proposal.supportingText && (
+                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 rounded-lg p-4 border-2 border-blue-200">
                         <div 
-                          className="bg-blue-50/50 rounded-lg p-3 border border-blue-100 cursor-pointer hover:bg-blue-100/50 transition-colors"
+                          className="cursor-pointer"
                           onClick={() => toggleSupportingText(proposal.id)}
                           data-testid={`supporting-text-${proposal.id}`}
                         >
-                          <p className={`text-soft-gray text-xs leading-relaxed ${expandedProposals.has(proposal.id) ? '' : 'line-clamp-2'}`}>
-                            <span className="font-medium text-bright-blue">Texto de apoio:</span> {proposal.supportingText}
-                          </p>
-                          <p className="text-bright-blue text-xs mt-1 font-medium">
-                            {expandedProposals.has(proposal.id) ? '↑ Clique para recolher' : '↓ Clique para ver mais'}
-                          </p>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <BookOpen className="w-5 h-5 text-blue-600" />
+                              <span className="font-semibold text-blue-800 text-sm">Textos de Apoio</span>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+                            >
+                              {expandedProposals.has(proposal.id) ? (
+                                <>
+                                  <span className="text-xs mr-1">Recolher</span>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                  </svg>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-xs mr-1">Ver Completo</span>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                          <div className={`text-slate-700 text-sm leading-relaxed whitespace-pre-wrap ${expandedProposals.has(proposal.id) ? '' : 'line-clamp-3'}`}>
+                            {proposal.supportingText}
+                          </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-3 border-t border-soft-gray/20">
-                      <div className="flex items-center gap-4 text-xs text-soft-gray/70">
-                        {!proposal.isAiGenerated && proposal.examName && (
-                          <div className="flex items-center gap-1">
-                            <GraduationCap className="w-3 h-3" />
-                            <span>{proposal.examName}</span>
-                          </div>
-                        )}
-                        {!proposal.isAiGenerated && proposal.year && (
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            <span>{proposal.year}</span>
-                          </div>
+                    {/* Footer com Ações */}
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                      <div className="text-xs text-slate-500">
+                        {!proposal.isAiGenerated ? (
+                          <span className="font-medium">
+                            📚 Proposta utilizada em prova oficial do Brasil
+                          </span>
+                        ) : (
+                          <span className="font-medium">
+                            🤖 Proposta gerada por IA baseada em padrões reais
+                          </span>
                         )}
                       </div>
                       
                       <Button
                         onClick={() => saveProposalMutation.mutate(proposal.id)}
                         disabled={saveProposalMutation.isPending}
-                        size="sm"
                         className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0"
                         data-testid={`button-save-${proposal.id}`}
                       >
                         {saveProposalMutation.isPending ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
                         ) : (
-                          <BookOpen className="w-3 h-3" />
+                          <Star className="w-4 h-4 mr-2" />
                         )}
-                        Salvar
+                        Salvar na Biblioteca
                       </Button>
                     </div>
                   </div>
