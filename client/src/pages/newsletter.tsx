@@ -278,30 +278,9 @@ export default function NewsletterPage() {
                   <h1 className="text-3xl font-bold text-dark-blue">{currentNewsletter.title}</h1>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                {currentNewsletter.isNew && (
-                  <Badge className="bg-green-500 text-white">Nova</Badge>
-                )}
-                <Button
-                  onClick={() => handleToggleSave(currentNewsletter.id)}
-                  variant="outline"
-                  className={isNewsletterSaved(currentNewsletter.id) 
-                    ? "border-bright-blue text-bright-blue" 
-                    : "border-soft-gray/30 text-soft-gray hover:border-bright-blue hover:text-bright-blue"
-                  }
-                  disabled={saveNewsletter.isPending || removeSavedNewsletter.isPending}
-                  data-testid={`button-save-newsletter-${currentNewsletter.id}`}
-                >
-                  {saveNewsletter.isPending || removeSavedNewsletter.isPending ? (
-                    <Loader2 className="animate-spin mr-2" size={16} />
-                  ) : isNewsletterSaved(currentNewsletter.id) ? (
-                    <BookmarkCheck className="mr-2" size={16} />
-                  ) : (
-                    <Bookmark className="mr-2" size={16} />
-                  )}
-                  {isNewsletterSaved(currentNewsletter.id) ? "Salva na Biblioteca" : "Salvar na Biblioteca"}
-                </Button>
-              </div>
+              {currentNewsletter.isNew && (
+                <Badge className="bg-green-500 text-white">Nova</Badge>
+              )}
             </div>
             
             <div className="flex items-center space-x-6 mb-8 text-sm text-soft-gray">
