@@ -4,6 +4,14 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 # Recent Changes
 
+## October 11, 2025 - AI Usage Limits Update
+- **Updated Gemini API Usage Limits**: Completely restructured the cost and operation limits for free and pro plans
+  - **Free Plan**: R$ 0,15 a cada 15 dias (15 centavos) with unlimited operations; R$ 0,35 max cost per month (35 centavos)
+  - **Pro Plan**: R$ 5,00 por semana (500 centavos a cada 7 dias) with unlimited operations; R$ 22,00 max cost per month (2200 centavos)
+  - Updated `WeeklyCostLimitingService` with new quinzenal/semanal limits
+  - Updated `SubscriptionService` with new monthly limits and unlimited operations logic
+  - Fixed free plan logic to properly handle unlimited operations (-1 sentinel value)
+
 ## October 11, 2025 - AI Chat Brainstorming Enhancement
 - **Enhanced AI Chat Prompt**: Completely redesigned the brainstorming chat prompt to provide comprehensive pedagogical guidance
   - Now explicitly guides students through the full dissertativo-argumentativo structure: Tema → Tese → Introdução → Desenvolvimento 1 → Desenvolvimento 2 → Conclusão
