@@ -566,6 +566,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const finalAmount = Math.max(0, plan.monthly - discountAmount);
       
       // Build base URL with proper https:// scheme for Stripe
+      console.log('REPLIT_DEV_DOMAIN:', process.env.REPLIT_DEV_DOMAIN);
       const baseUrl = process.env.REPLIT_DEV_DOMAIN 
         ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
         : 'http://localhost:5000';

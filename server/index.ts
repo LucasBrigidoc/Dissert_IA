@@ -8,6 +8,10 @@ import { setupVite, serveStatic, log } from "./vite";
 const app = express();
 app.set('trust proxy', true); // Enable accurate client IPs for rate limiting on Replit
 
+console.log('🔧 Environment check:');
+console.log('  REPLIT_DEV_DOMAIN:', process.env.REPLIT_DEV_DOMAIN);
+console.log('  NODE_ENV:', process.env.NODE_ENV);
+
 // Use MemoryStore for sessions to avoid SSL certificate issues with PostgreSQL
 // In production, consider using a persistent store
 const MemoryStore = memorystore(session);
