@@ -565,6 +565,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const finalAmount = Math.max(0, plan.monthly - discountAmount);
       
+      // Build base URL with proper https:// scheme for Stripe
+      const baseUrl = process.env.REPLIT_DEV_DOMAIN 
+        ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+        : 'http://localhost:5000';
+      
+      console.log(`Creating Stripe session with base URL: ${baseUrl}`);
+      
       // Create Stripe Checkout Session
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -585,8 +592,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           },
         ],
         ...(stripeCouponId ? { discounts: [{ coupon: stripeCouponId }] } : {}),
-        success_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/pricing`,
+        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/pricing`,
         metadata: {
           planId,
           userId: userId || "anonymous",
