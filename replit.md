@@ -4,6 +4,15 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 # Recent Changes
 
+## October 11, 2025 - AI Chat Brainstorming Enhancement
+- **Enhanced AI Chat Prompt**: Completely redesigned the brainstorming chat prompt to provide comprehensive pedagogical guidance
+  - Now explicitly guides students through the full dissertativo-argumentativo structure: Tema → Tese → Introdução → Desenvolvimento 1 → Desenvolvimento 2 → Conclusão
+  - Added detailed instructions for each section with specific guidance on structure, length, and requirements
+  - Included comprehensive explanation of proposta de intervenção with 5 required elements (Agente, Ação, Meio/Modo, Finalidade, Detalhamento)
+  - Enhanced fallback responses for each section with practical, actionable guidance
+  - Standardized response format to ensure consistent pedagogical quality
+- **UI Improvements**: Changed "Save to Library" button icon from Star to BookmarkPlus for better visual representation
+
 ## October 6, 2025 - Dashboard Integration with Database
 - **Essay Correction Auto-Save**: Essay corrections now automatically save scores to `userScores` table when user is authenticated
 - **Score Management API**: Created complete REST API for score management
