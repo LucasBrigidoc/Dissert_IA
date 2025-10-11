@@ -3052,7 +3052,7 @@ export class MemStorage implements IStorage {
         priceYearly: 49000, // R$ 490.00
         features: ["Redações ilimitadas", "Chat com IA completo", "Todas as estruturas", "Correções detalhadas"],
         maxOperationsPerMonth: -1, // ilimitado
-        maxAICostPerMonth: 2000, // R$ 20.00
+        maxAICostPerMonth: 2200, // R$ 22.00
         isActive: true
       }
     ];

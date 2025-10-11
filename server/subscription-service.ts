@@ -132,9 +132,9 @@ export class SubscriptionService {
    * Get free plan limits (for users without subscription)
    */
   private async getFreePlanLimits(userId: string): Promise<SubscriptionLimits> {
-    // Free plan limits: 10 operations per month, R$5.00 max cost
-    const FREE_PLAN_OPERATIONS = 10;
-    const FREE_PLAN_COST_CENTAVOS = 500; // R$ 5.00
+    // Free plan limits: unlimited operations, R$0.35 max cost
+    const FREE_PLAN_OPERATIONS = -1; // -1 = unlimited
+    const FREE_PLAN_COST_CENTAVOS = 35; // R$ 0.35
 
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -149,13 +149,13 @@ export class SubscriptionService {
     const currentOps = usage.totalOperations;
     const currentCost = usage.totalCost;
 
-    const operationsRemaining = Math.max(0, FREE_PLAN_OPERATIONS - currentOps);
+    const operationsRemaining = FREE_PLAN_OPERATIONS === -1 ? -1 : Math.max(0, FREE_PLAN_OPERATIONS - currentOps);
     const costRemaining = Math.max(0, FREE_PLAN_COST_CENTAVOS - currentCost);
 
     let canUseAI = true;
     let limitReachedReason: string | undefined;
 
-    if (currentOps >= FREE_PLAN_OPERATIONS) {
+    if (FREE_PLAN_OPERATIONS !== -1 && currentOps >= FREE_PLAN_OPERATIONS) {
       canUseAI = false;
       limitReachedReason = 'Limite de operações do plano gratuito atingido. Faça upgrade!';
     } else if (currentCost >= FREE_PLAN_COST_CENTAVOS) {
