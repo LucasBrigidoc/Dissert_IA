@@ -25,7 +25,9 @@ export default function Login() {
     try {
       const success = await login(email, password, rememberMe);
       if (success) {
-        setLocation("/dashboard");
+        const params = new URLSearchParams(window.location.search);
+        const redirectTo = params.get('redirect');
+        setLocation(redirectTo || "/dashboard");
       }
     } catch (error) {
       toast({

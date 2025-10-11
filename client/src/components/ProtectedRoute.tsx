@@ -22,7 +22,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!user) {
-    return <Redirect to="/login" />;
+    const currentPath = window.location.pathname + window.location.search;
+    return <Redirect to={`/login?redirect=${encodeURIComponent(currentPath)}`} />;
   }
 
   return <>{children}</>;

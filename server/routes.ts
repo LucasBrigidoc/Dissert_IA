@@ -509,8 +509,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get plan details
       // TODO: Replace this with actual plan lookup from database
       const planPrices: Record<string, { monthly: number; name: string }> = {
-        "pro": { monthly: 6590, name: "Plano Pro" },
-        "premium": { monthly: 9990, name: "Plano Premium" },
+        "monthly": { monthly: 6590, name: "Plano Pro Mensal" },
+        "annual": { monthly: 59900, name: "Plano Pro Anual" },
       };
       
       const plan = planPrices[planId];
@@ -524,7 +524,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Validate and apply coupon if provided
       if (couponCode) {
-        const validation = await storage.validateCoupon(couponCode, planId, userId);
+        // Map new plan IDs to legacy IDs for coupon validation compatibility
+        const legacyPlanIdMap: Record<string, string> = {
+          "monthly": "pro",
+          "annual": "pro",
+        };
+        const legacyPlanId = legacyPlanIdMap[planId] || planId;
+        
+        const validation = await storage.validateCoupon(couponCode, legacyPlanId, userId);
         
         if (!validation.valid) {
           return res.status(400).json({ 
