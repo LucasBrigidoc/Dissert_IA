@@ -113,7 +113,11 @@ export default function Login() {
               
               <div className="mt-8 text-center">
                 <span className="text-soft-gray">ou </span>
-                <Link href="/signup" className="text-bright-blue font-semibold hover:underline" data-testid="link-signup">
+                <Link 
+                  href={`/signup${window.location.search}`} 
+                  className="text-bright-blue font-semibold hover:underline" 
+                  data-testid="link-signup"
+                >
                   Criar Conta
                 </Link>
               </div>

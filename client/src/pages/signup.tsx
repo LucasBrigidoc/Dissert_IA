@@ -67,7 +67,9 @@ export default function Signup() {
     try {
       const success = await register(formData.name, formData.email, formData.phone, formData.password, userType);
       if (success) {
-        setLocation("/dashboard");
+        const params = new URLSearchParams(window.location.search);
+        const redirectTo = params.get('redirect');
+        setLocation(redirectTo || "/dashboard");
       }
     } catch (error) {
       toast({
