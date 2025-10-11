@@ -559,74 +559,135 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
   private buildOptimizedChatPrompt(compressedContext: string, section: string, context: any): string {
     // Enhanced pedagogical prompt with better structure and guidance
     const sectionMap: Record<string, string> = {
-      'tema': 'Desenvolvimento e Compreensão Temática',
-      'tese': 'Construção de Tese Argumentativa Sólida',
-      'introducao': 'Estruturação de Introdução Persuasiva',
-      'desenvolvimento1': 'Primeiro Argumento com Repertório Sociocultural',
-      'desenvolvimento2': 'Segundo Argumento Complementar e Aprofundamento',
-      'conclusao': 'Síntese Eficaz e Proposta de Intervenção',
-      'optimization': 'Refinamento e Aprimoramento de Ideias'
+      'tema': 'Compreensão e Análise do Tema da Redação',
+      'tese': 'Construção de Tese Argumentativa Clara e Defendível',
+      'introducao': 'Estruturação da Introdução (Contextualização + Problematização + Tese)',
+      'desenvolvimento1': 'Desenvolvimento 1 - Primeiro Argumento com Repertório',
+      'desenvolvimento2': 'Desenvolvimento 2 - Segundo Argumento Complementar',
+      'conclusao': 'Conclusão - Síntese e Proposta de Intervenção Completa',
+      'optimization': 'Refinamento e Aprimoramento Geral da Redação'
     };
 
     const currentMessage = compressedContext.split('ATUAL:')[1] || compressedContext;
     const sectionTitle = sectionMap[section] || section;
 
-    return `Você é um Professor de Redação especialista e mentor pedagógico. 
+    return `Você é um Professor de Redação ENEM/Vestibular especialista que guia estudantes através da estrutura completa da redação dissertativo-argumentativa.
 
-CONTEXTO ATUAL:
+CONTEXTO DA CONVERSA:
 ${compressedContext}
 
-INFORMAÇÕES DA REDAÇÃO:
-${context.proposta ? `📋 TEMA DA PROPOSTA: "${context.proposta}"` : ''}
-${context.tese ? `💭 TESE DESENVOLVIDA: "${context.tese}"` : ''}
+📋 INFORMAÇÕES DA REDAÇÃO:
+${context.proposta ? `• TEMA/PROPOSTA: "${context.proposta}"` : '• TEMA/PROPOSTA: Ainda não definido'}
+${context.tese ? `• TESE DO ESTUDANTE: "${context.tese}"` : '• TESE: Ainda não desenvolvida'}
 
-SEÇÃO EM FOCO: ${sectionTitle}
+🎯 SEÇÃO ATUAL: ${sectionTitle}
 
-MISSÃO PEDAGÓGICA:
-Forneça orientação educativa clara, motivadora e prática que ajude o estudante a desenvolver habilidades de redação argumentativa de acordo com os critérios da prova. Seja específico, didático e encorajador.
+═══════════════════════════════════════════════════════════════
+SUA MISSÃO COMO PROFESSOR DE REDAÇÃO:
+═══════════════════════════════════════════════════════════════
 
-ESTRUTURA DE RESPOSTA OBRIGATÓRIA:
+1. **IDENTIFICAR O TEMA/PROPOSTA** (se ainda não definido):
+   - Pergunte ao estudante qual é o tema ou proposta de redação
+   - Ajude a compreender o comando da proposta
+   - Identifique palavras-chave e o problema central
 
-🎯 **FOCO DA SEÇÃO:**
-[Explique brevemente o objetivo específico desta seção na estrutura da redação]
+2. **DESENVOLVER A TESE** (posição clara sobre o tema):
+   - Ajude o estudante a formular uma TESE CLARA em 1-2 frases
+   - A tese deve responder: "Qual é sua posição sobre este tema?"
+   - Deve ser defendível com argumentos sólidos
 
-💡 **ANÁLISE PEDAGÓGICA:**
-[Analise a questão/dúvida do estudante com 2-3 frases claras e construtivas]
+3. **ESTRUTURAR A REDAÇÃO COMPLETA**:
+   
+   📝 **INTRODUÇÃO** (4-5 linhas):
+   • Contextualização: Apresentar o tema com dados, citação ou contexto histórico
+   • Problematização: Mostrar por que este tema é relevante/problemático
+   • Tese: Apresentar sua posição clara sobre o tema
+   
+   📝 **DESENVOLVIMENTO 1** (7-8 linhas):
+   • Tópico frasal: Apresentar o primeiro argumento
+   • Repertório sociocultural: Usar dados, citações, leis, exemplos concretos
+   • Desenvolvimento: Explicar como o repertório sustenta seu argumento
+   • Fechamento: Conectar com a tese
+   
+   📝 **DESENVOLVIMENTO 2** (7-8 linhas):
+   • Tópico frasal: Apresentar o segundo argumento (complementar ao primeiro)
+   • Repertório adicional: Outro dado, exemplo ou referência
+   • Desenvolvimento: Aprofundar a análise crítica
+   • Fechamento: Reforçar a argumentação
+   
+   📝 **CONCLUSÃO** (5-6 linhas):
+   • Retomada da tese (reafirmar sua posição)
+   • Proposta de intervenção COMPLETA com 5 elementos:
+     1. AGENTE (quem vai fazer)
+     2. AÇÃO (o que vai fazer)
+     3. MEIO/MODO (como vai fazer)
+     4. FINALIDADE (para quê)
+     5. DETALHAMENTO (especificar algum elemento)
 
-📝 **ORIENTAÇÃO PRÁTICA:**
-[Dê uma sugestão específica e aplicável sobre como melhorar ou desenvolver esta seção]
+4. **RESPONDER DÚVIDAS** sobre:
+   - Estrutura da redação
+   - Como usar conectivos adequados
+   - Como encontrar e usar repertório sociocultural
+   - Como melhorar a argumentação
+   - Qualquer aspecto da redação dissertativo-argumentativa
 
-🔧 **DICAS ESTRATÉGICAS:**
-• [Dica prática 1 relacionada aos critérios de avaliação]
-• [Dica prática 2 sobre técnicas de escrita]
-• [Dica prática 3 sobre conectivos, repertórios ou estrutura]
+═══════════════════════════════════════════════════════════════
+FORMATO DE RESPOSTA (use esta estrutura):
+═══════════════════════════════════════════════════════════════
 
-✨ **EXEMPLO/MODELO:**
-[Quando apropriado, forneça um exemplo breve de como aplicar a orientação]
+🎯 **O QUE VAMOS TRABALHAR:**
+[Explique em 1-2 frases qual é o foco desta etapa e por que é importante]
+
+💡 **ANÁLISE DA SUA QUESTÃO:**
+[Analise a dúvida/questão do estudante com 2-3 frases construtivas]
+
+📝 **COMO DESENVOLVER ESTA PARTE:**
+[Dê orientação específica e prática sobre como fazer/melhorar esta seção]
+
+🔧 **DICAS ESSENCIAIS:**
+• [Dica 1 com técnica específica ou critério de avaliação]
+• [Dica 2 sobre conectivos, estrutura ou repertório]
+• [Dica 3 estratégica para esta seção]
+
+✨ **EXEMPLO PRÁTICO:**
+[Quando relevante, forneça exemplo concreto aplicado ao tema do estudante]
 
 ❓ **PRÓXIMO PASSO:**
-[Indique claramente qual deve ser o próximo foco do estudante]
+[Indique claramente o que o estudante deve fazer agora - seja diretivo e claro]
 
-PRINCÍPIOS PEDAGÓGICOS:
-- Use linguagem acessível mas academicamente precisa
-- Seja motivador e construtivo em todos os comentários
-- Conecte sempre com os critérios de avaliação da redação dissertativo-argumentativa
-- Forneça feedback específico e acionável
-- Mantenha foco na competência comunicativa
+═══════════════════════════════════════════════════════════════
+PRINCÍPIOS PEDAGÓGICOS OBRIGATÓRIOS:
+═══════════════════════════════════════════════════════════════
+✓ Use linguagem clara, acessível e motivadora
+✓ Seja ESPECÍFICO ao tema da redação do estudante (não seja genérico)
+✓ Conecte sempre com os 5 critérios de avaliação ENEM/Vestibular
+✓ Forneça feedback acionável e construtivo
+✓ Quando o estudante não souber por onde começar, faça perguntas direcionadas
+✓ Se ele não tiver tema definido, ajude a identificar ou escolher um tema primeiro
+✓ Se não tiver tese, ajude a formular uma posição clara antes de estruturar
+✓ Guie passo a passo: Tema → Tese → Introdução → D1 → D2 → Conclusão
 
-Responda de forma completa e pedagogicamente rica:`;
+Responda agora de forma completa, pedagógica e motivadora:`;
   }
 
   private getFallbackChatSuggestion(recentMessages: any[], section: string, context: any): string {
     const lastMessage = recentMessages?.find(msg => msg.type === 'user')?.content || '';
     
     const fallbackResponses: Record<string, string> = {
-      'tema': '🎯 DESENVOLVIMENTO DE TEMA\n\n💡 Vejo que você está trabalhando com o tema.\n\n📝 Para desenvolver bem o tema, comece identificando o problema central e suas principais causas.\n\n🔧 DICAS:\n• Delimite o foco específico do tema\n• Pesquise dados e exemplos relevantes\n• Conecte com questões atuais do Brasil\n\n❓ Qual aspecto específico do tema você gostaria de explorar mais?',
-      'tese': '🎯 CONSTRUÇÃO DE TESE\n\n💡 Uma boa tese precisa ser clara e defendível.\n\n📝 Formule sua posição em uma frase direta que responda ao problema do tema.\n\n🔧 CARACTERÍSTICAS:\n• Seja específica e objetiva\n• Apresente sua visão sobre a solução\n• Seja defensável com argumentos\n\n❓ Qual seria sua posição sobre o tema proposto?',
-      'introducao': '🎯 ESTRUTURA DA INTRODUÇÃO\n\n💡 A introdução deve contextualizar, problematizar e apresentar sua tese.\n\n📝 Use dados ou contextualização histórica para ambientar o tema.\n\n🔧 ESTRUTURA:\n• 1ª frase: Contextualização\n• 2ª frase: Problematização\n• 3ª frase: Tese + argumentos\n\n❓ Como você gostaria de começar contextualizando o tema?'
+      'tema': '🎯 **O QUE VAMOS TRABALHAR:**\nVamos identificar e compreender o tema da sua redação.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nPara desenvolver uma boa redação, primeiro precisamos entender bem o tema proposto e o problema central que ele apresenta.\n\n📝 **COMO DESENVOLVER ESTA PARTE:**\nMe conte: qual é o tema ou proposta de redação que você precisa trabalhar? Se possível, compartilhe o enunciado completo ou as palavras-chave principais.\n\n🔧 **DICAS ESSENCIAIS:**\n• Identifique as palavras-chave do comando da proposta\n• Compreenda qual problema ou questão está sendo levantado\n• Pense em exemplos e dados que você conhece sobre esse tema\n\n❓ **PRÓXIMO PASSO:**\nCompartilhe comigo o tema da redação para começarmos a trabalhar!',
+      
+      'tese': '🎯 **O QUE VAMOS TRABALHAR:**\nVamos construir uma tese clara e defendível para sua redação.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nA tese é sua posição sobre o tema - é o que você defende ao longo de toda a redação.\n\n📝 **COMO DESENVOLVER ESTA PARTE:**\nSua tese deve responder: "Qual é sua posição sobre este tema?" em 1-2 frases diretas e objetivas.\n\n🔧 **DICAS ESSENCIAIS:**\n• Seja específico: evite afirmações muito genéricas\n• Seja defendível: você deve conseguir argumentar a favor\n• Seja claro: o leitor deve entender sua posição imediatamente\n\n✨ **EXEMPLO PRÁTICO:**\n"A educação digital nas escolas públicas é fundamental para reduzir desigualdades e preparar jovens para o mercado de trabalho moderno."\n\n❓ **PRÓXIMO PASSO:**\nQual seria sua posição/opinião sobre o tema proposto? Tente formular em uma frase.',
+      
+      'introducao': '🎯 **O QUE VAMOS TRABALHAR:**\nVamos estruturar uma introdução completa com contextualização, problematização e tese.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nA introdução tem 3 partes essenciais que guiam o leitor para sua argumentação.\n\n📝 **COMO DESENVOLVER ESTA PARTE:**\n1ª FRASE (Contextualização): Apresente o tema com dado histórico, citação ou contexto\n2ª FRASE (Problematização): Mostre por que isso é um problema/questão relevante\n3ª FRASE (Tese): Apresente sua posição clara sobre o tema\n\n🔧 **DICAS ESSENCIAIS:**\n• Use conectivos para ligar as ideias (Nesse contexto, Diante disso, Portanto)\n• Seja objetivo: 4-5 linhas no total\n• Apresente a tese no final da introdução\n\n❓ **PRÓXIMO PASSO:**\nComece pensando: como você pode contextualizar este tema? Que dado ou informação pode abrir sua redação?',
+      
+      'desenvolvimento1': '🎯 **O QUE VAMOS TRABALHAR:**\nVamos construir o primeiro parágrafo de desenvolvimento com argumento sólido e repertório.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nO primeiro desenvolvimento deve apresentar seu argumento principal com sustentação de repertório sociocultural (dados, leis, citações, exemplos).\n\n📝 **COMO DESENVOLVER ESTA PARTE:**\n• Tópico frasal: Apresente seu primeiro argumento\n• Repertório: Use um dado concreto, lei, pesquisa ou exemplo\n• Desenvolvimento: Explique como isso sustenta seu argumento\n• Fechamento: Conecte de volta à tese\n\n🔧 **DICAS ESSENCIAIS:**\n• Use repertório ESPECÍFICO (não genérico): cite nomes, números, datas\n• Explique a relação entre o repertório e seu argumento\n• Mantenha 7-8 linhas de extensão\n\n❓ **PRÓXIMO PASSO:**\nQual será seu primeiro argumento? Que dado ou exemplo você pode usar para sustentá-lo?',
+      
+      'desenvolvimento2': '🎯 **O QUE VAMOS TRABALHAR:**\nVamos construir o segundo parágrafo de desenvolvimento, complementando o primeiro argumento.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nO segundo desenvolvimento deve apresentar um argumento complementar (não repetir o D1) com outro repertório.\n\n📝 **COMO DESENVOLVER ESTA PARTE:**\n• Tópico frasal: Apresente um segundo argumento (diferente do D1)\n• Repertório adicional: Use outro dado, exemplo ou referência\n• Desenvolvimento: Aprofunde a análise crítica\n• Fechamento: Reforce a argumentação geral\n\n🔧 **DICAS ESSENCIAIS:**\n• Não repita ideias do D1 - complemente e aprofunde\n• Use conectivos de adição/progressão (Além disso, Ademais, Outrossim)\n• Mantenha coerência com a tese apresentada\n\n❓ **PRÓXIMO PASSO:**\nQue outro aspecto do tema você pode argumentar? Tem outro dado ou exemplo para usar?',
+      
+      'conclusao': '🎯 **O QUE VAMOS TRABALHAR:**\nVamos criar uma conclusão eficaz com retomada da tese e proposta de intervenção completa.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nA conclusão deve sintetizar sua argumentação e apresentar uma proposta de intervenção detalhada.\n\n📝 **COMO DESENVOLVER ESTA PARTE:**\n1. RETOMADA: Reafirme sua tese (não copie, reformule)\n2. PROPOSTA: Apresente solução com 5 elementos obrigatórios:\n   • AGENTE (quem fará): Governo, MEC, mídia, escolas...\n   • AÇÃO (o que fará): campanhas, programas, leis...\n   • MEIO/MODO (como): por meio de, através de...\n   • FINALIDADE (para quê): a fim de, com o objetivo de...\n   • DETALHAMENTO (especificar): verba, prazo, público-alvo...\n\n🔧 **DICAS ESSENCIAIS:**\n• Seja específico na proposta (evite soluções genéricas)\n• Respeite os direitos humanos\n• Use conectivos conclusivos (Portanto, Dessa forma, Logo)\n\n❓ **PRÓXIMO PASSO:**\nQuem poderia resolver esse problema? O que essa pessoa/instituição deveria fazer?'
     };
 
-    return fallbackResponses[section] || '🎯 ORIENTAÇÃO GERAL\n\n💡 Entendo que você precisa de ajuda com a redação.\n\n📝 Vamos trabalhar este tema passo a passo para construir uma redação de qualidade.\n\n🔧 PRÓXIMOS PASSOS:\n• Identifique o foco do tema\n• Desenvolva sua tese\n• Estruture os argumentos\n\n❓ Em qual parte específica você gostaria de começar?';
+    return fallbackResponses[section] || '🎯 **O QUE VAMOS TRABALHAR:**\nVamos desenvolver sua redação dissertativo-argumentativa passo a passo.\n\n💡 **ANÁLISE DA SUA QUESTÃO:**\nEntendo que você precisa de ajuda com a redação. Vamos começar pelo básico e construir juntos.\n\n📝 **COMO DESENVOLVER:**\nPrimeiro, me conte: você já tem um tema/proposta definido? Se sim, qual é?\n\n🔧 **ESTRUTURA COMPLETA DA REDAÇÃO:**\n1. Tema/Proposta (entender o que está sendo pedido)\n2. Tese (sua posição sobre o tema)\n3. Introdução (contextualização + problematização + tese)\n4. Desenvolvimento 1 (primeiro argumento + repertório)\n5. Desenvolvimento 2 (segundo argumento + repertório)\n6. Conclusão (retomada + proposta de intervenção)\n\n❓ **PRÓXIMO PASSO:**\nMe conte: qual é o tema da sua redação? Ou em qual parte específica você precisa de ajuda?';
   }
 
   private calculateChatTokensSaved(summary: string | null, recentMessages: any[], section: string, context: any): number {
