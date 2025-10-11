@@ -135,10 +135,10 @@ export default function Checkout() {
     try {
       const response = await apiRequest(`/api/checkout/create-session`, {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           planId: selectedPlan,
           couponCode: couponData?.coupon.code || undefined,
-        }),
+        },
       });
 
       if (response.url) {
