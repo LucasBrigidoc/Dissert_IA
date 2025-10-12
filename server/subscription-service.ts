@@ -132,9 +132,9 @@ export class SubscriptionService {
    * Get free plan limits (for users without subscription)
    */
   private async getFreePlanLimits(userId: string): Promise<SubscriptionLimits> {
-    // Free plan limits: unlimited operations, R$1.80 max cost
+    // Free plan limits: unlimited operations, R$0.35 max cost per month
     const FREE_PLAN_OPERATIONS = -1; // -1 = unlimited
-    const FREE_PLAN_COST_CENTAVOS = 180; // R$ 1.80
+    const FREE_PLAN_COST_CENTAVOS = 35; // R$ 0.35 (17 centavos a cada 15 dias = 34 centavos por mês)
 
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
