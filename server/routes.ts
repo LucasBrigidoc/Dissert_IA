@@ -2373,7 +2373,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'structure_analysis', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -2463,7 +2464,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 150, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'essay_generation', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -2556,7 +2558,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'repertoire_search', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -3254,7 +3257,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'proposal_generation', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -3423,7 +3427,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'chat_argumentative', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -3590,7 +3595,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 100, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'text_modification', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -3712,7 +3718,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? await subscriptionService.getUserPlanType(req.session.userId)
         : 'free';
       
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 150, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'essay_correction', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
@@ -5265,7 +5272,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : 'free';
       
       // Check weekly cost limit before proceeding
-      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, 150, planType);
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'essay_outline', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 

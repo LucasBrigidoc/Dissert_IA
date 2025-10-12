@@ -66,6 +66,36 @@ export class WeeklyCostLimitingService {
   }
 
   /**
+   * Get estimated cost based on historical usage
+   * Returns 1.5x average cost of operation type, or 0 if no history
+   */
+  async getEstimatedCost(identifier: string, operationType: string, planType: 'free' | 'pro'): Promise<number> {
+    const periodStart = this.getPeriodStart(planType);
+    const usageRecord = await this.storage.findWeeklyUsage(identifier, periodStart);
+    
+    if (!usageRecord || !usageRecord.costBreakdown) {
+      return 0; // No history, allow first execution
+    }
+
+    const breakdown = usageRecord.costBreakdown as Record<string, number>;
+    const operationBreakdown = usageRecord.operationBreakdown as Record<string, number>;
+    
+    const historicalCost = breakdown[operationType] || 0;
+    const operationCount = operationBreakdown[operationType] || 0;
+    
+    if (operationCount === 0) {
+      return 0; // Never executed this operation, allow it
+    }
+
+    const averageCost = historicalCost / operationCount;
+    const estimatedCost = Math.ceil(averageCost * 1.5);
+    
+    console.log(`📊 Estimated cost for ${operationType}: avg=${averageCost.toFixed(2)}, estimated=${estimatedCost} (1.5x)`);
+    
+    return estimatedCost;
+  }
+
+  /**
    * Get or create usage record for current period
    */
   private async getOrCreateUsageRecord(identifier: string, planType: 'free' | 'pro'): Promise<WeeklyUsage> {
