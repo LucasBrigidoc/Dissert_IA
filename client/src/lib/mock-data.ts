@@ -92,9 +92,9 @@ export const mockPricingPlans = [
   {
     id: "pro",
     name: "Plano Pro",
-    price: "R$65,90",
+    price: "R$55,00",
     period: "/Mês",
-    annualPrice: "R$599/Ano",
+    annualPrice: "R$479,88/Ano",
     features: [
       "Acesso a todas funcionalidades",
       "IA avançada com correção por competências ENEM",
@@ -179,7 +179,7 @@ export const mockFAQ = [
   {
     id: 9,
     question: "Os planos anuais têm desconto?",
-    answer: "Sim! Assinando o Plano Pro anualmente você economiza: de R$59,90/mês por R$599/ano, garantindo economia de 17% e acesso completo a todas as funcionalidades."
+    answer: "Sim! Assinando o Plano Pro anualmente você economiza: de R$55,00/mês por R$479,88/ano (equivale a R$39,99/mês), garantindo economia de 27% e acesso completo a todas as funcionalidades."
   },
   {
     id: 10,
