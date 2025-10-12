@@ -2377,8 +2377,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -2467,8 +2467,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -2560,8 +2560,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -3258,8 +3258,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -3427,8 +3427,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -3594,8 +3594,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -3716,8 +3716,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
@@ -5269,8 +5269,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!weeklyCheck.allowed) {
         const limitMessage = planType === 'free' 
-          ? `Limite quinzenal de R$2,19 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$2,19. Faça upgrade para o Plano Pro e tenha R$8,75 semanais!`
-          : `Limite semanal de R$8,75 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$8,75. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
         
         return res.status(403).json({ 
           message: limitMessage,
