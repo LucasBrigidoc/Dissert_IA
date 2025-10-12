@@ -8,7 +8,11 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 - **Updated Plano Pro Pricing**: Adjusted subscription prices for better accessibility
   - **Mensal**: R$55,00/mês (previously R$65,90)
   - **Anual**: R$479,88/ano equivale a R$39,99/mês (previously R$599,00 - 27% discount)
-  - Updated pricing display across `client/src/lib/mock-data.ts` and `client/src/pages/pricing.tsx`
+  - **Economia Anual**: R$180,12 (previously R$190,80)
+  - Updated pricing display across:
+    - `client/src/lib/mock-data.ts` - Plan prices and FAQ
+    - `client/src/pages/pricing.tsx` - Pricing page display
+    - `client/src/pages/checkout.tsx` - Checkout page with all price calculations
 - **Updated Gemini API Usage Limits**: Adjusted cost limits for both free and pro plans
   - **Free Plan**: R$ 0,17 a cada 15 dias (17 centavos) with unlimited operations; R$ 0,35 max cost per month (35 centavos)
   - **Pro Plan**: R$ 4,00 por semana (400 centavos a cada 7 dias) with unlimited operations; R$ 20,00 max cost per month (2000 centavos)

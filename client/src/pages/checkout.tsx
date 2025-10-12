@@ -13,17 +13,17 @@ const PLANS = {
   monthly: {
     id: "monthly",
     name: "Plano Pro Mensal",
-    price: 6590,
-    displayPrice: "R$ 65,90",
+    price: 5500,
+    displayPrice: "R$ 55,00",
     period: "/mês"
   },
   annual: {
     id: "annual",
     name: "Plano Pro Anual",
-    price: 59900,
-    displayPrice: "R$ 599,00",
+    price: 47988,
+    displayPrice: "R$ 479,88",
     period: "/ano",
-    savings: "2 meses grátis!"
+    savings: "Economize 27%"
   }
 };
 
@@ -203,7 +203,7 @@ export default function Checkout() {
                       <p className="text-soft-gray text-xs sm:text-sm">Sem compromisso, cancele quando quiser</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="text-xl sm:text-2xl font-bold text-dark-blue whitespace-nowrap">R$ 65,90</div>
+                      <div className="text-xl sm:text-2xl font-bold text-dark-blue whitespace-nowrap">R$ 55,00</div>
                       <div className="text-soft-gray text-xs sm:text-sm">/mês</div>
                     </div>
                   </div>
@@ -225,11 +225,11 @@ export default function Checkout() {
                       <p className="text-soft-gray text-xs sm:text-sm">Melhor custo-benefício</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="text-xl sm:text-2xl font-bold text-dark-blue whitespace-nowrap">R$ 49,92</div>
+                      <div className="text-xl sm:text-2xl font-bold text-dark-blue whitespace-nowrap">R$ 39,99</div>
                       <div className="text-soft-gray text-xs sm:text-sm">/mês</div>
-                      <div className="text-soft-gray text-xs sm:text-sm mt-0.5">R$ 599,00/ano</div>
+                      <div className="text-soft-gray text-xs sm:text-sm mt-0.5">R$ 479,88/ano</div>
                       <div className="text-green-600 text-xs font-bold mt-0.5">
-                        Economize R$ 190,80
+                        Economize R$ 180,12
                       </div>
                     </div>
                   </div>
@@ -351,7 +351,7 @@ export default function Checkout() {
                   {selectedPlan === "annual" && (
                     <div className="bg-bright-blue/5 rounded-lg p-3 sm:p-4 border border-bright-blue/20">
                       <p className="text-bright-blue font-semibold text-xs sm:text-sm">
-                        💰 {formatPrice(Math.round(currentPlan.price / 12))}/mês • Economize R$ 190,80
+                        💰 {formatPrice(Math.round(currentPlan.price / 12))}/mês • Economize R$ 180,12
                       </p>
                     </div>
                   )}
