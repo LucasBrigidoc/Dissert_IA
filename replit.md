@@ -6,7 +6,7 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 ## October 11, 2025 - AI Usage Limits Update
 - **Updated Gemini API Usage Limits**: Completely restructured the cost and operation limits for free and pro plans
-  - **Free Plan**: R$ 0,15 a cada 15 dias (15 centavos) with unlimited operations; R$ 0,35 max cost per month (35 centavos)
+  - **Free Plan**: R$ 0,90 a cada 15 dias (90 centavos) with unlimited operations; R$ 1,80 max cost per month (180 centavos)
   - **Pro Plan**: R$ 5,00 por semana (500 centavos a cada 7 dias) with unlimited operations; R$ 22,00 max cost per month (2200 centavos)
   - Updated `WeeklyCostLimitingService` with new quinzenal/semanal limits
   - Updated `SubscriptionService` with new monthly limits and unlimited operations logic

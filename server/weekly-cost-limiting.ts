@@ -5,7 +5,7 @@ import { currencyService } from "./currency-service";
 /**
  * Cost Limiting Service for DissertAI
  * Manages AI usage limits with different periods for each plan:
- * - Free plan: R$0.15 (15 centavos) every 15 days
+ * - Free plan: R$0.90 (90 centavos) every 15 days
  * - Pro plan: R$5.00 (500 centavos) every 7 days
  */
 export class WeeklyCostLimitingService {
@@ -16,7 +16,7 @@ export class WeeklyCostLimitingService {
    */
   private static readonly PLAN_LIMITS = {
     free: {
-      limitCentavos: 15,  // R$0.15
+      limitCentavos: 90,  // R$0.90
       periodDays: 15       // Reset every 15 days
     },
     pro: {
