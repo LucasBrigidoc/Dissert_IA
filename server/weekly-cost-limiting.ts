@@ -176,11 +176,12 @@ export class WeeklyCostLimitingService {
   }
 
   /**
-   * Gemini 2.5 Flash pricing in USD per million tokens
+   * Gemini 2.5 Flash-Lite pricing in USD per million tokens
+   * Updated: December 2025 - More cost-effective model
    */
   private static readonly GEMINI_PRICING_USD = {
-    input: 0.30,   // $0.30 per million tokens
-    output: 2.50,  // $2.50 per million tokens
+    input: 0.10,   // $0.10 per million tokens
+    output: 0.40,  // $0.40 per million tokens
   };
 
   /**
