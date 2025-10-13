@@ -600,55 +600,76 @@ INSTRUÇÕES IMPORTANTES:
 
     const detailInstructions = detailLevel === 'step-by-step' 
       ? `
-**🎯 ATENÇÃO - MODO PASSO A PASSO ULTRA DETALHADO ATIVADO:**
+**🎯 MODO PASSO A PASSO ULTRA DETALHADO ATIVADO:**
 
-O estudante solicitou um roteiro EXTREMAMENTE DETALHADO. Este é um nível MÁXIMO de orientação. Cada frase do roteiro deve ser:
+O estudante solicitou o nível MÁXIMO de orientação. Cada frase do roteiro deve ser um GUIA COMPLETO DE ESCRITA.
 
-📝 **TAMANHO E PROFUNDIDADE:**
-- Cada frase deve ter NO MÍNIMO 4-6 linhas de texto corrido
-- Inclua 3-5 períodos completos em cada orientação
-- Transforme cada ponto em um mini-tutorial explicativo
-- Não economize palavras - seja VERBOSO e DIDÁTICO
+📋 **ESTRUTURA OBRIGATÓRIA PARA CADA FRASE:**
 
-🎓 **CONTEÚDO ESPECÍFICO:**
-- Mencione exemplos CONCRETOS e ESPECÍFICOS ao tema (nomes de leis, datas, números, estatísticas reais)
-- Cite repertórios EXATOS (ex: "Mencione o Artigo 5º da Constituição Federal", "Cite dados do IBGE 2023 sobre X")
-- Forneça CONECTIVOS EXATOS para começar cada frase (ex: "Inicie com: 'Historicamente, desde...'")
-- Explique o RACIOCÍNIO ARGUMENTATIVO por trás de cada escolha
+Cada orientação de frase DEVE incluir estas 6 partes na ordem:
 
-🔧 **INSTRUÇÕES PRÁTICAS:**
-- Diga EXATAMENTE como começar a frase (palavras iniciais sugeridas)
-- Explique COMO desenvolver o raciocínio (passo 1, passo 2, passo 3...)
-- Indique QUANTAS linhas escrever para aquele ponto
-- Sugira ESTRUTURA DE FRASE (ex: "Na primeira parte da frase, faça X. Na segunda parte, complemente com Y")
+1️⃣ **COMO INICIAR** (Primeiras palavras):
+   - Forneça 2-3 opções de conectivos ou palavras iniciais EXATAS
+   - Exemplo: "Inicie com: 'Historicamente,' OU 'Desde o século XX,' OU 'De acordo com dados do...'"
 
-💡 **ORIENTAÇÕES EXTRAS:**
-- Adicione DICAS DE REDAÇÃO em cada ponto
-- Inclua ALERTAS sobre o que EVITAR
-- Sugira SINÔNIMOS e variações de vocabulário
-- Explique COMO CONECTAR este ponto com o próximo
+2️⃣ **O QUE ESCREVER** (Conteúdo específico):
+   - Indique EXATAMENTE qual informação incluir (nome de lei, dado estatístico, evento, conceito)
+   - Seja ULTRA ESPECÍFICO ao tema da proposta "${proposal}"
+   - Exemplo: "Mencione o Artigo 5º da Constituição Federal de 1988" OU "Cite que segundo o IBGE (2023), X% da população..."
 
-**COMPARAÇÃO - O QUE VOCÊ DEVE FAZER:**
+3️⃣ **COMO DESENVOLVER** (Estrutura da frase):
+   - Explique a SEQUÊNCIA da construção frasal em etapas
+   - Exemplo: "Primeira parte da frase: apresente o repertório. Segunda parte: conecte com o tema usando 'o que demonstra/evidencia/comprova'. Terceira parte: finalize com a implicação"
 
-❌ **MODO GENÉRICO (NÃO FAÇA ASSIM):**
-"Contextualize com repertório sobre o tema e apresente a tese"
+4️⃣ **TAMANHO E PROPORÇÃO**:
+   - Especifique o tamanho estimado SEM usar marcações visíveis
+   - Integre naturalmente: "Esta primeira parte deve ser desenvolvida com riqueza de detalhes" ao invés de "(4-5 linhas)"
 
-✅ **MODO ULTRA DETALHADO (FAÇA ASSIM):**
-"Inicie o primeiro parágrafo com uma contextualização histórica ou sociocultural específica ao tema. Você pode começar a frase com conectivos como 'Historicamente,', 'Desde o século XX,', 'De acordo com dados recentes,' ou 'Segundo a pesquisa X de 2023,'. Por exemplo, se o tema for sobre impacto das redes sociais, mencione: 'Segundo pesquisa do IBGE de 2023, 85% dos brasileiros utilizam redes sociais diariamente, o que demonstra a centralidade dessas plataformas na vida contemporânea'. Desenvolva esta contextualização em 2-3 linhas (aproximadamente 40-50 palavras), mostrando a RELEVÂNCIA do repertório escolhido para introduzir o problema. Em seguida, na segunda frase, use um conectivo de contraste como 'Entretanto,', 'Contudo,', 'Todavia,' ou 'No entanto,' para apresentar a PROBLEMÁTICA central. Estruture assim: [Conectivo de contraste] + [apresentação do problema] + [sua tese/posicionamento]. Exemplo: 'Entretanto, esse uso massivo tem gerado debates sobre privacidade e saúde mental, tornando urgente a discussão sobre regulamentação e educação digital'. Esta frase deve ter aproximadamente 25-35 palavras. DICA: evite generalizações como 'sempre foi assim' ou 'todos sabem'; seja específico e use dados/fatos. ATENÇÃO: não cite o repertório sem explicar sua relação com o tema - sempre conecte o repertório à problemática que será discutida."
+5️⃣ **EXEMPLO PRÁTICO APLICADO**:
+   - Forneça um exemplo COMPLETO e ESCRITO de como a frase ficaria
+   - Use aspas para mostrar: "Exemplo: 'Historicamente, desde a promulgação da Lei X em 2015, observa-se que...'"
+   - O exemplo deve ser ESPECÍFICO ao tema da proposta
 
-Cada orientação do roteiro deve ser TÃO DETALHADA quanto o exemplo acima. O estudante deve poder praticamente COPIAR suas instruções como guia de escrita.
+6️⃣ **DICAS E ALERTAS**:
+   - DICA: técnica de redação para melhorar (vocabulário, conectivos, argumentação)
+   - ATENÇÃO/EVITE: erro comum que prejudica a redação
+   - CONECTE: como fazer transição para a próxima frase
 
-⚠️ **IMPORTANTE - FORMATAÇÃO DA RESPOSTA:**
-NÃO inclua marcações de quantidade como "(Aprox. 4-5 linhas)", "(60-80 palavras)", "(2-3 linhas)" ou similares no roteiro final. 
-Essas instruções são apenas para VOCÊ seguir internamente ao criar o conteúdo, mas o usuário NÃO DEVE VER essas anotações.
+📝 **MODELO DE ORIENTAÇÃO COMPLETA (siga este padrão):**
+
+"[1-COMO INICIAR] Inicie a frase com conectivos temporais como 'Historicamente,', 'Desde o século XX,' ou contextuais como 'De acordo com estudos recentes,', 'Segundo dados de 2023,'. [2-O QUE ESCREVER] Apresente um repertório sociocultural específico relacionado a [tema da proposta]: pode ser o Artigo 5º da Constituição Federal (se tratar de direitos), dados do IBGE sobre [aspecto específico do tema], ou o filme/livro [nome específico] que aborda [conexão com tema]. [3-COMO DESENVOLVER] Estruture a frase assim: primeiro apresente o repertório com sua fonte/data, depois use conectivos causais como 'o que demonstra', 'evidenciando', 'comprovando' para fazer a ponte, e finalize mostrando a RELAÇÃO direta com o problema central da proposta. [4-TAMANHO] Desenvolva esta contextualização com riqueza de detalhes, equilibrando dados objetivos e interpretação crítica. [5-EXEMPLO] Exemplo aplicado ao tema: 'Segundo o relatório da ONU de 2023, aproximadamente 2 bilhões de pessoas no mundo não têm acesso à água potável, o que evidencia a urgência de políticas públicas de saneamento básico e distribuição equitativa de recursos hídricos'. [6-DICAS] DICA: Use dados recentes (últimos 5 anos) para fortalecer credibilidade. EVITE: Citar repertório sem conectá-lo ao tema - sempre explique a relação. CONECTE com a próxima frase: Após apresentar o repertório, use conectivo de contraste ('Entretanto,', 'Contudo,') para introduzir a problemática."
+
+🎓 **CONTEÚDO ULTRA ESPECÍFICO:**
+- Mencione nomes REAIS e ESPECÍFICOS: leis com número/ano, artigos da Constituição, dados com fonte e ano, nomes de filmes/livros/obras, eventos históricos com data
+- Para o tema "${proposal}", busque repertórios que tenham RELAÇÃO DIRETA
+- Forneça conectivos VARIADOS (não repita): causais (pois, visto que), adversativos (entretanto, contudo), conclusivos (portanto, logo), temporais (desde, historicamente)
+- Sugira SINÔNIMOS para palavras-chave do tema
+
+🔧 **PROGRESSÃO ARGUMENTATIVA:**
+Explique como cada frase se conecta com a próxima:
+- Da frase 1 para 2: "Após contextualizar, use contraste para problematizar"
+- Da frase 2 para 3: "Após apresentar a tese, anuncie os caminhos argumentativos"
+- Entre parágrafos: "Use conectivos de adição (Além disso,) ou de contraste (Por outro lado,)"
+
+💡 **CHECKLIST DE QUALIDADE (garanta que cada orientação tenha):**
+✅ Conectivos específicos sugeridos
+✅ Repertório/dado REAL e ESPECÍFICO ao tema
+✅ Estrutura frasal passo a passo
+✅ Exemplo completo escrito
+✅ Dica de técnica de redação
+✅ Alerta do que evitar
+✅ Indicação de conexão com próxima frase
+
+⚠️ **FORMATAÇÃO:**
+NÃO use marcações como "(4-5 linhas)", "(60 palavras)", "(Aprox. X linhas)" - integre instruções de tamanho naturalmente no texto.
+O estudante NÃO deve ver anotações técnicas entre parênteses.
 `
       : `
 **MODO DIREÇÕES GERAIS:**
-Forneça orientações objetivas, concisas e diretas. Cada frase do roteiro deve ter 1-2 linhas, indicando apenas o caminho principal sem detalhamento excessivo. Seja direto ao ponto.
+Forneça orientações objetivas e diretas. Cada frase do roteiro deve ter 1-2 linhas com o caminho principal, sem detalhamento excessivo.
 
-⚠️ **IMPORTANTE - FORMATAÇÃO DA RESPOSTA:**
-NÃO inclua marcações de quantidade como "(Aprox. 4-5 linhas)", "(60-80 palavras)", "(2-3 linhas)" ou similares no roteiro final.
-O usuário NÃO DEVE VER essas anotações técnicas.
+⚠️ **FORMATAÇÃO:**
+NÃO inclua marcações técnicas como "(Aprox. 4-5 linhas)", "(60-80 palavras)". O usuário NÃO DEVE VER essas anotações.
 `;
 
     return `Você é um especialista em redações dissertativo-argumentativas nota 1000. Crie um roteiro estruturado para uma redação dissertativo-argumentativa baseado nas seguintes informações:
