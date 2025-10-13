@@ -132,50 +132,82 @@ export class GeminiService {
       console.log(`🧠 Asking Gemini if it knows about real exam: "${query}"`);
       
       // Ask Gemini directly about its knowledge of this specific exam
-      const searchPrompt = `Você tem conhecimento sobre a prova "${query}"?
+      const searchPrompt = `Você tem conhecimento EXATO e VERIFICÁVEL sobre a prova "${query}"?
 
-IMPORTANTE: Responda com base APENAS no seu conhecimento de treinamento. Não invente informações.
+⚠️ **REGRAS CRÍTICAS - LEIA COM ATENÇÃO:**
 
-Se você CONHECE essa prova específica:
-- Diga qual foi a proposta de redação REAL cobrada
-- Inclua o título EXATO, comando COMPLETO e textos de apoio
-- Marque found: true
+1. **ZERO TOLERÂNCIA A INFORMAÇÕES IMPRECISAS:**
+   - Se você NÃO tem certeza ABSOLUTA da proposta de redação dessa prova específica, marque found: false
+   - NUNCA invente, estime ou "aproxime" informações
+   - NUNCA confunda com propostas de outros anos do mesmo exame
+   - NUNCA misture temas de provas diferentes
 
-Se você NÃO CONHECE essa prova específica:
-- Marque found: false
-- Sugira propostas de provas SIMILARES que você conhece (mesmo exame de outros anos, ou tema parecido)
+2. **SE VOCÊ CONHECE ESSA PROVA ESPECÍFICA (found: true):**
+   - Você DEVE ter o título EXATO da proposta de redação
+   - Você DEVE ter o comando COMPLETO e LITERAL da redação (não parafraseado)
+   - Você DEVE ter os textos de apoio que foram fornecidos na prova (se houver)
+   - Você DEVE ter certeza ABSOLUTA do ano correto
+   - Você DEVE verificar que tudo corresponde EXATAMENTE à prova "${query}"
+
+3. **SE VOCÊ NÃO CONHECE ESSA PROVA ESPECÍFICA (found: false):**
+   - Marque found: false imediatamente
+   - NÃO tente criar uma proposta genérica
+   - OPCIONALMENTE, sugira propostas REAIS de provas SIMILARES que você conhece com certeza
+   - Deixe claro que são provas DIFERENTES
+
+4. **VALIDAÇÃO OBRIGATÓRIA:**
+   - Verifique se o examName retornado É EXATAMENTE "${query}"
+   - Verifique se o year retornado corresponde ao ano pesquisado${year ? ` (deve ser ${year})` : ''}
+   - Verifique se o título da proposta FAZ SENTIDO para esse exame e ano específicos
+
+**EXEMPLO DE RESPOSTA CORRETA (found: true):**
+Prova pesquisada: "ENEM 2022"
+- Você TEM CERTEZA que foi "Desafios para a valorização de comunidades e povos tradicionais no Brasil"
+- Você TEM o comando exato: "A partir da leitura dos textos motivadores... desenvolva um texto dissertativo-argumentativo..."
+- Você TEM os textos de apoio que foram fornecidos
+
+**EXEMPLO DE RESPOSTA INCORRETA (NÃO FAÇA ASSIM):**
+Prova pesquisada: "ENEM 2022"
+- Você retorna uma proposta do ENEM 2023 pensando que é 2022 ❌
+- Você retorna um tema "parecido" mas não é o tema real ❌
+- Você inventa um comando genérico de redação ❌
 
 Responda APENAS com JSON válido no formato:
 
 {
   "found": true ou false,
-  "message": "breve explicação",
+  "confidence": "alta, media ou baixa - o quanto você tem certeza (OBRIGATÓRIO: se não for 'alta', marque found: false)",
+  "message": "Explicação clara: se encontrou, confirme o ano e exame. Se não encontrou, explique por quê",
   "proposals": [
     {
-      "title": "Título EXATO da proposta (se conhece)",
-      "statement": "Comando COMPLETO da redação (se conhece)",
-      "supportingText": "Textos de apoio fornecidos (se conhece)",
-      "examName": "${query}",
-      "examType": "${examType || 'enem'}",
-      "theme": "tema (social, technology, environment, etc)",
-      "difficulty": "medio",
-      "year": "${year || new Date().getFullYear()}"
+      "title": "Título LITERAL e EXATO da proposta de redação (não parafraseie)",
+      "statement": "Comando COMPLETO e LITERAL da redação, exatamente como foi cobrado na prova (não parafraseie)",
+      "supportingText": "Textos de apoio COMPLETOS fornecidos na prova original (transcreva literalmente ou indique 'Não disponível' se não souber)",
+      "examName": "Nome EXATO como aparece oficialmente - PREENCHA COM O VALOR REAL, NÃO copie '${query}' se não souber",
+      "examType": "Tipo EXATO (enem, fuvest, unicamp, etc) - PREENCHA COM O VALOR REAL",
+      "theme": "tema (social, technology, environment, education, culture, health, politics, economy)",
+      "difficulty": "facil, medio ou dificil",
+      "year": "Ano NUMÉRICO EXATO da prova - PREENCHA COM O ANO REAL, NÃO invente"
     }
   ],
   "similarProposals": [
-    // Se NÃO conhece a prova específica, liste propostas PARECIDAS que você conhece
+    // APENAS se NÃO conhece a prova específica (found: false), liste propostas REAIS e VERIFICÁVEIS de provas similares
     {
-      "title": "Título de prova similar",
-      "statement": "Comando da redação",
-      "supportingText": "Textos de apoio",
-      "examName": "Nome da prova similar (ex: ENEM 2018)",
-      "examType": "enem ou vestibular",
+      "title": "Título EXATO de prova similar que você CONHECE COM CERTEZA",
+      "statement": "Comando LITERAL da redação",
+      "supportingText": "Textos de apoio ou 'Não disponível'",
+      "examName": "Nome EXATO da prova (ex: ENEM 2021, FUVEST 2023)",
+      "examType": "enem, fuvest, unicamp, etc",
       "theme": "tema",
-      "difficulty": "medio",
-      "year": "ano"
+      "difficulty": "facil, medio ou dificil",
+      "year": "ano EXATO numérico"
     }
   ]
-}`;
+}
+
+⚠️ VALIDAÇÃO FINAL: Se você marcou found: true mas confidence NÃO é "alta", você DEVE mudar found para false!
+
+⚠️ LEMBRE-SE: É MELHOR retornar found: false do que retornar informações INCORRETAS ou IMPRECISAS!`;
 
       const result = await this.model.generateContent(searchPrompt);
       const response = result.response.text();
@@ -219,8 +251,118 @@ Responda APENAS com JSON válido no formato:
       
       const parsed = JSON.parse(jsonMatch[0]);
       
+      // 🛡️ RUNTIME VALIDATION: Enforce accuracy requirements
       if (parsed.found && parsed.proposals && parsed.proposals.length > 0) {
-        console.log(`✅ Gemini generated ${parsed.proposals.length} proposal(s) based on knowledge`);
+        // Validation 0: Confidence field is MANDATORY
+        if (!parsed.confidence || parsed.confidence !== 'alta') {
+          const confidenceValue = parsed.confidence || 'missing';
+          console.log(`⚠️ Gemini confidence is "${confidenceValue}" (not "alta") - treating as NOT FOUND to prevent inaccuracies`);
+          parsed.found = false;
+          // Move proposals to similarProposals since they're uncertain
+          if (!parsed.similarProposals) parsed.similarProposals = [];
+          parsed.similarProposals = [...parsed.similarProposals, ...parsed.proposals];
+          parsed.proposals = [];
+        } else {
+          // Extract expected year from query if not provided as parameter
+          const normalizedQuery = query.toLowerCase().trim();
+          let expectedYear = year;
+          
+          if (!expectedYear) {
+            // Try to extract year from query using regex (e.g., "enem 2022", "fuvest 2023")
+            const yearMatch = query.match(/\b(19\d{2}|20\d{2})\b/);
+            if (yearMatch) {
+              expectedYear = parseInt(yearMatch[1]);
+              console.log(`📅 Extracted year ${expectedYear} from query "${query}"`);
+            }
+          }
+          
+          // Validation 2: Verify year and examName match expectations
+          for (const proposal of parsed.proposals) {
+            let validationFailed = false;
+            
+            // CRITICAL: If we expect a year, proposal MUST have a year field
+            if (expectedYear && !proposal.year) {
+              console.log(`⚠️ Proposal is missing year field but we expect year ${expectedYear} - rejecting`);
+              validationFailed = true;
+            }
+            
+            // Check if year is provided and is numeric
+            if (proposal.year) {
+              const proposalYear = parseInt(String(proposal.year));
+              if (isNaN(proposalYear)) {
+                console.log(`⚠️ Proposal year "${proposal.year}" is not numeric - rejecting`);
+                validationFailed = true;
+              } else {
+                // If we have an expected year (from param or query), verify it matches
+                if (expectedYear && proposalYear !== expectedYear) {
+                  console.log(`⚠️ Proposal year ${proposalYear} doesn't match expected year ${expectedYear} - rejecting`);
+                  validationFailed = true;
+                }
+                
+                // Year should be reasonable (between 1990 and current year + 1)
+                const currentYear = new Date().getFullYear();
+                if (proposalYear < 1990 || proposalYear > currentYear + 1) {
+                  console.log(`⚠️ Proposal year ${proposalYear} is unrealistic - rejecting`);
+                  validationFailed = true;
+                }
+              }
+            }
+            
+            // Check if examName matches query (including year if present)
+            if (proposal.examName) {
+              const proposalExamNormalized = proposal.examName.toLowerCase().trim();
+              
+              // Extract year from proposal examName
+              const proposalExamYearMatch = proposal.examName.match(/\b(19\d{2}|20\d{2})\b/);
+              const proposalExamYear = proposalExamYearMatch ? parseInt(proposalExamYearMatch[1]) : null;
+              
+              // CRITICAL: If we expect a year, examName MUST contain that year
+              if (expectedYear && !proposalExamYear) {
+                console.log(`⚠️ Proposal examName "${proposal.examName}" is missing year but we expect ${expectedYear} - rejecting`);
+                validationFailed = true;
+              }
+              
+              // If we expect a year and proposal examName has a year, they must match
+              if (expectedYear && proposalExamYear && proposalExamYear !== expectedYear) {
+                console.log(`⚠️ Proposal examName "${proposal.examName}" has year ${proposalExamYear} but expected ${expectedYear} - rejecting`);
+                validationFailed = true;
+              }
+              
+              // Check if key exam identifier (e.g., "enem", "fuvest") matches
+              const queryParts = normalizedQuery.split(/\s+/).filter((p: string) => p.length > 2 && !/^\d+$/.test(p));
+              const examParts = proposalExamNormalized.split(/\s+/).filter((p: string) => p.length > 2 && !/^\d+$/.test(p));
+              const hasExamMatch = queryParts.some((qp: string) => examParts.some((ep: string) => 
+                qp.includes(ep) || ep.includes(qp)
+              ));
+              
+              if (!hasExamMatch) {
+                console.log(`⚠️ Proposal examName "${proposal.examName}" doesn't match query "${query}" (exam identifier mismatch) - rejecting`);
+                validationFailed = true;
+              }
+            } else if (expectedYear) {
+              // If we expect a year but examName is missing, reject
+              console.log(`⚠️ Proposal is missing examName field but we expect specific exam with year ${expectedYear} - rejecting`);
+              validationFailed = true;
+            }
+            
+            if (validationFailed) {
+              console.log(`🚫 Validation failed for proposal "${proposal.title}" - treating as NOT FOUND`);
+              parsed.found = false;
+              if (!parsed.similarProposals) parsed.similarProposals = [];
+              parsed.similarProposals.push(proposal);
+              parsed.proposals = parsed.proposals.filter((p: any) => p !== proposal);
+            }
+          }
+          
+          // If all proposals were rejected, mark as not found
+          if (parsed.proposals.length === 0) {
+            parsed.found = false;
+          }
+        }
+      }
+      
+      if (parsed.found && parsed.proposals && parsed.proposals.length > 0) {
+        console.log(`✅ Gemini generated ${parsed.proposals.length} VALIDATED proposal(s) based on knowledge`);
         return {
           found: true,
           proposals: parsed.proposals.map((p: any) => ({
