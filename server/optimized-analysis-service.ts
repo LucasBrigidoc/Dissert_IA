@@ -886,39 +886,53 @@ ${typeFilter}
 ${categoryFilter}
 Nível de popularidade: Conhecimentos amplamente reconhecidos e validados academicamente
 
-INSTRUÇÕES PEDAGÓGICAS:
-- Priorize repertórios que os estudantes realmente conhecem ou podem facilmente pesquisar
-- Forneça conexões claras e diretas com argumentação dissertativa
-- Inclua contextualização histórica, social ou científica quando relevante
-- Explique especificamente COMO usar cada repertório na estrutura argumentativa
-- Foque em aplicabilidade prática para a competência 2 do ENEM (repertório sociocultural)
+INSTRUÇÕES PARA A DESCRIÇÃO (CAMPO MAIS IMPORTANTE):
+A descrição deve ser COMPLETA e PRÁTICA em 3 partes sequenciais:
+
+1️⃣ DADOS CONCRETOS (início da descrição):
+   - Cite números, percentuais, estatísticas, datas, fatos específicos
+   - Use fontes quando relevante (IBGE, OMS, estudos, artigos de lei)
+   - Exemplo: "Segundo dados do IBGE (2020), 23,9% das pessoas com deficiência estão empregadas..."
+
+2️⃣ CONTEXTO E RELEVÂNCIA (meio da descrição):
+   - Explique o que isso significa ou representa
+   - Conecte com o tema da redação
+   - Exemplo: "...evidenciando a desigualdade no mercado de trabalho brasileiro..."
+
+3️⃣ COMO APLICAR NA REDAÇÃO (final da descrição):
+   - Indique em qual parágrafo usar (introdução, desenvolvimento 1 ou 2, conclusão)
+   - Mostre como conectar com argumentos
+   - Exemplo: "...Use no D1 para fundamentar a exclusão social: 'Conforme dados do IBGE, apenas 23,9% das pessoas com deficiência estão empregadas, comprovando a marginalização desse grupo.'"
 
 FORMATO JSON OBRIGATÓRIO:
 [
   {
-    "title": "Nome completo e específico (obra, lei, evento, teoria, etc.)",
-    "description": "APRESENTE OS DADOS E INFORMAÇÕES CONCRETAS: estatísticas, percentuais, números, fatos específicos, resultados de pesquisas, conclusões principais (150-250 caracteres). Exemplo: 'Segundo o IBGE (2020), 23,9% das pessoas com deficiência estão empregadas, enquanto a taxa geral é de 66,3%' ao invés de apenas 'apresenta dados sobre empregabilidade'",
-    "applicationExample": "Exemplo prático: 'Esse repertório fortalece o argumento sobre [tema] porque demonstra que [explicação específica e conexão direta com a tese]'",
+    "title": "Nome completo e específico (obra, lei, evento, teoria, estudo, etc.)",
+    "description": "Descrição COMPLETA em 3 partes: [1) Dados concretos com números e fontes] + [2) Contexto e significado] + [3) Como usar na redação com exemplo prático de aplicação]. Total: 200-350 caracteres",
     "type": "${userFilters.type || 'books'}",
     "category": "${userFilters.category || 'education'}",
     "popularity": "popular",
     "year": "Ano relevante",
     "rating": 45,
-    "keywords": ["palavra-chave1", "palavra-chave2", "palavra-chave3", "palavra-chave4"],
-    "pedagogicalTips": "Dica específica sobre quando e como usar este repertório de forma mais eficaz na redação"
+    "keywords": ["palavra-chave1", "palavra-chave2", "palavra-chave3", "palavra-chave4"]
   }
 ]
 
+EXEMPLOS DE DESCRIÇÃO IDEAL:
+✅ BOM: "A Lei nº 13.146/2015 (LBI) estabelece 8% de vagas para PCD em empresas com 100+ funcionários, mas apenas 1% das vagas são preenchidas (MTE, 2021). Evidencia o descumprimento legal. Use no D2: 'Apesar da LBI exigir 8% de vagas, apenas 1% são ocupadas, revelando a ineficácia da fiscalização.'"
+
+❌ RUIM: "A Lei Brasileira de Inclusão estabelece direitos para pessoas com deficiência e promove acessibilidade no mercado de trabalho."
+
 CRITÉRIOS DE QUALIDADE:
 ✅ Repertórios reais, verificáveis e reconhecidos academicamente
-✅ Conexão direta e clara com o tema solicitado
-✅ Aplicabilidade pedagógica evidente para estudantes de ensino médio
-✅ Diversidade de tipos e perspectivas quando aplicável
+✅ Descrição com dados + contexto + aplicação prática
+✅ Indicação clara de onde usar na redação (Intro/D1/D2/Conclusão)
+✅ Exemplo concreto de como escrever na redação
 ✅ Linguagem acessível mas tecnicamente precisa
 ✅ Foco na competência 2 do ENEM (demonstrar conhecimento de mundo)
 ${exclusionNote}
 
-IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada repertório deve ser genuinamente útil para argumentação em redações do ENEM sobre o tema "${query}".`;
+IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada descrição deve ser auto-suficiente para o estudante saber EXATAMENTE como usar o repertório na redação sobre "${query}".`;
   }
 
   private parseRepertoireResponse(response: string, userFilters: any): any[] {
@@ -943,7 +957,7 @@ IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada repert
       const validRepertoires = (Array.isArray(repertoires) ? repertoires : [])
         .filter(rep => rep && rep.title && rep.description && rep.type)
         .map(rep => ({
-          // Existing fields
+          // Core fields (description now includes data + context + application)
           title: rep.title,
           description: rep.description,
           type: rep.type,
@@ -952,9 +966,6 @@ IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada repert
           year: rep.year || '2020',
           rating: rep.rating || 42,
           keywords: Array.isArray(rep.keywords) ? rep.keywords : [],
-          // Enhanced fields
-          applicationExample: rep.applicationExample || `Este repertório pode ser usado para fortalecer argumentos sobre ${rep.title}.`,
-          pedagogicalTips: rep.pedagogicalTips || `Use este repertório quando precisar de fundamentação teórica ou histórica sobre o tema.`,
           // Computed enhancement fields
           relevanceScore: this.calculateRelevanceScore(rep, userFilters),
           usageContext: this.generateUsageContext(rep)
