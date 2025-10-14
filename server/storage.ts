@@ -215,6 +215,12 @@ export interface IStorage {
   updateUserSubscription(id: string, subscription: Partial<UserSubscription>): Promise<UserSubscription>;
   getActiveSubscriptions(): Promise<UserSubscription[]>;
   getSubscriptionsByStatus(status: string): Promise<UserSubscription[]>;
+  getUserById(id: string): Promise<User | undefined>;
+  updateUserPlan(userId: string, planId: string, expiresAt: Date | null): Promise<void>;
+  getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined>;
+  createOrUpdateSubscription(data: { userId: string; planId: string; stripeSubscriptionId: string; expiresAt: Date }): Promise<void>;
+  getUsersWithExpiredSubscriptions(): Promise<User[]>;
+  getUserActiveSubscription(userId: string): Promise<UserSubscription | undefined>;
   
   // Transactions operations
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;

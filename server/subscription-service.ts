@@ -1,5 +1,11 @@
 import { type IStorage } from "./storage";
 import { type User, type SubscriptionPlan, type UserSubscription } from "@shared/schema";
+import Stripe from "stripe";
+
+// Initialize Stripe if key is available
+const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2025-08-27.basil" })
+  : null;
 
 export interface SubscriptionLimits {
   hasActiveSubscription: boolean;
@@ -241,5 +247,276 @@ export class SubscriptionService {
   async getUserTransactions(userId: string, limit: number = 10): Promise<any[]> {
     const transactions = await this.storage.getUserTransactions(userId);
     return transactions.slice(0, limit);
+  }
+
+  // ==================== AUTOMATIC SUBSCRIPTION LIFECYCLE MANAGEMENT ====================
+
+  /**
+   * Check if a user's subscription is expired and handle downgrade
+   */
+  async checkAndHandleExpiredSubscription(userId: string): Promise<{
+    isExpired: boolean;
+    downgradedToFree: boolean;
+  }> {
+    const user = await this.storage.getUserById(userId);
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // If user is already on free plan, nothing to do
+    if (user.planId === 'plan-free') {
+      return { isExpired: false, downgradedToFree: false };
+    }
+
+    // Check if subscription has expiration date
+    if (!user.subscriptionExpiresAt) {
+      // No expiration date set, subscription is valid
+      return { isExpired: false, downgradedToFree: false };
+    }
+
+    // Check if subscription is expired
+    const now = new Date();
+    const expirationDate = new Date(user.subscriptionExpiresAt);
+    
+    if (expirationDate > now) {
+      // Subscription is still active
+      return { isExpired: false, downgradedToFree: false };
+    }
+
+    // Subscription is expired, check Stripe for renewal
+    const hasActiveStripeSubscription = await this.checkStripeSubscriptionStatus(userId);
+    
+    if (hasActiveStripeSubscription) {
+      // Subscription was renewed in Stripe, local data already updated
+      return { isExpired: false, downgradedToFree: false };
+    }
+
+    // No active subscription in Stripe, downgrade to free
+    await this.storage.updateUserPlan(userId, 'plan-free', null);
+    
+    console.log(`✅ User ${userId} downgraded to free plan due to expired subscription`);
+    
+    return { isExpired: true, downgradedToFree: true };
+  }
+
+  /**
+   * Check if user has active subscription in Stripe
+   */
+  async checkStripeSubscriptionStatus(userId: string): Promise<boolean> {
+    if (!stripe) {
+      console.warn("⚠️ Stripe not initialized, skipping subscription check");
+      return false;
+    }
+
+    try {
+      // Get user's active subscription from database
+      const subscription = await this.storage.getUserSubscription(userId);
+      
+      if (!subscription?.stripeSubscriptionId) {
+        return false;
+      }
+
+      // Fetch subscription from Stripe
+      const stripeSubscription = await stripe.subscriptions.retrieve(
+        subscription.stripeSubscriptionId
+      );
+
+      // Check if subscription is active or trialing
+      const isActive = ['active', 'trialing'].includes(stripeSubscription.status);
+      
+      if (isActive && stripeSubscription.current_period_end) {
+        // Update local subscription data with Stripe info
+        const newExpiresAt = new Date(stripeSubscription.current_period_end * 1000);
+        await this.storage.updateUserPlan(userId, subscription.planId, newExpiresAt);
+        console.log(`✅ Updated subscription for user ${userId}, expires at ${newExpiresAt}`);
+      }
+
+      return isActive;
+    } catch (error) {
+      console.error(`❌ Error checking Stripe subscription for user ${userId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Set user to Pro plan (monthly or yearly)
+   */
+  async upgradeToPro(
+    userId: string, 
+    planId: 'plan-pro-monthly' | 'plan-pro-yearly',
+    stripeSubscriptionId?: string
+  ): Promise<void> {
+    const duration = planId === 'plan-pro-monthly' ? 30 : 365; // days
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + duration);
+
+    await this.storage.updateUserPlan(userId, planId, expiresAt);
+
+    // Create or update subscription record if Stripe ID provided
+    if (stripeSubscriptionId) {
+      await this.storage.createOrUpdateSubscription({
+        userId,
+        planId,
+        stripeSubscriptionId,
+        expiresAt,
+      });
+    }
+
+    console.log(`✅ User ${userId} upgraded to ${planId}, expires at ${expiresAt}`);
+  }
+
+  /**
+   * Handle Stripe webhook for subscription updates
+   */
+  async handleStripeWebhook(event: Stripe.Event): Promise<void> {
+    console.log(`📨 Received Stripe webhook: ${event.type}`);
+    
+    switch (event.type) {
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object as Stripe.Subscription;
+        await this.syncStripeSubscription(subscription);
+        break;
+      }
+      
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription;
+        await this.handleSubscriptionCancellation(subscription);
+        break;
+      }
+
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object as Stripe.Invoice;
+        await this.handleSuccessfulPayment(invoice);
+        break;
+      }
+
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object as Stripe.Invoice;
+        await this.handleFailedPayment(invoice);
+        break;
+      }
+    }
+  }
+
+  /**
+   * Sync Stripe subscription to local database
+   */
+  private async syncStripeSubscription(subscription: Stripe.Subscription): Promise<void> {
+    if (!subscription.customer || typeof subscription.customer !== 'string') {
+      return;
+    }
+
+    // Find user by Stripe customer ID
+    const user = await this.storage.getUserByStripeCustomerId(subscription.customer);
+    
+    if (!user) {
+      console.warn(`⚠️ User not found for Stripe customer ${subscription.customer}`);
+      return;
+    }
+
+    // Determine plan ID based on subscription interval
+    const planId = this.determinePlanFromStripeSubscription(subscription);
+    
+    if (!planId) {
+      console.warn(`⚠️ Could not determine plan for subscription ${subscription.id}`);
+      return;
+    }
+
+    // Update user plan with new expiration
+    const expiresAt = new Date(subscription.current_period_end * 1000);
+    await this.storage.updateUserPlan(user.id, planId, expiresAt);
+
+    console.log(`✅ Synced Stripe subscription ${subscription.id} for user ${user.id}`);
+  }
+
+  /**
+   * Handle subscription cancellation from Stripe
+   */
+  private async handleSubscriptionCancellation(subscription: Stripe.Subscription): Promise<void> {
+    if (!subscription.customer || typeof subscription.customer !== 'string') {
+      return;
+    }
+
+    const user = await this.storage.getUserByStripeCustomerId(subscription.customer);
+    
+    if (!user) {
+      return;
+    }
+
+    // Downgrade to free plan
+    await this.storage.updateUserPlan(user.id, 'plan-free', null);
+    
+    console.log(`✅ User ${user.id} subscription cancelled, downgraded to free plan`);
+  }
+
+  /**
+   * Handle successful payment from Stripe
+   */
+  private async handleSuccessfulPayment(invoice: Stripe.Invoice): Promise<void> {
+    if (!invoice.subscription || typeof invoice.subscription !== 'string') {
+      return;
+    }
+
+    if (!stripe) return;
+
+    // Fetch full subscription details
+    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+    
+    if (subscription) {
+      await this.syncStripeSubscription(subscription);
+    }
+  }
+
+  /**
+   * Handle failed payment from Stripe
+   */
+  private async handleFailedPayment(invoice: Stripe.Invoice): Promise<void> {
+    console.warn(`⚠️ Payment failed for invoice ${invoice.id}`);
+    // Could implement logic to notify user or retry payment
+  }
+
+  /**
+   * Determine plan ID from Stripe subscription
+   */
+  private determinePlanFromStripeSubscription(subscription: Stripe.Subscription): string | null {
+    // Check subscription interval to determine plan
+    const interval = subscription.items.data[0]?.price?.recurring?.interval;
+    
+    if (interval === 'year') {
+      return 'plan-pro-yearly';
+    } else if (interval === 'month') {
+      return 'plan-pro-monthly';
+    }
+
+    return null;
+  }
+
+  /**
+   * Check all expired subscriptions and downgrade users
+   * This should be called periodically (e.g., daily cron job)
+   */
+  async checkAllExpiredSubscriptions(): Promise<{
+    checked: number;
+    downgraded: number;
+  }> {
+    const users = await this.storage.getUsersWithExpiredSubscriptions();
+    
+    let downgraded = 0;
+    
+    for (const user of users) {
+      const result = await this.checkAndHandleExpiredSubscription(user.id);
+      if (result.downgradedToFree) {
+        downgraded++;
+      }
+    }
+
+    console.log(`✅ Checked ${users.length} expired subscriptions, downgraded ${downgraded} users`);
+    
+    return {
+      checked: users.length,
+      downgraded,
+    };
   }
 }
