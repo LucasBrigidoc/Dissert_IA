@@ -5039,6 +5039,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           updatedAt: new Date(),
         });
         
+        // Also update the plan_id in users table to keep them in sync
+        await storage.updateUserPlan(validatedData.userId, validatedData.planId, null);
+        
         res.json({
           success: true,
           data: updatedSubscription,
@@ -5054,6 +5057,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           startDate: new Date(),
           isAutoRenew: true,
         });
+        
+        // Also update the plan_id in users table to keep them in sync
+        await storage.updateUserPlan(validatedData.userId, validatedData.planId, null);
         
         res.json({
           success: true,
