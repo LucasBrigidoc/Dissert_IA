@@ -380,13 +380,14 @@ export default function BibliotecaPage() {
       doc.setLineWidth(0.5);
       doc.line(margin, footerY - 5, pageWidth - margin, footerY - 5);
       
-      // Logo DissertIA estilizada
-      doc.setFontSize(14);
+      // Logo DissertIA estilizada (mesma fonte do header)
+      doc.setFontSize(16);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...darkBlue);
       doc.text('DISSERT', margin, footerY);
       doc.setTextColor(...softGray);
-      doc.text('IA', margin + 30, footerY);
+      const dissertWidth = doc.getTextWidth('DISSERT');
+      doc.text('IA', margin + dissertWidth + 1, footerY);
       
       // Informações de contato
       doc.setFontSize(8);
@@ -396,51 +397,49 @@ export default function BibliotecaPage() {
       
       // Número da página
       doc.setTextColor(...softGray);
-      doc.text(`Página ${pageNumber} de ${totalPages}`, 
+      doc.text(`Pagina ${pageNumber} de ${totalPages}`, 
         pageWidth - margin, footerY + 7, { align: 'right' });
     };
 
     // Cabeçalho com logo DissertIA estilizada (mesmo estilo da navbar)
     doc.setFillColor(...darkBlue);
-    doc.rect(0, 0, pageWidth, 38, 'F');
+    doc.rect(0, 0, pageWidth, 40, 'F');
     
-    // Logo DissertIA - "DISSERT" azul + "IA" cinza
-    doc.setFontSize(28);
+    // Logo DissertIA - "DISSERT" branco + "IA" cinza claro (igual ao header do site)
+    doc.setFontSize(32);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(255, 255, 255);
-    doc.text('DISSERT', margin, 18);
-    doc.setTextColor(220, 220, 220);
-    doc.text('IA', margin + 48, 18);
+    doc.text('DISSERT', margin, 20);
     
-    // Ícone/emoji baseado no tipo
-    let typeIcon = '📄';
-    if (file.type === 'Roteiro Personalizado') typeIcon = '✏️';
-    else if (file.type === 'Brainstorming') typeIcon = '💭';
-    else if (file.type === 'Texto Modificado') typeIcon = '📝';
-    else if (file.type === 'Newsletter') typeIcon = '📰';
-    else if (file.type === 'Repertório') typeIcon = '📚';
-    else if (file.type === 'Redação') typeIcon = '✍️';
-    else if (file.type === 'Proposta') typeIcon = '💡';
+    // Calcular a largura de "DISSERT" para posicionar "IA" corretamente
+    const dissertHeaderWidth = doc.getTextWidth('DISSERT');
+    doc.setTextColor(200, 200, 200);
+    doc.text('IA', margin + dissertHeaderWidth + 2, 20);
     
+    // Tipo do arquivo (sem emojis - jsPDF não suporta)
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(255, 255, 255);
-    doc.text(`${typeIcon} ${file.type}`, margin, 28);
+    doc.text(file.type, margin, 32);
     
-    yPosition = 50;
+    yPosition = 52;
 
-    // Título do arquivo
+    // Título do arquivo (com quebra de linha se necessário)
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...darkBlue);
-    doc.text(file.title, margin, yPosition);
-    yPosition += 12;
+    const titleLines = doc.splitTextToSize(file.title, maxWidth);
+    titleLines.forEach((line: string) => {
+      doc.text(line, margin, yPosition);
+      yPosition += 8;
+    });
+    yPosition += 4;
 
-    // Data de criação
+    // Data de criação (sem emoji)
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...softGray);
-    doc.text(`📅 ${new Date(file.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`, margin, yPosition);
+    doc.text(`Data: ${new Date(file.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`, margin, yPosition);
     yPosition += 15;
 
     // Se for roteiro personalizado ou brainstorming, usar layout especial
@@ -453,7 +452,7 @@ export default function BibliotecaPage() {
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...darkBlue);
-      doc.text('📋 Análise da Proposta', margin + 3, yPosition + 6);
+      doc.text('Analise da Proposta', margin + 3, yPosition + 6);
       yPosition += 13;
       
       doc.setFontSize(10);
@@ -492,7 +491,7 @@ export default function BibliotecaPage() {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(34, 197, 94);
-        doc.text('💡 Repertórios Sugeridos', margin + 3, yPosition + 6);
+        doc.text('Repertorios Sugeridos', margin + 3, yPosition + 6);
         yPosition += 13;
         
         outline.repertoriosSugeridos.forEach((rep: any, idx: number) => {
@@ -529,7 +528,7 @@ export default function BibliotecaPage() {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(...blue);
-        doc.text('1️⃣ 1º Parágrafo - Introdução', margin + 3, yPosition + 6);
+        doc.text('1. Primeiro Paragrafo - Introducao', margin + 3, yPosition + 6);
         yPosition += 13;
         
         const introducaoTexts = [
@@ -572,7 +571,7 @@ export default function BibliotecaPage() {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(...purple);
-        doc.text('2️⃣ 2º Parágrafo - 1º Desenvolvimento', margin + 3, yPosition + 6);
+        doc.text('2. Segundo Paragrafo - Primeiro Desenvolvimento', margin + 3, yPosition + 6);
         yPosition += 13;
         
         const dev1Texts = [
@@ -615,7 +614,7 @@ export default function BibliotecaPage() {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(...amber);
-        doc.text('3️⃣ 3º Parágrafo - 2º Desenvolvimento', margin + 3, yPosition + 6);
+        doc.text('3. Terceiro Paragrafo - Segundo Desenvolvimento', margin + 3, yPosition + 6);
         yPosition += 13;
         
         const dev2Texts = [
@@ -658,7 +657,7 @@ export default function BibliotecaPage() {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(...green);
-        doc.text('4️⃣ 4º Parágrafo - Conclusão', margin + 3, yPosition + 6);
+        doc.text('4. Quarto Paragrafo - Conclusao', margin + 3, yPosition + 6);
         yPosition += 13;
         
         const conclusaoTexts = [
@@ -705,7 +704,7 @@ export default function BibliotecaPage() {
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...darkBlue);
-      doc.text('📄 Texto Original', margin + 3, yPosition + 7);
+      doc.text('Texto Original', margin + 3, yPosition + 7);
       yPosition += 15;
 
       doc.setFontSize(10);
@@ -735,7 +734,7 @@ export default function BibliotecaPage() {
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(34, 139, 34);
-      doc.text('✏️ Texto Modificado', margin + 3, yPosition + 7);
+      doc.text('Texto Modificado', margin + 3, yPosition + 7);
       yPosition += 15;
 
       doc.setFontSize(10);
