@@ -571,16 +571,16 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div className="p-6 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
                   <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="text-xl font-bold text-bright-blue" data-testid="text-plan-name">
+                    <div className="flex-1">
+                      <div className="text-xl font-bold text-bright-blue mb-2" data-testid="text-plan-name">
                         {plan?.name || "Plano Gratuito"}
                       </div>
-                      <div className="text-sm text-soft-gray">
+                      <div className="text-sm text-soft-gray leading-relaxed">
                         {plan?.description || "Acesso limitado às funcionalidades"}
                       </div>
                     </div>
                     {plan?.priceMonthly && plan.priceMonthly > 0 && (
-                      <div className="text-2xl font-bold text-dark-blue">
+                      <div className="text-2xl font-bold text-dark-blue ml-4">
                         {formatCurrency(plan.priceMonthly)}/mês
                       </div>
                     )}
@@ -636,7 +636,7 @@ export default function SettingsPage() {
                 {(!subscription || (plan && plan.priceMonthly === 0)) && (
                   <Link href="/pricing">
                     <Button className="w-full bg-bright-blue hover:bg-bright-blue/90" data-testid="button-upgrade">
-                      Ver Planos Disponíveis
+                      Assinar Plano Pro
                     </Button>
                   </Link>
                 )}
