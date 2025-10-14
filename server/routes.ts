@@ -4645,13 +4645,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           orderBy: (subs, { desc }) => [desc(subs.createdAt)]
         });
 
-        // Get the plan separately if subscription exists
-        let plan = null;
-        if (subscription) {
-          plan = await db.query.subscriptionPlans.findFirst({
-            where: (plans, { eq }) => eq(plans.id, subscription.planId)
-          });
-        }
+        // Get the plan from user.planId (always present) or subscription.planId
+        const planId = subscription?.planId || user.planId || 'plan-free';
+        const plan = await db.query.subscriptionPlans.findFirst({
+          where: (plans, { eq }) => eq(plans.id, planId)
+        });
 
         // Get ALL user costs (by userId)
         const userCostsById = await db.query.userCosts.findMany({
@@ -4696,18 +4694,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           phone: user.phone,
           userType: user.userType,
           createdAt: user.createdAt,
-          subscription: subscription ? {
-            planName: plan?.name || 'Free',
-            status: subscription.status,
-            startDate: subscription.startDate,
-            isPro: subscription.status === 'active' && plan?.name !== 'Free',
+          subscription: {
+            planName: plan?.name || 'Gratuito',
+            planId: plan?.id || 'plan-free',
+            status: subscription?.status || 'none',
+            startDate: subscription?.startDate || null,
+            isPro: subscription?.status === 'active' && plan?.id !== 'plan-free',
             price: plan?.priceMonthly ? (plan.priceMonthly / 100).toFixed(2) : '0.00'
-          } : {
-            planName: 'Free',
-            status: 'none',
-            startDate: null,
-            isPro: false,
-            price: '0.00'
           },
           usage: {
             totalCost: totalCostCentavos,

@@ -198,6 +198,7 @@ function UsersTable() {
       createdAt: Date;
       subscription: {
         planName: string;
+        planId: string;
         status: string;
         startDate: Date | null;
         isPro: boolean;
@@ -287,7 +288,7 @@ function UsersTable() {
               <td className="p-3 text-sm">{user.phone}</td>
               <td className="p-3">
                 <Select
-                  value={plans.find(p => p.name === user.subscription.planName)?.id || 'free'}
+                  value={user.subscription.planId || 'plan-free'}
                   onValueChange={(planId) => updatePlanMutation.mutate({ userId: user.id, planId })}
                   disabled={updatePlanMutation.isPending}
                   data-testid={`select-plan-${user.id}`}
