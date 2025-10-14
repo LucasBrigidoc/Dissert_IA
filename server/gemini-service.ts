@@ -518,6 +518,11 @@ Responda APENAS com JSON válido no formato:
 
   private buildProposalGenerationPrompt(config: any, keywords: string[]): string {
     const keywordString = keywords.length > 0 ? keywords.join(', ') : 'geral';
+    const hasContext = config.context && config.context.trim().length > 0;
+    
+    const contextInstructions = hasContext 
+      ? `\n\n📋 TEXTO BASE FORNECIDO PELO USUÁRIO:\n"${config.context}"\n\n🎯 INSTRUÇÃO ESPECIAL: Use o texto base acima como INSPIRAÇÃO e REFERÊNCIA para criar propostas DIFERENTES mas RELACIONADAS ao tema. Mantenha o estilo e a qualidade, mas crie variações melhoradas com:\n- Novo enfoque ou perspectiva sobre o tema\n- Textos de apoio diferentes e complementares\n- Abordagem mais profunda ou alternativa\n- NÃO copie o texto base, apenas use-o como inspiração\n`
+      : '';
     
     return `Gere 2 propostas de redação completas e realistas para ${config.examType} sobre o tema "${config.theme}".
 
@@ -525,7 +530,7 @@ CONFIGURAÇÃO:
 - Tipo de exame: ${config.examType}
 - Tema: ${config.theme}
 - Dificuldade: ${config.difficulty || 'medio'}
-- Palavras-chave: ${keywordString}
+- Palavras-chave: ${keywordString}${contextInstructions}
 
 Responda APENAS com JSON válido no formato:
 

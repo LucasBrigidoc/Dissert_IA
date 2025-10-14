@@ -419,6 +419,7 @@ export const generateProposalSchema = z.object({
   examType: z.enum(["enem", "vestibular", "concurso", "simulado", "custom"]),
   keywords: z.array(z.string()).optional(),
   specificRequirements: z.string().optional(),
+  context: z.string().optional(),
 });
 
 // Text Modification Schemas

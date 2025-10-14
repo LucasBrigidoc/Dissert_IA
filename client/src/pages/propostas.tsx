@@ -1,6 +1,7 @@
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, BookmarkPlus, Clock, Loader2, Trophy, GraduationCap, Lightbulb } from "lucide-react";
 import { Link, useLocation } from "wouter";
@@ -37,6 +38,7 @@ export default function Propostas() {
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
   const [hasShownInitialCacheResults, setHasShownInitialCacheResults] = useState(false);
   const [expandedProposals, setExpandedProposals] = useState<Set<string>>(new Set());
+  const [generationContext, setGenerationContext] = useState("");
   
   const { toast } = useToast();
 
@@ -156,7 +158,7 @@ export default function Propostas() {
 
   // Generate new proposals mutation
   const generateMutation = useMutation({
-    mutationFn: async (params: { theme: string; difficulty: string; examType: string }) => {
+    mutationFn: async (params: { theme: string; difficulty: string; examType: string; context?: string }) => {
       console.log("🎯 Gerando novas propostas:", params);
       const result = await apiRequest("/api/proposals/generate", {
         method: "POST",
@@ -246,7 +248,12 @@ export default function Propostas() {
       setHasShownInitialCacheResults(true);
     } else {
       // Se já mostrou cache, gerar novas propostas com IA
-      generateMutation.mutate({ theme, difficulty, examType });
+      generateMutation.mutate({ 
+        theme, 
+        difficulty, 
+        examType,
+        context: generationContext.trim() || undefined
+      });
     }
   };
 
@@ -370,12 +377,6 @@ export default function Propostas() {
               <h2 className="text-lg sm:text-xl font-semibold text-dark-blue">Buscar Propostas Reais de Provas Brasileiras</h2>
             </div>
             
-            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3 mb-4">
-              <p className="text-sm text-blue-800">
-                <span className="font-semibold">💡 Como buscar:</span> Digite o tema (ex: "meio ambiente"), palavras-chave (ex: "sustentabilidade"), tipo de exame (ex: "ENEM 2023") ou instituição (ex: "FUVEST"). O sistema irá buscar propostas reais que foram utilizadas em provas oficiais do Brasil.
-              </p>
-            </div>
-            
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-1">
                 <Input
@@ -400,6 +401,12 @@ export default function Propostas() {
                 )}
                 <span className="sm:inline">Buscar</span>
               </Button>
+            </div>
+            
+            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-800">
+                <span className="font-semibold">💡 Como buscar:</span> Digite o tema (ex: "meio ambiente"), palavras-chave (ex: "sustentabilidade"), tipo de exame (ex: "ENEM 2023") ou instituição (ex: "FUVEST"). O sistema irá buscar propostas reais que foram utilizadas em provas oficiais do Brasil.
+              </p>
             </div>
 
             {/* Filters */}
@@ -471,6 +478,29 @@ export default function Propostas() {
                   <span className="text-xs sm:text-sm">{hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}</span>
                 </Button>
               </div>
+            </div>
+
+            {/* Context/Base Proposal for AI Generation */}
+            <div className="bg-purple-50/50 border border-purple-200 rounded-lg p-4">
+              <div className="mb-2">
+                <label className="block text-sm font-semibold text-purple-800 mb-1">
+                  <Lightbulb className="w-4 h-4 inline mr-1" />
+                  Texto Base para Geração com IA (Opcional)
+                </label>
+                <p className="text-xs text-purple-700 mb-3">
+                  Cole aqui uma proposta existente, palavras-chave ou contexto para a IA gerar variações melhoradas e diferentes baseadas no que você fornecer.
+                </p>
+              </div>
+              <Textarea
+                placeholder="Ex: 'Os desafios da mobilidade urbana sustentável nas grandes cidades brasileiras' ou cole uma proposta completa aqui..."
+                value={generationContext}
+                onChange={(e) => setGenerationContext(e.target.value)}
+                className="min-h-[100px] border-purple-200 focus:border-purple-400 bg-white resize-y"
+                data-testid="textarea-generation-context"
+              />
+              <p className="text-xs text-purple-600 mt-2">
+                💡 <span className="font-medium">Dica:</span> Quanto mais detalhado o texto base, mais personalizada será a proposta gerada pela IA.
+              </p>
             </div>
           </div>
         </LiquidGlassCard>
