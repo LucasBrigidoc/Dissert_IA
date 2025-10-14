@@ -162,15 +162,29 @@ export class GeminiService {
 
 **EXEMPLO DE RESPOSTA CORRETA (found: true):**
 Prova pesquisada: "ENEM 2022"
-- Você TEM CERTEZA que foi "Desafios para a valorização de comunidades e povos tradicionais no Brasil"
+- Você TEM CERTEZA ABSOLUTA que o tema foi "Desafios para a valorização de comunidades e povos tradicionais no Brasil"
 - Você TEM o comando exato: "A partir da leitura dos textos motivadores... desenvolva um texto dissertativo-argumentativo..."
 - Você TEM os textos de apoio que foram fornecidos
+- Você VERIFICOU que este tema é especificamente do ENEM 2022, NÃO de outro ano
+
+**EXEMPLO DE RESPOSTA CORRETA (found: true):**
+Prova pesquisada: "ENEM 2023"
+- Você TEM CERTEZA ABSOLUTA que o tema foi "Desafios para o enfrentamento da invisibilidade do trabalho de cuidado realizado pela mulher no Brasil"
+- Você TEM o comando exato da prova de 2023
+- Você VERIFICOU que NÃO é "Desafios da persistência da violência contra a mulher" (que foi em 2015)
+- Você VERIFICOU que este tema é especificamente do ENEM 2023, NÃO de 2015, 2022 ou outro ano
 
 **EXEMPLO DE RESPOSTA INCORRETA (NÃO FAÇA ASSIM):**
-Prova pesquisada: "ENEM 2022"
-- Você retorna uma proposta do ENEM 2023 pensando que é 2022 ❌
-- Você retorna um tema "parecido" mas não é o tema real ❌
+Prova pesquisada: "ENEM 2023"
+- Você retorna "Desafios da persistência da violência contra a mulher" pensando que é 2023, mas NA VERDADE é do ENEM 2015 ❌
+- Você retorna uma proposta do ENEM 2022 pensando que é 2023 ❌
+- Você retorna um tema "parecido" mas não é o tema real daquele ano específico ❌
 - Você inventa um comando genérico de redação ❌
+
+⚠️ ATENÇÃO CRÍTICA: O ENEM tem propostas SIMILARES em anos DIFERENTES. NUNCA confunda:
+- ENEM 2015: "Desafios da persistência da violência contra a mulher na sociedade brasileira"
+- ENEM 2023: "Desafios para o enfrentamento da invisibilidade do trabalho de cuidado realizado pela mulher no Brasil"
+São temas DIFERENTES de anos DIFERENTES! Verifique o ANO correto!
 
 Responda APENAS com JSON válido no formato:
 
@@ -250,6 +264,9 @@ Responda APENAS com JSON válido no formato:
       }
       
       const parsed = JSON.parse(jsonMatch[0]);
+      
+      // Log the raw response from Gemini for debugging
+      console.log(`📋 Gemini raw response for "${query}":`, JSON.stringify(parsed, null, 2));
       
       // 🛡️ RUNTIME VALIDATION: Enforce accuracy requirements
       if (parsed.found && parsed.proposals && parsed.proposals.length > 0) {
@@ -346,17 +363,20 @@ Responda APENAS com JSON válido no formato:
             }
             
             if (validationFailed) {
-              console.log(`🚫 Validation failed for proposal "${proposal.title}" - treating as NOT FOUND`);
+              console.log(`🚫 Validation failed for proposal "${proposal.title}" (examName: "${proposal.examName}", year: ${proposal.year}) - treating as NOT FOUND`);
               parsed.found = false;
               if (!parsed.similarProposals) parsed.similarProposals = [];
               parsed.similarProposals.push(proposal);
               parsed.proposals = parsed.proposals.filter((p: any) => p !== proposal);
+            } else {
+              console.log(`✅ Validation passed for proposal "${proposal.title}" (examName: "${proposal.examName}", year: ${proposal.year})`);
             }
           }
           
           // If all proposals were rejected, mark as not found
           if (parsed.proposals.length === 0) {
             parsed.found = false;
+            console.log(`⚠️ All proposals rejected by validation - marking as NOT FOUND`);
           }
         }
       }
