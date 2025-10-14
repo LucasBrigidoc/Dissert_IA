@@ -4948,6 +4948,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user subscription plan
+  app.patch("/api/admin/users/:userId/plan", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { updateUserPlanSchema } = await import("@shared/schema");
+      const validatedData = updateUserPlanSchema.parse({ userId, planId: req.body.planId });
+      
+      // Get or create user subscription
+      const existingSubscription = await storage.getUserSubscription(validatedData.userId);
+      
+      if (existingSubscription) {
+        // Update existing subscription
+        const updatedSubscription = await storage.updateUserSubscription(existingSubscription.id, {
+          planId: validatedData.planId,
+          status: 'active',
+          updatedAt: new Date(),
+        });
+        
+        res.json({
+          success: true,
+          data: updatedSubscription,
+          message: 'Plano atualizado com sucesso'
+        });
+      } else {
+        // Create new subscription
+        const newSubscription = await storage.createUserSubscription({
+          userId: validatedData.userId,
+          planId: validatedData.planId,
+          status: 'active',
+          billingCycle: 'monthly',
+          startDate: new Date(),
+          isAutoRenew: true,
+        });
+        
+        res.json({
+          success: true,
+          data: newSubscription,
+          message: 'Plano criado com sucesso'
+        });
+      }
+    } catch (error) {
+      console.error("Error updating user plan:", error);
+      res.status(500).json({ message: 'Falha ao atualizar plano do usuário' });
+    }
+  });
+
   // Get active subscriptions summary
   app.get("/api/admin/subscriptions-summary", async (req, res) => {
     try {

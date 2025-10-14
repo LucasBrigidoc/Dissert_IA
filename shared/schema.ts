@@ -1023,6 +1023,13 @@ export const applyCouponSchema = z.object({
   planId: z.string(),
   userId: z.string().optional(),
 });
+
+// Admin schema to update user subscription plan
+export const updateUserPlanSchema = z.object({
+  userId: z.string().min(1, "ID do usuário é obrigatório"),
+  planId: z.string().min(1, "ID do plano é obrigatório"),
+});
+
 export const insertCouponRedemptionSchema = createInsertSchema(couponRedemptions).omit({ id: true, createdAt: true });
 export const insertPaymentEventSchema = createInsertSchema(paymentEvents).omit({ id: true });
 export const insertRevenueMetricSchema = createInsertSchema(revenueMetrics).omit({ id: true, createdAt: true });
@@ -1049,6 +1056,7 @@ export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
 export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
 export type UserSubscription = typeof userSubscriptions.$inferSelect;
 export type InsertUserSubscription = z.infer<typeof insertUserSubscriptionSchema>;
+export type UpdateUserPlan = z.infer<typeof updateUserPlanSchema>;
 export type Transaction = typeof transactions.$inferSelect;
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
 export type Coupon = typeof coupons.$inferSelect;

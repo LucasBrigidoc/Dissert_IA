@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface BusinessOverview {
   totalUsers: number;
@@ -184,6 +187,7 @@ const operationNames: Record<string, string> = {
 const COLORS = ['#5087ff', '#3b82f6', '#1d4ed8', '#1e40af', '#1e3a8a', '#172554'];
 
 function UsersTable() {
+  const { toast } = useToast();
   const { data: usersData, isLoading } = useQuery<{
     users: Array<{
       id: string;
@@ -211,6 +215,36 @@ function UsersTable() {
     refetchInterval: 30000,
   });
 
+  const { data: subscriptionPlans } = useQuery<{data: SubscriptionPlan[]}>({
+    queryKey: ['/api/admin/subscription-plans?activeOnly=true'],
+  });
+
+  const updatePlanMutation = useMutation({
+    mutationFn: async ({ userId, planId }: { userId: string; planId: string }) => {
+      return await apiRequest(`/api/admin/users/${userId}/plan`, {
+        method: 'PATCH',
+        body: JSON.stringify({ planId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/all-users'] });
+      toast({
+        title: "Sucesso",
+        description: "Plano do usuário atualizado com sucesso!",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao atualizar plano do usuário",
+        variant: "destructive",
+      });
+    },
+  });
+
   const formatCurrency = (centavos: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -231,6 +265,8 @@ function UsersTable() {
     return <div className="text-center py-8 text-gray-500">Nenhum usuário encontrado</div>;
   }
 
+  const plans = subscriptionPlans?.data || [];
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -248,14 +284,28 @@ function UsersTable() {
         </thead>
         <tbody>
           {usersData.users.map((user) => (
-            <tr key={user.id} className="border-b hover:bg-gray-50">
-              <td className="p-3">{user.name}</td>
-              <td className="p-3 text-sm">{user.email}</td>
+            <tr key={user.id} className="border-b hover:bg-gray-50" data-testid={`row-user-${user.id}`}>
+              <td className="p-3" data-testid={`text-username-${user.id}`}>{user.name}</td>
+              <td className="p-3 text-sm" data-testid={`text-email-${user.id}`}>{user.email}</td>
               <td className="p-3 text-sm">{user.phone}</td>
               <td className="p-3">
-                <Badge variant={user.subscription.isPro ? "default" : "secondary"}>
-                  {user.subscription.planName}
-                </Badge>
+                <Select
+                  value={plans.find(p => p.name === user.subscription.planName)?.id || 'free'}
+                  onValueChange={(planId) => updatePlanMutation.mutate({ userId: user.id, planId })}
+                  disabled={updatePlanMutation.isPending}
+                  data-testid={`select-plan-${user.id}`}
+                >
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {plans.map((plan) => (
+                      <SelectItem key={plan.id} value={plan.id} data-testid={`option-plan-${plan.id}`}>
+                        {plan.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </td>
               <td className="p-3 text-sm">{formatDate(user.createdAt)}</td>
               <td className="p-3 text-sm">
