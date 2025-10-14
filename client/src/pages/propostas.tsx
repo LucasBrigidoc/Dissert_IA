@@ -463,7 +463,8 @@ export default function Propostas() {
                 </Select>
               </div>
 
-              <div className="flex items-end sm:col-span-2 md:col-span-1">
+              {/* Botão Gerar com IA - visível apenas em desktop */}
+              <div className="hidden md:flex items-end sm:col-span-2 md:col-span-1">
                 <Button 
                   onClick={handleGenerateNew}
                   disabled={generateMutation.isPending || searchMutation.isPending}
@@ -501,6 +502,23 @@ export default function Propostas() {
               <p className="text-[10px] sm:text-xs text-blue-600 mt-1 sm:mt-1.5">
                 💡 <span className="font-medium">Dica:</span> Mais detalhes = proposta mais personalizada.
               </p>
+              
+              {/* Botão Gerar com IA - visível apenas em mobile e tablet */}
+              <div className="md:hidden mt-2">
+                <Button 
+                  onClick={handleGenerateNew}
+                  disabled={generateMutation.isPending || searchMutation.isPending}
+                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0 h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
+                  data-testid="button-generate-mobile"
+                >
+                  {(generateMutation.isPending || searchMutation.isPending) ? (
+                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
+                  ) : (
+                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  )}
+                  <span className="text-xs sm:text-sm">{hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}</span>
+                </Button>
+              </div>
             </div>
           </div>
         </LiquidGlassCard>
