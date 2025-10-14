@@ -4,7 +4,23 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 # Recent Changes
 
-## October 12, 2025 - Pricing and AI Usage Limits Update (Latest)
+## October 14, 2025 - Automatic Subscription Lifecycle Management (Latest)
+- **Implemented Automatic Subscription Management**: Complete system for managing subscription lifecycles
+  - **New Users Default to Free Plan**: All newly registered users automatically start with 'plan-free' (via schema default)
+  - **Automatic Upgrades**: Stripe webhook integration automatically upgrades users to Pro (Monthly/Annual) when payment is confirmed
+  - **Automatic Downgrades**: System checks expired subscriptions and automatically downgrades to Free plan if Stripe has no active subscription
+  - **Schema Updates**: Added `subscriptionExpiresAt` (timestamp) and `planId` (default 'plan-free') fields to users table
+  - **Cron Job System**: Automated job runs every 6 hours to check and downgrade expired subscriptions
+  - **Manual Admin Trigger**: Secure endpoint `/api/admin/check-expired-subscriptions` (protected with requireAuth + requireAdmin)
+  - **Stripe Webhook Integration**: Handles subscription_created, subscription_updated, subscription_deleted, and invoice payment events
+  - **Services Implemented**:
+    - `SubscriptionService.checkExpiredSubscriptions()` - Verifies Stripe status and downgrades if expired
+    - `SubscriptionService.calculateExpirationDate()` - Calculates subscription end dates
+    - Cron jobs in `server/cron-jobs.ts` initialize 10 seconds after server boot, run every 6 hours
+  - **Security Enhancement**: Created `requireAdmin` middleware to protect admin-only operations
+  - **Note**: Identified opportunity for broader admin route protection audit in future updates
+
+## October 12, 2025 - Pricing and AI Usage Limits Update
 - **Updated Plano Pro Pricing**: Adjusted subscription prices for better accessibility
   - **Mensal**: R$55,00/mês (previously R$65,90)
   - **Anual**: R$479,88/ano equivale a R$39,99/mês (previously R$599,00 - 27% discount)
