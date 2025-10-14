@@ -4,7 +4,17 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 # Recent Changes
 
-## October 14, 2025 - Automatic Subscription Lifecycle Management (Latest)
+## October 14, 2025 - Subscription Plans Database Initialization (Latest)
+- **Fixed User Registration Error**: Resolved foreign key constraint violation preventing new user registration
+  - **Root Cause**: The `subscription_plans` table was empty, but user schema required a valid `plan_id` reference
+  - **Solution**: Created the 3 essential subscription plans in the database with correct IDs and limits:
+    - **plan-free**: R$ 0,00/mês, operações ilimitadas, custo IA máximo R$ 0,35/mês (R$ 0,17 a cada 15 dias - zera quinzenalmente)
+    - **plan-pro-monthly**: R$ 55,00/mês, operações ilimitadas, custo IA máximo R$ 20,00/mês (R$ 4,00 a cada 7 dias - zera semanalmente)
+    - **plan-pro-yearly**: R$ 479,88/ano (R$ 39,99/mês), operações ilimitadas, custo IA máximo R$ 20,00/mês (R$ 4,00 a cada 7 dias - zera semanalmente)
+  - **New Users**: Now automatically link to 'plan-free' on registration without errors
+  - **Note**: All plans use unlimited operations (-1 sentinel value) with cost-based limits only
+
+## October 14, 2025 - Automatic Subscription Lifecycle Management
 - **Implemented Automatic Subscription Management**: Complete system for managing subscription lifecycles
   - **New Users Default to Free Plan**: All newly registered users automatically start with 'plan-free' (via schema default)
   - **Automatic Upgrades**: Stripe webhook integration automatically upgrades users to Pro (Monthly/Annual) when payment is confirmed
