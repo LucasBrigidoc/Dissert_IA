@@ -130,6 +130,7 @@ export const proposals = pgTable("proposals", {
   theme: varchar("theme", { enum: ["social", "environment", "technology", "education", "politics", "economy", "culture", "health", "ethics", "globalization"] }).notNull(),
   keywords: json("keywords").notNull().default([]),
   isAiGenerated: boolean("is_ai_generated").default(false),
+  isExactMatch: boolean("is_exact_match").default(false),
   rating: integer("rating").default(0),
   usageCount: integer("usage_count").default(0),
   createdAt: timestamp("created_at").defaultNow(),

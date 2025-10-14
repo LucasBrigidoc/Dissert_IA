@@ -3150,13 +3150,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
               );
             }
             
-            // If Gemini knows the real proposal, save it
+            // If Gemini knows the real proposal, save it and mark as exact match
             if (knowledgeResult.found && knowledgeResult.proposals.length > 0) {
               for (const realProposal of knowledgeResult.proposals) {
-                const savedProposal = await storage.createProposal(realProposal);
+                const proposalWithMatch = {
+                  ...realProposal,
+                  isExactMatch: true // Mark as exact match for sorting
+                };
+                const savedProposal = await storage.createProposal(proposalWithMatch);
                 searchResults.push(savedProposal);
               }
-              console.log(`✅ Gemini knows this exam! Saved ${knowledgeResult.proposals.length} REAL proposal(s)`);
+              console.log(`✅ Gemini knows this exam! Saved ${knowledgeResult.proposals.length} REAL proposal(s) as exact match`);
+              
+              // Now fetch related proposals from previous years or similar exams
+              const relatedProposals = await storage.searchProposals('', {
+                examType: examType || localAnalysis.suggestedExamTypes[0],
+                theme: theme || localAnalysis.suggestedThemes[0],
+                // Don't filter by year - we want other years
+              });
+              
+              // Filter out the exact match and exclude IDs
+              const filteredRelated = relatedProposals.filter(p => 
+                p.year !== searchYear && 
+                !searchResults.some(sr => sr.id === p.id) &&
+                (!excludeIds || !excludeIds.includes(p.id))
+              );
+              
+              // Add related proposals (limit to 5 most recent)
+              const sortedRelated = filteredRelated
+                .sort((a, b) => {
+                  const yearA = parseInt(String(a.year || '0'));
+                  const yearB = parseInt(String(b.year || '0'));
+                  return yearB - yearA; // Most recent first
+                })
+                .slice(0, 5);
+              
+              searchResults.push(...sortedRelated);
+              console.log(`📚 Added ${sortedRelated.length} related proposals from other years`);
             } 
             // If Gemini doesn't know but suggests similar proposals, save them
             else if (!knowledgeResult.found && knowledgeResult.similarProposals.length > 0) {
@@ -3168,8 +3198,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
           
-          // If still have few results, generate with AI as fallback
-          if (searchResults.length < 3) {
+          // If still have few results and no exact match found, generate with AI as fallback
+          const hasExactMatch = searchResults.some(p => p.isExactMatch);
+          if (searchResults.length < 3 && !hasExactMatch) {
             let enhancedKeywords = [...localAnalysis.keywords];
             if (isSpecificExamSearch && searchYear) {
               enhancedKeywords = [query, ...localAnalysis.keywords];
@@ -3227,12 +3258,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      // Sort results: exact match first, then by year (most recent first)
+      const sortedResults = searchResults.sort((a, b) => {
+        // Exact match always comes first
+        if (a.isExactMatch && !b.isExactMatch) return -1;
+        if (!a.isExactMatch && b.isExactMatch) return 1;
+        
+        // If both are exact match or both are not, sort by year
+        const yearA = parseInt(String(a.year || '0'));
+        const yearB = parseInt(String(b.year || '0'));
+        return yearB - yearA; // Most recent first
+      });
+      
       // For specific exam searches, return ALL results; otherwise limit to 10
-      const resultsToReturn = isSpecificExamSearch ? searchResults : searchResults.slice(0, 10);
+      const resultsToReturn = isSpecificExamSearch ? sortedResults : sortedResults.slice(0, 10);
       
       res.json({
         results: resultsToReturn,
-        count: searchResults.length,
+        count: sortedResults.length,
         query: localAnalysis.normalizedQuery,
         futureExamDetected: false,
         isSpecificExamSearch,
