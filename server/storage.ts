@@ -2356,6 +2356,75 @@ export class MemStorage implements IStorage {
       .filter(sub => sub.status === status);
   }
 
+  async getUserById(id: string): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async updateUserPlan(userId: string, planId: string, expiresAt: Date | null): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+    
+    await this.updateUser(userId, {
+      planId,
+      subscriptionExpiresAt: expiresAt,
+    });
+  }
+
+  async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined> {
+    const subscription = Array.from(this.userSubscriptions.values())
+      .find(sub => sub.stripeCustomerId === stripeCustomerId);
+    
+    if (!subscription) return undefined;
+    
+    return this.users.get(subscription.userId);
+  }
+
+  async createOrUpdateSubscription(data: { userId: string; planId: string; stripeSubscriptionId: string; expiresAt: Date }): Promise<void> {
+    const existingSubscription = Array.from(this.userSubscriptions.values())
+      .find(sub => sub.userId === data.userId && sub.stripeSubscriptionId === data.stripeSubscriptionId);
+    
+    if (existingSubscription) {
+      await this.updateUserSubscription(existingSubscription.id, {
+        planId: data.planId,
+        currentPeriodEnd: data.expiresAt,
+        status: 'active',
+        updatedAt: new Date(),
+      });
+    } else {
+      await this.createUserSubscription({
+        userId: data.userId,
+        planId: data.planId,
+        stripeSubscriptionId: data.stripeSubscriptionId,
+        status: 'active',
+        billingCycle: 'monthly',
+        startDate: new Date(),
+        currentPeriodEnd: data.expiresAt,
+      });
+    }
+    
+    await this.updateUserPlan(data.userId, data.planId, data.expiresAt);
+  }
+
+  async getUsersWithExpiredSubscriptions(): Promise<User[]> {
+    const now = new Date();
+    return Array.from(this.users.values())
+      .filter(user => 
+        user.planId !== 'plan-free' && 
+        user.subscriptionExpiresAt && 
+        user.subscriptionExpiresAt < now
+      );
+  }
+
+  async getUserActiveSubscription(userId: string): Promise<UserSubscription | undefined> {
+    const now = new Date();
+    return Array.from(this.userSubscriptions.values())
+      .find(sub => 
+        sub.userId === userId && 
+        (sub.status === 'active' || sub.status === 'trial') &&
+        (!sub.currentPeriodEnd || sub.currentPeriodEnd > now)
+      );
+  }
+
   // Transactions operations
   async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
     const id = randomUUID();
@@ -5189,6 +5258,98 @@ export class DbStorage implements IStorage {
   async getSubscriptionsByStatus(status: string): Promise<UserSubscription[]> {
     return await db.query.userSubscriptions.findMany({
       where: eq(schema.userSubscriptions.status, status),
+    });
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    return await db.query.users.findFirst({
+      where: eq(schema.users.id, id),
+    });
+  }
+
+  async updateUserPlan(userId: string, planId: string, expiresAt: Date | null): Promise<void> {
+    await db
+      .update(schema.users)
+      .set({ 
+        planId, 
+        subscriptionExpiresAt: expiresAt,
+        updatedAt: new Date() 
+      })
+      .where(eq(schema.users.id, userId));
+  }
+
+  async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined> {
+    const subscription = await db.query.userSubscriptions.findFirst({
+      where: eq(schema.userSubscriptions.stripeCustomerId, stripeCustomerId),
+      with: {
+        user: true,
+      },
+    });
+    
+    if (!subscription) return undefined;
+    
+    return await db.query.users.findFirst({
+      where: eq(schema.users.id, subscription.userId),
+    });
+  }
+
+  async createOrUpdateSubscription(data: { userId: string; planId: string; stripeSubscriptionId: string; expiresAt: Date }): Promise<void> {
+    const existingSubscription = await db.query.userSubscriptions.findFirst({
+      where: and(
+        eq(schema.userSubscriptions.userId, data.userId),
+        eq(schema.userSubscriptions.stripeSubscriptionId, data.stripeSubscriptionId)
+      ),
+    });
+    
+    if (existingSubscription) {
+      await db
+        .update(schema.userSubscriptions)
+        .set({
+          planId: data.planId,
+          currentPeriodEnd: data.expiresAt,
+          status: 'active',
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.userSubscriptions.id, existingSubscription.id));
+    } else {
+      await db.insert(schema.userSubscriptions).values({
+        userId: data.userId,
+        planId: data.planId,
+        stripeSubscriptionId: data.stripeSubscriptionId,
+        status: 'active',
+        billingCycle: 'monthly',
+        startDate: new Date(),
+        currentPeriodEnd: data.expiresAt,
+      });
+    }
+    
+    await this.updateUserPlan(data.userId, data.planId, data.expiresAt);
+  }
+
+  async getUsersWithExpiredSubscriptions(): Promise<User[]> {
+    const now = new Date();
+    return await db.query.users.findMany({
+      where: and(
+        sqlQuery`${schema.users.planId} != 'plan-free'`,
+        lte(schema.users.subscriptionExpiresAt, now)
+      ),
+    });
+  }
+
+  async getUserActiveSubscription(userId: string): Promise<UserSubscription | undefined> {
+    const now = new Date();
+    return await db.query.userSubscriptions.findFirst({
+      where: and(
+        eq(schema.userSubscriptions.userId, userId),
+        or(
+          eq(schema.userSubscriptions.status, 'active'),
+          eq(schema.userSubscriptions.status, 'trial')
+        ),
+        or(
+          sqlQuery`${schema.userSubscriptions.currentPeriodEnd} IS NULL`,
+          gte(schema.userSubscriptions.currentPeriodEnd, now)
+        )
+      ),
     });
   }
 

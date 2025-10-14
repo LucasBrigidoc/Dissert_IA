@@ -320,7 +320,7 @@ export class SubscriptionService {
       // Fetch subscription from Stripe
       const stripeSubscription = await stripe.subscriptions.retrieve(
         subscription.stripeSubscriptionId
-      );
+      ) as any;
 
       // Check if subscription is active or trialing
       const isActive = ['active', 'trialing'].includes(stripeSubscription.status);
@@ -425,8 +425,11 @@ export class SubscriptionService {
     }
 
     // Update user plan with new expiration
-    const expiresAt = new Date(subscription.current_period_end * 1000);
-    await this.storage.updateUserPlan(user.id, planId, expiresAt);
+    const sub = subscription as any;
+    if (sub.current_period_end) {
+      const expiresAt = new Date(sub.current_period_end * 1000);
+      await this.storage.updateUserPlan(user.id, planId, expiresAt);
+    }
 
     console.log(`✅ Synced Stripe subscription ${subscription.id} for user ${user.id}`);
   }
@@ -455,14 +458,17 @@ export class SubscriptionService {
    * Handle successful payment from Stripe
    */
   private async handleSuccessfulPayment(invoice: Stripe.Invoice): Promise<void> {
-    if (!invoice.subscription || typeof invoice.subscription !== 'string') {
+    const inv = invoice as any;
+    const subscriptionId = typeof inv.subscription === 'string' 
+      ? inv.subscription 
+      : inv.subscription?.id;
+      
+    if (!subscriptionId || !stripe) {
       return;
     }
 
-    if (!stripe) return;
-
     // Fetch full subscription details
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     
     if (subscription) {
       await this.syncStripeSubscription(subscription);
