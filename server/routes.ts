@@ -12,6 +12,7 @@ import { intelligentCache } from "./intelligent-cache";
 import { WeeklyCostLimitingService } from "./weekly-cost-limiting";
 import { CostTrackingService } from "./cost-tracking-service";
 import { SubscriptionService } from "./subscription-service";
+import { checkExpiredSubscriptions } from "./cron-jobs";
 import { sendNewsletter, sendWelcomeEmail } from "./email-service";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
@@ -91,6 +92,24 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
   } catch (error) {
     console.error("Auth middleware error:", error);
     return res.status(401).json({ message: "Não autenticado" });
+  }
+};
+
+// Middleware to check if user is admin
+export const requireAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Não autenticado" });
+  }
+  
+  try {
+    const adminUser = await storage.getAdminUser(req.user.id);
+    if (!adminUser) {
+      return res.status(403).json({ message: "Acesso negado: Apenas administradores" });
+    }
+    next();
+  } catch (error) {
+    console.error("Admin middleware error:", error);
+    return res.status(403).json({ message: "Acesso negado" });
   }
 };
 
@@ -5412,6 +5431,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ADMIN: MANUAL SUBSCRIPTION CHECK ENDPOINT =====================
+  
+  app.post('/api/admin/check-expired-subscriptions', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      console.log('🔄 Manual check of expired subscriptions triggered by admin');
+      
+      const result = await checkExpiredSubscriptions();
+      
+      res.json({
+        success: true,
+        message: 'Expired subscriptions check completed',
+        result,
+      });
+    } catch (error: any) {
+      console.error('❌ Error in manual subscription check:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to check expired subscriptions', 
+        error: error.message 
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

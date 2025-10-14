@@ -4,6 +4,7 @@ import session from "express-session";
 import memorystore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { initializeCronJobs } from "./cron-jobs";
 
 const app = express();
 app.set('trust proxy', true); // Enable accurate client IPs for rate limiting on Replit
@@ -125,5 +126,8 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Initialize cron jobs for periodic tasks
+    initializeCronJobs();
   });
 })();
