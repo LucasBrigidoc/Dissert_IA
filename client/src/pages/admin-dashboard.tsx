@@ -223,10 +223,7 @@ function UsersTable() {
     mutationFn: async ({ userId, planId }: { userId: string; planId: string }) => {
       return await apiRequest(`/api/admin/users/${userId}/plan`, {
         method: 'PATCH',
-        body: JSON.stringify({ planId }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: { planId },
       });
     },
     onSuccess: () => {
