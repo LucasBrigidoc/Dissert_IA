@@ -579,7 +579,7 @@ export default function SettingsPage() {
                         {plan?.description || "Acesso limitado às funcionalidades"}
                       </div>
                     </div>
-                    {plan?.priceMonthly && plan.priceMonthly > 0 && (
+                    {plan && plan.priceMonthly > 0 && (
                       <div className="text-2xl font-bold text-dark-blue ml-4">
                         {formatCurrency(plan.priceMonthly)}/mês
                       </div>
