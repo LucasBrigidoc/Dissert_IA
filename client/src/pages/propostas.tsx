@@ -367,54 +367,54 @@ export default function Propostas() {
       </div>
       
       {/* Main Content */}
-      <div className="pt-24 sm:pt-32 container mx-auto px-4 py-4 sm:py-8">
+      <div className="pt-20 sm:pt-32 container mx-auto px-3 sm:px-4 py-3 sm:py-8">
 
         {/* Search Section */}
-        <LiquidGlassCard className="mb-6 sm:mb-8 p-4 sm:p-6">
-          <div className="space-y-4 sm:space-y-6">
-            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+        <LiquidGlassCard className="mb-4 sm:mb-8 p-3 sm:p-6">
+          <div className="space-y-3 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4">
               <Search className="w-4 h-4 sm:w-5 sm:h-5 text-bright-blue" />
-              <h2 className="text-lg sm:text-xl font-semibold text-dark-blue">Buscar Propostas Reais de Provas Brasileiras</h2>
+              <h2 className="text-base sm:text-xl font-semibold text-dark-blue">Buscar Propostas de Provas Brasileiras</h2>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <div className="flex-1">
                 <Input
-                  placeholder="Ex: educação, tecnologia, ENEM 2023, sustentabilidade..."
+                  placeholder="Ex: educação, tecnologia, ENEM 2023..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="border-soft-gray/30 focus:border-bright-blue h-10 sm:h-auto"
+                  className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-sm"
                   data-testid="input-search"
                 />
               </div>
               <Button 
                 onClick={handleSearch}
                 disabled={searchMutation.isPending}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 h-10 sm:h-auto"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 h-9 sm:h-10 text-xs sm:text-sm px-4 sm:px-6"
                 data-testid="button-search"
               >
                 {searchMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
                 ) : (
-                  <Search className="w-4 h-4" />
+                  <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 )}
-                <span className="sm:inline">Buscar</span>
+                <span>Buscar</span>
               </Button>
             </div>
             
-            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-800">
-                <span className="font-semibold">💡 Como buscar:</span> Digite o tema (ex: "meio ambiente"), palavras-chave (ex: "sustentabilidade"), tipo de exame (ex: "ENEM 2023") ou instituição (ex: "FUVEST"). O sistema irá buscar propostas reais que foram utilizadas em provas oficiais do Brasil.
+            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-2 sm:p-3">
+              <p className="text-xs sm:text-sm text-blue-800">
+                <span className="font-semibold">💡 Como buscar:</span> Digite o tema, palavras-chave ou tipo de exame. Ex: "meio ambiente", "ENEM 2023", "FUVEST".
               </p>
             </div>
 
             {/* Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-soft-gray mb-1.5 sm:mb-2">Tipo de Exame</label>
+                <label className="block text-[10px] sm:text-sm font-medium text-soft-gray mb-1 sm:mb-2">Tipo de Exame</label>
                 <Select value={selectedExamType} onValueChange={setSelectedExamType}>
-                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-exam-type">
+                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-xs sm:text-sm" data-testid="select-exam-type">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -428,9 +428,9 @@ export default function Propostas() {
               </div>
 
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-soft-gray mb-1.5 sm:mb-2">Tema</label>
+                <label className="block text-[10px] sm:text-sm font-medium text-soft-gray mb-1 sm:mb-2">Tema</label>
                 <Select value={selectedTheme} onValueChange={setSelectedTheme}>
-                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-theme">
+                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-xs sm:text-sm" data-testid="select-theme">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -448,9 +448,9 @@ export default function Propostas() {
               </div>
 
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-soft-gray mb-1.5 sm:mb-2">Dificuldade</label>
+                <label className="block text-[10px] sm:text-sm font-medium text-soft-gray mb-1 sm:mb-2">Dificuldade</label>
                 <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-difficulty">
+                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-xs sm:text-sm" data-testid="select-difficulty">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -467,13 +467,13 @@ export default function Propostas() {
                 <Button 
                   onClick={handleGenerateNew}
                   disabled={generateMutation.isPending || searchMutation.isPending}
-                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0 h-9 sm:h-auto text-sm"
+                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0 h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
                   data-testid="button-generate"
                 >
                   {(generateMutation.isPending || searchMutation.isPending) ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-1.5 sm:mr-2" />
+                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
                   ) : (
-                    <Sparkles className="w-4 h-4 mr-1.5 sm:mr-2" />
+                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   )}
                   <span className="text-xs sm:text-sm">{hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}</span>
                 </Button>
@@ -481,25 +481,25 @@ export default function Propostas() {
             </div>
 
             {/* Context/Base Proposal for AI Generation */}
-            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3">
-              <div className="mb-1.5">
-                <label className="block text-sm font-semibold text-blue-800 mb-0.5">
-                  <Lightbulb className="w-4 h-4 inline mr-1" />
-                  Texto Base para Geração com IA (Opcional)
+            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-2 sm:p-3">
+              <div className="mb-1 sm:mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-blue-800 mb-0.5">
+                  <Lightbulb className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
+                  Texto Base p/ IA (Opcional)
                 </label>
-                <p className="text-xs text-blue-700 mb-2">
-                  Cole aqui uma proposta existente, palavras-chave ou contexto para a IA gerar variações melhoradas e diferentes baseadas no que você fornecer.
+                <p className="text-[10px] sm:text-xs text-blue-700 mb-1.5 sm:mb-2 leading-tight">
+                  Cole aqui palavras-chave ou contexto para a IA gerar variações personalizadas.
                 </p>
               </div>
               <Textarea
-                placeholder="Ex: 'Os desafios da mobilidade urbana sustentável nas grandes cidades brasileiras' ou cole uma proposta completa aqui..."
+                placeholder="Ex: 'mobilidade urbana sustentável' ou cole uma proposta..."
                 value={generationContext}
                 onChange={(e) => setGenerationContext(e.target.value)}
-                className="min-h-[100px] border-blue-200 focus:border-blue-400 bg-white resize-y"
+                className="min-h-[80px] sm:min-h-[100px] border-blue-200 focus:border-blue-400 bg-white resize-y text-xs sm:text-sm"
                 data-testid="textarea-generation-context"
               />
-              <p className="text-xs text-blue-600 mt-1.5">
-                💡 <span className="font-medium">Dica:</span> Quanto mais detalhado o texto base, mais personalizada será a proposta gerada pela IA.
+              <p className="text-[10px] sm:text-xs text-blue-600 mt-1 sm:mt-1.5">
+                💡 <span className="font-medium">Dica:</span> Mais detalhes = proposta mais personalizada.
               </p>
             </div>
           </div>
