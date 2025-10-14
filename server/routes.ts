@@ -1747,6 +1747,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const periodDays = planType === 'free' ? 15 : 7;
       const periodLabel = planType === 'free' ? 'quinzenal' : 'semanal';
       
+      // Get the actual plan name from user's planId
+      const user = await storage.getUser(req.user!.id);
+      const plan = user?.planId ? await storage.getSubscriptionPlan(user.planId) : null;
+      const planName = plan?.name || "Gratuito";
+      
       res.json({
         planType,
         canUseAI,
@@ -1754,7 +1759,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         weeklyLimit,
         remainingCredits,
         percentageUsed,
-        planName: planType === 'pro' ? "Pro" : "Gratuito",
+        planName,
         daysUntilReset: weeklyStats.daysUntilReset,
         resetPeriodDays: periodDays,
         periodLabel
@@ -1762,6 +1767,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get limits error:", error);
       res.status(500).json({ message: "Erro ao buscar limites" });
+    }
+  });
+
+  // Get user's current plan details
+  app.get("/api/subscription/plan/:planId", requireAuth, async (req, res) => {
+    try {
+      const { planId } = req.params;
+      console.log(`📋 Fetching plan with ID: ${planId}`);
+      const plan = await storage.getSubscriptionPlan(planId);
+      console.log(`📋 Plan found:`, plan);
+      
+      if (!plan) {
+        console.log(`❌ Plan not found for ID: ${planId}`);
+        return res.status(404).json({ message: "Plano não encontrado" });
+      }
+      
+      res.json(plan);
+    } catch (error) {
+      console.error("Get plan error:", error);
+      res.status(500).json({ message: "Erro ao buscar plano" });
     }
   });
 

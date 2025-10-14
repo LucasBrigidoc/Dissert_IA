@@ -14,13 +14,15 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getInitials } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import type { SubscriptionPlan } from "@shared/schema";
 
 export default function SettingsPage() {
   const [, setLocation] = useLocation();
   const { user, logout, checkAuth } = useAuth();
   const { 
     subscription, 
-    plan, 
+    plan: subscriptionPlan, 
     limits, 
     transactions, 
     isLoading,
@@ -30,6 +32,15 @@ export default function SettingsPage() {
     isReactivating
   } = useSubscription();
   const { toast } = useToast();
+  
+  // Fetch user's current plan based on their planId
+  const { data: userPlanData } = useQuery<SubscriptionPlan>({
+    queryKey: [`/api/subscription/plan/${user?.planId}`],
+    enabled: !!user?.planId,
+  });
+  
+  // Use the user's actual plan, not the subscription plan
+  const plan = userPlanData || subscriptionPlan;
   
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -596,7 +607,8 @@ export default function SettingsPage() {
                 </div>
                 
                 {/* Action Buttons */}
-                {subscription && subscription.status === 'active' && (
+                {/* Show cancel button only for paid active subscriptions (not free plan) */}
+                {subscription && subscription.status === 'active' && plan && plan.priceMonthly > 0 && (
                   <Button 
                     onClick={() => setShowCancelDialog(true)}
                     variant="outline"
@@ -620,10 +632,11 @@ export default function SettingsPage() {
                   </Button>
                 )}
                 
-                {!subscription && (
+                {/* Show upgrade button for free plan users (no paid subscription) */}
+                {(!subscription || (plan && plan.priceMonthly === 0)) && (
                   <Link href="/pricing">
                     <Button className="w-full bg-bright-blue hover:bg-bright-blue/90" data-testid="button-upgrade">
-                      Fazer Upgrade
+                      Ver Planos Disponíveis
                     </Button>
                   </Link>
                 )}
