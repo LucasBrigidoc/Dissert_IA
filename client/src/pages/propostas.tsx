@@ -481,13 +481,13 @@ export default function Propostas() {
             </div>
 
             {/* Context/Base Proposal for AI Generation */}
-            <div className="bg-purple-50/50 border border-purple-200 rounded-lg p-4">
-              <div className="mb-2">
-                <label className="block text-sm font-semibold text-purple-800 mb-1">
+            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3">
+              <div className="mb-1.5">
+                <label className="block text-sm font-semibold text-blue-800 mb-0.5">
                   <Lightbulb className="w-4 h-4 inline mr-1" />
                   Texto Base para Geração com IA (Opcional)
                 </label>
-                <p className="text-xs text-purple-700 mb-3">
+                <p className="text-xs text-blue-700 mb-2">
                   Cole aqui uma proposta existente, palavras-chave ou contexto para a IA gerar variações melhoradas e diferentes baseadas no que você fornecer.
                 </p>
               </div>
@@ -495,10 +495,10 @@ export default function Propostas() {
                 placeholder="Ex: 'Os desafios da mobilidade urbana sustentável nas grandes cidades brasileiras' ou cole uma proposta completa aqui..."
                 value={generationContext}
                 onChange={(e) => setGenerationContext(e.target.value)}
-                className="min-h-[100px] border-purple-200 focus:border-purple-400 bg-white resize-y"
+                className="min-h-[100px] border-blue-200 focus:border-blue-400 bg-white resize-y"
                 data-testid="textarea-generation-context"
               />
-              <p className="text-xs text-purple-600 mt-2">
+              <p className="text-xs text-blue-600 mt-1.5">
                 💡 <span className="font-medium">Dica:</span> Quanto mais detalhado o texto base, mais personalizada será a proposta gerada pela IA.
               </p>
             </div>
