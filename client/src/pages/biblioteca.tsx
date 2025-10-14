@@ -371,6 +371,41 @@ export default function BibliotecaPage() {
     const amber = [245, 158, 11]; // #F59E0B
     const green = [34, 197, 94]; // #22C55E
 
+    // Função para limpar markdown e formatar texto
+    const cleanMarkdown = (text: string): string => {
+      if (!text) return '';
+      
+      // Remove todos os asteriscos de markdown
+      let cleaned = text.replace(/\*\*/g, '');
+      
+      // Remove outros caracteres markdown comuns
+      cleaned = cleaned.replace(/\*/g, '');
+      cleaned = cleaned.replace(/#{1,6}\s/g, ''); // Remove headings markdown
+      cleaned = cleaned.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1'); // Remove links markdown
+      
+      return cleaned.trim();
+    };
+
+    // Função para adicionar texto com quebra de linha automática
+    const addTextBlock = (text: string, fontSize: number = 10, isBold: boolean = false) => {
+      if (!text) return;
+      
+      const cleanedText = cleanMarkdown(text);
+      doc.setFontSize(fontSize);
+      doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+      
+      const lines = doc.splitTextToSize(cleanedText, maxWidth - 4);
+      lines.forEach((line: string) => {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 30;
+        }
+        doc.text(line, margin + 2, yPosition);
+        yPosition += fontSize * 0.5;
+      });
+      yPosition += 3;
+    };
+
     // Função para adicionar rodapé em todas as páginas
     const addFooter = (pageNumber: number, totalPages: number) => {
       const footerY = pageHeight - 25;
@@ -458,8 +493,13 @@ export default function BibliotecaPage() {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(0, 0, 0);
-      const propostaLines = doc.splitTextToSize(`Proposta: ${outline.proposta}`, maxWidth - 4);
+      const cleanedProposta = cleanMarkdown(outline.proposta || '');
+      const propostaLines = doc.splitTextToSize(`Proposta: ${cleanedProposta}`, maxWidth - 4);
       propostaLines.forEach((line: string) => {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 30;
+        }
         doc.text(line, margin + 2, yPosition);
         yPosition += 5;
       });
@@ -502,12 +542,18 @@ export default function BibliotecaPage() {
           doc.setFontSize(10);
           doc.setFont('helvetica', 'bold');
           doc.setTextColor(0, 0, 0);
-          doc.text(`${idx + 1}. ${rep.titulo} (${rep.tipo})`, margin + 2, yPosition);
+          const cleanedTitulo = cleanMarkdown(rep.titulo || '');
+          doc.text(`${idx + 1}. ${cleanedTitulo} (${rep.tipo})`, margin + 2, yPosition);
           yPosition += 5;
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(...softGray);
-          const relacaoLines = doc.splitTextToSize(rep.relacao, maxWidth - 6);
+          const cleanedRelacao = cleanMarkdown(rep.relacao || '');
+          const relacaoLines = doc.splitTextToSize(cleanedRelacao, maxWidth - 6);
           relacaoLines.forEach((line: string) => {
+            if (yPosition > pageHeight - 40) {
+              doc.addPage();
+              yPosition = 30;
+            }
             doc.text(line, margin + 4, yPosition);
             yPosition += 4;
           });
@@ -549,8 +595,13 @@ export default function BibliotecaPage() {
           yPosition += 5;
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(0, 0, 0);
-          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          const cleanedText = cleanMarkdown(item.text || '');
+          const lines = doc.splitTextToSize(cleanedText, maxWidth - 4);
           lines.forEach((line: string) => {
+            if (yPosition > pageHeight - 40) {
+              doc.addPage();
+              yPosition = 30;
+            }
             doc.text(line, margin + 2, yPosition);
             yPosition += 4;
           });
@@ -592,8 +643,13 @@ export default function BibliotecaPage() {
           yPosition += 5;
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(0, 0, 0);
-          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          const cleanedText = cleanMarkdown(item.text || '');
+          const lines = doc.splitTextToSize(cleanedText, maxWidth - 4);
           lines.forEach((line: string) => {
+            if (yPosition > pageHeight - 40) {
+              doc.addPage();
+              yPosition = 30;
+            }
             doc.text(line, margin + 2, yPosition);
             yPosition += 4;
           });
@@ -635,8 +691,13 @@ export default function BibliotecaPage() {
           yPosition += 5;
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(0, 0, 0);
-          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          const cleanedText = cleanMarkdown(item.text || '');
+          const lines = doc.splitTextToSize(cleanedText, maxWidth - 4);
           lines.forEach((line: string) => {
+            if (yPosition > pageHeight - 40) {
+              doc.addPage();
+              yPosition = 30;
+            }
             doc.text(line, margin + 2, yPosition);
             yPosition += 4;
           });
@@ -678,8 +739,13 @@ export default function BibliotecaPage() {
           yPosition += 5;
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(0, 0, 0);
-          const lines = doc.splitTextToSize(item.text, maxWidth - 4);
+          const cleanedText = cleanMarkdown(item.text || '');
+          const lines = doc.splitTextToSize(cleanedText, maxWidth - 4);
           lines.forEach((line: string) => {
+            if (yPosition > pageHeight - 40) {
+              doc.addPage();
+              yPosition = 30;
+            }
             doc.text(line, margin + 2, yPosition);
             yPosition += 4;
           });
@@ -710,7 +776,8 @@ export default function BibliotecaPage() {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(0, 0, 0);
-      const originalLines = doc.splitTextToSize(file.originalText, maxWidth - 4);
+      const cleanedOriginal = cleanMarkdown(file.originalText || '');
+      const originalLines = doc.splitTextToSize(cleanedOriginal, maxWidth - 4);
       
       originalLines.forEach((line: string) => {
         if (yPosition > pageHeight - 40) {
@@ -740,7 +807,8 @@ export default function BibliotecaPage() {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(0, 0, 0);
-      const modifiedLines = doc.splitTextToSize(file.modifiedText, maxWidth - 4);
+      const cleanedModified = cleanMarkdown(file.modifiedText || '');
+      const modifiedLines = doc.splitTextToSize(cleanedModified, maxWidth - 4);
       
       modifiedLines.forEach((line: string) => {
         if (yPosition > pageHeight - 40) {
@@ -777,34 +845,49 @@ export default function BibliotecaPage() {
 
       // Conteúdo
       if (file.content) {
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
         
         const lines = file.content.split('\n');
         
         lines.forEach((line: string) => {
-          if (line.trim()) {
+          const trimmedLine = line.trim();
+          if (trimmedLine) {
             if (yPosition > pageHeight - 40) {
               doc.addPage();
               yPosition = 30;
             }
             
-            if (line.startsWith('**') && line.endsWith('**')) {
+            // Detectar se é título (contém ** em qualquer lugar)
+            if (trimmedLine.includes('**')) {
+              const cleanTitle = cleanMarkdown(trimmedLine);
               doc.setFont('helvetica', 'bold');
               doc.setFontSize(11);
               doc.setTextColor(...darkBlue);
-              const title = line.replace(/\*\*/g, '');
-              const titleLines = doc.splitTextToSize(title, maxWidth);
-              doc.text(titleLines, margin, yPosition);
-              yPosition += titleLines.length * 6 + 3;
+              const titleLines = doc.splitTextToSize(cleanTitle, maxWidth);
+              titleLines.forEach((tLine: string) => {
+                if (yPosition > pageHeight - 40) {
+                  doc.addPage();
+                  yPosition = 30;
+                }
+                doc.text(tLine, margin, yPosition);
+                yPosition += 6;
+              });
+              yPosition += 2;
               doc.setFont('helvetica', 'normal');
               doc.setFontSize(10);
               doc.setTextColor(0, 0, 0);
             } else {
-              const textLines = doc.splitTextToSize(line, maxWidth);
-              doc.text(textLines, margin, yPosition);
-              yPosition += textLines.length * 5;
+              // Texto normal - limpar markdown
+              const cleanText = cleanMarkdown(trimmedLine);
+              const textLines = doc.splitTextToSize(cleanText, maxWidth);
+              textLines.forEach((tLine: string) => {
+                if (yPosition > pageHeight - 40) {
+                  doc.addPage();
+                  yPosition = 30;
+                }
+                doc.text(tLine, margin, yPosition);
+                yPosition += 5;
+              });
             }
           } else {
             yPosition += 3;
