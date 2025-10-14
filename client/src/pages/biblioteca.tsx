@@ -1461,6 +1461,17 @@ export default function BibliotecaPage() {
                     </div>
                   </div>
 
+                  {/* Título/Tema da Proposta */}
+                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-4 border border-emerald-200">
+                    <h3 className="font-semibold text-emerald-800 mb-3 flex items-center gap-2">
+                      <FileText size={18} className="text-emerald-600" />
+                      Proposta
+                    </h3>
+                    <div className="bg-white rounded p-4 text-base font-semibold text-dark-blue border border-emerald-200">
+                      {selectedFile.title}
+                    </div>
+                  </div>
+
                   {/* Enunciado da Proposta */}
                   <div className="bg-blue-50 rounded-lg p-4">
                     <h3 className="font-semibold text-dark-blue mb-3 flex items-center gap-2">
