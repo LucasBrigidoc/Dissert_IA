@@ -156,6 +156,42 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // ===================== STRIPE WEBHOOK ENDPOINT =====================
+  // IMPORTANT: This route must be BEFORE any body parser middleware
+  // Stripe requires the raw body to verify webhook signatures
+  
+  app.post("/api/webhooks/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
+    if (!stripe) {
+      return res.status(503).json({ message: "Stripe not configured" });
+    }
+
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!sig || !webhookSecret) {
+      console.warn('⚠️ Stripe webhook signature or secret missing');
+      return res.status(400).send('Webhook signature or secret missing');
+    }
+
+    try {
+      // Verify webhook signature
+      const event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        webhookSecret
+      );
+
+      // Handle the event using SubscriptionService
+      await subscriptionService.handleStripeWebhook(event);
+
+      // Return 200 to acknowledge receipt
+      res.json({ received: true });
+    } catch (err: any) {
+      console.error(`❌ Webhook Error: ${err.message}`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+  });
+
   // ===================== FILE UPLOAD ENDPOINTS =====================
   
   // PDF upload endpoint
