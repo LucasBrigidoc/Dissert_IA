@@ -12,6 +12,7 @@ export const users = pgTable("users", {
   userType: varchar("user_type", { enum: ["vestibulano", "concurseiro"] }).notNull().default("vestibulano"),
   planId: varchar("plan_id").references(() => subscriptionPlans.id).default('plan-free'),
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
+  isAdmin: boolean("is_admin").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
