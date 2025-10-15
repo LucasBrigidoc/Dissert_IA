@@ -255,6 +255,19 @@ export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  planId: true,
+  subscriptionExpiresAt: true,
+}).extend({
+  name: z.string().min(1, "Nome é obrigatório"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().refine((phone) => {
+    const numbers = phone.replace(/\D/g, '');
+    return numbers.length === 10 || numbers.length === 11;
+  }, "Telefone deve ter 10 ou 11 dígitos"),
+  password: z.string().min(8, "Senha deve ter no mínimo 8 caracteres"),
+  userType: z.enum(["vestibulano", "concurseiro"], {
+    errorMap: () => ({ message: "Tipo de usuário inválido" })
+  }),
 });
 
 export const updateUserProfileSchema = z.object({
