@@ -4781,6 +4781,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all users with basic info for admin management
+  app.get('/api/admin/users/all', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      
+      res.json({
+        users: users.map(user => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          isAdmin: user.isAdmin,
+          createdAt: user.createdAt,
+          planId: user.planId
+        })),
+        total: users.length
+      });
+    } catch (error) {
+      console.error('Error getting users for admin management:', error);
+      res.status(500).json({ message: 'Failed to get users' });
+    }
+  });
+
+  // Update user admin status
+  app.patch('/api/admin/users/:id/admin', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { isAdmin } = req.body;
+
+      if (typeof isAdmin !== 'boolean') {
+        return res.status(400).json({ message: 'isAdmin must be a boolean value' });
+      }
+
+      const updatedUser = await storage.updateUserAdminStatus(id, isAdmin);
+      
+      res.json({
+        success: true,
+        user: {
+          id: updatedUser.id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          isAdmin: updatedUser.isAdmin
+        }
+      });
+    } catch (error) {
+      console.error('Error updating user admin status:', error);
+      res.status(500).json({ message: 'Failed to update user admin status' });
+    }
+  });
+
   // ===================== PRICING & CURRENCY MONITORING ROUTES =====================
 
   // Get current pricing information with real-time exchange rates
