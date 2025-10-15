@@ -7,6 +7,8 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, user: Partial<User>): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<User>;
   
   // User progress operations
   getUserProgress(userId: string): Promise<UserProgress | undefined>;
@@ -3821,6 +3823,24 @@ export class DbStorage implements IStorage {
       .update(schema.users)
       .set({ ...removeUndefined(updateData), updatedAt: new Date() })
       .where(eq(schema.users.id, id))
+      .returning();
+    
+    if (!updated) throw new Error("User not found");
+    return updated;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await db.query.users.findMany({
+      orderBy: (users, { desc }) => [desc(users.createdAt)],
+    });
+    return users;
+  }
+
+  async updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<User> {
+    const [updated] = await db
+      .update(schema.users)
+      .set({ isAdmin, updatedAt: new Date() })
+      .where(eq(schema.users.id, userId))
       .returning();
     
     if (!updated) throw new Error("User not found");
