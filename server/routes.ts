@@ -326,7 +326,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== ADMIN NEWSLETTER ENDPOINTS =====================
   
   // Get all subscribers (admin only)
-  app.get("/api/admin/newsletter/subscribers", async (req, res) => {
+  app.get("/api/admin/newsletter/subscribers", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { status } = req.query;
       const subscribers = await storage.getAllNewsletterSubscribers(status as string);
@@ -338,7 +338,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete subscriber (admin only)
-  app.delete("/api/admin/newsletter/subscribers/:id", async (req, res) => {
+  app.delete("/api/admin/newsletter/subscribers/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       await storage.deleteNewsletterSubscriber(id);
@@ -350,7 +350,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all newsletters (admin only)
-  app.get("/api/admin/newsletter/newsletters", async (req, res) => {
+  app.get("/api/admin/newsletter/newsletters", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { status } = req.query;
       const newsletters = await storage.getAllNewsletters(status as string);
@@ -362,7 +362,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create newsletter (admin only)
-  app.post("/api/admin/newsletter/newsletters", async (req, res) => {
+  app.post("/api/admin/newsletter/newsletters", requireAuth, requireAdmin, async (req, res) => {
     try {
       const validatedData = createNewsletterSchema.parse(req.body);
       const newsletter = await storage.createNewsletter(validatedData);
@@ -374,7 +374,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get single newsletter (admin only)
-  app.get("/api/admin/newsletter/newsletters/:id", async (req, res) => {
+  app.get("/api/admin/newsletter/newsletters/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const newsletter = await storage.getNewsletter(id);
@@ -389,7 +389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update newsletter (admin only)
-  app.put("/api/admin/newsletter/newsletters/:id", async (req, res) => {
+  app.put("/api/admin/newsletter/newsletters/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const validatedData = updateNewsletterSchema.parse(req.body);
@@ -414,7 +414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete newsletter (admin only)
-  app.delete("/api/admin/newsletter/newsletters/:id", async (req, res) => {
+  app.delete("/api/admin/newsletter/newsletters/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       await storage.deleteNewsletter(id);
@@ -426,7 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Send newsletter (admin only)
-  app.post("/api/admin/newsletter/newsletters/:id/send", async (req, res) => {
+  app.post("/api/admin/newsletter/newsletters/:id/send", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -491,7 +491,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Publish newsletter without sending emails (admin only)
-  app.post("/api/admin/newsletter/newsletters/:id/publish", async (req, res) => {
+  app.post("/api/admin/newsletter/newsletters/:id/publish", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -533,7 +533,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get newsletter statistics (admin only)
-  app.get("/api/admin/newsletter/newsletters/:id/stats", async (req, res) => {
+  app.get("/api/admin/newsletter/newsletters/:id/stats", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const stats = await storage.getNewsletterStats(id);
@@ -840,7 +840,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== COUPON MANAGEMENT ENDPOINTS =====================
 
   // Admin: Create coupon
-  app.post("/api/admin/coupons", async (req, res) => {
+  app.post("/api/admin/coupons", requireAuth, requireAdmin, async (req, res) => {
     try {
       const validatedData = insertCouponSchema.parse(req.body);
       const coupon = await storage.createCoupon(validatedData);
@@ -852,7 +852,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: List coupons
-  app.get("/api/admin/coupons", async (req, res) => {
+  app.get("/api/admin/coupons", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { isActive, planScope } = req.query;
       const coupons = await storage.listCoupons({
@@ -867,7 +867,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all coupon redemptions (for admin stats)
-  app.get("/api/admin/coupons/redemptions", async (req, res) => {
+  app.get("/api/admin/coupons/redemptions", requireAuth, requireAdmin, async (req, res) => {
     try {
       const redemptions = await storage.getAllCouponRedemptions();
       res.json(redemptions);
@@ -878,7 +878,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Get coupon
-  app.get("/api/admin/coupons/:id", async (req, res) => {
+  app.get("/api/admin/coupons/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const coupon = await storage.getCoupon(req.params.id);
       if (!coupon) {
@@ -892,7 +892,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Update coupon
-  app.patch("/api/admin/coupons/:id", async (req, res) => {
+  app.patch("/api/admin/coupons/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       // Validate update data - create partial schema manually
       const updateCouponSchema = z.object({
@@ -931,7 +931,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Delete coupon
-  app.delete("/api/admin/coupons/:id", async (req, res) => {
+  app.delete("/api/admin/coupons/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const success = await storage.deleteCoupon(req.params.id);
       if (!success) {
@@ -945,7 +945,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Get coupon statistics
-  app.get("/api/admin/coupons/:id/stats", async (req, res) => {
+  app.get("/api/admin/coupons/:id/stats", requireAuth, requireAdmin, async (req, res) => {
     try {
       const couponId = req.params.id;
       const coupon = await storage.getCoupon(couponId);
@@ -1012,7 +1012,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes for managing materiais complementares
-  app.get("/api/admin/materiais-complementares", async (req, res) => {
+  app.get("/api/admin/materiais-complementares", requireAuth, requireAdmin, async (req, res) => {
     try {
       const materials = await storage.getAllMateriaisComplementares(); // All materials
       res.json(materials);
@@ -1022,7 +1022,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/materiais-complementares", async (req, res) => {
+  app.post("/api/admin/materiais-complementares", requireAuth, requireAdmin, async (req, res) => {
     try {
       const validatedData = createMaterialComplementarSchema.parse(req.body);
       const material = await storage.createMaterialComplementar(validatedData);
@@ -1049,7 +1049,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/materiais-complementares/:id", async (req, res) => {
+  app.put("/api/admin/materiais-complementares/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const validatedData = updateMaterialComplementarSchema.parse(req.body);
@@ -1061,7 +1061,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/materiais-complementares/:id", async (req, res) => {
+  app.delete("/api/admin/materiais-complementares/:id", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       await storage.deleteMaterialComplementar(id);
@@ -3809,7 +3809,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Clear all caches (for development/debugging)
-  app.post("/api/admin/clear-cache", async (req, res) => {
+  app.post("/api/admin/clear-cache", requireAuth, requireAdmin, async (req, res) => {
     try {
       intelligentCache.clearAll();
       res.json({ 
@@ -5024,7 +5024,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== FASE 1: RECEITA + IA COST TRACKING APIs =====================
 
   // Get revenue overview
-  app.get("/api/admin/revenue-overview", async (req, res) => {
+  app.get("/api/admin/revenue-overview", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { days = '30' } = req.query;
       const revenueOverview = await storage.getRevenueOverview(parseInt(days as string));
@@ -5041,7 +5041,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get subscription plans
-  app.get("/api/admin/subscription-plans", async (req, res) => {
+  app.get("/api/admin/subscription-plans", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { activeOnly } = req.query;
       const plans = await storage.getSubscriptionPlans(activeOnly === 'true');
@@ -5109,7 +5109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get active subscriptions summary
-  app.get("/api/admin/subscriptions-summary", async (req, res) => {
+  app.get("/api/admin/subscriptions-summary", requireAuth, requireAdmin, async (req, res) => {
     try {
       const activeSubscriptions = await storage.getActiveSubscriptions();
       const trialSubscriptions = await storage.getSubscriptionsByStatus('trial');
@@ -5140,7 +5140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get recent transactions
-  app.get("/api/admin/recent-transactions", async (req, res) => {
+  app.get("/api/admin/recent-transactions", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { days = '7', limit = '50' } = req.query;
       const startDate = new Date();
@@ -5163,7 +5163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== FASE 2: FUNIL DE CONVERSÃO + UX COMPLETION RATES APIs =====================
 
   // Get conversion funnel data
-  app.get("/api/admin/conversion-funnels", async (req, res) => {
+  app.get("/api/admin/conversion-funnels", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { funnelName, days = '30' } = req.query;
       const endDate = new Date();
@@ -5188,7 +5188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get session metrics
-  app.get("/api/admin/session-metrics", async (req, res) => {
+  app.get("/api/admin/session-metrics", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { days = '7' } = req.query;
       const endDate = new Date();
@@ -5209,7 +5209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get task completion rates
-  app.get("/api/admin/task-completion-rates", async (req, res) => {
+  app.get("/api/admin/task-completion-rates", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { taskType, days = '30' } = req.query;
       const endDate = new Date();
@@ -5234,7 +5234,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user events analytics
-  app.get("/api/admin/user-events", async (req, res) => {
+  app.get("/api/admin/user-events", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { eventType, days = '7' } = req.query;
       const endDate = new Date();
@@ -5277,7 +5277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===================== FASE 3: ADVANCED COHORT ANALYSIS + PREDICTIVE METRICS APIs =====================
 
   // Get cohort analysis
-  app.get("/api/admin/cohort-analysis", async (req, res) => {
+  app.get("/api/admin/cohort-analysis", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { cohortMonth } = req.query;
       
@@ -5299,7 +5299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get revenue by source
-  app.get("/api/admin/revenue-by-source", async (req, res) => {
+  app.get("/api/admin/revenue-by-source", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { days = '30' } = req.query;
       const endDate = new Date();
@@ -5320,7 +5320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get high risk users (churn predictions)
-  app.get("/api/admin/high-risk-users", async (req, res) => {
+  app.get("/api/admin/high-risk-users", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { limit = '20' } = req.query;
       const highRiskUsers = await storage.getHighRiskUsers(parseInt(limit as string));
@@ -5337,7 +5337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get predictive metrics
-  app.get("/api/admin/predictive-metrics", async (req, res) => {
+  app.get("/api/admin/predictive-metrics", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { metricType = 'churn_prediction', timeHorizon } = req.query;
       
@@ -5356,7 +5356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate sample metrics data for testing
-  app.post("/api/admin/generate-sample-data", async (req, res) => {
+  app.post("/api/admin/generate-sample-data", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { dataType = 'all' } = req.body;
       

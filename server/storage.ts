@@ -4674,6 +4674,7 @@ export class DbStorage implements IStorage {
         adminLevel: 'admin' as const,
         permissions: [],
         createdAt: user.createdAt || new Date(),
+        updatedAt: user.updatedAt || new Date(),
       };
     }
     
