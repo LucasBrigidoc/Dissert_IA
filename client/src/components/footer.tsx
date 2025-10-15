@@ -68,7 +68,7 @@ export function Footer() {
               <a href="https://www.instagram.com/dissert_ia" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-instagram">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-youtube">
+              <a href="https://www.youtube.com/channel/UC_AxUSTr0U8Hpazum3jImJA" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-youtube">
                 <Youtube size={20} />
               </a>
               <a href="#" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-tiktok">
