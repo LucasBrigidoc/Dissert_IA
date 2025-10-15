@@ -37,7 +37,7 @@ if (!process.env.SESSION_SECRET) {
 app.use(session({
   store: new PgStore({
     pool: pgPool,
-    tableName: 'user_sessions',
+    tableName: 'express_sessions',
     createTableIfMissing: true,
   }),
   secret: sessionSecret,
