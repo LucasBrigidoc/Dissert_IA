@@ -88,27 +88,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register = async (name: string, email: string, phone: string, password: string, userType: 'vestibulano' | 'concurseiro'): Promise<boolean> => {
     setIsRegistering(true);
     try {
+      console.log('🔵 Iniciando registro com dados:', { name, email, phone: phone.replace(/\d/g, '*'), userType });
+      
+      const requestBody = { name, email, phone, password, userType };
+      console.log('📤 Enviando requisição para /api/auth/register');
+      
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, phone, password, userType }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log('📥 Resposta recebida - Status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Erro na resposta:', errorData);
         throw new Error(errorData.message || 'Erro ao criar conta. Verifique os dados informados.');
       }
 
       const data = await response.json();
+      console.log('✅ Registro bem-sucedido');
       setUser(data as User);
       
       await checkAuth();
       
       return true;
     } catch (error) {
+      console.error('❌ Erro no registro:', error);
       if (error instanceof Error) {
         throw new Error(error.message);
       }
