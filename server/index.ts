@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
-import memorystore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeCronJobs } from "./cron-jobs";
@@ -13,9 +14,13 @@ console.log('🔧 Environment check:');
 console.log('  REPLIT_DEV_DOMAIN:', process.env.REPLIT_DEV_DOMAIN);
 console.log('  NODE_ENV:', process.env.NODE_ENV);
 
-// Use MemoryStore for sessions to avoid SSL certificate issues with PostgreSQL
-// In production, consider using a persistent store
-const MemoryStore = memorystore(session);
+// PostgreSQL session store for persistent sessions
+const PgStore = connectPgSimple(session);
+
+// Configure PostgreSQL pool for sessions
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 // Verificar SESSION_SECRET em produção (obrigatório por segurança)
 if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
@@ -30,17 +35,19 @@ if (!process.env.SESSION_SECRET) {
 }
 
 app.use(session({
-  store: new MemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
+  store: new PgStore({
+    pool: pgPool,
+    tableName: 'user_sessions',
+    createTableIfMissing: true,
   }),
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    // In development (Replit), use secure: false to allow cookies in proxy/iframe
-    // In production, use secure: true for HTTPS
-    secure: process.env.NODE_ENV === 'production',
+    // Replit uses proxy/iframe even in production, so secure cookies may not work
+    // Keep secure: false for Replit compatibility
+    secure: false,
     sameSite: 'lax',
     // Default to 7 days, but can be overridden per-request in login route
     maxAge: 7 * 24 * 60 * 60 * 1000,
