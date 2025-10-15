@@ -38,10 +38,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const data = await response.json();
         setUser(data as User);
       } else {
+        // 401 é esperado para usuários não autenticados - não logar erro
         setUser(null);
       }
     } catch (error) {
-      console.error('Erro ao verificar autenticação:', error);
+      // Erro de rede - não logar para não poluir console
       setUser(null);
     } finally {
       setLoading(false);
