@@ -187,6 +187,140 @@ const operationNames: Record<string, string> = {
 
 const COLORS = ['#5087ff', '#3b82f6', '#1d4ed8', '#1e40af', '#1e3a8a', '#172554'];
 
+interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  isAdmin: boolean;
+  createdAt: Date;
+  planId: string;
+}
+
+function AdminManagement() {
+  const { toast } = useToast();
+  
+  const { data: usersData, isLoading } = useQuery<{ users: AdminUser[]; total: number }>({
+    queryKey: ['/api/admin/users/all'],
+    refetchInterval: 10000,
+  });
+
+  const toggleAdminMutation = useMutation({
+    mutationFn: async ({ userId, isAdmin }: { userId: string; isAdmin: boolean }) => {
+      return await apiRequest(`/api/admin/users/${userId}/admin`, {
+        method: 'PATCH',
+        body: { isAdmin },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users/all'] });
+      toast({
+        title: "Sucesso",
+        description: "Status de administrador atualizado com sucesso!",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao atualizar status de administrador",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const admins = usersData?.users.filter(u => u.isAdmin) || [];
+  const nonAdmins = usersData?.users.filter(u => !u.isAdmin) || [];
+
+  if (isLoading) {
+    return <div className="text-center py-8">Carregando usuários...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Current Admins Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3">Administradores Atuais</h3>
+        {admins.length === 0 ? (
+          <p className="text-muted-foreground text-sm">Nenhum administrador encontrado</p>
+        ) : (
+          <div className="grid gap-3">
+            {admins.map((admin) => (
+              <div
+                key={admin.id}
+                className="flex items-center justify-between p-4 border rounded-lg bg-primary/5"
+                data-testid={`admin-card-${admin.id}`}
+              >
+                <div className="flex-1">
+                  <p className="font-medium" data-testid={`admin-name-${admin.id}`}>{admin.name}</p>
+                  <p className="text-sm text-muted-foreground" data-testid={`admin-email-${admin.id}`}>{admin.email}</p>
+                </div>
+                <Badge variant="default" data-testid={`admin-badge-${admin.id}`}>Admin</Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ml-4"
+                  onClick={() => toggleAdminMutation.mutate({ userId: admin.id, isAdmin: false })}
+                  disabled={toggleAdminMutation.isPending}
+                  data-testid={`button-remove-admin-${admin.id}`}
+                >
+                  Remover Admin
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Non-Admin Users Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3">Promover Usuários</h3>
+        {nonAdmins.length === 0 ? (
+          <p className="text-muted-foreground text-sm">Todos os usuários já são administradores</p>
+        ) : (
+          <div className="border rounded-lg">
+            <div className="max-h-96 overflow-y-auto">
+              <table className="w-full">
+                <thead className="bg-muted/50 sticky top-0">
+                  <tr>
+                    <th className="text-left p-3 text-sm font-medium">Nome</th>
+                    <th className="text-left p-3 text-sm font-medium">Email</th>
+                    <th className="text-left p-3 text-sm font-medium">Telefone</th>
+                    <th className="text-left p-3 text-sm font-medium">Data de Cadastro</th>
+                    <th className="text-right p-3 text-sm font-medium">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nonAdmins.map((user) => (
+                    <tr key={user.id} className="border-t" data-testid={`user-row-${user.id}`}>
+                      <td className="p-3 text-sm" data-testid={`user-name-${user.id}`}>{user.name}</td>
+                      <td className="p-3 text-sm" data-testid={`user-email-${user.id}`}>{user.email}</td>
+                      <td className="p-3 text-sm" data-testid={`user-phone-${user.id}`}>{user.phone || '-'}</td>
+                      <td className="p-3 text-sm" data-testid={`user-created-${user.id}`}>
+                        {new Date(user.createdAt).toLocaleDateString('pt-BR')}
+                      </td>
+                      <td className="p-3 text-sm text-right">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => toggleAdminMutation.mutate({ userId: user.id, isAdmin: true })}
+                          disabled={toggleAdminMutation.isPending}
+                          data-testid={`button-promote-${user.id}`}
+                        >
+                          Tornar Admin
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function UsersTable() {
   const { toast } = useToast();
   const { data: usersData, isLoading } = useQuery<{
@@ -804,14 +938,25 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="users">
-          <Card data-testid="card-all-users">
-            <CardHeader>
-              <CardTitle>Todos os Usuários</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <UsersTable />
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card data-testid="card-admin-management">
+              <CardHeader>
+                <CardTitle>Gerenciamento de Administradores</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AdminManagement />
+              </CardContent>
+            </Card>
+            
+            <Card data-testid="card-all-users">
+              <CardHeader>
+                <CardTitle>Todos os Usuários</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <UsersTable />
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
