@@ -4661,10 +4661,23 @@ export class DbStorage implements IStorage {
   }
 
   async getAdminUser(userId: string): Promise<AdminUser | undefined> {
-    const result = await db.query.adminUsers.findFirst({
-      where: eq(schema.adminUsers.userId, userId),
+    // Check if user has isAdmin flag set to true
+    const user = await db.query.users.findFirst({
+      where: eq(schema.users.id, userId),
     });
-    return result;
+    
+    if (user && user.isAdmin) {
+      // Return a compatible AdminUser object
+      return {
+        id: userId,
+        userId: userId,
+        adminLevel: 'admin' as const,
+        permissions: [],
+        createdAt: user.createdAt || new Date(),
+      };
+    }
+    
+    return undefined;
   }
 
   // ===================== COST TRACKING OPERATIONS =====================
