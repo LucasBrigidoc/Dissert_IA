@@ -3946,26 +3946,42 @@ export class DbStorage implements IStorage {
   async searchRepertoires(query: string, filters?: { type?: string; category?: string; popularity?: string }): Promise<Repertoire[]> {
     const conditions: any[] = [];
     
-    if (query) {
-      conditions.push(
-        or(
-          sqlQuery`${schema.repertoires.title} ILIKE ${`%${query}%`}`,
-          sqlQuery`${schema.repertoires.description} ILIKE ${`%${query}%`}`
-        )
-      );
-    }
-    
+    // Aplicar filtros de tipo, categoria e popularidade
     if (filters?.type) conditions.push(eq(schema.repertoires.type, filters.type as any));
     if (filters?.category) conditions.push(eq(schema.repertoires.category, filters.category as any));
     if (filters?.popularity) conditions.push(eq(schema.repertoires.popularity, filters.popularity as any));
     
-    const repertoires = await db.query.repertoires.findMany({
+    // Buscar repertórios com filtros aplicados
+    let repertoires = await db.query.repertoires.findMany({
       where: conditions.length > 0 ? and(...conditions) : undefined,
       orderBy: [desc(schema.repertoires.rating)],
-      limit: 20,
+      limit: 100, // Buscar mais para poder filtrar depois
     });
     
-    return repertoires;
+    // MELHOR MATCHING: Se há query, filtrar para garantir que TODOS os termos estão presentes
+    if (query && query.trim()) {
+      const queryTerms = query.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .split(/\s+/)
+        .filter(term => term.length > 2); // Ignora termos muito curtos
+      
+      if (queryTerms.length > 0) {
+        repertoires = repertoires.filter(rep => {
+          const searchableText = (
+            rep.title + ' ' + 
+            rep.description + ' ' + 
+            ((rep.keywords as string[] || []).join(' '))
+          ).toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Remove acentos
+          
+          // TODOS os termos devem estar presentes
+          return queryTerms.every(term => searchableText.includes(term));
+        });
+      }
+    }
+    
+    // Limitar aos top 20 resultados
+    return repertoires.slice(0, 20);
   }
 
   async createRepertoire(insertRepertoire: InsertRepertoire): Promise<Repertoire> {

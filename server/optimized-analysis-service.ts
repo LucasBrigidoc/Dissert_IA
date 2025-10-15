@@ -16,7 +16,15 @@ export class OptimizedAnalysisService {
     if (apiKey) {
       try {
         this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+        this.model = this.genAI.getGenerativeModel({ 
+          model: "gemini-2.5-flash-lite",
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 1,
+            topP: 0.95,
+            topK: 40
+          }
+        });
       } catch (error) {
         console.warn("⚠️ Failed to initialize Gemini AI for optimized analysis:", error);
         this.hasApiKey = false;
@@ -937,19 +945,25 @@ IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada descri
 
   private parseRepertoireResponse(response: string, userFilters: any): any[] {
     try {
-      let cleanedResponse = response.replace(/```json|```/g, '').trim();
+      // Remove all markdown code blocks (```json, ```, etc.)
+      let cleanedResponse = response
+        .replace(/```(?:json)?/g, '')
+        .replace(/```/g, '')
+        .trim();
       
-      // Extract JSON array
+      // Extract JSON array (GREEDY to get complete array, not truncated)
       const jsonMatch = cleanedResponse.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         cleanedResponse = jsonMatch[0];
+      } else {
+        throw new Error("No valid JSON array found in response");
       }
       
       // Clean up common formatting issues
       cleanedResponse = cleanedResponse
-        .replace(/,(\s*[}\]])/g, '$1')
-        .replace(/([{,]\s*)(\w+):/g, '$1"$2":')
-        .replace(/:\s*'([^']*)'/g, ': "$1"');
+        .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+        .replace(/([{,]\s*)(\w+):/g, '$1"$2":') // Quote unquoted keys
+        .replace(/:\s*'([^']*?)'/g, (match, p1) => `: "${p1.replace(/"/g, '\\"')}"`); // Fix single quotes, escape inner quotes
 
       const repertoires = JSON.parse(cleanedResponse);
       
@@ -985,8 +999,11 @@ IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada descri
       return validRepertoires;
       
     } catch (error) {
-      console.warn("Failed to parse repertoire response, using fallback");
-      return this.generateEnhancedFallbackRepertoires('', userFilters, 3);
+      console.error("❌ Failed to parse repertoire response:", error);
+      console.error(`📄 Raw response (${response.length} chars total):`, response.substring(0, 800));
+      console.error("📄 Response ends with:", response.substring(Math.max(0, response.length - 100)));
+      // DO NOT use fallback - return empty array to force new AI generation
+      return [];
     }
   }
 

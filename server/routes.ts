@@ -2677,33 +2677,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🔑 Cache key gerado: "${cacheKey}" (query: "${query}", type: "${type || 'undefined'}")`);
       
-      // Initialize results array
+      // Initialize results array and filters
       let results: any[] = [];
+      const filters = {
+        type: type || undefined,
+        category: category || undefined,
+        popularity: popularity || undefined
+      };
       
       // Check cache first (only if no excluded IDs)
       let cachedResult = excludeIds.length === 0 ? await storage.getSearchCache(cacheKey) : null;
       
       if (cachedResult) {
-        // Update cache usage statistics
-        await storage.updateSearchCache(cachedResult.id, {
-          searchCount: (cachedResult.searchCount || 0) + 1,
-          lastSearched: new Date()
-        });
+        console.log(`✅ Cache encontrado para query: "${query}"`);
         
-        console.log(`Cache hit for query: "${query}"`);
-        
-        // Check if cached results are enough (minimum 4)
+        // VALIDAÇÃO DE RELEVÂNCIA: Re-executar searchRepertoires para garantir que os resultados ainda são relevantes
         const cachedResults = cachedResult.results as any[];
-        if (cachedResults.length >= 4) {
+        const cachedIds = cachedResults.map((r: any) => r.id);
+        
+        // Buscar no banco apenas os IDs que estão no cache
+        const dbResults = await storage.searchRepertoires(query, filters);
+        const relevantCachedResults = cachedResults.filter((cached: any) => 
+          dbResults.some(db => db.id === cached.id)
+        );
+        
+        console.log(`📊 Cache tinha ${cachedResults.length} resultados, ${relevantCachedResults.length} ainda são relevantes`);
+        
+        if (relevantCachedResults.length >= 4) {
+          // Update cache usage statistics
+          await storage.updateSearchCache(cachedResult.id, {
+            searchCount: (cachedResult.searchCount || 0) + 1,
+            lastSearched: new Date()
+          });
+          
           return res.json({
-            results: cachedResults,
-            source: "cache",
-            count: cachedResults.length
+            results: relevantCachedResults,
+            source: "cache_validated",
+            count: relevantCachedResults.length
           });
         } else {
-          console.log(`Cache has only ${cachedResults.length} results, generating more to reach 4...`);
-          // Continue to AI generation to complete to 4 results
-          results = cachedResults;
+          console.log(`⚠️ Cache com apenas ${relevantCachedResults.length} resultados relevantes, gerando novos...`);
+          // Continue to AI generation to get fresh results
+          results = relevantCachedResults;
         }
       }
       
@@ -2711,13 +2726,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // OPTIMIZED: Use local analysis (0 tokens)
       const analysis = geminiService.analyzeSearchQueryLocal(query);
-      
-      // Search repertoires with local analysis
-      const filters = {
-        type: type || undefined,
-        category: category || undefined,
-        popularity: popularity || undefined
-      };
       
       // Check if this is a generic "load more" request (no specific search)
       const isGenericLoadMore = excludeIds.length > 0 && (
@@ -2817,20 +2825,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`📦 Repertoire source: ${repertoireResult.source} - no cost recorded`);
         }
         
-        // Save all generated repertoires to database
+        // Save all generated repertoires to database (with duplicate check)
         for (const genRep of generatedRepertoires) {
           try {
-            const createdRepertoire = await storage.createRepertoire({
-              title: genRep.title,
-              description: genRep.description,
-              type: genRep.type,
-              category: genRep.category,
-              popularity: genRep.popularity,
-              year: genRep.year,
-              rating: genRep.rating,
-              keywords: genRep.keywords
-            });
-            results.push(createdRepertoire);
+            // VERIFICAÇÃO DE DUPLICATA: Buscar por título exato (case insensitive)
+            const existingRepertoires = await storage.searchRepertoires(genRep.title, {});
+            const duplicate = existingRepertoires.find(existing => 
+              existing.title.toLowerCase() === genRep.title.toLowerCase() && 
+              existing.year === genRep.year
+            );
+            
+            if (duplicate) {
+              console.log(`⚠️ Repertório duplicado encontrado: "${genRep.title}" (${genRep.year}) - usando existente`);
+              results.push(duplicate);
+            } else {
+              const createdRepertoire = await storage.createRepertoire({
+                title: genRep.title,
+                description: genRep.description,
+                type: genRep.type,
+                category: genRep.category,
+                popularity: genRep.popularity,
+                year: genRep.year,
+                rating: genRep.rating,
+                keywords: genRep.keywords
+              });
+              results.push(createdRepertoire);
+              console.log(`✅ Novo repertório salvo: "${genRep.title}" (${genRep.year})`);
+            }
           } catch (error) {
             console.error("Error saving generated repertoire:", error);
           }
