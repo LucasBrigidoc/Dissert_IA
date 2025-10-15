@@ -1098,8 +1098,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User registration endpoint
   app.post("/api/auth/register", async (req, res) => {
     try {
-      console.log("Registration attempt with data:", { ...req.body, password: '[REDACTED]' });
+      console.log("📝 Registration attempt with data:", { ...req.body, password: '[REDACTED]' });
+      console.log("📋 Raw request body fields:", Object.keys(req.body));
+      
       const validatedData = insertUserSchema.parse(req.body);
+      console.log("✅ Data validated successfully");
       
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(validatedData.email);
@@ -1155,16 +1158,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       });
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("❌ Registration error:", error);
+      
       // If it's a Zod validation error, show specific details
       if (error && typeof error === 'object' && 'issues' in error) {
         const zodError = error as any;
-        console.error("Validation issues:", JSON.stringify(zodError.issues, null, 2));
+        console.error("🔍 Validation issues:", JSON.stringify(zodError.issues, null, 2));
+        
+        // Get the first error message for user-friendly display
+        const firstIssue = zodError.issues[0];
+        const fieldName = firstIssue.path.join('.');
+        const errorMessage = firstIssue.message;
+        
         return res.status(400).json({ 
-          message: "Dados de registro inválidos",
+          message: `Erro no campo ${fieldName}: ${errorMessage}`,
           details: zodError.issues 
         });
       }
+      
       res.status(400).json({ message: "Dados de registro inválidos" });
     }
   });
