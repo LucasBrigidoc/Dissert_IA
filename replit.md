@@ -48,6 +48,7 @@ Preferred communication style: Simple, everyday language.
 - **Save to Library Feature**: Users can save modified texts from the Writing Controller to a personal library.
 - **Subscription Management**: Automatic user subscription lifecycle management (default to free, automatic upgrades via Stripe webhooks, automatic downgrades for expired subscriptions) with persistent session storage in PostgreSQL.
 - **Stripe Integration**: Uses pre-configured Stripe Price IDs for monthly and annual plans.
+- **Database Auto-Initialization**: Automatic creation of subscription plans on first server start via db-init.ts.
 
 # External Dependencies
 
