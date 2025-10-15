@@ -618,6 +618,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      // Map plan IDs to Stripe Price IDs
+      const stripePriceIds: Record<string, string> = {
+        'monthly': 'price_1SIFMtAAiSR2kqEeax8vZcC7',
+        'annual': 'price_1SINBqAAiSR2kqEeAk48eg0r',
+      };
+      
+      const stripePriceId = stripePriceIds[planId];
+      if (!stripePriceId) {
+        throw new Error(`Invalid plan ID: ${planId}`);
+      }
+      
       const finalAmount = Math.max(0, plan.monthly - discountAmount);
       
       // Build base URL with proper https:// scheme for Stripe
@@ -627,23 +638,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : 'http://localhost:5000';
       
       console.log(`Creating Stripe session with base URL: ${baseUrl}`);
+      console.log(`Using Stripe Price ID: ${stripePriceId} for plan: ${planId}`);
       
-      // Create Stripe Checkout Session
+      // Create Stripe Checkout Session using pre-configured Price IDs
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         mode: "subscription",
         line_items: [
           {
-            price_data: {
-              currency: "brl",
-              product_data: {
-                name: plan.name,
-              },
-              recurring: {
-                interval: "month",
-              },
-              unit_amount: finalAmount,
-            },
+            price: stripePriceId,
             quantity: 1,
           },
         ],

@@ -4,7 +4,16 @@ DissertIA is an AI-powered SaaS educational platform for Brazilian students prep
 
 # Recent Changes
 
-## October 14, 2025 - Subscription Plans Database Initialization (Latest)
+## October 15, 2025 - Stripe Price IDs Integration (Latest)
+- **Updated Stripe Checkout Integration**: Migrated from dynamic price creation to pre-configured Stripe Price IDs
+  - **Monthly Plan Price ID**: `price_1SIFMtAAiSR2kqEeax8vZcC7` (R$ 55,00/mês)
+  - **Annual Plan Price ID**: `price_1SINBqAAiSR2kqEeAk48eg0r` (R$ 479,88/ano = R$ 39,99/mês)
+  - **Technical Change**: Updated `/api/checkout/create-session` endpoint to use `price` field with Stripe Price IDs instead of `price_data` object
+  - **Benefits**: Allows leveraging Stripe Dashboard features (price management, analytics, A/B testing)
+  - **Coupon Support**: Maintained full compatibility with existing coupon/discount system
+  - **Location**: Updated `server/routes.ts` with `stripePriceIds` mapping object
+
+## October 14, 2025 - Subscription Plans Database Initialization
 - **Fixed User Registration Error**: Resolved foreign key constraint violation preventing new user registration
   - **Root Cause**: The `subscription_plans` table was empty, but user schema required a valid `plan_id` reference
   - **Solution**: Created the 3 essential subscription plans in the database with correct IDs and limits:
