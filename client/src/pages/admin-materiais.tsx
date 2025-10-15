@@ -33,6 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import type { MaterialComplementar } from "@shared/schema";
+import { useAdminCheck } from "@/hooks/use-admin-check";
 
 const iconMap = {
   FileText: FileText,
@@ -53,10 +54,20 @@ const colorSchemeMap = {
 };
 
 export default function AdminMateriais() {
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialComplementar | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
+
+  if (adminLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",

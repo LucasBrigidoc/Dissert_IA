@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminCheck } from "@/hooks/use-admin-check";
 
 interface BusinessOverview {
   totalUsers: number;
@@ -320,8 +321,17 @@ function UsersTable() {
 }
 
 export default function AdminDashboard() {
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const [timeRange, setTimeRange] = useState('30');
   const [isGeneratingMetrics, setIsGeneratingMetrics] = useState(false);
+
+  if (adminLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   // Query for business overview
   const { data: overview, isLoading: overviewLoading, refetch: refetchOverview } = useQuery<BusinessOverview>({

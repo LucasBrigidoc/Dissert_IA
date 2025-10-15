@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Tag, Plus, Edit, Trash2, RefreshCw, TrendingUp, Users, DollarSign, Percent, CheckCircle2, XCircle, BarChart3, Mail, Book } from "lucide-react";
 import { Link } from "wouter";
+import { useAdminCheck } from "@/hooks/use-admin-check";
 
 interface Coupon {
   id: string;
@@ -52,10 +53,19 @@ const formatCurrency = (centavos: number) => {
 };
 
 export default function AdminCoupons() {
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
-  
+
+  if (adminLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
   // Form state
   const [formData, setFormData] = useState({
     code: "",

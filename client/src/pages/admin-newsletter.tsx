@@ -33,6 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Newsletter, NewsletterSubscriber } from "@shared/schema";
+import { useAdminCheck } from "@/hooks/use-admin-check";
 
 interface NewsletterStats {
   totalSent: number;
@@ -44,9 +45,19 @@ interface NewsletterStats {
 }
 
 export default function AdminNewsletter() {
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const [selectedNewsletter, setSelectedNewsletter] = useState<Newsletter | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+
+  if (adminLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
   const [formData, setFormData] = useState({
     title: "",
     subject: "",
