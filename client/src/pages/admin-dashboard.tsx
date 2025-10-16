@@ -331,6 +331,7 @@ function UsersTable() {
   const { toast } = useToast();
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   
   const { data: usersData, isLoading } = useQuery<{
     users: Array<{
@@ -428,10 +429,22 @@ function UsersTable() {
   };
 
   const toggleSelectAll = () => {
-    if (selectedUsers.length === usersData?.users.length) {
+    const currentFilteredUsers = usersData?.users.filter(user => {
+      if (!searchTerm) return true;
+      
+      const search = searchTerm.toLowerCase();
+      return (
+        user.name.toLowerCase().includes(search) ||
+        user.email.toLowerCase().includes(search) ||
+        user.phone.toLowerCase().includes(search) ||
+        user.subscription.planName.toLowerCase().includes(search)
+      );
+    }) || [];
+
+    if (selectedUsers.length === currentFilteredUsers.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(usersData?.users.map(u => u.id) || []);
+      setSelectedUsers(currentFilteredUsers.map(u => u.id) || []);
     }
   };
 
@@ -447,6 +460,19 @@ function UsersTable() {
     return new Date(date).toLocaleDateString('pt-BR');
   };
 
+  // Filter users based on search term
+  const filteredUsers = usersData?.users.filter(user => {
+    if (!searchTerm) return true;
+    
+    const search = searchTerm.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(search) ||
+      user.email.toLowerCase().includes(search) ||
+      user.phone.toLowerCase().includes(search) ||
+      user.subscription.planName.toLowerCase().includes(search)
+    );
+  }) || [];
+
   if (isLoading) {
     return <div className="text-center py-8">Carregando...</div>;
   }
@@ -459,6 +485,37 @@ function UsersTable() {
 
   return (
     <div className="space-y-4">
+      {/* Search input */}
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <input
+            type="text"
+            placeholder="🔍 Buscar usuário por nome, email, telefone ou plano..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+            data-testid="input-search-users"
+          />
+        </div>
+        {searchTerm && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSearchTerm('')}
+            data-testid="button-clear-search"
+          >
+            Limpar
+          </Button>
+        )}
+      </div>
+
+      {/* Results count */}
+      {searchTerm && (
+        <div className="text-sm text-muted-foreground">
+          {filteredUsers.length} usuário(s) encontrado(s)
+        </div>
+      )}
+
       {selectedUsers.length > 0 && (
         <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
           <span className="text-sm font-medium text-red-900">
@@ -484,7 +541,7 @@ function UsersTable() {
               <th className="text-left p-3 font-medium w-10">
                 <input
                   type="checkbox"
-                  checked={selectedUsers.length === usersData.users.length}
+                  checked={filteredUsers.length > 0 && selectedUsers.length === filteredUsers.length}
                   onChange={toggleSelectAll}
                   className="cursor-pointer"
                   data-testid="checkbox-select-all"
@@ -501,7 +558,14 @@ function UsersTable() {
             </tr>
           </thead>
           <tbody>
-            {usersData.users.map((user) => (
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td colSpan={9} className="text-center py-8 text-gray-500">
+                  Nenhum usuário encontrado com "{searchTerm}"
+                </td>
+              </tr>
+            ) : (
+              filteredUsers.map((user) => (
               <tr key={user.id} className="border-b hover:bg-gray-50" data-testid={`row-user-${user.id}`}>
                 <td className="p-3">
                   <input
@@ -541,7 +605,8 @@ function UsersTable() {
                 <td className="p-3 text-sm">{user.usage.totalTokens.toLocaleString('pt-BR')}</td>
                 <td className="p-3 text-sm font-medium">{formatCurrency(user.usage.totalCost)}</td>
               </tr>
-            ))}
+            ))
+            )}
           </tbody>
         </table>
       </div>
