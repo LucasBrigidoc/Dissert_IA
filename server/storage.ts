@@ -3914,6 +3914,23 @@ export class DbStorage implements IStorage {
     });
   }
 
+  async deleteMultipleUsers(userIds: string[]): Promise<number> {
+    let deletedCount = 0;
+    
+    // Delete each user in a transaction
+    for (const userId of userIds) {
+      try {
+        await this.deleteUser(userId);
+        deletedCount++;
+      } catch (error) {
+        console.error(`Failed to delete user ${userId}:`, error);
+        // Continue with next user even if one fails
+      }
+    }
+    
+    return deletedCount;
+  }
+
   // ===================== USER PROGRESS OPERATIONS =====================
   
   async getUserProgress(userId: string): Promise<UserProgress | undefined> {

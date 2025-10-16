@@ -4853,6 +4853,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete multiple users (admin only)
+  app.post('/api/admin/users/delete-multiple', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { userIds } = req.body;
+
+      if (!Array.isArray(userIds) || userIds.length === 0) {
+        return res.status(400).json({ message: 'userIds must be a non-empty array' });
+      }
+
+      // Prevent admin from deleting their own account
+      const currentUserId = req.session.userId;
+      if (userIds.includes(currentUserId)) {
+        return res.status(400).json({ message: 'Você não pode deletar sua própria conta' });
+      }
+
+      // Delete all users
+      const deletedCount = await storage.deleteMultipleUsers(userIds);
+      
+      res.json({
+        success: true,
+        deletedCount,
+        message: `${deletedCount} usuário(s) deletado(s) com sucesso`
+      });
+    } catch (error) {
+      console.error('Error deleting multiple users:', error);
+      res.status(500).json({ message: 'Falha ao deletar usuários' });
+    }
+  });
+
   // ===================== PRICING & CURRENCY MONITORING ROUTES =====================
 
   // Get current pricing information with real-time exchange rates

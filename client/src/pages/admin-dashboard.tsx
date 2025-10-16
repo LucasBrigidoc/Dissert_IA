@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2 } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -323,6 +323,9 @@ function AdminManagement() {
 
 function UsersTable() {
   const { toast } = useToast();
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
   const { data: usersData, isLoading } = useQuery<{
     users: Array<{
       id: string;
@@ -378,6 +381,54 @@ function UsersTable() {
     },
   });
 
+  const handleDeleteSelected = async () => {
+    if (selectedUsers.length === 0) return;
+    
+    if (!confirm(`Tem certeza que deseja deletar ${selectedUsers.length} usuário(s)? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await apiRequest('/api/admin/users/delete-multiple', {
+        method: 'POST',
+        body: { userIds: selectedUsers },
+      });
+
+      toast({
+        title: "Sucesso",
+        description: response.message || `${selectedUsers.length} usuário(s) deletado(s) com sucesso!`,
+      });
+
+      setSelectedUsers([]);
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/all-users'] });
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao deletar usuários",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleUserSelection = (userId: string) => {
+    setSelectedUsers(prev => 
+      prev.includes(userId) 
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedUsers.length === usersData?.users.length) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(usersData?.users.map(u => u.id) || []);
+    }
+  };
+
   const formatCurrency = (centavos: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -401,55 +452,93 @@ function UsersTable() {
   const plans = subscriptionPlans?.data || [];
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b bg-gray-50">
-            <th className="text-left p-3 font-medium">Nome</th>
-            <th className="text-left p-3 font-medium">Email</th>
-            <th className="text-left p-3 font-medium">Telefone</th>
-            <th className="text-left p-3 font-medium">Plano</th>
-            <th className="text-left p-3 font-medium">Criado em</th>
-            <th className="text-left p-3 font-medium">Pro desde</th>
-            <th className="text-left p-3 font-medium">Tokens</th>
-            <th className="text-left p-3 font-medium">Gasto (R$)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usersData.users.map((user) => (
-            <tr key={user.id} className="border-b hover:bg-gray-50" data-testid={`row-user-${user.id}`}>
-              <td className="p-3" data-testid={`text-username-${user.id}`}>{user.name}</td>
-              <td className="p-3 text-sm" data-testid={`text-email-${user.id}`}>{user.email}</td>
-              <td className="p-3 text-sm">{user.phone}</td>
-              <td className="p-3">
-                <Select
-                  value={user.subscription.planId || 'plan-free'}
-                  onValueChange={(planId) => updatePlanMutation.mutate({ userId: user.id, planId })}
-                  disabled={updatePlanMutation.isPending}
-                  data-testid={`select-plan-${user.id}`}
-                >
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {plans.map((plan) => (
-                      <SelectItem key={plan.id} value={plan.id} data-testid={`option-plan-${plan.id}`}>
-                        {plan.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </td>
-              <td className="p-3 text-sm">{formatDate(user.createdAt)}</td>
-              <td className="p-3 text-sm">
-                {user.subscription.isPro ? formatDate(user.subscription.startDate) : '-'}
-              </td>
-              <td className="p-3 text-sm">{user.usage.totalTokens.toLocaleString('pt-BR')}</td>
-              <td className="p-3 text-sm font-medium">{formatCurrency(user.usage.totalCost)}</td>
+    <div className="space-y-4">
+      {selectedUsers.length > 0 && (
+        <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+          <span className="text-sm font-medium text-red-900">
+            {selectedUsers.length} usuário(s) selecionado(s)
+          </span>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={handleDeleteSelected}
+            disabled={isDeleting}
+            data-testid="button-delete-selected-users"
+          >
+            <Trash2 className="mr-2" size={16} />
+            {isDeleting ? "Deletando..." : "Deletar Selecionados"}
+          </Button>
+        </div>
+      )}
+      
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b bg-gray-50">
+              <th className="text-left p-3 font-medium w-10">
+                <input
+                  type="checkbox"
+                  checked={selectedUsers.length === usersData.users.length}
+                  onChange={toggleSelectAll}
+                  className="cursor-pointer"
+                  data-testid="checkbox-select-all"
+                />
+              </th>
+              <th className="text-left p-3 font-medium">Nome</th>
+              <th className="text-left p-3 font-medium">Email</th>
+              <th className="text-left p-3 font-medium">Telefone</th>
+              <th className="text-left p-3 font-medium">Plano</th>
+              <th className="text-left p-3 font-medium">Criado em</th>
+              <th className="text-left p-3 font-medium">Pro desde</th>
+              <th className="text-left p-3 font-medium">Tokens</th>
+              <th className="text-left p-3 font-medium">Gasto (R$)</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {usersData.users.map((user) => (
+              <tr key={user.id} className="border-b hover:bg-gray-50" data-testid={`row-user-${user.id}`}>
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.includes(user.id)}
+                    onChange={() => toggleUserSelection(user.id)}
+                    className="cursor-pointer"
+                    data-testid={`checkbox-user-${user.id}`}
+                  />
+                </td>
+                <td className="p-3" data-testid={`text-username-${user.id}`}>{user.name}</td>
+                <td className="p-3 text-sm" data-testid={`text-email-${user.id}`}>{user.email}</td>
+                <td className="p-3 text-sm">{user.phone}</td>
+                <td className="p-3">
+                  <Select
+                    value={user.subscription.planId || 'plan-free'}
+                    onValueChange={(planId) => updatePlanMutation.mutate({ userId: user.id, planId })}
+                    disabled={updatePlanMutation.isPending}
+                    data-testid={`select-plan-${user.id}`}
+                  >
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {plans.map((plan) => (
+                        <SelectItem key={plan.id} value={plan.id} data-testid={`option-plan-${plan.id}`}>
+                          {plan.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </td>
+                <td className="p-3 text-sm">{formatDate(user.createdAt)}</td>
+                <td className="p-3 text-sm">
+                  {user.subscription.isPro ? formatDate(user.subscription.startDate) : '-'}
+                </td>
+                <td className="p-3 text-sm">{user.usage.totalTokens.toLocaleString('pt-BR')}</td>
+                <td className="p-3 text-sm font-medium">{formatCurrency(user.usage.totalCost)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -775,11 +864,12 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview" data-testid="tab-overview">Visão Geral</TabsTrigger>
           <TabsTrigger value="trends" data-testid="tab-trends">Tendências</TabsTrigger>
           <TabsTrigger value="operations" data-testid="tab-operations">Operações</TabsTrigger>
           <TabsTrigger value="users" data-testid="tab-users">Usuários</TabsTrigger>
+          <TabsTrigger value="admins" data-testid="tab-admins">Administradores</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -938,25 +1028,25 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="users">
-          <div className="space-y-6">
-            <Card data-testid="card-admin-management">
-              <CardHeader>
-                <CardTitle>Gerenciamento de Administradores</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AdminManagement />
-              </CardContent>
-            </Card>
-            
-            <Card data-testid="card-all-users">
-              <CardHeader>
-                <CardTitle>Todos os Usuários</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <UsersTable />
-              </CardContent>
-            </Card>
-          </div>
+          <Card data-testid="card-all-users">
+            <CardHeader>
+              <CardTitle>Gerenciamento de Usuários</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <UsersTable />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="admins">
+          <Card data-testid="card-admin-management">
+            <CardHeader>
+              <CardTitle>Gerenciamento de Administradores</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AdminManagement />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
