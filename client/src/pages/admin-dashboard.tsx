@@ -1075,11 +1075,6 @@ export default function AdminDashboard() {
                       </div>
                     );
                   })}
-                  {(!usersByPlan?.plans || usersByPlan.plans.length === 0) && (
-                    <p className="text-sm text-muted-foreground col-span-3 text-center py-4">
-                      Nenhum usuário encontrado
-                    </p>
-                  )}
                 </div>
               </CardContent>
             </Card>

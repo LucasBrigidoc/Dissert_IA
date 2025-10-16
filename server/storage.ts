@@ -1950,11 +1950,14 @@ export class MemStorage implements IStorage {
       'plan-pro-annual': 'Plano Pro Anual',
     };
 
-    return Object.entries(planCounts).map(([planId, userCount]) => ({
-      planId,
-      planName: planNames[planId] || planId,
-      userCount,
-    }));
+    // Create base structure with all plans at 0
+    const allPlans = [
+      { planId: 'plan-free', planName: 'Plano Gratuito', userCount: planCounts['plan-free'] || 0 },
+      { planId: 'plan-pro-monthly', planName: 'Plano Pro Mensal', userCount: planCounts['plan-pro-monthly'] || 0 },
+      { planId: 'plan-pro-annual', planName: 'Plano Pro Anual', userCount: planCounts['plan-pro-annual'] || 0 },
+    ];
+
+    return allPlans;
   }
 
   // Advanced analytics implementations
@@ -5129,11 +5132,22 @@ export class DbStorage implements IStorage {
       'plan-pro-annual': 'Plano Pro Anual',
     };
 
-    return planCounts.map(({ planId, userCount }) => ({
-      planId: planId || 'plan-free',
-      planName: planNames[planId || 'plan-free'] || (planId || 'plan-free'),
-      userCount,
-    }));
+    // Create base structure with all plans at 0
+    const allPlans = [
+      { planId: 'plan-free', planName: 'Plano Gratuito', userCount: 0 },
+      { planId: 'plan-pro-monthly', planName: 'Plano Pro Mensal', userCount: 0 },
+      { planId: 'plan-pro-annual', planName: 'Plano Pro Anual', userCount: 0 },
+    ];
+
+    // Update counts from database
+    planCounts.forEach(({ planId, userCount }) => {
+      const plan = allPlans.find(p => p.planId === (planId || 'plan-free'));
+      if (plan) {
+        plan.userCount = userCount;
+      }
+    });
+
+    return allPlans;
   }
 
   // Continua na próxima parte...
