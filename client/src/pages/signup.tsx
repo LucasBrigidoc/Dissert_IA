@@ -8,13 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { SubscriptionPromptDialog } from "@/components/subscription-prompt-dialog";
 
 export default function Signup() {
   const [, setLocation] = useLocation();
-  const { register, isRegistering } = useAuth();
+  const { register, isRegistering, user } = useAuth();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [userType, setUserType] = useState<"vestibulano" | "concurseiro">("vestibulano");
   const [formData, setFormData] = useState({
     name: "",
@@ -69,7 +71,16 @@ export default function Signup() {
       if (success) {
         const params = new URLSearchParams(window.location.search);
         const redirectTo = params.get('redirect');
-        setLocation(redirectTo || "/dashboard");
+        
+        // Pequeno delay para garantir que o user foi atualizado
+        setTimeout(() => {
+          // Verificar se o usuário está no plano gratuito e mostrar popup
+          if (user && user.planId === 'plan-free') {
+            setShowSubscriptionPrompt(true);
+          } else {
+            setLocation(redirectTo || "/dashboard");
+          }
+        }, 100);
       }
     } catch (error) {
       toast({
@@ -253,6 +264,19 @@ export default function Signup() {
           </div>
         </LiquidGlassCard>
       </div>
+
+      {/* Subscription Prompt Dialog */}
+      <SubscriptionPromptDialog
+        open={showSubscriptionPrompt}
+        onOpenChange={(open) => {
+          setShowSubscriptionPrompt(open);
+          if (!open) {
+            const params = new URLSearchParams(window.location.search);
+            const redirectTo = params.get('redirect');
+            setLocation(redirectTo || "/dashboard");
+          }
+        }}
+      />
     </div>
   );
 }
