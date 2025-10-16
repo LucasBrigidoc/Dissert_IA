@@ -1298,6 +1298,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete user account endpoint
+  app.delete("/api/users/account", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      
+      // Delete user and all related data
+      await storage.deleteUser(userId);
+      
+      // Destroy session after deleting account
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destruction error after account deletion:", err);
+          return res.status(500).json({ message: "Conta deletada mas erro ao encerrar sessão" });
+        }
+        res.json({ message: "Conta deletada com sucesso" });
+      });
+    } catch (error) {
+      console.error("Delete account error:", error);
+      res.status(500).json({ message: "Erro ao deletar conta" });
+    }
+  });
+
   // ===================== USER PROGRESS ENDPOINTS =====================
 
   // Get user progress

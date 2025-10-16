@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle, Trash2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +16,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getInitials } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import type { SubscriptionPlan } from "@shared/schema";
 
 export default function SettingsPage() {
@@ -47,6 +49,8 @@ export default function SettingsPage() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showReactivateDialog, setShowReactivateDialog] = useState(false);
   const [cancellationReason, setCancellationReason] = useState("");
+  const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   
   // User profile data from auth context
   const [userProfile, setUserProfile] = useState({
@@ -75,6 +79,32 @@ export default function SettingsPage() {
   const handleLogout = async () => {
     await logout();
     setLocation("/");
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      await apiRequest("/api/users/account", {
+        method: "DELETE",
+      });
+      
+      toast({
+        title: "Conta deletada",
+        description: "Sua conta foi deletada com sucesso.",
+      });
+      
+      // Redirect to home page
+      setLocation("/");
+    } catch (error) {
+      toast({
+        title: "Erro ao deletar conta",
+        description: error instanceof Error ? error.message : "Não foi possível deletar sua conta. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeletingAccount(false);
+      setShowDeleteAccountDialog(false);
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -541,12 +571,23 @@ export default function SettingsPage() {
                 <Calendar className="text-dark-blue" size={20} />
               </div>
               
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg border border-soft-gray/20">
-                <div>
-                  <div className="font-medium text-dark-blue">Tipo de Conta</div>
-                  <div className="text-sm text-soft-gray capitalize">{user?.userType || "Vestibulando"}</div>
+              <div className="p-4 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium text-red-700 dark:text-red-400">Zona de Perigo</div>
+                    <div className="text-sm text-red-600 dark:text-red-500">Deletar conta permanentemente</div>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setShowDeleteAccountDialog(true)}
+                    data-testid="button-delete-account"
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    <Trash2 className="mr-2" size={16} />
+                    Deletar Conta
+                  </Button>
                 </div>
-                <Clock className="text-soft-gray" size={20} />
               </div>
             </div>
           </LiquidGlassCard>
@@ -767,6 +808,53 @@ export default function SettingsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Account Dialog */}
+      <AlertDialog open={showDeleteAccountDialog} onOpenChange={setShowDeleteAccountDialog}>
+        <AlertDialogContent data-testid="dialog-delete-account">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="text-red-600" />
+              Deletar Conta Permanentemente
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <p className="font-semibold text-red-700 dark:text-red-400">
+                Esta ação não pode ser desfeita!
+              </p>
+              <p>
+                Ao deletar sua conta, todos os seus dados serão permanentemente removidos, incluindo:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                <li>Todas as suas redações e correções</li>
+                <li>Seu progresso e estatísticas</li>
+                <li>Estruturas e materiais salvos</li>
+                <li>Repertórios e propostas salvas</li>
+                <li>Histórico de conversas e simulações</li>
+                <li>Dados de assinatura e pagamento</li>
+              </ul>
+              <p className="font-medium">
+                Você precisará criar uma nova conta se quiser usar o DissertIA novamente.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              disabled={isDeletingAccount}
+              data-testid="button-cancel-delete"
+            >
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={isDeletingAccount}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              data-testid="button-confirm-delete"
+            >
+              {isDeletingAccount ? "Deletando..." : "Sim, deletar minha conta"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

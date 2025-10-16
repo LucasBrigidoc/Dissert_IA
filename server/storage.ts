@@ -9,6 +9,7 @@ export interface IStorage {
   updateUser(id: string, user: Partial<User>): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<User>;
+  deleteUser(userId: string): Promise<void>;
   
   // User progress operations
   getUserProgress(userId: string): Promise<UserProgress | undefined>;
@@ -3845,6 +3846,72 @@ export class DbStorage implements IStorage {
     
     if (!updated) throw new Error("User not found");
     return updated;
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    // Delete all user-related data in a transaction to ensure atomicity
+    // Either all data is deleted or none is deleted (rollback on error)
+    await db.transaction(async (tx) => {
+      // Delete in correct order: child tables with foreign keys first, then parent tables
+      
+      // Payment events (depends on transactions via transactionId FK)
+      await tx.delete(schema.paymentEvents).where(eq(schema.paymentEvents.userId, userId));
+      
+      // Coupon redemptions (depends on transactions via transactionId FK)
+      await tx.delete(schema.couponRedemptions).where(eq(schema.couponRedemptions.userId, userId));
+      
+      // Saved items (no FK dependencies)
+      await tx.delete(schema.savedRepertoires).where(eq(schema.savedRepertoires.userId, userId));
+      await tx.delete(schema.savedProposals).where(eq(schema.savedProposals.userId, userId));
+      await tx.delete(schema.savedEssays).where(eq(schema.savedEssays.userId, userId));
+      await tx.delete(schema.savedStructures).where(eq(schema.savedStructures.userId, userId));
+      await tx.delete(schema.savedNewsletters).where(eq(schema.savedNewsletters.userId, userId));
+      await tx.delete(schema.savedTexts).where(eq(schema.savedTexts.userId, userId));
+      await tx.delete(schema.savedOutlines).where(eq(schema.savedOutlines.userId, userId));
+      
+      // User activities
+      await tx.delete(schema.simulations).where(eq(schema.simulations.userId, userId));
+      await tx.delete(schema.conversations).where(eq(schema.conversations.userId, userId));
+      await tx.delete(schema.userScores).where(eq(schema.userScores.userId, userId));
+      
+      // Cost and usage tracking
+      await tx.delete(schema.userCosts).where(eq(schema.userCosts.userId, userId));
+      await tx.delete(schema.userDailyUsage).where(eq(schema.userDailyUsage.userId, userId));
+      await tx.delete(schema.weeklyUsage).where(eq(schema.weeklyUsage.identifier, userId));
+      await tx.delete(schema.rateLimits).where(eq(schema.rateLimits.identifier, userId));
+      
+      // Analytics and events
+      await tx.delete(schema.userEvents).where(eq(schema.userEvents.userId, userId));
+      await tx.delete(schema.userSessions).where(eq(schema.userSessions.userId, userId));
+      await tx.delete(schema.taskCompletions).where(eq(schema.taskCompletions.userId, userId));
+      await tx.delete(schema.userCohorts).where(eq(schema.userCohorts.userId, userId));
+      await tx.delete(schema.conversionFunnels).where(eq(schema.conversionFunnels.userId, userId));
+      await tx.delete(schema.predictiveMetrics).where(eq(schema.predictiveMetrics.userId, userId));
+      await tx.delete(schema.churnPredictions).where(eq(schema.churnPredictions.userId, userId));
+      
+      // Newsletter and communications
+      await tx.delete(schema.newsletterSubscribers).where(eq(schema.newsletterSubscribers.userId, userId));
+      
+      // Subscriptions and payments (parent tables - delete after their children)
+      await tx.delete(schema.userSubscriptions).where(eq(schema.userSubscriptions.userId, userId));
+      await tx.delete(schema.transactions).where(eq(schema.transactions.userId, userId));
+      
+      // User goals and scheduling
+      await tx.delete(schema.userGoals).where(eq(schema.userGoals.userId, userId));
+      await tx.delete(schema.userExams).where(eq(schema.userExams.userId, userId));
+      await tx.delete(schema.userSchedules).where(eq(schema.userSchedules.userId, userId));
+      
+      // Admin records
+      await tx.delete(schema.adminUsers).where(eq(schema.adminUsers.userId, userId));
+      
+      // User content
+      await tx.delete(schema.essayStructures).where(eq(schema.essayStructures.userId, userId));
+      await tx.delete(schema.essays).where(eq(schema.essays.userId, userId));
+      await tx.delete(schema.userProgress).where(eq(schema.userProgress.userId, userId));
+      
+      // Finally, delete the user (parent table)
+      await tx.delete(schema.users).where(eq(schema.users.id, userId));
+    });
   }
 
   // ===================== USER PROGRESS OPERATIONS =====================
