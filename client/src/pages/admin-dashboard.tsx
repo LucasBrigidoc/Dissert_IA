@@ -3,9 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2 } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -205,6 +206,7 @@ interface AdminUser {
 
 function AdminManagement() {
   const { toast } = useToast();
+  const [adminSearchTerm, setAdminSearchTerm] = useState('');
   
   const { data: usersData, isLoading } = useQuery<{ users: AdminUser[]; total: number }>({
     queryKey: ['/api/admin/users/all'],
@@ -237,20 +239,75 @@ function AdminManagement() {
   const admins = usersData?.users.filter(u => u.isAdmin) || [];
   const nonAdmins = usersData?.users.filter(u => !u.isAdmin) || [];
 
+  // Filter admins and non-admins based on search term
+  const filteredAdmins = admins.filter(user => {
+    if (!adminSearchTerm) return true;
+    const searchLower = adminSearchTerm.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(searchLower) ||
+      user.email.toLowerCase().includes(searchLower) ||
+      (user.phone && user.phone.toLowerCase().includes(searchLower))
+    );
+  });
+
+  const filteredNonAdmins = nonAdmins.filter(user => {
+    if (!adminSearchTerm) return true;
+    const searchLower = adminSearchTerm.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(searchLower) ||
+      user.email.toLowerCase().includes(searchLower) ||
+      (user.phone && user.phone.toLowerCase().includes(searchLower))
+    );
+  });
+
   if (isLoading) {
     return <div className="text-center py-8">Carregando usuários...</div>;
   }
 
   return (
     <div className="space-y-6">
+      {/* Search Bar */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Buscar por nome, email ou telefone..."
+            value={adminSearchTerm}
+            onChange={(e) => setAdminSearchTerm(e.target.value)}
+            className="pl-10"
+            data-testid="input-admin-search"
+          />
+        </div>
+        {adminSearchTerm && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setAdminSearchTerm('')}
+            data-testid="button-clear-admin-search"
+          >
+            Limpar
+          </Button>
+        )}
+      </div>
+
+      {/* Results Counter */}
+      {adminSearchTerm && (
+        <p className="text-sm text-muted-foreground" data-testid="text-admin-search-results">
+          {filteredAdmins.length + filteredNonAdmins.length} usuário(s) encontrado(s)
+        </p>
+      )}
+
       {/* Current Admins Section */}
       <div>
         <h3 className="text-lg font-semibold mb-3">Administradores Atuais</h3>
-        {admins.length === 0 ? (
-          <p className="text-muted-foreground text-sm">Nenhum administrador encontrado</p>
+        {filteredAdmins.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            {adminSearchTerm ? 'Nenhum administrador encontrado com esse critério de busca' : 'Nenhum administrador encontrado'}
+          </p>
         ) : (
           <div className="grid gap-3">
-            {admins.map((admin) => (
+            {filteredAdmins.map((admin) => (
               <div
                 key={admin.id}
                 className="flex items-center justify-between p-4 border rounded-lg bg-primary/5"
@@ -280,8 +337,10 @@ function AdminManagement() {
       {/* Non-Admin Users Section */}
       <div>
         <h3 className="text-lg font-semibold mb-3">Promover Usuários</h3>
-        {nonAdmins.length === 0 ? (
-          <p className="text-muted-foreground text-sm">Todos os usuários já são administradores</p>
+        {filteredNonAdmins.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            {adminSearchTerm ? 'Nenhum usuário encontrado com esse critério de busca' : 'Todos os usuários já são administradores'}
+          </p>
         ) : (
           <div className="border rounded-lg">
             <div className="max-h-96 overflow-y-auto">
@@ -296,7 +355,7 @@ function AdminManagement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {nonAdmins.map((user) => (
+                  {filteredNonAdmins.map((user) => (
                     <tr key={user.id} className="border-t" data-testid={`user-row-${user.id}`}>
                       <td className="p-3 text-sm" data-testid={`user-name-${user.id}`}>{user.name}</td>
                       <td className="p-3 text-sm" data-testid={`user-email-${user.id}`}>{user.email}</td>
