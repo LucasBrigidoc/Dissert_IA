@@ -1176,7 +1176,7 @@ export default function AdminDashboard() {
                     const planColors: Record<string, string> = {
                       'plan-free': 'bg-gray-100 dark:bg-gray-800 border-gray-300',
                       'plan-pro-monthly': 'bg-blue-50 dark:bg-blue-950 border-blue-300',
-                      'plan-pro-annual': 'bg-purple-50 dark:bg-purple-950 border-purple-300',
+                      'plan-pro-yearly': 'bg-purple-50 dark:bg-purple-950 border-purple-300',
                     };
                     
                     return (

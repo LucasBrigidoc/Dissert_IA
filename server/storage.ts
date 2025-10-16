@@ -1947,14 +1947,14 @@ export class MemStorage implements IStorage {
     const planNames: Record<string, string> = {
       'plan-free': 'Plano Gratuito',
       'plan-pro-monthly': 'Plano Pro Mensal',
-      'plan-pro-annual': 'Plano Pro Anual',
+      'plan-pro-yearly': 'Plano Pro Anual',
     };
 
     // Create base structure with all plans at 0
     const allPlans = [
       { planId: 'plan-free', planName: 'Plano Gratuito', userCount: planCounts['plan-free'] || 0 },
       { planId: 'plan-pro-monthly', planName: 'Plano Pro Mensal', userCount: planCounts['plan-pro-monthly'] || 0 },
-      { planId: 'plan-pro-annual', planName: 'Plano Pro Anual', userCount: planCounts['plan-pro-annual'] || 0 },
+      { planId: 'plan-pro-yearly', planName: 'Plano Pro Anual', userCount: planCounts['plan-pro-yearly'] || 0 },
     ];
 
     return allPlans;
@@ -5129,14 +5129,14 @@ export class DbStorage implements IStorage {
     const planNames: Record<string, string> = {
       'plan-free': 'Plano Gratuito',
       'plan-pro-monthly': 'Plano Pro Mensal',
-      'plan-pro-annual': 'Plano Pro Anual',
+      'plan-pro-yearly': 'Plano Pro Anual',
     };
 
     // Create base structure with all plans at 0
     const allPlans = [
       { planId: 'plan-free', planName: 'Plano Gratuito', userCount: 0 },
       { planId: 'plan-pro-monthly', planName: 'Plano Pro Mensal', userCount: 0 },
-      { planId: 'plan-pro-annual', planName: 'Plano Pro Anual', userCount: 0 },
+      { planId: 'plan-pro-yearly', planName: 'Plano Pro Anual', userCount: 0 },
     ];
 
     // Update counts from database
