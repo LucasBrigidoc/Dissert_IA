@@ -49,7 +49,8 @@ Preferred communication style: Simple, everyday language.
 - **Subscription Management**: Automatic user subscription lifecycle management (default to free, automatic upgrades via Stripe webhooks, automatic downgrades for expired subscriptions) with persistent session storage in PostgreSQL.
 - **Stripe Integration**: Uses pre-configured Stripe Price IDs for monthly and annual plans.
 - **Database Auto-Initialization**: Automatic creation of subscription plans on first server start via db-init.ts.
-- **Admin Access Control**: Role-based access control (RBAC) system with isAdmin field in users table. Backend protected with requireAdmin middleware on all 35 admin routes. Frontend protected with useAdminCheck hook on all 4 admin pages (dashboard, newsletter, coupons, materials).
+- **Admin Access Control**: Role-based access control (RBAC) system with isAdmin field in users table. Backend protected with requireAdmin middleware on all admin routes. Frontend protected with useAdminCheck hook on all admin pages (dashboard, newsletter, coupons, materials).
+- **User Management System**: Admin dashboard with separate tabs for "Usuários" (user management) and "Administradores" (admin management). Multi-select functionality with checkboxes allows bulk deletion of user accounts. Endpoint POST /api/admin/users/delete-multiple safely deletes multiple users with transaction-based cascading deletion, preventing admins from deleting their own accounts.
 
 # External Dependencies
 
