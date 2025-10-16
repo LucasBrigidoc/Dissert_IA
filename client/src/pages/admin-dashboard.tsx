@@ -947,31 +947,6 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Users by plan distribution */}
-            <Card data-testid="card-users-by-plan">
-              <CardHeader>
-                <CardTitle>Distribuição de Usuários por Plano</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {usersByPlan?.plans?.map((plan) => (
-                    <div key={plan.planId} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">{plan.planName}:</span>
-                      </div>
-                      <Badge variant="outline" data-testid={`badge-plan-count-${plan.planId}`}>
-                        {plan.userCount} {plan.userCount === 1 ? 'usuário' : 'usuários'}
-                      </Badge>
-                    </div>
-                  ))}
-                  {(!usersByPlan?.plans || usersByPlan.plans.length === 0) && (
-                    <p className="text-sm text-muted-foreground">Nenhum usuário encontrado</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </TabsContent>
 
@@ -1065,14 +1040,60 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="users">
-          <Card data-testid="card-all-users">
-            <CardHeader>
-              <CardTitle>Gerenciamento de Usuários</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <UsersTable />
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            {/* Users by plan distribution */}
+            <Card data-testid="card-users-by-plan">
+              <CardHeader>
+                <CardTitle>Distribuição de Usuários por Plano</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {usersByPlan?.plans?.map((plan) => {
+                    const planColors: Record<string, string> = {
+                      'plan-free': 'bg-gray-100 dark:bg-gray-800 border-gray-300',
+                      'plan-pro-monthly': 'bg-blue-50 dark:bg-blue-950 border-blue-300',
+                      'plan-pro-annual': 'bg-purple-50 dark:bg-purple-950 border-purple-300',
+                    };
+                    
+                    return (
+                      <div 
+                        key={plan.planId} 
+                        className={`p-4 rounded-lg border ${planColors[plan.planId] || 'bg-gray-100 dark:bg-gray-800'}`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Users className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-semibold">{plan.planName}</span>
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold" data-testid={`text-plan-count-${plan.planId}`}>
+                          {plan.userCount}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {plan.userCount === 1 ? 'usuário' : 'usuários'}
+                        </p>
+                      </div>
+                    );
+                  })}
+                  {(!usersByPlan?.plans || usersByPlan.plans.length === 0) && (
+                    <p className="text-sm text-muted-foreground col-span-3 text-center py-4">
+                      Nenhum usuário encontrado
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* User management table */}
+            <Card data-testid="card-all-users">
+              <CardHeader>
+                <CardTitle>Gerenciamento de Usuários</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <UsersTable />
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="admins">

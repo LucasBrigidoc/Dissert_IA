@@ -5118,7 +5118,7 @@ export class DbStorage implements IStorage {
     const planCounts = await db
       .select({
         planId: schema.users.planId,
-        userCount: sql<number>`count(*)::int`,
+        userCount: sqlQuery<number>`count(*)::int`,
       })
       .from(schema.users)
       .groupBy(schema.users.planId);
