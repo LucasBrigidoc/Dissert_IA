@@ -962,10 +962,44 @@ IMPORTANTE: Responda APENAS com o JSON válido, sem texto adicional. Cada descri
       // Clean up common formatting issues
       cleanedResponse = cleanedResponse
         .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
-        .replace(/([{,]\s*)(\w+):/g, '$1"$2":') // Quote unquoted keys
-        .replace(/:\s*'([^']*?)'/g, (match, p1) => `: "${p1.replace(/"/g, '\\"')}"`); // Fix single quotes, escape inner quotes
+        .replace(/([{,]\s*)(\w+):/g, '$1"$2":'); // Quote unquoted keys
 
-      const repertoires = JSON.parse(cleanedResponse);
+      let repertoires;
+      try {
+        repertoires = JSON.parse(cleanedResponse);
+      } catch (parseError: any) {
+        console.error("❌ JSON parse error:", parseError.message);
+        console.log(`📄 Attempted to parse (first 1000 chars):`, cleanedResponse.substring(0, 1000));
+        
+        // Try a more aggressive fix: recover incomplete JSON
+        const lastCompleteObject = cleanedResponse.lastIndexOf('}');
+        
+        if (lastCompleteObject > 0) {
+          // Always try to recover if we found at least one complete object
+          let recovered = cleanedResponse.substring(0, lastCompleteObject + 1);
+          
+          // Check if the recovered string has closing bracket AFTER truncation
+          const recoveredHasClosingBracket = recovered.trim().endsWith(']');
+          
+          // Add closing bracket if missing
+          if (!recoveredHasClosingBracket) {
+            recovered += '\n]';
+          }
+          
+          console.log(`🔧 Trying recovered JSON (truncated at last complete object)`);
+          console.log(`📄 Recovery preview (last 200 chars): ...${recovered.substring(Math.max(0, recovered.length - 200))}`);
+          
+          try {
+            repertoires = JSON.parse(recovered);
+            console.log(`✅ Successfully recovered and parsed JSON with ${Array.isArray(repertoires) ? repertoires.length : 0} repertoires`);
+          } catch (e) {
+            console.error("❌ Recovery also failed:", e);
+            throw parseError; // If recovery doesn't help, throw original error
+          }
+        } else {
+          throw parseError;
+        }
+      }
       
       // Validate and enhance repertoires
       const validRepertoires = (Array.isArray(repertoires) ? repertoires : [])
