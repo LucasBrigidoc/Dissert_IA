@@ -51,6 +51,7 @@ Preferred communication style: Simple, everyday language.
 - **Database Auto-Initialization**: Automatic creation of subscription plans on first server start via db-init.ts.
 - **Admin Access Control**: Role-based access control (RBAC) system with isAdmin field in users table. Backend protected with requireAdmin middleware on all admin routes. Frontend protected with useAdminCheck hook on all admin pages (dashboard, newsletter, coupons, materials).
 - **User Management System**: Admin dashboard with separate tabs for "Usuários" (user management) and "Administradores" (admin management). Multi-select functionality with checkboxes allows bulk deletion of user accounts. Endpoint POST /api/admin/users/delete-multiple safely deletes multiple users with transaction-based cascading deletion, preventing admins from deleting their own accounts.
+- **Subscription Prompt System**: Popup dialog displayed to free-tier users after signup and every login, encouraging upgrade to Pro plan. Uses useEffect-based state management to react to authentication changes, ensuring correct display timing. Dialog presents Pro benefits and offers choices to upgrade or continue with free plan.
 
 # External Dependencies
 
