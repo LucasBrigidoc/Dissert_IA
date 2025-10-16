@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { HeroCharacter } from "@/components/hero-character";
@@ -17,9 +17,25 @@ export default function Login() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
+  // Monitorar mudanças no user após login bem-sucedido
+  useEffect(() => {
+    if (loginSuccess && user) {
+      const params = new URLSearchParams(window.location.search);
+      const redirectTo = params.get('redirect');
+      
+      if (user.planId === 'plan-free') {
+        setShowSubscriptionPrompt(true);
+      } else {
+        setLocation(redirectTo || "/dashboard");
+      }
+      setLoginSuccess(false);
+    }
+  }, [user, loginSuccess, setLocation]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,18 +43,7 @@ export default function Login() {
     try {
       const success = await login(email, password, rememberMe);
       if (success) {
-        const params = new URLSearchParams(window.location.search);
-        const redirectTo = params.get('redirect');
-        
-        // Pequeno delay para garantir que o user foi atualizado
-        setTimeout(() => {
-          // Verificar se o usuário está no plano gratuito e mostrar popup
-          if (user && user.planId === 'plan-free') {
-            setShowSubscriptionPrompt(true);
-          } else {
-            setLocation(redirectTo || "/dashboard");
-          }
-        }, 100);
+        setLoginSuccess(true);
       }
     } catch (error) {
       toast({

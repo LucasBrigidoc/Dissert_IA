@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { HeroCharacter } from "@/components/hero-character";
@@ -17,6 +17,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [userType, setUserType] = useState<"vestibulano" | "concurseiro">("vestibulano");
   const [formData, setFormData] = useState({
     name: "",
@@ -25,6 +26,21 @@ export default function Signup() {
     password: "",
     confirmPassword: ""
   });
+
+  // Monitorar mudanças no user após registro bem-sucedido
+  useEffect(() => {
+    if (registrationSuccess && user) {
+      const params = new URLSearchParams(window.location.search);
+      const redirectTo = params.get('redirect');
+      
+      if (user.planId === 'plan-free') {
+        setShowSubscriptionPrompt(true);
+      } else {
+        setLocation(redirectTo || "/dashboard");
+      }
+      setRegistrationSuccess(false);
+    }
+  }, [user, registrationSuccess, setLocation]);
 
   const validatePhone = (phone: string): boolean => {
     const numbers = phone.replace(/\D/g, '');
@@ -69,18 +85,7 @@ export default function Signup() {
     try {
       const success = await register(formData.name, formData.email, formData.phone, formData.password, userType);
       if (success) {
-        const params = new URLSearchParams(window.location.search);
-        const redirectTo = params.get('redirect');
-        
-        // Pequeno delay para garantir que o user foi atualizado
-        setTimeout(() => {
-          // Verificar se o usuário está no plano gratuito e mostrar popup
-          if (user && user.planId === 'plan-free') {
-            setShowSubscriptionPrompt(true);
-          } else {
-            setLocation(redirectTo || "/dashboard");
-          }
-        }, 100);
+        setRegistrationSuccess(true);
       }
     } catch (error) {
       toast({
