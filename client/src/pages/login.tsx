@@ -9,12 +9,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { SubscriptionPromptDialog } from "@/components/subscription-prompt-dialog";
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const { login, isAuthenticating } = useAuth();
+  const { login, isAuthenticating, user } = useAuth();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -27,7 +29,16 @@ export default function Login() {
       if (success) {
         const params = new URLSearchParams(window.location.search);
         const redirectTo = params.get('redirect');
-        setLocation(redirectTo || "/dashboard");
+        
+        // Pequeno delay para garantir que o user foi atualizado
+        setTimeout(() => {
+          // Verificar se o usuário está no plano gratuito e mostrar popup
+          if (user && user.planId === 'plan-free') {
+            setShowSubscriptionPrompt(true);
+          } else {
+            setLocation(redirectTo || "/dashboard");
+          }
+        }, 100);
       }
     } catch (error) {
       toast({
@@ -141,6 +152,19 @@ export default function Login() {
           </div>
         </LiquidGlassCard>
       </div>
+
+      {/* Subscription Prompt Dialog */}
+      <SubscriptionPromptDialog
+        open={showSubscriptionPrompt}
+        onOpenChange={(open) => {
+          setShowSubscriptionPrompt(open);
+          if (!open) {
+            const params = new URLSearchParams(window.location.search);
+            const redirectTo = params.get('redirect');
+            setLocation(redirectTo || "/dashboard");
+          }
+        }}
+      />
     </div>
   );
 }
