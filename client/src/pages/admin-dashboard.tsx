@@ -44,6 +44,12 @@ interface CurrentCosts {
   realTime: boolean;
 }
 
+interface PlanCount {
+  planId: string;
+  planName: string;
+  userCount: number;
+}
+
 // ===== FASE 1: RECEITA + IA COST TRACKING =====
 interface RevenueOverview {
   mrr: number;
@@ -574,6 +580,12 @@ export default function AdminDashboard() {
     refetchInterval: 10000, // Refresh every 10 seconds for real-time
   });
 
+  // Query for users by plan count
+  const { data: usersByPlan } = useQuery<{success: boolean; plans: PlanCount[]}>({
+    queryKey: ['/api/admin/users-by-plan'],
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   // ===== FASE 1: RECEITA + IA COST TRACKING QUERIES =====
   const { data: revenueOverview, isLoading: revenueLoading, refetch: refetchRevenue } = useQuery<{data: RevenueOverview}>({
     queryKey: [`/api/admin/revenue-overview?days=${timeRange}`],
@@ -932,6 +944,31 @@ export default function AdminDashboard() {
                       {operationNames[currentCosts?.topOperation || ''] || currentCosts?.topOperation || 'N/A'}
                     </Badge>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Users by plan distribution */}
+            <Card data-testid="card-users-by-plan">
+              <CardHeader>
+                <CardTitle>Distribuição de Usuários por Plano</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {usersByPlan?.plans?.map((plan) => (
+                    <div key={plan.planId} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">{plan.planName}:</span>
+                      </div>
+                      <Badge variant="outline" data-testid={`badge-plan-count-${plan.planId}`}>
+                        {plan.userCount} {plan.userCount === 1 ? 'usuário' : 'usuários'}
+                      </Badge>
+                    </div>
+                  ))}
+                  {(!usersByPlan?.plans || usersByPlan.plans.length === 0) && (
+                    <p className="text-sm text-muted-foreground">Nenhum usuário encontrado</p>
+                  )}
                 </div>
               </CardContent>
             </Card>

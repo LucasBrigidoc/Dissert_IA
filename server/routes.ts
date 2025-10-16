@@ -4882,6 +4882,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get users count by plan
+  app.get('/api/admin/users-by-plan', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const planCounts = await storage.getUsersByPlanCount();
+      
+      res.json({
+        success: true,
+        plans: planCounts
+      });
+    } catch (error) {
+      console.error('Error getting users by plan count:', error);
+      res.status(500).json({ message: 'Failed to get users by plan count' });
+    }
+  });
+
   // ===================== PRICING & CURRENCY MONITORING ROUTES =====================
 
   // Get current pricing information with real-time exchange rates

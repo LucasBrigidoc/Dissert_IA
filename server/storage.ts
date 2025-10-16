@@ -165,6 +165,11 @@ export interface IStorage {
     averageOperationCost: number;
     topOperation: string;
   }>>;
+  getUsersByPlanCount(): Promise<Array<{
+    planId: string;
+    planName: string;
+    userCount: number;
+  }>>;
   
   // Advanced analytics operations
   getHourlyUsagePatterns(startDate: Date, endDate: Date): Promise<Array<{
@@ -1923,6 +1928,33 @@ export class MemStorage implements IStorage {
       }))
       .sort((a, b) => b.totalCost - a.totalCost)
       .slice(0, limit);
+  }
+
+  async getUsersByPlanCount(): Promise<Array<{
+    planId: string;
+    planName: string;
+    userCount: number;
+  }>> {
+    const planCounts: Record<string, number> = {};
+    
+    // Count users by planId
+    Array.from(this.users.values()).forEach(user => {
+      const planId = user.planId || 'plan-free';
+      planCounts[planId] = (planCounts[planId] || 0) + 1;
+    });
+
+    // Get plan names
+    const planNames: Record<string, string> = {
+      'plan-free': 'Plano Gratuito',
+      'plan-pro-monthly': 'Plano Pro Mensal',
+      'plan-pro-annual': 'Plano Pro Anual',
+    };
+
+    return Object.entries(planCounts).map(([planId, userCount]) => ({
+      planId,
+      planName: planNames[planId] || planId,
+      userCount,
+    }));
   }
 
   // Advanced analytics implementations
@@ -5076,6 +5108,32 @@ export class DbStorage implements IStorage {
       }))
       .sort((a, b) => b.totalCost - a.totalCost)
       .slice(0, limit);
+  }
+
+  async getUsersByPlanCount(): Promise<Array<{
+    planId: string;
+    planName: string;
+    userCount: number;
+  }>> {
+    const planCounts = await db
+      .select({
+        planId: schema.users.planId,
+        userCount: sql<number>`count(*)::int`,
+      })
+      .from(schema.users)
+      .groupBy(schema.users.planId);
+
+    const planNames: Record<string, string> = {
+      'plan-free': 'Plano Gratuito',
+      'plan-pro-monthly': 'Plano Pro Mensal',
+      'plan-pro-annual': 'Plano Pro Anual',
+    };
+
+    return planCounts.map(({ planId, userCount }) => ({
+      planId: planId || 'plan-free',
+      planName: planNames[planId || 'plan-free'] || (planId || 'plan-free'),
+      userCount,
+    }));
   }
 
   // Continua na próxima parte...
