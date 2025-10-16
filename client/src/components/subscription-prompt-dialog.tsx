@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Crown, X } from "lucide-react";
+import { Sparkles, Crown } from "lucide-react";
 
 interface SubscriptionPromptDialogProps {
   open: boolean;
@@ -31,14 +31,7 @@ export function SubscriptionPromptDialog({ open, onOpenChange }: SubscriptionPro
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden" data-testid="dialog-subscription-prompt">
         {/* Header com gradiente */}
-        <div className="gradient-bg p-6 text-white relative">
-          <button
-            onClick={() => onOpenChange(false)}
-            className="absolute right-4 top-4 text-white/80 hover:text-white transition-colors"
-            data-testid="button-close-dialog"
-          >
-            <X size={20} />
-          </button>
+        <div className="gradient-bg p-6 text-white">
           <div className="flex items-center gap-3 mb-2">
             <Crown className="w-8 h-8" />
             <DialogTitle className="text-2xl font-bold text-white m-0">
