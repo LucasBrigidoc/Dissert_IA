@@ -32,6 +32,7 @@ export default function Repertorio() {
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   const [showPaywall, setShowPaywall] = useState(false);
   const [isGeneratingFromEmpty, setIsGeneratingFromEmpty] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   
   const { toast } = useToast();
 
@@ -39,6 +40,19 @@ export default function Repertorio() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Função para alternar expansão da descrição
+  const toggleDescription = (repertoireId: string) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(repertoireId)) {
+        newSet.delete(repertoireId);
+      } else {
+        newSet.add(repertoireId);
+      }
+      return newSet;
+    });
+  };
   
   // Mutation para salvar repertório na biblioteca pessoal
   const saveRepertoireMutation = useMutation({
@@ -709,12 +723,21 @@ export default function Repertorio() {
                     <div className="mb-4 sm:mb-5">
                       <p className="text-soft-gray text-xs sm:text-sm leading-relaxed">
                         <span className="sm:hidden">
-                          {repertoire.description.length > 90 
-                            ? `${repertoire.description.substring(0, 90)}...`
-                            : repertoire.description}
+                          {expandedDescriptions.has(repertoire.id) || repertoire.description.length <= 90
+                            ? repertoire.description
+                            : `${repertoire.description.substring(0, 90)}...`}
                         </span>
                         <span className="hidden sm:block">{repertoire.description}</span>
                       </p>
+                      {repertoire.description.length > 90 && (
+                        <button
+                          onClick={() => toggleDescription(repertoire.id)}
+                          className="sm:hidden text-bright-blue text-xs font-medium mt-2 hover:underline"
+                          data-testid={`button-toggle-description-${index + 1}`}
+                        >
+                          {expandedDescriptions.has(repertoire.id) ? "Ver menos" : "Ver mais"}
+                        </button>
+                      )}
                     </div>
                     
                     {/* Footer - Mobile optimized */}
