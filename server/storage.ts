@@ -3852,10 +3852,12 @@ export class DbStorage implements IStorage {
     // Delete all user-related data in a transaction to ensure atomicity
     // Either all data is deleted or none is deleted (rollback on error)
     await db.transaction(async (tx) => {
-      // Delete in correct order: child tables with foreign keys first, then parent tables
+      // Get user email for newsletter cleanup
+      const user = await tx.query.users.findFirst({
+        where: eq(schema.users.id, userId),
+      });
       
-      // Payment events (depends on transactions via transactionId FK)
-      await tx.delete(schema.paymentEvents).where(eq(schema.paymentEvents.userId, userId));
+      // Delete in correct order: child tables with foreign keys first, then parent tables
       
       // Coupon redemptions (depends on transactions via transactionId FK)
       await tx.delete(schema.couponRedemptions).where(eq(schema.couponRedemptions.userId, userId));
@@ -3867,7 +3869,6 @@ export class DbStorage implements IStorage {
       await tx.delete(schema.savedStructures).where(eq(schema.savedStructures.userId, userId));
       await tx.delete(schema.savedNewsletters).where(eq(schema.savedNewsletters.userId, userId));
       await tx.delete(schema.savedTexts).where(eq(schema.savedTexts.userId, userId));
-      await tx.delete(schema.savedOutlines).where(eq(schema.savedOutlines.userId, userId));
       
       // User activities
       await tx.delete(schema.simulations).where(eq(schema.simulations.userId, userId));
@@ -3885,12 +3886,12 @@ export class DbStorage implements IStorage {
       await tx.delete(schema.userSessions).where(eq(schema.userSessions.userId, userId));
       await tx.delete(schema.taskCompletions).where(eq(schema.taskCompletions.userId, userId));
       await tx.delete(schema.userCohorts).where(eq(schema.userCohorts.userId, userId));
-      await tx.delete(schema.conversionFunnels).where(eq(schema.conversionFunnels.userId, userId));
-      await tx.delete(schema.predictiveMetrics).where(eq(schema.predictiveMetrics.userId, userId));
       await tx.delete(schema.churnPredictions).where(eq(schema.churnPredictions.userId, userId));
       
-      // Newsletter and communications
-      await tx.delete(schema.newsletterSubscribers).where(eq(schema.newsletterSubscribers.userId, userId));
+      // Newsletter and communications (delete by email if user exists)
+      if (user?.email) {
+        await tx.delete(schema.newsletterSubscribers).where(eq(schema.newsletterSubscribers.email, user.email));
+      }
       
       // Subscriptions and payments (parent tables - delete after their children)
       await tx.delete(schema.userSubscriptions).where(eq(schema.userSubscriptions.userId, userId));
@@ -3899,7 +3900,7 @@ export class DbStorage implements IStorage {
       // User goals and scheduling
       await tx.delete(schema.userGoals).where(eq(schema.userGoals.userId, userId));
       await tx.delete(schema.userExams).where(eq(schema.userExams.userId, userId));
-      await tx.delete(schema.userSchedules).where(eq(schema.userSchedules.userId, userId));
+      await tx.delete(schema.userSchedule).where(eq(schema.userSchedule.userId, userId));
       
       // Admin records
       await tx.delete(schema.adminUsers).where(eq(schema.adminUsers.userId, userId));
