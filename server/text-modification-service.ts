@@ -63,62 +63,22 @@ export class TextModificationService {
   }
 
   private cleanAIResponse(response: string): string {
-    // Remove common heading patterns and templates
+    // Simplified cleanup - only remove wrapper quotes and excessive whitespace
     let cleaned = response
-      .replace(/^["']|["']$/g, '') // Remove quotes
-      .replace(/^\s*-\s*/, '') // Remove leading dash
-      .replace(/```[\s\S]*?```/g, '') // Remove code fences
-      .replace(/TEXTO ORIGINAL:[\s\S]*?(?=\n\n|$)/gi, '') // Remove original text echo
-      .replace(/TAREFA:[\s\S]*?(?=\n\n|$)/gi, '') // Remove task description
-      .replace(/ESTRUTURA[\s\S]*?(?=\n\n|$)/gi, '') // Remove structure descriptions
-      .replace(/CONECTIVOS[\s\S]*?(?=\n\n|$)/gi, '') // Remove connective lists
-      .replace(/EXEMPLO[\s\S]*?(?=\n\n|$)/gi, '') // Remove examples
-      .replace(/DIRETRIZES[\s\S]*?(?=\n\n|$)/gi, '') // Remove guidelines
-      .replace(/MODELO[\s\S]*?(?=\n\n|$)/gi, '') // Remove model templates
-      .replace(/QUALIDADE[\s\S]*?(?=\n\n|$)/gi, '') // Remove quality expectations
-      .replace(/REQUISITOS[\s\S]*?(?=\n\n|$)/gi, '') // Remove requirements
-      .replace(/INSTRUÇÃO[\s\S]*?(?=\n\n|$)/gi, '') // Remove instructions
-      .replace(/^[A-Z][A-Z\s]+:.*$/gm, '') // Remove all-caps headers
-      .replace(/^\d+\.\s.*/gm, '') // Remove numbered lists
-      .replace(/^•\s.*/gm, '') // Remove bullet points
-      .replace(/\[.*?\]/g, '') // Remove bracket placeholders
-      .replace(/\n{3,}/g, '\n\n') // Normalize multiple newlines
+      .replace(/^["']|["']$/g, '') // Remove wrapper quotes
+      .replace(/```[\s\S]*?```/g, '') // Remove code fences if any
       .trim();
 
-    // Remove empty lines at start and end
-    cleaned = cleaned.replace(/^\n+|\n+$/g, '');
-    
-    // If text starts with common instruction echoes, remove them
-    const instructionPrefixes = [
-      'responda apenas com',
-      'reescreva este texto',
-      'reorganize este texto',
-      'desenvolva este fragmento',
-      'transforme este texto',
-      'reestruture aplicando',
-      'reestruture usando',
-      'reestruture demonstrando',
-      'substitua palavras',
-      'inverta a argumentação',
-      'crie uma estrutura'
-    ];
-    
-    for (const prefix of instructionPrefixes) {
-      const regex = new RegExp(`^${prefix}[^.]*\\.?\\s*`, 'gi');
-      cleaned = cleaned.replace(regex, '');
-    }
+    // Remove markdown formatting
+    cleaned = cleaned.replace(/\*\*/g, ''); // Remove ** (bold)
+    cleaned = cleaned.replace(/\*/g, '');   // Remove * (italic)
+    cleaned = cleaned.replace(/__/g, '');   // Remove __ (bold)
+    cleaned = cleaned.replace(/_/g, '');    // Remove _ (italic)
 
-    // Collapse multiple paragraphs into single flowing text for dissertation context
-    // Replace double newlines with single space to maintain flow
-    cleaned = cleaned.replace(/\n\n+/g, ' ');
-    
-    // Remove ALL markdown formatting (**, *, _, etc.) - even unpaired or spanning lines
-    cleaned = cleaned.replace(/\*\*/g, ''); // Remove all ** (bold)
-    cleaned = cleaned.replace(/\*/g, '');   // Remove all * (italic)
-    cleaned = cleaned.replace(/__/g, '');   // Remove all __ (bold)
-    cleaned = cleaned.replace(/_/g, '');    // Remove all _ (italic)
+    // Normalize whitespace without removing content
+    cleaned = cleaned.replace(/\s+/g, ' ').trim();
 
-    return cleaned.trim();
+    return cleaned;
   }
 
   private buildPrompt(text: string, type: string, config: TextModificationConfig): string {
@@ -689,15 +649,8 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       
       console.log(`✅ Text modification (${finalPromptTokens} in + ${finalOutputTokens} out = ${finalTotalTokens} tokens) (Google AI Studio compatible)`);
       
-      // Log raw response for debugging
-      console.log(`📝 Raw Gemini response (${response.length} chars):`);
-      console.log(`"${response}"`);
-      
       // Enhanced cleanup of AI response
       const modifiedText = this.cleanAIResponse(response);
-      
-      console.log(`📝 After cleanup (${modifiedText.length} chars):`);
-      console.log(`"${modifiedText}"`);
 
       const aiResult: TextModificationResult = {
         modifiedText,
