@@ -122,7 +122,7 @@ export default function Signup() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
-                    placeholder="Lucas Brigido"
+                    placeholder="Lucas Brígido"
                     className="w-full px-4 py-3 border-2 border-soft-gray rounded-lg focus:border-bright-blue focus:outline-none smooth-transition"
                     data-testid="input-name"
                     required
@@ -136,7 +136,7 @@ export default function Signup() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="hello@reallygreatsite.com"
+                    placeholder="LucasBrígido@email.com"
                     className="w-full px-4 py-3 border-2 border-soft-gray rounded-lg focus:border-bright-blue focus:outline-none smooth-transition"
                     data-testid="input-email"
                     required
