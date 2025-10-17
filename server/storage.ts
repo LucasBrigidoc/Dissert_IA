@@ -93,6 +93,7 @@ export interface IStorage {
   createSavedOutline(savedOutline: InsertSavedOutline): Promise<SavedOutline>;
   getUserSavedOutlines(userId: string): Promise<SavedOutline[]>;
   deleteSavedOutline(id: string, userId: string): Promise<boolean>;
+  checkSavedOutlineTitleExists(userId: string, title: string): Promise<boolean>;
   
   // Simulation operations
   createSimulation(simulation: InsertSimulation): Promise<Simulation>;
@@ -4604,6 +4605,16 @@ export class DbStorage implements IStorage {
       ))
       .returning();
     return result.length > 0;
+  }
+
+  async checkSavedOutlineTitleExists(userId: string, title: string): Promise<boolean> {
+    const result = await db.query.savedOutlines.findFirst({
+      where: and(
+        eq(schema.savedOutlines.userId, userId),
+        eq(schema.savedOutlines.title, title)
+      ),
+    });
+    return !!result;
   }
 
   // ===================== SIMULATION OPERATIONS =====================

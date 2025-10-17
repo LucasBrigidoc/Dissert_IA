@@ -2291,6 +2291,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Todos os campos são obrigatórios" });
       }
 
+      const titleExists = await storage.checkSavedOutlineTitleExists(userId, title);
+      if (titleExists) {
+        return res.status(409).json({ message: "Já existe um roteiro com este título na sua biblioteca. Por favor, escolha outro nome." });
+      }
+
       const savedOutline = await storage.createSavedOutline({
         userId,
         title,
