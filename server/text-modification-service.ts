@@ -84,17 +84,29 @@ export class TextModificationService {
   private buildPrompt(text: string, type: string, config: TextModificationConfig): string {
     switch (type) {
       case 'formalidade':
-        const nivel = config.formalityLevel || 50;
+        const tamanhoPercent = config.textLength || 100; // Default: keep same size
         const dificuldade = config.wordDifficulty || 'medio';
-        const preservarSentido = true; // Always preserve meaning by default
+        const preservarSentido = config.meaningPreservation === 'preserve';
         
-        return `Especialista redação ENEM. Reescreva o texto COMPLETO abaixo: formalidade ${nivel}%, vocabulário ${dificuldade}.
+        const tamanhoInstrucao = tamanhoPercent < 80 
+          ? `Resuma para aproximadamente ${tamanhoPercent}% do tamanho original (mais conciso)` 
+          : tamanhoPercent > 120 
+          ? `Expanda para aproximadamente ${tamanhoPercent}% do tamanho original (mais detalhado)` 
+          : 'Mantenha aproximadamente o mesmo tamanho';
+        
+        return `Especialista redação ENEM. Reescreva o texto COMPLETO abaixo:
 
+TEXTO ORIGINAL:
 "${text}"
 
-${preservarSentido ? 'Preserve o sentido original COMPLETO' : 'Inverta argumentação'}. Use conectivos acadêmicos, estrutura clara, 3ª pessoa.
+INSTRUÇÕES:
+• Tamanho: ${tamanhoInstrucao}
+• Vocabulário: ${dificuldade === 'simples' ? 'palavras simples e diretas' : dificuldade === 'complexo' ? 'vocabulário sofisticado e técnico' : 'vocabulário equilibrado'}
+• Sentido: ${preservarSentido ? 'PRESERVE o significado original COMPLETAMENTE' : 'Inverta a argumentação (mude o sentido)'}
+• Use conectivos acadêmicos e estrutura clara
+• 3ª pessoa sempre
 
-IMPORTANTE: Reescreva o texto INTEIRO do início ao fim. Não omita nenhuma parte.
+IMPORTANTE: Reescreva o texto INTEIRO do início ao fim. Não omita nenhuma parte. Retorne APENAS o texto reescrito, sem introduções ou explicações.
 
 Texto reescrito completo:`;
 
@@ -442,8 +454,8 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
   private getFallbackModification(text: string, type: string, config: TextModificationConfig): string {
     switch (type) {
       case 'formalidade':
-        const nivel = config.formalityLevel || 50;
-        if (nivel > 70) {
+        const dificuldade = config.wordDifficulty || 'medio';
+        if (dificuldade === 'complexo') {
           return text
             .replace(/\bvocê\b/g, "V. Sa.")
             .replace(/\btá\b/g, "está")
@@ -453,7 +465,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
             .replace(/\bcoisa\b/g, "aspecto")
             .replace(/\bmuito\b/g, "deveras")
             .replace(/\bbom\b/g, "adequado");
-        } else if (nivel < 30) {
+        } else if (dificuldade === 'simples') {
           return text
             .replace(/\brealizar\b/g, "fazer")
             .replace(/\banalisar\b/g, "ver")

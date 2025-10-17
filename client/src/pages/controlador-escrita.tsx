@@ -46,7 +46,7 @@ export default function ControladorEscrita() {
   const [isProcessing, setIsProcessing] = useState(false);
   
   // Estados para os controles
-  const [formalityLevel, setFormalityLevel] = useState([50]);
+  const [textLength, setTextLength] = useState([100]); // Percentage: 50-200%
   
   // Estado para o tipo de modificação atual
   const [modificationType, setModificationType] = useState<TextModificationType | "">("");
@@ -163,19 +163,20 @@ export default function ControladorEscrita() {
   };
   
   // Função para gerar feedback educativo detalhado
-  const generateFeedback = (modifications: string[], textLength: number, processedText: string = modifiedText) => {
+  const generateFeedback = (modifications: string[], lengthPercentage: number, processedText: string = modifiedText) => {
     const feedbacks = [];
     
     // Análise estrutural do texto
     const textAnalysis = analyzeTextStructure(originalText, processedText);
+    const actualLength = processedText.length;
     
     if (modifications.includes('formalidade')) {
-      const levelText = formalityLevel[0] > 70 ? 'alta formalidade' : formalityLevel[0] < 30 ? 'baixa formalidade' : 'formalidade equilibrada';
       feedbacks.push(`📝 **REESCRITA APLICADA**
-• Nível de formalidade: ${levelText} (${formalityLevel[0]}%)
-• Preservação de sentido: ${meaningPreservation === 'preserve' ? 'Mantida' : 'Alterada intencionalmente'}
+• Tamanho alvo: ${lengthPercentage}% do original
+• Tamanho real: ${actualLength} caracteres
 • Complexidade lexical: ${wordDifficulty === 'simples' ? 'Simplificada' : wordDifficulty === 'complexo' ? 'Elevada' : 'Equilibrada'}
-• **Impacto argumentativo**: ${formalityLevel[0] > 70 ? 'Maior credibilidade acadêmica' : 'Maior proximidade com o leitor'}`);
+• Preservação de sentido: ${meaningPreservation === 'preserve' ? 'Mantida' : 'Alterada intencionalmente'}
+• **Resultado**: Texto ${lengthPercentage < 80 ? 'resumido' : lengthPercentage > 120 ? 'expandido' : 'reescrito'} com ${meaningPreservation === 'preserve' ? 'mesmo significado' : 'significado alterado'}`);
     }
     
     if (modifications.includes('estrutura-causal')) {
@@ -204,18 +205,18 @@ export default function ControladorEscrita() {
     
     // Análise quantitativa e qualitativa
     const analysisText = `📊 **ANÁLISE TEXTUAL COMPLETA**
-• Extensão: ${textLength} caracteres ${textLength > 500 ? '(formato dissertativo ideal)' : textLength > 200 ? '(parágrafo bem desenvolvido)' : '(resumo ou introdução)'}
+• Extensão: ${actualLength} caracteres ${actualLength > 500 ? '(formato dissertativo ideal)' : actualLength > 200 ? '(parágrafo bem desenvolvido)' : '(resumo ou introdução)'}
 • Densidade argumentativa: ${textAnalysis.argumentDensity}
 • Complexidade sintática: ${textAnalysis.syntaxComplexity}
 • Registro linguístico: ${textAnalysis.linguisticRegister}`;
     
-    if (textLength > 0) {
+    if (actualLength > 0) {
       feedbacks.push(analysisText);
     }
     
     // Recomendações pedagógicas
     if (modifications.length > 0) {
-      const recommendations = generatePedagogicalRecommendations(modifications, textLength);
+      const recommendations = generatePedagogicalRecommendations(modifications, actualLength);
       feedbacks.push(`💡 **RECOMENDAÇÕES PEDAGÓGICAS**
 ${recommendations}`);
     }
@@ -238,7 +239,7 @@ ${recommendations}`);
     return {
       argumentDensity: wordCount > 100 ? 'Alta' : wordCount > 50 ? 'Média' : 'Básica',
       syntaxComplexity: avgWordsPerSentence > 20 ? 'Complexa' : avgWordsPerSentence > 12 ? 'Moderada' : 'Simples',
-      linguisticRegister: formalityLevel[0] > 70 ? 'Acadêmico' : formalityLevel[0] > 40 ? 'Padrão' : 'Coloquial'
+      linguisticRegister: wordDifficulty === 'complexo' ? 'Acadêmico' : wordDifficulty === 'medio' ? 'Padrão' : 'Coloquial'
     };
   };
 
@@ -369,10 +370,10 @@ ${recommendations}`);
             .replace(/\bpositivo\b/g, "negativo")
             .replace(/\bbom\b/g, "problemático")
             .replace(/\bnecessário\b/g, "dispensável");
-          return formalityLevel[0] > 70 ? changedText.replace(/\bvocê\b/g, "Vossa Senhoria") : changedText;
+          return wordDifficulty === 'complexo' ? changedText.replace(/\bvocê\b/g, "Vossa Senhoria") : changedText;
         } else {
-          // Preserva sentido: apenas ajusta formalidade
-          if (formalityLevel[0] > 70) {
+          // Preserva sentido: apenas ajusta complexidade das palavras
+          if (wordDifficulty === 'complexo') {
             return text
               .replace(/\bvocê\b/g, "Vossa Senhoria")
               .replace(/\btá\b/g, "está")
@@ -380,7 +381,7 @@ ${recommendations}`);
               .replace(/\bfazer\b/g, "realizar")
               .replace(/\bver\b/g, "analisar")
               .replace(/\bcoisa\b/g, "elemento");
-          } else if (formalityLevel[0] < 30) {
+          } else if (wordDifficulty === 'simples') {
             return text
               .replace(/\bVossa Senhoria\b/g, "você")
               .replace(/\bestá\b/g, "tá")
@@ -439,7 +440,7 @@ ${recommendations}`);
         const config: any = {};
         
         if (modificationType === 'formalidade') {
-          config.formalityLevel = formalityLevel[0];
+          config.textLength = textLength[0];
           config.wordDifficulty = wordDifficulty;
           config.meaningPreservation = meaningPreservation;
         } else if (modificationType.includes('estrutura-')) {
@@ -487,7 +488,7 @@ ${recommendations}`);
       
       // Gerar feedback educativo com o texto processado atual
       const activeMods = Array.from(activeModifications);
-      setFeedbackText(generateFeedback(activeMods, processedText.length, processedText));
+      setFeedbackText(generateFeedback(activeMods, textLength[0], processedText));
       
       // Buscar repertórios relevantes usando o texto processado
       await fetchRelevantRepertoires(processedText, activeMods);
@@ -534,7 +535,7 @@ ${recommendations}`);
       const config: any = {};
       
       if (type === 'formalidade') {
-        config.formalityLevel = formalityLevel[0];
+        config.textLength = textLength[0];
         config.wordDifficulty = wordDifficulty;
         config.meaningPreservation = meaningPreservation;
       } else if (type.includes('estrutura-')) {
@@ -570,7 +571,7 @@ ${recommendations}`);
       setModifiedText(result.modifiedText);
       
       // Gerar feedback educativo com o texto processado
-      setFeedbackText(generateFeedback([type], result.modifiedText.length, result.modifiedText));
+      setFeedbackText(generateFeedback([type], textLength[0], result.modifiedText));
       
       // Buscar repertórios relevantes com o texto processado
       await fetchRelevantRepertoires(result.modifiedText, [type]);
@@ -827,18 +828,21 @@ ${recommendations}`);
                 
                 <div>
                   <Label className="text-sm font-medium text-dark-blue mb-2 block">
-                    Nível de Formalidade: {formalityLevel[0]}%
+                    Tamanho do Texto: {textLength[0]}%
                   </Label>
                   <Slider
-                    value={formalityLevel}
-                    onValueChange={setFormalityLevel}
-                    max={100}
+                    value={textLength}
+                    onValueChange={setTextLength}
+                    min={50}
+                    max={200}
                     step={10}
                     className="mb-2"
+                    data-testid="slider-text-length"
                   />
                   <div className="flex justify-between text-xs text-soft-gray">
-                    <span>Informal</span>
-                    <span>Formal</span>
+                    <span>Menor (50%)</span>
+                    <span>Original (100%)</span>
+                    <span>Maior (200%)</span>
                   </div>
                 </div>
                 

@@ -500,8 +500,9 @@ export const structureTypeSchema = z.enum([
 ]);
 
 export const textModificationConfigSchema = z.object({
-  formalityLevel: z.number().min(0).max(100).optional(),
+  textLength: z.number().min(50).max(200).optional(), // Percentage: 50% to 200% of original length
   wordDifficulty: wordDifficultySchema.optional(),
+  meaningPreservation: z.enum(["preserve", "change"]).optional(),
   argumentTechnique: argumentTechniqueSchema.optional(),
   argumentativeLevel: z.number().min(0).max(100).optional(),
   argumentStructure: argumentStructureSchema.optional(),
