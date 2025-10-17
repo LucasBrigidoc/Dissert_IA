@@ -55,6 +55,7 @@ Preferred communication style: Simple, everyday language.
 - **Intelligent Repertoire Generation**: Automatic AI-powered repertoire generation when search returns no results. System detects empty search results and automatically triggers Gemini API to create relevant repertoires based on search query and filters. Features visual loading state with Sparkles icon and "Gerando repertórios personalizados..." message. Smart flag management prevents infinite loops and allows manual retries. Robust JSON parsing with recovery logic handles truncated Gemini responses by preserving complete objects and ensuring proper array closure.
 - **Mobile-Optimized Repertoire Display**: Expandable description feature for repertoire cards on mobile devices. Long descriptions (>90 chars) show truncated text with "Ver mais"/"Ver menos" toggle button, allowing users to read full content without overwhelming small screens.
 - **Simulator Information Card**: Informational card on simulator page guides users to track their evolution via Dashboard and reminds them that all simulation data is automatically saved to their Personal Library.
+- **Plan Management System**: Pro users (monthly and annual) have access to "Gerenciar Plano" button replacing individual upgrade/cancel buttons. Centralized dialog provides cancellation option for all Pro users and upgrade to annual option exclusively for monthly subscribers. System correctly identifies paid plans via priceMonthly or priceYearly validation, ensuring proper access control.
 
 # External Dependencies
 

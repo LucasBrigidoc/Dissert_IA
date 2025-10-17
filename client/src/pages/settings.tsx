@@ -48,9 +48,11 @@ export default function SettingsPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showReactivateDialog, setShowReactivateDialog] = useState(false);
+  const [showManagePlanDialog, setShowManagePlanDialog] = useState(false);
   const [cancellationReason, setCancellationReason] = useState("");
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [isUpgrading, setIsUpgrading] = useState(false);
   
   // User profile data from auth context
   const [userProfile, setUserProfile] = useState({
@@ -186,6 +188,36 @@ export default function SettingsPage() {
         description: "Não foi possível reativar a assinatura. Tente novamente.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleUpgradeToAnnual = async () => {
+    try {
+      setIsUpgrading(true);
+      
+      // Create checkout session for annual plan
+      const response = await apiRequest('/api/checkout/create-session', {
+        method: 'POST',
+        body: {
+          planId: 'annual',
+          userId: user?.id
+        }
+      });
+
+      if (response.url) {
+        // Redirect to Stripe checkout
+        window.location.href = response.url;
+      } else {
+        throw new Error('URL de checkout não recebida');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer upgrade:', error);
+      toast({
+        title: "Erro ao fazer upgrade",
+        description: "Não foi possível processar o upgrade. Tente novamente.",
+        variant: "destructive",
+      });
+      setIsUpgrading(false);
     }
   };
 
@@ -648,16 +680,16 @@ export default function SettingsPage() {
                 </div>
                 
                 {/* Action Buttons */}
-                {/* Show cancel button only for paid active subscriptions (not free plan) */}
-                {subscription && subscription.status === 'active' && plan && plan.priceMonthly > 0 && (
+                {/* Show manage plan button for paid active subscriptions (not free plan) */}
+                {subscription && subscription.status === 'active' && plan && (plan.priceMonthly > 0 || (plan.priceYearly && plan.priceYearly > 0)) && (
                   <Button 
-                    onClick={() => setShowCancelDialog(true)}
+                    onClick={() => setShowManagePlanDialog(true)}
                     variant="outline"
-                    className="w-full text-red-600 border-red-300 hover:bg-red-50"
-                    data-testid="button-cancel-subscription"
+                    className="w-full text-dark-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                    data-testid="button-manage-plan"
                   >
-                    <XCircle size={16} className="mr-2" />
-                    Cancelar Assinatura
+                    <Settings size={16} className="mr-2" />
+                    Gerenciar Plano
                   </Button>
                 )}
                 
@@ -804,6 +836,62 @@ export default function SettingsPage() {
               className="bg-bright-blue hover:bg-bright-blue/90"
             >
               {isReactivating ? "Reativando..." : "Confirmar Reativação"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage Plan Dialog */}
+      <Dialog open={showManagePlanDialog} onOpenChange={setShowManagePlanDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="text-bright-blue" />
+              Gerenciar Plano
+            </DialogTitle>
+            <DialogDescription>
+              Escolha uma das opções abaixo para gerenciar sua assinatura.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3">
+            {/* Show upgrade to annual option only for monthly subscribers */}
+            {plan && plan.id === 'plan-pro-monthly' && (
+              <Button
+                onClick={() => {
+                  setShowManagePlanDialog(false);
+                  handleUpgradeToAnnual();
+                }}
+                disabled={isUpgrading}
+                className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue"
+                data-testid="button-upgrade-to-annual"
+              >
+                <TrendingUp size={16} className="mr-2" />
+                {isUpgrading ? "Processando..." : "Fazer Upgrade para Plano Anual"}
+              </Button>
+            )}
+            
+            {/* Cancel subscription option */}
+            <Button
+              onClick={() => {
+                setShowManagePlanDialog(false);
+                setShowCancelDialog(true);
+              }}
+              variant="outline"
+              className="w-full text-red-600 border-red-300 hover:bg-red-50"
+              data-testid="button-open-cancel-dialog"
+            >
+              <XCircle size={16} className="mr-2" />
+              Cancelar Assinatura
+            </Button>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowManagePlanDialog(false)}
+            >
+              Voltar
             </Button>
           </DialogFooter>
         </DialogContent>
