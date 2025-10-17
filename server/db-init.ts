@@ -21,7 +21,7 @@ export async function initializeDatabase() {
           ('plan-free', 'Plano Gratuito', 'Acesso básico às funcionalidades da plataforma', 0, 0, 
            '["Até 5 redações por mês", "Ferramentas básicas de escrita", "Acesso limitado ao repertório"]'::json, 
            5, 500, true),
-          ('plan-pro-monthly', 'Plano Pro Mensal', 'Acesso completo com pagamento mensal', 3490, 0, 
+          ('plan-pro-monthly', 'Plano Pro Mensal', 'Acesso completo com pagamento mensal', 5500, 0, 
            '["Redações ilimitadas", "Todas as ferramentas de IA", "Repertório completo", "Correção profissional", "Suporte prioritário"]'::json, 
            -1, 5000, true),
           ('plan-pro-yearly', 'Plano Pro Anual', 'Acesso completo com desconto anual', 0, 29990, 
