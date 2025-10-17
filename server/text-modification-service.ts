@@ -128,13 +128,15 @@ export class TextModificationService {
         const dificuldade = config.wordDifficulty || 'medio';
         const preservarSentido = true; // Always preserve meaning by default
         
-        return `Especialista redação ENEM. Reescreva: formalidade ${nivel}%, vocabulário ${dificuldade}.
+        return `Especialista redação ENEM. Reescreva o texto COMPLETO abaixo: formalidade ${nivel}%, vocabulário ${dificuldade}.
 
 "${text}"
 
-${preservarSentido ? 'Preserve sentido original' : 'Inverta argumentação'}. Use conectivos acadêmicos, estrutura clara, 3ª pessoa.
+${preservarSentido ? 'Preserve o sentido original COMPLETO' : 'Inverta argumentação'}. Use conectivos acadêmicos, estrutura clara, 3ª pessoa.
 
-Apenas texto otimizado:`;
+IMPORTANTE: Reescreva o texto INTEIRO do início ao fim. Não omita nenhuma parte.
+
+Texto reescrito completo:`;
 
       case 'argumentativo':
         const tecnica = config.argumentTechnique || 'topico-frasal';
