@@ -705,8 +705,8 @@ export default function SettingsPage() {
                   </Button>
                 )}
                 
-                {/* Show upgrade button for free plan users (no paid subscription) */}
-                {(!subscription || (plan && plan.priceMonthly === 0)) && (
+                {/* Show upgrade button for free plan users only (not Pro monthly or annual) */}
+                {(!subscription || (plan && plan.priceMonthly === 0 && (!plan.priceYearly || plan.priceYearly === 0))) && (
                   <Link href="/pricing">
                     <Button className="w-full bg-bright-blue hover:bg-bright-blue/90" data-testid="button-upgrade">
                       Assinar Plano Pro
