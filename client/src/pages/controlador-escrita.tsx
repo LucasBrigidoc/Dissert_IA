@@ -77,6 +77,10 @@ export default function ControladorEscrita() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveTitle, setSaveTitle] = useState("");
   
+  // Estados para adicionar repertório
+  const [showRepertoireDialog, setShowRepertoireDialog] = useState(false);
+  const [selectedRepertoire, setSelectedRepertoire] = useState<any>(null);
+  
   // Mutation para salvar texto
   const saveTextMutation = useMutation({
     mutationFn: async (data: { title: string; originalText: string; modifiedText: string; modificationType: string; activeModifications: string[] }) => {
@@ -264,8 +268,8 @@ ${recommendations}`);
     return recommendations.length > 0 ? recommendations.join('\n') : '• Continue praticando diferentes técnicas de escrita argumentativa';
   };
 
-  // Função para adicionar repertório ao texto
-  const addRepertoireToText = (repertoire: any) => {
+  // Função para abrir dialog de repertório
+  const openRepertoireDialog = (repertoire: any) => {
     if (!modifiedText.trim()) {
       toast({
         title: "Nenhum texto para enriquecer",
@@ -274,14 +278,60 @@ ${recommendations}`);
       });
       return;
     }
+    setSelectedRepertoire(repertoire);
+    setShowRepertoireDialog(true);
+  };
 
-    const repertoireText = ` Conforme evidenciado por ${repertoire.title}, ${repertoire.description.split('.')[0].toLowerCase()}.`;
-    const newText = modifiedText + repertoireText;
-    setModifiedText(newText);
+  // Função para inserir repertório em posição específica
+  const insertRepertoireAt = (position: 'inicio' | 'meio' | 'final') => {
+    if (!selectedRepertoire || !modifiedText.trim()) return;
+
+    // Formata o repertório de forma acadêmica
+    const repertoireText = ` Conforme evidenciado por ${selectedRepertoire.title}, ${selectedRepertoire.description.split('.')[0].toLowerCase()}.`;
     
+    let newText = '';
+    
+    switch (position) {
+      case 'inicio':
+        // Insere no início, antes do texto
+        newText = repertoireText.trim() + ' ' + modifiedText;
+        break;
+        
+      case 'meio':
+        // Insere após a primeira frase (busca primeiro ponto final)
+        const firstPeriodIndex = modifiedText.indexOf('. ');
+        if (firstPeriodIndex !== -1) {
+          newText = modifiedText.substring(0, firstPeriodIndex + 1) + 
+                   repertoireText + 
+                   modifiedText.substring(firstPeriodIndex + 1);
+        } else {
+          // Se não encontrar ponto, insere no meio do texto
+          const middleIndex = Math.floor(modifiedText.length / 2);
+          const spaceIndex = modifiedText.indexOf(' ', middleIndex);
+          if (spaceIndex !== -1) {
+            newText = modifiedText.substring(0, spaceIndex) + 
+                     repertoireText + 
+                     modifiedText.substring(spaceIndex);
+          } else {
+            newText = modifiedText + repertoireText;
+          }
+        }
+        break;
+        
+      case 'final':
+        // Insere no final do texto
+        newText = modifiedText + repertoireText;
+        break;
+    }
+    
+    setModifiedText(newText);
+    setShowRepertoireDialog(false);
+    setSelectedRepertoire(null);
+    
+    const positionLabel = position === 'inicio' ? 'início' : position === 'meio' ? 'meio' : 'final';
     toast({
       title: "Repertório adicionado!",
-      description: `"${repertoire.title}" foi integrado ao seu texto.`,
+      description: `"${selectedRepertoire.title}" foi integrado ao ${positionLabel} do seu texto.`,
     });
   };
 
@@ -1307,7 +1357,7 @@ ${recommendations}`);
                                   size="sm"
                                   variant="outline"
                                   className="h-7 text-xs px-2 bg-bright-blue/10 hover:bg-bright-blue/20 text-bright-blue border-bright-blue/30"
-                                  onClick={() => addRepertoireToText(repertoire)}
+                                  onClick={() => openRepertoireDialog(repertoire)}
                                   data-testid={`button-add-repertoire-${index}`}
                                 >
                                   <Target className="h-3 w-3 mr-1" />
@@ -1378,6 +1428,98 @@ ${recommendations}`);
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para escolher onde adicionar o repertório */}
+      <Dialog open={showRepertoireDialog} onOpenChange={setShowRepertoireDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Adicionar Repertório ao Texto</DialogTitle>
+            <DialogDescription>
+              Escolha onde deseja inserir o repertório "{selectedRepertoire?.title}" no seu texto.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedRepertoire && (
+            <div className="space-y-4 py-4">
+              {/* Preview do repertório */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-xs text-soft-gray">
+                  <strong>Preview:</strong> Conforme evidenciado por {selectedRepertoire.title}, {selectedRepertoire.description.split('.')[0].toLowerCase()}.
+                </p>
+              </div>
+
+              {/* Opções de posicionamento */}
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">Escolha a posição:</Label>
+                
+                <div className="grid gap-2">
+                  {/* Opção: Início */}
+                  <Button
+                    variant="outline"
+                    className="h-auto flex flex-col items-start p-4 hover:bg-blue-50 hover:border-blue-300"
+                    onClick={() => insertRepertoireAt('inicio')}
+                    data-testid="button-insert-inicio"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="bg-bright-blue text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</div>
+                      <span className="font-semibold text-dark-blue">Início do Texto</span>
+                    </div>
+                    <span className="text-xs text-soft-gray text-left">
+                      Insere o repertório antes do texto, como contextualização inicial
+                    </span>
+                  </Button>
+
+                  {/* Opção: Meio Inteligente */}
+                  <Button
+                    variant="outline"
+                    className="h-auto flex flex-col items-start p-4 hover:bg-blue-50 hover:border-blue-300 border-2 border-bright-blue bg-bright-blue/5"
+                    onClick={() => insertRepertoireAt('meio')}
+                    data-testid="button-insert-meio"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="bg-bright-blue text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</div>
+                      <span className="font-semibold text-dark-blue">Meio do Texto (Recomendado)</span>
+                    </div>
+                    <span className="text-xs text-soft-gray text-left">
+                      Insere após a primeira frase para melhor fluidez argumentativa
+                    </span>
+                  </Button>
+
+                  {/* Opção: Final */}
+                  <Button
+                    variant="outline"
+                    className="h-auto flex flex-col items-start p-4 hover:bg-blue-50 hover:border-blue-300"
+                    onClick={() => insertRepertoireAt('final')}
+                    data-testid="button-insert-final"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="bg-bright-blue text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</div>
+                      <span className="font-semibold text-dark-blue">Final do Texto</span>
+                    </div>
+                    <span className="text-xs text-soft-gray text-left">
+                      Insere ao final como reforço conclusivo do argumento
+                    </span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Botão cancelar */}
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setShowRepertoireDialog(false);
+                    setSelectedRepertoire(null);
+                  }}
+                  data-testid="button-cancel-repertoire"
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
