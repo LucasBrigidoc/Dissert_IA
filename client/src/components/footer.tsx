@@ -71,7 +71,7 @@ export function Footer() {
               <a href="https://www.youtube.com/channel/UC_AxUSTr0U8Hpazum3jImJA" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-youtube">
                 <Youtube size={20} />
               </a>
-              <a href="#" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-tiktok">
+              <a href="https://www.tiktok.com/@dissert_ia?_t=ZM-90dAUzZwJB2&_r=1" className="text-white/70 hover:text-bright-blue smooth-transition" data-testid="link-tiktok">
                 <SiTiktok size={20} />
               </a>
             </div>
