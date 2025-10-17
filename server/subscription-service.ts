@@ -208,11 +208,27 @@ export class SubscriptionService {
       throw new Error('Assinatura já cancelada');
     }
 
-    // Update subscription to cancel at period end
+    // Cancel in Stripe if there's a Stripe subscription ID
+    if (subscription.stripeSubscriptionId && stripe) {
+      try {
+        await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
+        console.log(`✅ Stripe subscription ${subscription.stripeSubscriptionId} canceled successfully`);
+      } catch (error) {
+        console.error('❌ Error canceling Stripe subscription:', error);
+        throw new Error('Não foi possível cancelar a assinatura no Stripe. Por favor, tente novamente ou entre em contato com o suporte.');
+      }
+    }
+
+    // Move user to free plan immediately
+    await this.storage.updateUserPlan(userId, 'plan-free', null);
+
+    // Update subscription to cancelled status
     const updated = await this.storage.updateUserSubscription(subscription.id, {
-      cancelAtPeriodEnd: true,
+      status: 'cancelled',
+      cancelAtPeriodEnd: false,
       cancellationReason: reason || null,
       cancelledAt: new Date(),
+      endDate: new Date(), // Set end date to now
       updatedAt: new Date(),
     });
 

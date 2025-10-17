@@ -161,10 +161,12 @@ export default function SettingsPage() {
       await cancelSubscription(cancellationReason);
       toast({
         title: "Assinatura cancelada",
-        description: "Você ainda terá acesso até o fim do período pago.",
+        description: "Sua conta foi movida para o plano gratuito.",
       });
       setShowCancelDialog(false);
       setCancellationReason("");
+      // Refresh auth to update user plan
+      await checkAuth();
     } catch (error) {
       toast({
         title: "Erro ao cancelar",
@@ -772,7 +774,7 @@ export default function SettingsPage() {
               Cancelar Assinatura
             </DialogTitle>
             <DialogDescription>
-              Você ainda terá acesso até o fim do período pago. Sua assinatura será cancelada após essa data.
+              Sua assinatura será cancelada imediatamente e sua conta voltará para o plano gratuito. As cobranças no Stripe serão interrompidas.
             </DialogDescription>
           </DialogHeader>
           

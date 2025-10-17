@@ -56,6 +56,7 @@ Preferred communication style: Simple, everyday language.
 - **Mobile-Optimized Repertoire Display**: Expandable description feature for repertoire cards on mobile devices. Long descriptions (>90 chars) show truncated text with "Ver mais"/"Ver menos" toggle button, allowing users to read full content without overwhelming small screens.
 - **Simulator Information Card**: Informational card on simulator page guides users to track their evolution via Dashboard and reminds them that all simulation data is automatically saved to their Personal Library.
 - **Plan Management System**: Pro users (monthly and annual) have access to "Gerenciar Plano" button replacing individual upgrade/cancel buttons. Centralized dialog provides cancellation option for all Pro users and upgrade to annual option exclusively for monthly subscribers. System correctly identifies paid plans via priceMonthly or priceYearly validation, ensuring proper access control.
+- **Immediate Subscription Cancellation**: Cancellation system immediately stops Stripe billing and downgrades user to free plan. If Stripe cancellation fails, the system aborts the downgrade and returns clear error message to prevent billing inconsistencies. Users are notified that cancellation is immediate, not at period end.
 
 # External Dependencies
 

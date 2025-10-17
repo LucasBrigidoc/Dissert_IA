@@ -1832,7 +1832,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { reason } = req.body;
       const updated = await subscriptionService.cancelSubscription(req.user!.id, reason);
       res.json({ 
-        message: "Assinatura cancelada com sucesso. Você ainda terá acesso até o fim do período pago.",
+        message: "Assinatura cancelada com sucesso. Sua conta foi movida para o plano gratuito.",
         subscription: updated 
       });
     } catch (error) {
