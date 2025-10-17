@@ -77,6 +77,7 @@ export default function ControladorEscrita() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveTitle, setSaveTitle] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  const [lastSavedText, setLastSavedText] = useState("");
   
   // Estados para adicionar repertório
   const [showRepertoireDialog, setShowRepertoireDialog] = useState(false);
@@ -87,6 +88,13 @@ export default function ControladorEscrita() {
     queryKey: ['/api/saved-texts'],
     enabled: showSaveDialog, // Só busca quando o dialog é aberto
   });
+  
+  // Detectar edição manual do texto e reabilitar salvamento
+  useEffect(() => {
+    if (isSaved && lastSavedText && modifiedText !== lastSavedText) {
+      setIsSaved(false); // Reabilita o botão de salvar quando o texto é editado
+    }
+  }, [modifiedText, isSaved, lastSavedText]);
   
   // Mutation para salvar texto
   const saveTextMutation = useMutation({
@@ -99,6 +107,7 @@ export default function ControladorEscrita() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/saved-texts'] });
       setIsSaved(true); // Marca como salvo
+      setLastSavedText(modifiedText); // Guarda o texto que foi salvo
       toast({
         title: "Texto salvo na biblioteca!",
         description: "O texto modificado foi adicionado à sua biblioteca pessoal.",
