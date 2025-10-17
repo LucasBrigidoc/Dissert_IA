@@ -146,7 +146,8 @@ export function EstruturaRoterizada() {
       return;
     }
 
-    const titles = savedOutlines?.results?.map((outline: any) => outline.title.toLowerCase()) || [];
+    const outlines = savedOutlines as { results?: any[] } | undefined;
+    const titles = outlines?.results?.map((outline: any) => outline.title.toLowerCase()) || [];
     if (titles.includes(saveTitle.trim().toLowerCase())) {
       toast({
         variant: "destructive",
