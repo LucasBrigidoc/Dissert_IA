@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb, Edit3 } from "lucide-react";
+import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb, Edit3, Info } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -632,6 +632,28 @@ export default function Simulador() {
               <div className="flex items-center space-x-2">
                 <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
                 <div className="text-sm text-soft-gray">Simule as condições reais do exame</div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+
+          {/* Info card */}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/10 to-dark-blue/10 border-bright-blue/30" data-testid="card-simulator-evolution-info">
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                <Info className="text-white" size={16} />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-dark-blue mb-2" data-testid="text-evolution-title">Acompanhe sua Evolução</h4>
+                <div className="space-y-2 text-sm text-soft-gray">
+                  <div className="flex items-start space-x-2" data-testid="text-dashboard-info">
+                    <TrendingUp className="text-bright-blue flex-shrink-0 mt-0.5" size={16} />
+                    <p>Veja sua evolução e estatísticas completas na <span className="font-medium text-dark-blue">Dashboard</span> da página inicial</p>
+                  </div>
+                  <div className="flex items-start space-x-2" data-testid="text-library-info">
+                    <FileText className="text-bright-blue flex-shrink-0 mt-0.5" size={16} />
+                    <p>Todas as informações de cada simulado são automaticamente salvas na sua <span className="font-medium text-dark-blue">Biblioteca Pessoal</span></p>
+                  </div>
+                </div>
               </div>
             </div>
           </LiquidGlassCard>
