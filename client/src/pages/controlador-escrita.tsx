@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { 
   TextModificationConfig, 
@@ -76,10 +76,17 @@ export default function ControladorEscrita() {
   // Estados para salvar na biblioteca
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveTitle, setSaveTitle] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
   
   // Estados para adicionar repertório
   const [showRepertoireDialog, setShowRepertoireDialog] = useState(false);
   const [selectedRepertoire, setSelectedRepertoire] = useState<any>(null);
+  
+  // Query para buscar textos salvos (para validação de duplicatas)
+  const { data: savedTexts } = useQuery({
+    queryKey: ['/api/saved-texts'],
+    enabled: showSaveDialog, // Só busca quando o dialog é aberto
+  });
   
   // Mutation para salvar texto
   const saveTextMutation = useMutation({
@@ -91,6 +98,7 @@ export default function ControladorEscrita() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/saved-texts'] });
+      setIsSaved(true); // Marca como salvo
       toast({
         title: "Texto salvo na biblioteca!",
         description: "O texto modificado foi adicionado à sua biblioteca pessoal.",
@@ -482,6 +490,7 @@ ${recommendations}`);
       }
       
       setModifiedText(processedText);
+      setIsSaved(false); // Reset ao gerar novo texto
       // Store the raw modification description, not forcing enum cast
       const modificationDescription = appliedModifications.length > 0 ? appliedModifications.join(', ') : "";
       setModificationType(modificationDescription as TextModificationType);
@@ -569,6 +578,7 @@ ${recommendations}`);
       refreshAIUsageStats();
       
       setModifiedText(result.modifiedText);
+      setIsSaved(false); // Reset ao gerar novo texto
       
       // Gerar feedback educativo com o texto processado
       setFeedbackText(generateFeedback([type], textLength[0], result.modifiedText));
@@ -643,6 +653,15 @@ ${recommendations}`);
       return;
     }
     
+    if (isSaved) {
+      toast({
+        title: "Texto já salvo",
+        description: "Este texto já foi salvo na biblioteca. Gere um novo texto para salvar novamente.",
+        variant: "default",
+      });
+      return;
+    }
+    
     setShowSaveDialog(true);
   };
 
@@ -654,6 +673,22 @@ ${recommendations}`);
         variant: "destructive",
       });
       return;
+    }
+
+    // Verificar se já existe um texto com esse título
+    if (savedTexts && Array.isArray(savedTexts)) {
+      const titleExists = savedTexts.some(
+        (text: any) => text.title.toLowerCase() === saveTitle.trim().toLowerCase()
+      );
+      
+      if (titleExists) {
+        toast({
+          title: "Título já existe",
+          description: "Já existe um texto salvo com esse título. Por favor, escolha outro nome.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     saveTextMutation.mutate({
@@ -1295,12 +1330,15 @@ ${recommendations}`);
                     variant="outline"
                     size="sm"
                     onClick={handleSaveToLibrary}
-                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
+                    disabled={isSaved}
+                    className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3 ${
+                      isSaved ? 'bg-green-50 border-green-300 text-green-700' : ''
+                    }`}
                     data-testid="button-save"
                   >
                     <Save className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="hidden sm:inline">Salvar</span>
-                    <span className="sm:hidden">Salvar</span>
+                    <span className="hidden sm:inline">{isSaved ? "Salvo na Biblioteca" : "Salvar"}</span>
+                    <span className="sm:hidden">{isSaved ? "Salvo" : "Salvar"}</span>
                   </Button>
                   <Button
                     variant="outline"
