@@ -336,6 +336,38 @@ export default function Simulador() {
       {/* Content */}
       <div className="container mx-auto px-6 py-4 pt-32">
         <div className="space-y-6">
+          {/* Tips */}
+          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
+                <Clock className="text-white" size={16} />
+              </div>
+              <h4 className="font-semibold text-dark-blue">Dicas para o Simulado</h4>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
+                <div className="text-sm text-soft-gray">Leia atentamente a proposta antes de começar</div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
+                <div className="text-sm text-soft-gray">Faça um rascunho para organizar as ideias</div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
+                <div className="text-sm text-soft-gray">Reserve tempo para revisão final</div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
+                <div className="text-sm text-soft-gray">Simule as condições reais do exame</div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+
           {/* Exam Selection */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="flex items-center space-x-3 mb-6">
@@ -602,38 +634,6 @@ export default function Simulador() {
               <Play className="mr-2" size={16} />
               Iniciar Simulação
             </Button>
-          </LiquidGlassCard>
-
-          {/* Tips */}
-          <LiquidGlassCard className="bg-gradient-to-br from-soft-gray/5 to-bright-blue/5 border-soft-gray/20">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-soft-gray to-bright-blue rounded-full flex items-center justify-center">
-                <Clock className="text-white" size={16} />
-              </div>
-              <h4 className="font-semibold text-dark-blue">Dicas para o Simulado</h4>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
-                <div className="text-sm text-soft-gray">Leia atentamente a proposta antes de começar</div>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
-                <div className="text-sm text-soft-gray">Faça um rascunho para organizar as ideias</div>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
-                <div className="text-sm text-soft-gray">Reserve tempo para revisão final</div>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="text-bright-blue flex-shrink-0" size={16} />
-                <div className="text-sm text-soft-gray">Simule as condições reais do exame</div>
-              </div>
-            </div>
           </LiquidGlassCard>
 
           {/* Info card */}
