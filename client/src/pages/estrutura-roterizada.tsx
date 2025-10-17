@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ export function EstruturaRoterizada() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveTitle, setSaveTitle] = useState("");
   const [lastQuestionnaire, setLastQuestionnaire] = useState<EssayOutlineQuestionnaire | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -54,6 +55,11 @@ export function EstruturaRoterizada() {
     },
   });
 
+  // Buscar roteiros salvos para verificar duplicatas
+  const { data: savedOutlines } = useQuery({
+    queryKey: ['/api/saved-outlines'],
+  });
+
   // Garantir que a página sempre abra no topo
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,6 +80,7 @@ export function EstruturaRoterizada() {
     onSuccess: (data) => {
       setGeneratedOutline(data.outline);
       setLastQuestionnaire(data.questionnaireData);
+      setIsSaved(false);
       toast({
         title: "Roteiro gerado com sucesso!",
         description: "Seu roteiro personalizado está pronto.",
@@ -114,6 +121,7 @@ export function EstruturaRoterizada() {
     onSuccess: () => {
       setShowSaveDialog(false);
       setSaveTitle("");
+      setIsSaved(true);
       toast({
         title: "Roteiro salvo!",
         description: "Seu roteiro foi salvo na biblioteca com sucesso.",
@@ -137,6 +145,17 @@ export function EstruturaRoterizada() {
       });
       return;
     }
+
+    const titles = savedOutlines?.results?.map((outline: any) => outline.title.toLowerCase()) || [];
+    if (titles.includes(saveTitle.trim().toLowerCase())) {
+      toast({
+        variant: "destructive",
+        title: "Título duplicado",
+        description: "Já existe um roteiro com este título na sua biblioteca. Por favor, escolha outro nome.",
+      });
+      return;
+    }
+
     saveOutlineMutation.mutate({ title: saveTitle });
   };
 
@@ -830,10 +849,11 @@ export function EstruturaRoterizada() {
                     onClick={() => setShowSaveDialog(true)}
                     variant="outline"
                     className="bg-white hover:bg-blue-50 border-blue-300"
+                    disabled={isSaved}
                     data-testid="button-save-outline"
                   >
                     <Save className="mr-2" size={16} />
-                    Salvar na Biblioteca
+                    {isSaved ? "Salvo na Biblioteca" : "Salvar na Biblioteca"}
                   </Button>
                 </div>
               </div>
