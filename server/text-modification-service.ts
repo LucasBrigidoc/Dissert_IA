@@ -689,8 +689,15 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura de oposiçã
       
       console.log(`✅ Text modification (${finalPromptTokens} in + ${finalOutputTokens} out = ${finalTotalTokens} tokens) (Google AI Studio compatible)`);
       
+      // Log raw response for debugging
+      console.log(`📝 Raw Gemini response (${response.length} chars):`);
+      console.log(`"${response}"`);
+      
       // Enhanced cleanup of AI response
       const modifiedText = this.cleanAIResponse(response);
+      
+      console.log(`📝 After cleanup (${modifiedText.length} chars):`);
+      console.log(`"${modifiedText}"`);
 
       const aiResult: TextModificationResult = {
         modifiedText,
