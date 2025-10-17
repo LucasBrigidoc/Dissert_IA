@@ -57,6 +57,7 @@ Preferred communication style: Simple, everyday language.
 - **Simulator Information Card**: Informational card on simulator page guides users to track their evolution via Dashboard and reminds them that all simulation data is automatically saved to their Personal Library.
 - **Plan Management System**: Pro users (monthly and annual) have access to "Gerenciar Plano" button replacing individual upgrade/cancel buttons. Centralized dialog provides cancellation option for all Pro users and upgrade to annual option exclusively for monthly subscribers. System correctly identifies paid plans via priceMonthly or priceYearly validation, ensuring proper access control.
 - **Immediate Subscription Cancellation**: Cancellation system immediately stops Stripe billing and downgrades user to free plan. If Stripe cancellation fails, the system aborts the downgrade and returns clear error message to prevent billing inconsistencies. Users are notified that cancellation is immediate, not at period end.
+- **Unique Outline Titles**: System enforces unique titles for saved outlines in user's personal library. Backend validation checks for duplicate titles before saving (returns 409 status). Frontend validates before submission and shows clear error messages. "Salvar na Biblioteca" button is disabled after successful save and displays "Salvo na Biblioteca". State resets when new outline is generated, allowing save of each newly created outline only once.
 
 # External Dependencies
 
