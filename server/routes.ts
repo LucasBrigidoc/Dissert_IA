@@ -3105,6 +3105,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const repertoireId = req.params.id;
       const userId = req.session.userId;
       
+      // Check if already saved BEFORE calling save
+      const beforeCount = await storage.getUserSavedRepertoires(userId);
+      const isAlreadySaved = beforeCount.some((r: any) => r.repertoireId === repertoireId);
+      
       const savedRepertoire = await storage.saveRepertoire(userId, repertoireId);
       
       // Debug: count all library items after saving
@@ -3116,11 +3120,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getUserSimulations(userId)
       ]);
       const totalItems = repertoires.length + texts.length + outlines.length + proposals.length + simulations.filter((s: any) => s.isCompleted).length;
-      console.log(`[SAVE DEBUG] User ${userId.substring(0, 8)} now has ${totalItems} total library items (R:${repertoires.length}, T:${texts.length}, O:${outlines.length}, P:${proposals.length}, S:${simulations.filter((s: any) => s.isCompleted).length})`);
+      
+      if (isAlreadySaved) {
+        console.log(`[SAVE DEBUG] ⚠️ Repertório JÁ ESTAVA SALVO! User ${userId.substring(0, 8)} still has ${totalItems} total library items`);
+      } else {
+        console.log(`[SAVE DEBUG] ✅ NOVO repertório salvo! User ${userId.substring(0, 8)} now has ${totalItems} total library items (R:${repertoires.length}, T:${texts.length}, O:${outlines.length}, P:${proposals.length}, S:${simulations.filter((s: any) => s.isCompleted).length})`);
+      }
       
       res.json({
-        message: "Repertório salvo com sucesso!",
-        savedRepertoire
+        message: isAlreadySaved ? "Este repertório já estava salvo na sua biblioteca!" : "Repertório salvo com sucesso!",
+        savedRepertoire,
+        alreadySaved: isAlreadySaved
       });
     } catch (error) {
       console.error("Save repertoire error:", error);
