@@ -2246,6 +2246,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const essaysWithLocks = req.session?.userId 
         ? await applyLibraryLimits(userId, savedEssays, 'essay')
         : savedEssays;
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
       res.json({ results: essaysWithLocks, count: essaysWithLocks.length });
     } catch (error) {
       console.error("Get saved essays error:", error);
@@ -2260,6 +2266,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const structuresWithLocks = req.session?.userId 
         ? await applyLibraryLimits(userId, savedStructures, 'structure')
         : savedStructures;
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
       res.json({ results: structuresWithLocks, count: structuresWithLocks.length });
     } catch (error) {
       console.error("Get saved structures error:", error);
@@ -2274,6 +2286,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newslettersWithLocks = req.session?.userId 
         ? await applyLibraryLimits(userId, savedNewsletters, 'newsletter')
         : savedNewsletters;
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
       res.json({ results: newslettersWithLocks, count: newslettersWithLocks.length });
     } catch (error) {
       console.error("Get saved newsletters error:", error);
@@ -2320,6 +2338,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId;
       const savedTexts = await storage.getUserSavedTexts(userId);
       const textsWithLocks = await applyLibraryLimits(userId, savedTexts, 'text');
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
       res.json({ results: textsWithLocks, count: textsWithLocks.length });
     } catch (error) {
       console.error("Get saved texts error:", error);
@@ -2393,6 +2417,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId;
       const savedOutlines = await storage.getUserSavedOutlines(userId);
       const outlinesWithLocks = await applyLibraryLimits(userId, savedOutlines, 'outline');
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
       res.json({ results: outlinesWithLocks, count: outlinesWithLocks.length });
     } catch (error) {
       console.error("Get saved outlines error:", error);
@@ -3090,6 +3120,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const savedRepertoires = await storage.getUserSavedRepertoires(userId);
       const repertoiresWithLocks = await applyLibraryLimits(userId, savedRepertoires, 'repertoire');
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
       res.json({
         results: repertoiresWithLocks,
         count: repertoiresWithLocks.length
@@ -3607,6 +3643,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const savedProposals = await storage.getUserSavedProposals(userId);
       const proposalsWithLocks = await applyLibraryLimits(userId, savedProposals, 'proposal');
+      
+      // Disable HTTP cache to ensure fresh data
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       
       res.json({
         results: proposalsWithLocks,
