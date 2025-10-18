@@ -126,7 +126,7 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
     }
 
     // Free users: get all library items to count total
-    const [repertoires, savedTexts, outlines, proposals, simulations, essays, structures, newsletters] = await Promise.all([
+    const [repertoires, savedTexts, outlines, proposals, simulations, essays, structures, newsletters, conversations] = await Promise.all([
       storage.getUserSavedRepertoires(userId),
       storage.getUserSavedTexts(userId),
       storage.getUserSavedOutlines(userId),
@@ -134,8 +134,12 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       storage.getUserSimulations(userId),
       storage.getUserSavedEssays(userId),
       storage.getUserSavedStructures(userId),
-      storage.getUserSavedNewsletters(userId)
+      storage.getUserSavedNewsletters(userId),
+      storage.getRecentConversations(userId, undefined, 1000) // Get all user conversations
     ]);
+
+    // Filter conversations that have brainstorm data (brainstormings)
+    const brainstormings = conversations.filter(c => c.brainstormData && Object.keys(c.brainstormData).length > 0);
 
     // Combine all items with their creation dates
     const allItems = [
@@ -146,7 +150,8 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, createdAt: s.createdAt, type: 'simulation' })),
       ...essays.map(e => ({ id: e.id, createdAt: e.createdAt, type: 'essay' })),
       ...structures.map(s => ({ id: s.id, createdAt: s.createdAt, type: 'structure' })),
-      ...newsletters.map(n => ({ id: n.id, createdAt: n.createdAt, type: 'newsletter' }))
+      ...newsletters.map(n => ({ id: n.id, createdAt: n.createdAt, type: 'newsletter' })),
+      ...brainstormings.map(b => ({ id: b.id, createdAt: b.createdAt, type: 'brainstorming' }))
     ];
 
     // Sort by creation date (oldest first) and get first 20
