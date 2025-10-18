@@ -128,37 +128,53 @@ export default function BibliotecaPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch all saved items from API
+  // Fetch all saved items from API - Always refetch to avoid stale cache
   const { data: savedRepertoires, isLoading: loadingRepertoires } = useQuery({
     queryKey: ['/api/repertoires/saved'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedEssays, isLoading: loadingEssays } = useQuery({
     queryKey: ['/api/essays/saved'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedStructures, isLoading: loadingStructures } = useQuery({
     queryKey: ['/api/structures/saved'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedNewsletters, isLoading: loadingNewsletters } = useQuery({
     queryKey: ['/api/newsletters/saved'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedProposals, isLoading: loadingProposals } = useQuery({
     queryKey: ['/api/proposals/saved'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedTexts, isLoading: loadingTexts } = useQuery({
     queryKey: ['/api/saved-texts'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedOutlines, isLoading: loadingOutlines } = useQuery({
     queryKey: ['/api/saved-outlines'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   const { data: savedSimulations, isLoading: loadingSimulations } = useQuery({
     queryKey: ['/api/simulations'],
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   // Fetch conversation history when selected file has conversationId
