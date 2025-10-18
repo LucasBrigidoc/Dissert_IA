@@ -1269,7 +1269,7 @@ export default function BibliotecaPage() {
           // Só mostrar banner para usuários do plano gratuito
           if (totalFiles > 15 || lockedFiles > 0) {
             return (
-              <LiquidGlassCard className="p-4 bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-600">
+              <LiquidGlassCard className="p-4 mb-6 bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-600">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
                     <Archive className="text-red-600" size={24} />
