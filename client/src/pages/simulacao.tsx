@@ -1085,7 +1085,7 @@ export default function SimulacaoPage() {
                   data-testid="button-new-simulation"
                 >
                   <Award className="mr-2" size={16} />
-                  Fazer Novo Simulado
+                  Salvar e Voltar para o início
                 </Button>
               </div>
             </div>
