@@ -189,6 +189,7 @@ export default function BibliotecaPage() {
   const transformRepertoireToFile = (repertoire: any) => ({
     id: repertoire.id,
     title: repertoire.title,
+    isLocked: repertoire.isLocked || false,
     category: repertoire.category === 'social' ? 'Sociedade' :
               repertoire.category === 'environment' ? 'Meio Ambiente' :
               repertoire.category === 'technology' ? 'Tecnologia' :
@@ -210,6 +211,7 @@ export default function BibliotecaPage() {
   const transformEssayToFile = (essay: any) => ({
     id: essay.id,
     title: essay.title,
+    isLocked: essay.isLocked || false,
     category: 'Redação',
     date: essay.createdAt,
     size: '450 KB',
@@ -222,6 +224,7 @@ export default function BibliotecaPage() {
   const transformStructureToFile = (structure: any) => ({
     id: structure.id,
     title: structure.title,
+    isLocked: structure.isLocked || false,
     category: 'Estrutura',
     date: structure.createdAt,
     size: '180 KB',
@@ -233,6 +236,7 @@ export default function BibliotecaPage() {
   const transformNewsletterToFile = (newsletter: any) => ({
     id: newsletter.id,
     title: newsletter.title,
+    isLocked: newsletter.isLocked || false,
     category: newsletter.category || 'Atualidades',
     date: newsletter.createdAt,
     size: '2.0 MB',
@@ -244,6 +248,7 @@ export default function BibliotecaPage() {
   const transformTextToFile = (savedText: any) => ({
     id: savedText.id,
     title: savedText.title,
+    isLocked: savedText.isLocked || false,
     category: 'Texto Modificado',
     date: savedText.createdAt,
     size: '300 KB',
@@ -271,6 +276,7 @@ export default function BibliotecaPage() {
     type: 'Proposta',
     description: proposal.statement?.substring(0, 100) + '...' || `Proposta ${proposal.examType || 'ENEM'} ${proposal.year || ''}`,
     content: `**${proposal.title}**\n\n**Comando da Redação:**\n${proposal.statement}\n\n${proposal.supportingText ? `**Textos de Apoio:**\n${proposal.supportingText}\n\n` : ''}**Tipo de Exame:** ${proposal.examType?.toUpperCase() || 'N/A'}\n${proposal.examName ? `**Nome do Exame:** ${proposal.examName}\n` : ''}${proposal.year ? `**Ano:** ${proposal.year}\n` : ''}**Tema:** ${proposal.theme || 'N/A'}\n**Dificuldade:** ${proposal.difficulty || 'N/A'}\n${proposal.isAiGenerated ? '**Origem:** Criada por IA ✨' : '**Origem:** Proposta Real ✓'}`,
+    isLocked: proposal.isLocked || false,
     examType: proposal.examType,
     examName: proposal.examName,
     year: proposal.year,
@@ -290,6 +296,7 @@ export default function BibliotecaPage() {
     return {
       id: outline.id,
       title: outline.title,
+      isLocked: outline.isLocked || false,
       category: isBrainstorming ? 'Brainstorming' : 'Roteiro',
       date: outline.createdAt,
       size: '500 KB',
@@ -338,6 +345,7 @@ export default function BibliotecaPage() {
     return {
       id: simulation.id,
       title: `Simulado: ${proposalPreview}`,
+      isLocked: simulation.isLocked || false,
       category: 'Simulados',
       date: simulation.createdAt,
       size: '1.2 MB',
