@@ -62,6 +62,9 @@ export default function Repertorio() {
       });
     },
     onSuccess: () => {
+      // Invalidar cache para atualizar a biblioteca
+      queryClient.invalidateQueries({ queryKey: ['/api/repertoires/saved'] });
+      
       toast({
         title: "Repertório salvo!",
         description: "O repertório foi adicionado à sua biblioteca pessoal.",

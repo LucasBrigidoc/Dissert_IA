@@ -1260,6 +1260,65 @@ export default function BibliotecaPage() {
           </div>
         </div>
 
+        {/* Limite de Arquivos - Banner Informativo */}
+        {(() => {
+          const totalFiles = allFiles.length;
+          const lockedFiles = allFiles.filter((f: any) => f.isLocked).length;
+          const accessibleFiles = totalFiles - lockedFiles;
+          
+          // Só mostrar banner para usuários do plano gratuito
+          if (totalFiles > 15 || lockedFiles > 0) {
+            return (
+              <LiquidGlassCard className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-500">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0">
+                    <Archive className="text-orange-600" size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-dark-blue mb-1">
+                      Limite de Arquivos - Plano Gratuito
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-2">
+                      Você está usando <strong>{accessibleFiles} de 20 arquivos</strong> acessíveis.
+                      {lockedFiles > 0 && (
+                        <span className="text-orange-700 font-medium">
+                          {" "}{lockedFiles} {lockedFiles === 1 ? 'arquivo está bloqueado' : 'arquivos estão bloqueados'}.
+                        </span>
+                      )}
+                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex-1 bg-gray-200 rounded-full h-2 min-w-[120px]">
+                        <div 
+                          className="bg-gradient-to-r from-bright-blue to-dark-blue h-2 rounded-full transition-all"
+                          style={{ width: `${Math.min((accessibleFiles / 20) * 100, 100)}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-600 whitespace-nowrap">
+                        {accessibleFiles}/20
+                      </span>
+                    </div>
+                    {lockedFiles > 0 && (
+                      <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => setLocation('/subscription')}
+                          className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
+                          data-testid="button-upgrade-unlock"
+                        >
+                          ✨ Upgrade para Pro - Arquivos Ilimitados
+                        </Button>
+                        <p className="text-xs text-gray-600 self-center">
+                          ou delete arquivos antigos para liberar espaço
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </LiquidGlassCard>
+            );
+          }
+          return null;
+        })()}
 
         {/* Files Grid */}
         <div className="grid gap-3 sm:gap-4">

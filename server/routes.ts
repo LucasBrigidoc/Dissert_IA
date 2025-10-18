@@ -121,9 +121,7 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
 
     // Pro users have unlimited access
     const userPlan = user.planId || 'plan-free';
-    console.log(`[LibraryLimits] User ${userId} has plan: ${userPlan}`);
     if (userPlan === 'plan-priceMonthly' || userPlan === 'plan-priceYearly') {
-      console.log(`[LibraryLimits] Pro user detected, granting unlimited access`);
       return items.map(item => ({ ...item, isLocked: false }));
     }
 
@@ -164,20 +162,12 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       );
     
     const accessibleIds = new Set(sortedItems.slice(0, 20).map(item => item.id));
-    
-    console.log(`[LibraryLimits] Total library items: ${allItems.length}, Accessible: 20`);
-    console.log(`[LibraryLimits] Processing ${items.length} items of type: ${itemType}`);
 
     // Mark items as locked if they're not in the first 20
-    const result = items.map(item => ({
+    return items.map(item => ({
       ...item,
       isLocked: !accessibleIds.has(item.id)
     }));
-    
-    const lockedCount = result.filter(item => item.isLocked).length;
-    console.log(`[LibraryLimits] Locked ${lockedCount} out of ${result.length} items`);
-    
-    return result;
   } catch (error) {
     console.error('Error applying library limits:', error);
     return items.map(item => ({ ...item, isLocked: false }));
@@ -3617,11 +3607,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const savedProposals = await storage.getUserSavedProposals(userId);
       const proposalsWithLocks = await applyLibraryLimits(userId, savedProposals, 'proposal');
-      
-      // Debug: log first item to verify isLocked property
-      if (proposalsWithLocks.length > 0) {
-        console.log('[LibraryLimits] First proposal:', JSON.stringify(proposalsWithLocks[0], null, 2));
-      }
       
       res.json({
         results: proposalsWithLocks,
