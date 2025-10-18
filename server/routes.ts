@@ -126,12 +126,15 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
     }
 
     // Free users: get all library items to count total
-    const [repertoires, savedTexts, outlines, proposals, simulations] = await Promise.all([
+    const [repertoires, savedTexts, outlines, proposals, simulations, essays, structures, newsletters] = await Promise.all([
       storage.getUserSavedRepertoires(userId),
       storage.getUserSavedTexts(userId),
       storage.getUserSavedOutlines(userId),
       storage.getUserSavedProposals(userId),
-      storage.getUserSimulations(userId)
+      storage.getUserSimulations(userId),
+      storage.getUserSavedEssays(userId),
+      storage.getUserSavedStructures(userId),
+      storage.getUserSavedNewsletters(userId)
     ]);
 
     // Combine all items with their creation dates
@@ -140,7 +143,10 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       ...savedTexts.map(t => ({ id: t.id, createdAt: t.createdAt, type: 'text' })),
       ...outlines.map(o => ({ id: o.id, createdAt: o.createdAt, type: 'outline' })),
       ...proposals.map(p => ({ id: p.id, createdAt: p.createdAt, type: 'proposal' })),
-      ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, createdAt: s.createdAt, type: 'simulation' }))
+      ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, createdAt: s.createdAt, type: 'simulation' })),
+      ...essays.map(e => ({ id: e.id, createdAt: e.createdAt, type: 'essay' })),
+      ...structures.map(s => ({ id: s.id, createdAt: s.createdAt, type: 'structure' })),
+      ...newsletters.map(n => ({ id: n.id, createdAt: n.createdAt, type: 'newsletter' }))
     ];
 
     // Sort by creation date (oldest first) and get first 20
