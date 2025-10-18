@@ -97,7 +97,7 @@ export const mockPricingPlans = [
     annualPrice: "R$479,88/Ano",
     features: [
       "Acesso a todas funcionalidades",
-      "IA avançada com correção por competência ENEM",
+      "IA avançada com correção por competência",
       "Estrutura Roterizada: sistema inteligente de roteirização",
       "Repertório inteligente com milhares de referências",
       "Controlador de Escrita: ajuste tom e formalidade",
