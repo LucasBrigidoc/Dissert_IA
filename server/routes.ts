@@ -3092,6 +3092,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId;
       
       const savedRepertoire = await storage.saveRepertoire(userId, repertoireId);
+      
+      // Debug: count all library items after saving
+      const [repertoires, texts, outlines, proposals, simulations] = await Promise.all([
+        storage.getUserSavedRepertoires(userId),
+        storage.getUserSavedTexts(userId),
+        storage.getUserSavedOutlines(userId),
+        storage.getUserSavedProposals(userId),
+        storage.getUserSimulations(userId)
+      ]);
+      const totalItems = repertoires.length + texts.length + outlines.length + proposals.length + simulations.filter((s: any) => s.isCompleted).length;
+      console.log(`[SAVE DEBUG] User ${userId.substring(0, 8)} now has ${totalItems} total library items (R:${repertoires.length}, T:${texts.length}, O:${outlines.length}, P:${proposals.length}, S:${simulations.filter((s: any) => s.isCompleted).length})`);
+      
       res.json({
         message: "Repertório salvo com sucesso!",
         savedRepertoire
