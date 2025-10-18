@@ -62,6 +62,7 @@ export default function BibliotecaPage() {
   const [showConversationHistory, setShowConversationHistory] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<{ id: string; type: string; title: string } | null>(null);
+  const [showLockedDialog, setShowLockedDialog] = useState(false);
 
   // Função para obter ícone da seção
   const getSectionIcon = (section: string) => {
@@ -1310,6 +1311,11 @@ export default function BibliotecaPage() {
                             {file.type}
                           </Badge>
                         </div>
+                        {file.isLocked && (
+                          <Badge className="bg-red-100 text-red-800 text-xs mb-1 border border-red-300">
+                            🔒 Bloqueado
+                          </Badge>
+                        )}
                         {(file as any).grade && (
                           <Badge className="bg-green-100 text-green-800 text-xs mb-1">
                             Nota: {(file as any).grade}
@@ -1331,6 +1337,11 @@ export default function BibliotecaPage() {
                           <Badge className={`text-xs flex-shrink-0 whitespace-nowrap ${getTypeColor(file.type)}`}>
                             {file.type}
                           </Badge>
+                          {file.isLocked && (
+                            <Badge className="bg-red-100 text-red-800 text-xs flex-shrink-0 border border-red-300">
+                              🔒 Bloqueado
+                            </Badge>
+                          )}
                           {(file as any).grade && (
                             <Badge className="bg-green-100 text-green-800 text-xs flex-shrink-0">
                               Nota: {(file as any).grade}
@@ -1368,22 +1379,34 @@ export default function BibliotecaPage() {
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem 
                           onClick={() => {
-                            setSelectedFile(file);
-                            setShowFileDetails(true);
+                            if (file.isLocked) {
+                              setShowLockedDialog(true);
+                            } else {
+                              setSelectedFile(file);
+                              setShowFileDetails(true);
+                            }
                           }}
                           className="flex items-center gap-2 p-3"
                           data-testid={`menu-view-${file.id}`}
+                          disabled={file.isLocked}
                         >
                           <Eye size={16} />
-                          Visualizar
+                          {file.isLocked ? '🔒 Visualizar' : 'Visualizar'}
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          onClick={() => downloadAsPDF(file)}
+                          onClick={() => {
+                            if (file.isLocked) {
+                              setShowLockedDialog(true);
+                            } else {
+                              downloadAsPDF(file);
+                            }
+                          }}
                           className="flex items-center gap-2 p-3"
                           data-testid={`menu-download-${file.id}`}
+                          disabled={file.isLocked}
                         >
                           <Download size={16} />
-                          Baixar PDF
+                          {file.isLocked ? '🔒 Baixar PDF' : 'Baixar PDF'}
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => deleteFile(file.id, file.type, file.title)}
@@ -1403,18 +1426,32 @@ export default function BibliotecaPage() {
                       size="sm" 
                       variant="ghost" 
                       onClick={() => {
-                        setSelectedFile(file);
-                        setShowFileDetails(true);
+                        if (file.isLocked) {
+                          setShowLockedDialog(true);
+                        } else {
+                          setSelectedFile(file);
+                          setShowFileDetails(true);
+                        }
                       }}
+                      disabled={file.isLocked}
                       data-testid={`button-view-${file.id}`}
+                      title={file.isLocked ? 'Arquivo bloqueado - Upgrade para Pro' : 'Visualizar'}
                     >
                       <Eye size={16} />
                     </Button>
                     <Button 
                       size="sm" 
                       variant="ghost" 
-                      onClick={() => downloadAsPDF(file)}
+                      onClick={() => {
+                        if (file.isLocked) {
+                          setShowLockedDialog(true);
+                        } else {
+                          downloadAsPDF(file);
+                        }
+                      }}
+                      disabled={file.isLocked}
                       data-testid={`button-download-${file.id}`}
+                      title={file.isLocked ? 'Arquivo bloqueado - Upgrade para Pro' : 'Baixar PDF'}
                     >
                       <Download size={16} />
                     </Button>
@@ -2203,6 +2240,71 @@ export default function BibliotecaPage() {
               >
                 <Trash2 size={16} className="mr-2" />
                 Excluir
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog de Arquivo Bloqueado */}
+      <Dialog open={showLockedDialog} onOpenChange={setShowLockedDialog}>
+        <DialogContent className="max-w-md" aria-describedby="locked-file-description">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-dark-blue flex items-center">
+              <span className="mr-3 text-3xl">🔒</span>
+              Limite do Plano Gratuito Atingido
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div id="locked-file-description" className="space-y-4">
+            <p className="text-soft-gray">
+              Você atingiu o limite de <strong className="text-dark-blue">20 arquivos</strong> no plano gratuito.
+            </p>
+            <p className="text-sm text-soft-gray">
+              Para acessar todos os seus arquivos salvos, você pode:
+            </p>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+              <h4 className="font-semibold text-dark-blue flex items-center">
+                <span className="mr-2">✨</span>
+                Upgrade para o Plano Pro
+              </h4>
+              <ul className="text-sm text-soft-gray space-y-1 ml-6">
+                <li>• Biblioteca <strong>ilimitada</strong></li>
+                <li>• Acesso a todos os arquivos</li>
+                <li>• Uso completo de IA</li>
+                <li>• Material exclusivo</li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <h4 className="font-semibold text-dark-blue mb-2">
+                Ou continue no plano gratuito:
+              </h4>
+              <p className="text-sm text-soft-gray">
+                Você pode apagar arquivos antigos para liberar espaço e visualizar os novos arquivos.
+              </p>
+            </div>
+            
+            <div className="flex space-x-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowLockedDialog(false)}
+                className="flex-1"
+                data-testid="button-stay-free"
+              >
+                Continuar Gratuito
+              </Button>
+              <Button 
+                onClick={() => {
+                  setShowLockedDialog(false);
+                  setLocation('/pricing');
+                }}
+                className="flex-1 bg-gradient-to-r from-bright-blue to-purple-600 text-white hover:from-bright-blue hover:to-purple-700"
+                data-testid="button-upgrade-pro"
+              >
+                <span className="mr-2">🚀</span>
+                Upgrade Pro
               </Button>
             </div>
           </div>
