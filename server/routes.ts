@@ -141,6 +141,19 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
     // Filter conversations that have brainstorm data (brainstormings)
     const brainstormings = conversations.filter(c => c.brainstormData && Object.keys(c.brainstormData).length > 0);
 
+    // Debug: log library breakdown
+    console.log('[LibraryLimits] Library breakdown for user:', userId.substring(0, 8), {
+      repertoires: repertoires.length,
+      savedTexts: savedTexts.length,
+      outlines: outlines.length,
+      proposals: proposals.length,
+      simulations: simulations.filter((s: any) => s.isCompleted).length,
+      essays: essays.length,
+      structures: structures.length,
+      newsletters: newsletters.length,
+      brainstormings: brainstormings.length
+    });
+
     // Combine all items with their creation dates
     const allItems = [
       ...repertoires.map(r => ({ id: r.id, createdAt: r.createdAt, type: 'repertoire' })),
