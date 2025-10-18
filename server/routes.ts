@@ -142,16 +142,23 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
     const brainstormings = conversations.filter(c => c.brainstormData && Object.keys(c.brainstormData).length > 0);
 
     // Debug: log library breakdown
-    console.log('[LibraryLimits] Library breakdown for user:', userId.substring(0, 8), {
+    const completedSimulations = simulations.filter((s: any) => s.isCompleted);
+    const totalCount = repertoires.length + savedTexts.length + outlines.length + 
+                       proposals.length + completedSimulations.length + essays.length + 
+                       structures.length + newsletters.length + brainstormings.length;
+    
+    console.log('[LibraryLimits] 📊 Library breakdown for user:', userId.substring(0, 8), {
       repertoires: repertoires.length,
       savedTexts: savedTexts.length,
       outlines: outlines.length,
       proposals: proposals.length,
-      simulations: simulations.filter((s: any) => s.isCompleted).length,
+      simulations: completedSimulations.length,
       essays: essays.length,
       structures: structures.length,
       newsletters: newsletters.length,
-      brainstormings: brainstormings.length
+      brainstormings: brainstormings.length,
+      TOTAL: totalCount,
+      itemType: itemType
     });
 
     // Combine all items with their creation dates
@@ -175,12 +182,19 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       );
     
     const accessibleIds = new Set(sortedItems.slice(0, 20).map(item => item.id));
+    
+    console.log(`[LibraryLimits] 🔒 Total: ${allItems.length} items, Accessible: ${Math.min(20, allItems.length)}, Will lock: ${Math.max(0, allItems.length - 20)}`);
 
     // Mark items as locked if they're not in the first 20
-    return items.map(item => ({
+    const itemsWithLocks = items.map(item => ({
       ...item,
       isLocked: !accessibleIds.has(item.id)
     }));
+    
+    const lockedCount = itemsWithLocks.filter(item => item.isLocked).length;
+    console.log(`[LibraryLimits] ✅ Processed ${itemType}: ${items.length} total, ${lockedCount} locked, ${items.length - lockedCount} accessible`);
+    
+    return itemsWithLocks;
   } catch (error) {
     console.error('Error applying library limits:', error);
     return items.map(item => ({ ...item, isLocked: false }));
