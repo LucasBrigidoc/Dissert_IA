@@ -169,7 +169,7 @@ export const mockFAQ = [
   {
     id: 7,
     question: "O que é o Material Complementar Exclusivo?",
-    answer: "Disponível apenas no Plano Pro, inclui e-books avançados, templates de redação premium, videoaulas exclusivas e materiais de estudo aprofundado para maximizar sua nota."
+    answer: "Disponível apenas no Plano Pro, inclui e-books avançados, templates de redação premium e materiais de estudo aprofundado para maximizar sua nota."
   },
   {
     id: 8,
