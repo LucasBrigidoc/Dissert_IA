@@ -3617,6 +3617,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const savedProposals = await storage.getUserSavedProposals(userId);
       const proposalsWithLocks = await applyLibraryLimits(userId, savedProposals, 'proposal');
+      
+      // Debug: log first item to verify isLocked property
+      if (proposalsWithLocks.length > 0) {
+        console.log('[LibraryLimits] First proposal:', JSON.stringify(proposalsWithLocks[0], null, 2));
+      }
+      
       res.json({
         results: proposalsWithLocks,
         count: proposalsWithLocks.length
