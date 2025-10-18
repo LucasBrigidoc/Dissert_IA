@@ -3121,6 +3121,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const savedRepertoires = await storage.getUserSavedRepertoires(userId);
       const repertoiresWithLocks = await applyLibraryLimits(userId, savedRepertoires, 'repertoire');
       
+      // Debug: log first item to verify isLocked
+      if (repertoiresWithLocks.length > 0) {
+        console.log('[DEBUG] First repertoire:', {
+          id: repertoiresWithLocks[0].id,
+          title: repertoiresWithLocks[0].title?.substring(0, 30),
+          isLocked: repertoiresWithLocks[0].isLocked,
+          createdAt: repertoiresWithLocks[0].createdAt
+        });
+        console.log(`[DEBUG] Total: ${repertoiresWithLocks.length}, Locked: ${repertoiresWithLocks.filter((r: any) => r.isLocked).length}`);
+      }
+      
       // Disable HTTP cache to ensure fresh data
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
       res.setHeader('Pragma', 'no-cache');
