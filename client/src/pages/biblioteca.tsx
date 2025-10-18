@@ -1013,19 +1013,26 @@ export default function BibliotecaPage() {
   ];
 
   // Filter files based on search and category
-  const filteredFiles = allFiles.filter((file: any) => {
-    const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "todos" || 
-                          (selectedCategory === "repertório" && file.type === "Repertório") ||
-                          (selectedCategory === "redação" && file.type === "Redação") ||
-                          (selectedCategory === "proposta" && file.type === "Proposta") ||
-                          (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
-                          (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado") ||
-                          (selectedCategory === "brainstormings" && file.type === "Brainstorming") ||
-                          (selectedCategory === "simulados" && file.type === "Simulados");
-    return matchesSearch && matchesCategory;
-  });
+  const filteredFiles = allFiles
+    .filter((file: any) => {
+      const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           file.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === "todos" || 
+                            (selectedCategory === "repertório" && file.type === "Repertório") ||
+                            (selectedCategory === "redação" && file.type === "Redação") ||
+                            (selectedCategory === "proposta" && file.type === "Proposta") ||
+                            (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
+                            (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado") ||
+                            (selectedCategory === "brainstormings" && file.type === "Brainstorming") ||
+                            (selectedCategory === "simulados" && file.type === "Simulados");
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a: any, b: any) => {
+      // Locked files first (at the top)
+      if (a.isLocked && !b.isLocked) return -1;
+      if (!a.isLocked && b.isLocked) return 1;
+      return 0;
+    });
 
   const getIcon = (type: string) => {
     switch (type) {
