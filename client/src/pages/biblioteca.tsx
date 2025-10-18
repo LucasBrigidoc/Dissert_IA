@@ -1269,10 +1269,10 @@ export default function BibliotecaPage() {
           // Só mostrar banner para usuários do plano gratuito
           if (totalFiles > 15 || lockedFiles > 0) {
             return (
-              <LiquidGlassCard className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-500">
+              <LiquidGlassCard className="p-4 bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-600">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
-                    <Archive className="text-orange-600" size={24} />
+                    <Archive className="text-red-600" size={24} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-dark-blue mb-1">
@@ -1281,7 +1281,7 @@ export default function BibliotecaPage() {
                     <p className="text-sm text-gray-700 mb-2">
                       Você está usando <strong>{accessibleFiles} de 20 arquivos</strong> acessíveis.
                       {lockedFiles > 0 && (
-                        <span className="text-orange-700 font-medium">
+                        <span className="text-red-700 font-medium">
                           {" "}{lockedFiles} {lockedFiles === 1 ? 'arquivo está bloqueado' : 'arquivos estão bloqueados'}.
                         </span>
                       )}
