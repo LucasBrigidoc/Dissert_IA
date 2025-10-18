@@ -113,6 +113,54 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
+// Helper function to apply library limits for free users
+async function applyLibraryLimits(userId: string, items: any[], itemType: string): Promise<any[]> {
+  try {
+    const user = await storage.getUser(userId);
+    if (!user) return items;
+
+    // Pro users have unlimited access
+    const userPlan = user.subscriptionPlan || 'free';
+    if (userPlan === 'priceMonthly' || userPlan === 'priceYearly') {
+      return items.map(item => ({ ...item, isLocked: false }));
+    }
+
+    // Free users: get all library items to count total
+    const [repertoires, savedTexts, outlines, proposals, simulations] = await Promise.all([
+      storage.getUserSavedRepertoires(userId),
+      storage.getUserSavedTexts(userId),
+      storage.getUserSavedOutlines(userId),
+      storage.getUserSavedProposals(userId),
+      storage.getUserSimulations(userId)
+    ]);
+
+    // Combine all items with their creation dates
+    const allItems = [
+      ...repertoires.map(r => ({ id: r.id, createdAt: r.createdAt, type: 'repertoire' })),
+      ...savedTexts.map(t => ({ id: t.id, createdAt: t.createdAt, type: 'text' })),
+      ...outlines.map(o => ({ id: o.id, createdAt: o.createdAt, type: 'outline' })),
+      ...proposals.map(p => ({ id: p.id, createdAt: p.createdAt, type: 'proposal' })),
+      ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, createdAt: s.createdAt, type: 'simulation' }))
+    ];
+
+    // Sort by creation date (oldest first) and get first 20
+    const sortedItems = allItems.sort((a, b) => 
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    
+    const accessibleIds = new Set(sortedItems.slice(0, 20).map(item => item.id));
+
+    // Mark items as locked if they're not in the first 20
+    return items.map(item => ({
+      ...item,
+      isLocked: !accessibleIds.has(item.id)
+    }));
+  } catch (error) {
+    console.error('Error applying library limits:', error);
+    return items.map(item => ({ ...item, isLocked: false }));
+  }
+}
+
 // Middleware to check AI usage limits
 export const checkAILimits = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.userId) {
@@ -2182,7 +2230,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session?.userId || "default-user";
       const savedEssays = await storage.getUserSavedEssays(userId);
-      res.json({ results: savedEssays, count: savedEssays.length });
+      const essaysWithLocks = req.session?.userId 
+        ? await applyLibraryLimits(userId, savedEssays, 'essay')
+        : savedEssays;
+      res.json({ results: essaysWithLocks, count: essaysWithLocks.length });
     } catch (error) {
       console.error("Get saved essays error:", error);
       res.status(500).json({ message: "Failed to get saved essays" });
@@ -2193,7 +2244,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session?.userId || "default-user";
       const savedStructures = await storage.getUserSavedStructures(userId);
-      res.json({ results: savedStructures, count: savedStructures.length });
+      const structuresWithLocks = req.session?.userId 
+        ? await applyLibraryLimits(userId, savedStructures, 'structure')
+        : savedStructures;
+      res.json({ results: structuresWithLocks, count: structuresWithLocks.length });
     } catch (error) {
       console.error("Get saved structures error:", error);
       res.status(500).json({ message: "Failed to get saved structures" });
@@ -2204,7 +2258,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session?.userId || "default-user";
       const savedNewsletters = await storage.getUserSavedNewsletters(userId);
-      res.json({ results: savedNewsletters, count: savedNewsletters.length });
+      const newslettersWithLocks = req.session?.userId 
+        ? await applyLibraryLimits(userId, savedNewsletters, 'newsletter')
+        : savedNewsletters;
+      res.json({ results: newslettersWithLocks, count: newslettersWithLocks.length });
     } catch (error) {
       console.error("Get saved newsletters error:", error);
       res.status(500).json({ message: "Failed to get saved newsletters" });
@@ -2249,7 +2306,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const userId = req.session.userId;
       const savedTexts = await storage.getUserSavedTexts(userId);
-      res.json({ results: savedTexts, count: savedTexts.length });
+      const textsWithLocks = await applyLibraryLimits(userId, savedTexts, 'text');
+      res.json({ results: textsWithLocks, count: textsWithLocks.length });
     } catch (error) {
       console.error("Get saved texts error:", error);
       res.status(500).json({ message: "Erro ao buscar textos salvos" });
@@ -2321,7 +2379,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const userId = req.session.userId;
       const savedOutlines = await storage.getUserSavedOutlines(userId);
-      res.json({ results: savedOutlines, count: savedOutlines.length });
+      const outlinesWithLocks = await applyLibraryLimits(userId, savedOutlines, 'outline');
+      res.json({ results: outlinesWithLocks, count: outlinesWithLocks.length });
     } catch (error) {
       console.error("Get saved outlines error:", error);
       res.status(500).json({ message: "Erro ao buscar roteiros salvos" });
@@ -3017,9 +3076,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId;
       
       const savedRepertoires = await storage.getUserSavedRepertoires(userId);
+      const repertoiresWithLocks = await applyLibraryLimits(userId, savedRepertoires, 'repertoire');
       res.json({
-        results: savedRepertoires,
-        count: savedRepertoires.length
+        results: repertoiresWithLocks,
+        count: repertoiresWithLocks.length
       });
     } catch (error) {
       console.error("Get saved repertoires error:", error);
@@ -3533,9 +3593,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId!;
       
       const savedProposals = await storage.getUserSavedProposals(userId);
+      const proposalsWithLocks = await applyLibraryLimits(userId, savedProposals, 'proposal');
       res.json({
-        results: savedProposals,
-        count: savedProposals.length
+        results: proposalsWithLocks,
+        count: proposalsWithLocks.length
       });
     } catch (error) {
       console.error("Get saved proposals error:", error);
@@ -4070,10 +4131,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updatedAt: sim.updated_at || sim.updatedAt,
       }));
       
+      // Apply library limits if user is authenticated
+      const finalSimulations = (req.session?.userId) 
+        ? await applyLibraryLimits(req.session.userId, formattedSimulations, 'simulation')
+        : formattedSimulations;
+      
       res.json({
-        results: formattedSimulations,
-        count: formattedSimulations.length,
-        hasMore: formattedSimulations.length === limit
+        results: finalSimulations,
+        count: finalSimulations.length,
+        hasMore: finalSimulations.length === limit
       });
     } catch (error) {
       console.error("Get simulations error:", error);
