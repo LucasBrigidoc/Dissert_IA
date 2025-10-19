@@ -10,6 +10,7 @@ import jsPDF from 'jspdf';
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Função para processar markdown e retornar JSX formatado
 function processMarkdown(text: string) {
@@ -54,6 +55,7 @@ function processMarkdown(text: string) {
 
 
 export default function BibliotecaPage() {
+  const { user } = useAuth();
   const [location, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todos");
@@ -1298,7 +1300,7 @@ export default function BibliotecaPage() {
           const accessibleFiles = totalFiles - lockedFiles;
           
           // Só mostrar banner para usuários do plano gratuito
-          if (totalFiles > 15 || lockedFiles > 0) {
+          if (user?.planId === 'plan-free' && (totalFiles > 15 || lockedFiles > 0)) {
             return (
               <LiquidGlassCard className="p-4 mb-6 bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-600">
                 <div className="flex items-start gap-3">
@@ -1402,7 +1404,7 @@ export default function BibliotecaPage() {
                           </Badge>
                         </div>
                         {file.isLocked && (
-                          <Badge className="bg-red-100 text-red-800 text-xs mb-1 border border-red-300">
+                          <Badge className="bg-red-600 text-white text-xs mb-1 font-semibold shadow-md">
                             🔒 Bloqueado
                           </Badge>
                         )}
@@ -1428,7 +1430,7 @@ export default function BibliotecaPage() {
                             {file.type}
                           </Badge>
                           {file.isLocked && (
-                            <Badge className="bg-red-100 text-red-800 text-xs flex-shrink-0 border border-red-300">
+                            <Badge className="bg-red-600 text-white text-xs flex-shrink-0 font-semibold shadow-md">
                               🔒 Bloqueado
                             </Badge>
                           )}
