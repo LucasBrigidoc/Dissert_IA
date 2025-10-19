@@ -4247,10 +4247,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updatedAt: sim.updated_at || sim.updatedAt,
       }));
       
+      // Filter to show only completed simulations (for library display)
+      const completedSimulations = formattedSimulations.filter((sim: any) => sim.isCompleted);
+      
       // Apply library limits if user is authenticated
       const finalSimulations = (req.session?.userId) 
-        ? await applyLibraryLimits(req.session.userId, formattedSimulations, 'simulation')
-        : formattedSimulations;
+        ? await applyLibraryLimits(req.session.userId, completedSimulations, 'simulation')
+        : completedSimulations;
       
       res.json({
         results: finalSimulations,
