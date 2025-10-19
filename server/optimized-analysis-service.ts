@@ -699,6 +699,8 @@ Se ainda não foram definidas, deixe como null.
 \`\`\`
 
 **REGRAS PARA PREENCHER O JSON:**
+- **MUITO IMPORTANTE**: Se o estudante forneceu o tema diretamente na mensagem (ex: "O papel da alimentação saudável na promoção da qualidade de vida dos brasileiros"), IDENTIFIQUE E PREENCHA no campo "tema" automaticamente
+- Se é a PRIMEIRA MENSAGEM do estudante e ela contém um tema/proposta de redação, SEMPRE preencha o campo "tema" com o conteúdo da mensagem
 - Só inclua informações que o estudante REALMENTE forneceu ou confirmou
 - NÃO invente dados - se não foi definido, use null
 - Seja PRECISO - copie exatamente o que o estudante disse

@@ -39,7 +39,7 @@ Preferred communication style: Simple, everyday language.
 - **Responsive Design**: Mobile-first approach with Tailwind.
 
 ## Technical Implementations
-- **AI-powered Features**: Socratic Argument Architect (Arquiteto Socrático), Intelligent Repertoire Explorer, personalized structure creators, AI essay generation, AI chat with enhanced pedagogical guidance and structured JSON data extraction for real-time preview updates, and professional essay correction with competency analysis.
+- **AI-powered Features**: Socratic Argument Architect (Arquiteto Socrático) with intelligent topic detection from first user message, Intelligent Repertoire Explorer, personalized structure creators, AI essay generation, AI chat with enhanced pedagogical guidance and structured JSON data extraction for real-time preview updates (JSON hidden from user interface), and professional essay correction with competency analysis.
 - **Rate Limiting**: Comprehensive AI feature rate limiting to manage costs based on subscription plans (Free, Pro Monthly, Pro Yearly).
 - **Profile Management**: User profile update with Brazilian phone validation.
 - **Competency Analysis**: "Pontos a Melhorar" feature displaying dynamic competency cards based on user essay data.
