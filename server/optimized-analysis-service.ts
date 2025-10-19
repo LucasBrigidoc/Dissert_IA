@@ -584,9 +584,13 @@ Retorne apenas o texto da redação, sem títulos de seções ou formatação ma
 CONTEXTO DA CONVERSA:
 ${compressedContext}
 
-📋 INFORMAÇÕES DA REDAÇÃO:
-${context.proposta ? `• TEMA/PROPOSTA: "${context.proposta}"` : '• TEMA/PROPOSTA: Ainda não definido'}
-${context.tese ? `• TESE DO ESTUDANTE: "${context.tese}"` : '• TESE: Ainda não desenvolvida'}
+📋 INFORMAÇÕES DA REDAÇÃO (STATUS ATUAL):
+${context.tema ? `• ✅ TEMA: "${context.tema}"` : '• ⏳ TEMA: Ainda não definido'}
+${context.tese ? `• ✅ TESE: "${context.tese}"` : '• ⏳ TESE: Ainda não desenvolvida'}
+${context.paragrafos?.introducao ? `• ✅ INTRODUÇÃO: Definida` : '• ⏳ INTRODUÇÃO: Aguardando desenvolvimento'}
+${context.paragrafos?.desenvolvimento1 ? `• ✅ DESENVOLVIMENTO 1: Definido` : '• ⏳ DESENVOLVIMENTO 1: Aguardando desenvolvimento'}
+${context.paragrafos?.desenvolvimento2 ? `• ✅ DESENVOLVIMENTO 2: Definido` : '• ⏳ DESENVOLVIMENTO 2: Aguardando desenvolvimento'}
+${context.paragrafos?.conclusao ? `• ✅ CONCLUSÃO: Definida` : '• ⏳ CONCLUSÃO: Aguardando desenvolvimento'}
 
 🎯 SEÇÃO ATUAL: ${sectionTitle}
 
@@ -674,6 +678,31 @@ PRINCÍPIOS PEDAGÓGICOS OBRIGATÓRIOS:
 ✓ Se ele não tiver tema definido, ajude a identificar ou escolher um tema primeiro
 ✓ Se não tiver tese, ajude a formular uma posição clara antes de estruturar
 ✓ Guie passo a passo: Tema → Tese → Introdução → D1 → D2 → Conclusão
+
+═══════════════════════════════════════════════════════════════
+IMPORTANTE - DADOS ESTRUTURADOS:
+═══════════════════════════════════════════════════════════════
+Ao final da sua resposta, inclua uma seção JSON com os dados coletados/atualizados nesta conversa.
+Se o estudante forneceu ou você ajudou a definir alguma das informações abaixo, inclua-as no JSON.
+Se ainda não foram definidas, deixe como null.
+
+**FORMATO DO JSON:**
+\`\`\`json
+{
+  "tema": "texto completo do tema/proposta fornecido pelo estudante",
+  "tese": "tese completa formulada pelo estudante",
+  "introducao": "rascunho ou orientação para introdução",
+  "desenvolvimento1": "rascunho ou orientação para primeiro desenvolvimento",
+  "desenvolvimento2": "rascunho ou orientação para segundo desenvolvimento",
+  "conclusao": "rascunho ou orientação para conclusão"
+}
+\`\`\`
+
+**REGRAS PARA PREENCHER O JSON:**
+- Só inclua informações que o estudante REALMENTE forneceu ou confirmou
+- NÃO invente dados - se não foi definido, use null
+- Seja PRECISO - copie exatamente o que o estudante disse
+- Se for apenas uma ideia/rascunho, já é válido incluir
 
 Responda agora de forma completa, pedagógica e motivadora:`;
   }

@@ -266,11 +266,55 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
   // Atualizar brainstorm baseado na conversa
   const updateBrainstormFromChat = (aiResponse: string, section: string) => {
-    // Sempre tentar persistir algum conteúdo útil da conversa
-    persistContentToSection(aiResponse, section);
+    // 1. PRIORIDADE: Tentar extrair JSON estruturado da resposta da IA
+    const extractedData = extractStructuredDataFromAI(aiResponse);
+    
+    if (extractedData) {
+      // Se encontrou JSON, atualizar diretamente com os dados estruturados
+      console.log('[ARGUMENTOS] Dados estruturados encontrados:', extractedData);
+      setBrainstormData(prev => ({
+        ...prev,
+        tema: extractedData.tema || prev.tema,
+        tese: extractedData.tese || prev.tese,
+        paragrafos: {
+          introducao: extractedData.introducao || prev.paragrafos.introducao,
+          desenvolvimento1: extractedData.desenvolvimento1 || prev.paragrafos.desenvolvimento1,
+          desenvolvimento2: extractedData.desenvolvimento2 || prev.paragrafos.desenvolvimento2,
+          conclusao: extractedData.conclusao || prev.paragrafos.conclusao
+        }
+      }));
+    } else {
+      // 2. FALLBACK: Se não encontrou JSON, usar extração por padrões (método antigo)
+      persistContentToSection(aiResponse, section);
+    }
     
     // Verificar se é hora de avançar para a próxima seção
     checkSectionProgression();
+  };
+
+  // Função para extrair dados estruturados do JSON retornado pela IA
+  const extractStructuredDataFromAI = (aiResponse: string): any | null => {
+    try {
+      // Procurar por bloco JSON entre ```json e ```
+      const jsonBlockRegex = /```json\s*\n([\s\S]*?)\n```/i;
+      const match = aiResponse.match(jsonBlockRegex);
+      
+      if (match && match[1]) {
+        const jsonString = match[1].trim();
+        const parsedData = JSON.parse(jsonString);
+        
+        // Validar que tem pelo menos um campo preenchido
+        if (parsedData.tema || parsedData.tese || parsedData.introducao || 
+            parsedData.desenvolvimento1 || parsedData.desenvolvimento2 || parsedData.conclusao) {
+          return parsedData;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('[ARGUMENTOS] Não foi possível extrair JSON da resposta da IA:', error);
+      return null;
+    }
   };
 
   // Função para persistir conteúdo na seção atual com fallback robusto
