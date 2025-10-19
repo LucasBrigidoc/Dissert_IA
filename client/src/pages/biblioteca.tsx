@@ -372,7 +372,18 @@ export default function BibliotecaPage() {
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
     roteiros: allOutlines.filter((outline: any) => outline.type === 'Roteiro Personalizado'),
     brainstormings: allOutlines.filter((outline: any) => outline.type === 'Brainstorming'),
-    simulados: savedSimulations?.results ? savedSimulations.results.filter((s: any) => s.isCompleted).map(transformSimulationToFile) : []
+    simulados: savedSimulations?.results ? savedSimulations.results.filter((s: any) => s.isCompleted).map(transformSimulationToFile) : [],
+    estruturas: savedStructures?.results ? savedStructures.results.map((s: any) => ({
+      id: s.id,
+      title: s.title || 'Estrutura sem título',
+      isLocked: s.isLocked || false,
+      category: 'Estruturas',
+      date: s.createdAt,
+      size: '0.5 MB',
+      type: 'Estrutura',
+      description: s.description || 'Estrutura de redação personalizada',
+      content: s.structure || ''
+    })) : []
   };
 
 
@@ -1003,7 +1014,7 @@ export default function BibliotecaPage() {
     }
   };
 
-  // Get all saved files from all categories
+  // Get all saved files from all categories (TODAS as 9 categorias do backend!)
   const allFiles = [
     ...bibliotecaData.repertorios,
     ...bibliotecaData.redacoes,
@@ -1011,7 +1022,9 @@ export default function BibliotecaPage() {
     ...bibliotecaData.textosModificados,
     ...bibliotecaData.roteiros,
     ...bibliotecaData.brainstormings,
-    ...bibliotecaData.simulados
+    ...bibliotecaData.simulados,
+    ...bibliotecaData.estruturas,
+    ...bibliotecaData.newsletters
   ];
 
   // Filter files based on search and category
