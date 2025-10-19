@@ -3877,6 +3877,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         planType
       );
       
+      // Record for admin dashboard analytics
+      const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+      await costTrackingService.trackAIOperation({
+        userId: req.session.userId,
+        ipAddress: ipAddress,
+        operation: 'chat_argumentative',
+        tokensInput: promptTokens,
+        tokensOutput: outputTokens,
+        modelUsed: 'gemini-2.5-flash-lite',
+        source: aiResult.source || 'ai',
+        processingTime: 0
+      });
+      
       console.log(`💰 AI Chat cost: ${promptTokens} input + ${outputTokens} output = ${costEstimate.estimatedCostBRL}`);
 
       res.json({
