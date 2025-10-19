@@ -232,11 +232,12 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         }));
       }
       
-      // Adicionar resposta da IA ao chat
+      // Adicionar resposta da IA ao chat (sem o JSON técnico)
+      const cleanResponse = removeJsonFromResponse(data.response);
       const aiMessage = {
         id: Date.now().toString() + '_ai',
         type: 'ai' as const,
-        content: data.response,
+        content: cleanResponse,
         section: data.section,
         timestamp: new Date()
       };
@@ -246,7 +247,7 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
         messages: [...prev.messages, aiMessage]
       }));
 
-      // Atualizar dados conforme a conversa progride
+      // Atualizar dados conforme a conversa progride (usa a resposta completa com JSON)
       updateBrainstormFromChat(data.response, data.section);
       
       // Atualizar barra de progresso de IA após uso de tokens
@@ -315,6 +316,13 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
       console.warn('[ARGUMENTOS] Não foi possível extrair JSON da resposta da IA:', error);
       return null;
     }
+  };
+
+  // Função para remover JSON da resposta antes de exibir ao usuário
+  const removeJsonFromResponse = (aiResponse: string): string => {
+    // Remover bloco JSON entre ```json e ```
+    const jsonBlockRegex = /```json\s*\n[\s\S]*?\n```/i;
+    return aiResponse.replace(jsonBlockRegex, '').trim();
   };
 
   // Função para persistir conteúdo na seção atual com fallback robusto
