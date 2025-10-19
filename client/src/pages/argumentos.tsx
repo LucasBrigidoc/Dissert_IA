@@ -10,9 +10,26 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
 
+// Função para remover JSON estruturado das mensagens da IA
+function removeStructuredJSON(text: string): string {
+  // Remove blocos JSON entre ```json e ```
+  let cleanText = text.replace(/```json\s*\n[\s\S]*?\n```/gi, '');
+  
+  // Remove JSON solto no final da mensagem (padrão: { ... })
+  cleanText = cleanText.replace(/\{[\s\S]*?"tema"[\s\S]*?\}/gi, '');
+  
+  // Remove linhas vazias extras deixadas pela remoção
+  cleanText = cleanText.replace(/\n{3,}/g, '\n\n').trim();
+  
+  return cleanText;
+}
+
 // Função para processar markdown e retornar JSX formatado
 function processMarkdown(text: string) {
-  const lines = text.split('\n');
+  // Primeiro, remover JSON estruturado antes de processar markdown
+  const cleanText = removeStructuredJSON(text);
+  
+  const lines = cleanText.split('\n');
   const elements: JSX.Element[] = [];
   
   lines.forEach((line, lineIndex) => {
