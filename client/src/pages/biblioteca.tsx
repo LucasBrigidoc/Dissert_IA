@@ -331,7 +331,7 @@ export default function BibliotecaPage() {
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
     redacoes: savedEssays?.results ? savedEssays.results.map(transformEssayToFile) : [],
-    propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'enem' || p.examType === 'vestibular').map(transformProposalToFile) : [],
+    propostas: savedProposals?.results ? savedProposals.results.map(transformProposalToFile) : [],
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
     roteiros: allOutlines.filter((outline: any) => outline.type === 'Roteiro Personalizado'),
     brainstormings: allOutlines.filter((outline: any) => outline.type === 'Brainstorming'),
