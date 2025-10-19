@@ -3659,11 +3659,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const proposalId = req.params.id;
       const userId = req.session.userId!;
       
+      // Check if already saved BEFORE calling save
+      const beforeCount = await storage.getUserSavedProposals(userId);
+      const isAlreadySaved = beforeCount.some((p: any) => p.proposalId === proposalId);
+      
       const savedProposal = await storage.saveProposal(userId, proposalId);
       res.json({
         success: true,
-        message: "Proposta salva com sucesso",
-        savedProposal
+        message: isAlreadySaved ? "Proposta já estava salva" : "Proposta salva com sucesso",
+        savedProposal,
+        alreadySaved: isAlreadySaved
       });
     } catch (error) {
       console.error("Save proposal error:", error);

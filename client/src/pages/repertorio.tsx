@@ -61,7 +61,17 @@ export default function Repertorio() {
         method: "POST"
       });
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      // Verificar se já estava salvo
+      if (data.alreadySaved) {
+        toast({
+          title: "Repertório já salvo!",
+          description: "Este repertório já está na sua biblioteca pessoal.",
+          variant: "default",
+        });
+        return;
+      }
+      
       // Invalidar cache para atualizar a biblioteca
       queryClient.invalidateQueries({ queryKey: ['/api/repertoires/saved'] });
       

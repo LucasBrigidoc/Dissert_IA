@@ -67,7 +67,17 @@ export default function Propostas() {
         method: "POST"
       });
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      // Verificar se já estava salvo
+      if (data.alreadySaved) {
+        toast({
+          title: "Proposta já salva!",
+          description: "Esta proposta já está na sua biblioteca pessoal.",
+          variant: "default",
+        });
+        return;
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['/api/proposals/saved'] });
       toast({
         title: "Proposta salva!",
