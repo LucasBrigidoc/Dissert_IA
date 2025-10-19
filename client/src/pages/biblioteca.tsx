@@ -143,18 +143,6 @@ export default function BibliotecaPage() {
     staleTime: 0,
   });
 
-  const { data: savedStructures, isLoading: loadingStructures } = useQuery({
-    queryKey: ['/api/structures/saved'],
-    refetchOnMount: 'always',
-    staleTime: 0,
-  });
-
-  const { data: savedNewsletters, isLoading: loadingNewsletters } = useQuery({
-    queryKey: ['/api/newsletters/saved'],
-    refetchOnMount: 'always',
-    staleTime: 0,
-  });
-
   const { data: savedProposals, isLoading: loadingProposals } = useQuery({
     queryKey: ['/api/proposals/saved'],
     refetchOnMount: 'always',
@@ -185,7 +173,7 @@ export default function BibliotecaPage() {
     enabled: !!selectedFile?.conversationId,
   });
 
-  const isLoading = loadingRepertoires || loadingEssays || loadingStructures || loadingNewsletters || loadingProposals || loadingTexts || loadingOutlines || loadingSimulations;
+  const isLoading = loadingRepertoires || loadingEssays || loadingProposals || loadingTexts || loadingOutlines || loadingSimulations;
 
   // Transform data to match biblioteca format
   const transformRepertoireToFile = (repertoire: any) => ({
@@ -221,30 +209,6 @@ export default function BibliotecaPage() {
     description: essay.content?.substring(0, 100) + '...' || 'Redação',
     grade: essay.score,
     content: essay.content
-  });
-
-  const transformStructureToFile = (structure: any) => ({
-    id: structure.id,
-    title: structure.title,
-    isLocked: structure.isLocked || false,
-    category: 'Estrutura',
-    date: structure.createdAt,
-    size: '180 KB',
-    type: 'Estilo',
-    description: structure.description || 'Estrutura personalizada',
-    content: structure.structure
-  });
-
-  const transformNewsletterToFile = (newsletter: any) => ({
-    id: newsletter.id,
-    title: newsletter.title,
-    isLocked: newsletter.isLocked || false,
-    category: newsletter.category || 'Atualidades',
-    date: newsletter.createdAt,
-    size: '2.0 MB',
-    type: 'Newsletter',
-    description: newsletter.summary || 'Newsletter DissertIA',
-    content: newsletter.content
   });
 
   const transformTextToFile = (savedText: any) => ({
@@ -367,23 +331,11 @@ export default function BibliotecaPage() {
   const bibliotecaData = {
     repertorios: savedRepertoires?.results ? savedRepertoires.results.map(transformRepertoireToFile) : [],
     redacoes: savedEssays?.results ? savedEssays.results.map(transformEssayToFile) : [],
-    newsletters: savedNewsletters?.results ? savedNewsletters.results.map(transformNewsletterToFile) : [],
     propostas: savedProposals?.results ? savedProposals.results.filter((p: any) => p.examType === 'enem' || p.examType === 'vestibular').map(transformProposalToFile) : [],
     textosModificados: savedTexts?.results ? savedTexts.results.map(transformTextToFile) : [],
     roteiros: allOutlines.filter((outline: any) => outline.type === 'Roteiro Personalizado'),
     brainstormings: allOutlines.filter((outline: any) => outline.type === 'Brainstorming'),
-    simulados: savedSimulations?.results ? savedSimulations.results.filter((s: any) => s.isCompleted).map(transformSimulationToFile) : [],
-    estruturas: savedStructures?.results ? savedStructures.results.map((s: any) => ({
-      id: s.id,
-      title: s.title || 'Estrutura sem título',
-      isLocked: s.isLocked || false,
-      category: 'Estruturas',
-      date: s.createdAt,
-      size: '0.5 MB',
-      type: 'Estrutura',
-      description: s.description || 'Estrutura de redação personalizada',
-      content: s.structure || ''
-    })) : []
+    simulados: savedSimulations?.results ? savedSimulations.results.filter((s: any) => s.isCompleted).map(transformSimulationToFile) : []
   };
 
 
@@ -1014,7 +966,7 @@ export default function BibliotecaPage() {
     }
   };
 
-  // Get all saved files from all categories (TODAS as 9 categorias do backend!)
+  // Get all saved files from all categories (7 categorias reais da biblioteca!)
   const allFiles = [
     ...bibliotecaData.repertorios,
     ...bibliotecaData.redacoes,
@@ -1022,9 +974,7 @@ export default function BibliotecaPage() {
     ...bibliotecaData.textosModificados,
     ...bibliotecaData.roteiros,
     ...bibliotecaData.brainstormings,
-    ...bibliotecaData.simulados,
-    ...bibliotecaData.estruturas,
-    ...bibliotecaData.newsletters
+    ...bibliotecaData.simulados
   ];
 
   // Filter files based on search and category

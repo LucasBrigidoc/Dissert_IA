@@ -125,16 +125,14 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       return items.map(item => ({ ...item, isLocked: false }));
     }
 
-    // Free users: get all library items with their SAVE dates
-    const [repertoires, savedTexts, outlines, proposals, simulations, essays, structures, newsletters, conversations] = await Promise.all([
+    // Free users: get all library items with their SAVE dates (7 categorias apenas!)
+    const [repertoires, savedTexts, outlines, proposals, simulations, essays, conversations] = await Promise.all([
       storage.getUserSavedRepertoires(userId),
       storage.getUserSavedTexts(userId),
       storage.getUserSavedOutlines(userId),
       storage.getUserSavedProposals(userId),
       storage.getUserSimulations(userId),
       storage.getUserSavedEssays(userId),
-      storage.getUserSavedStructures(userId),
-      storage.getUserSavedNewsletters(userId),
       storage.getRecentConversations(userId, undefined, 1000) // Get all user conversations
     ]);
 
@@ -145,7 +143,7 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
     const completedSimulations = simulations.filter((s: any) => s.isCompleted);
     const totalCount = repertoires.length + savedTexts.length + outlines.length + 
                        proposals.length + completedSimulations.length + essays.length + 
-                       structures.length + newsletters.length + brainstormings.length;
+                       brainstormings.length;
     
     console.log('[LibraryLimits] 📊 Library breakdown for user:', userId.substring(0, 8), {
       repertoires: repertoires.length,
@@ -154,8 +152,6 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       proposals: proposals.length,
       simulations: completedSimulations.length,
       essays: essays.length,
-      structures: structures.length,
-      newsletters: newsletters.length,
       brainstormings: brainstormings.length,
       TOTAL: totalCount,
       itemType: itemType
@@ -169,8 +165,6 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       ...proposals.map(p => ({ id: p.id, savedAt: (p as any).savedAt || p.createdAt, type: 'proposal' })),
       ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, savedAt: s.createdAt, type: 'simulation' })),
       ...essays.map(e => ({ id: e.id, savedAt: (e as any).savedAt || e.createdAt, type: 'essay' })),
-      ...structures.map(s => ({ id: s.id, savedAt: (s as any).savedAt || s.createdAt, type: 'structure' })),
-      ...newsletters.map(n => ({ id: n.id, savedAt: (n as any).savedAt || n.createdAt, type: 'newsletter' })),
       ...brainstormings.map(b => ({ id: b.id, savedAt: b.createdAt, type: 'brainstorming' }))
     ];
 
