@@ -973,14 +973,50 @@ Retorne APENAS um JSON com esta estrutura:
 
   private parseOutlineResponse(text: string, originalProposal: string): any {
     try {
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        return parsed;
+      // Extract JSON from code blocks or raw text
+      let jsonText = text;
+      
+      // Remove markdown code blocks if present
+      const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (codeBlockMatch) {
+        jsonText = codeBlockMatch[1].trim();
+      } else {
+        // Try to extract JSON object from text
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          jsonText = jsonMatch[0];
+        }
       }
-      throw new Error("Formato de resposta inválido");
+      
+      // Clean up common JSON formatting issues
+      jsonText = jsonText
+        .replace(/,\s*}/g, '}')        // Remove trailing commas before }
+        .replace(/,\s*\]/g, ']')        // Remove trailing commas before ]
+        .replace(/\n/g, ' ')            // Remove newlines
+        .replace(/\r/g, '')             // Remove carriage returns
+        .replace(/\t/g, ' ')            // Replace tabs with spaces
+        .replace(/\s+/g, ' ')           // Normalize whitespace
+        .trim();
+      
+      console.log(`📝 Parsing outline JSON (${jsonText.length} chars)`);
+      
+      // Try to parse the cleaned JSON
+      const parsed = JSON.parse(jsonText);
+      
+      // Validate required fields
+      if (!parsed.proposta && originalProposal) {
+        parsed.proposta = originalProposal;
+      }
+      
+      console.log(`✅ Successfully parsed outline with keys: ${Object.keys(parsed).join(', ')}`);
+      return parsed;
+      
     } catch (error) {
-      console.error("Erro ao fazer parse da resposta:", error);
+      console.error("❌ Erro ao fazer parse da resposta:", error);
+      console.error("📄 Resposta original (primeiros 500 chars):", text.substring(0, 500));
+      console.error("📄 Resposta original (últimos 500 chars):", text.substring(Math.max(0, text.length - 500)));
+      
+      // Return fallback with original proposal
       return {
         proposta: originalProposal,
         palavrasChave: ["tema", "sociedade", "Brasil"],
