@@ -121,7 +121,7 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
 
     // Pro users have unlimited access
     const userPlan = user.planId || 'plan-free';
-    if (userPlan === 'plan-priceMonthly' || userPlan === 'plan-priceYearly') {
+    if (userPlan === 'plan-pro-monthly' || userPlan === 'plan-pro-yearly') {
       return items.map(item => ({ ...item, isLocked: false }));
     }
 
