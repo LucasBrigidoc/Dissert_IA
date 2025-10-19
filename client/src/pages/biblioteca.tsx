@@ -1262,13 +1262,23 @@ export default function BibliotecaPage() {
           const lockedFiles = allFiles.filter((f: any) => f.isLocked).length;
           const accessibleFiles = totalFiles - lockedFiles;
           
-          // Só mostrar banner para usuários do plano gratuito
-          if (user?.planId === 'plan-free' && (totalFiles > 15 || lockedFiles > 0)) {
+          // SEMPRE mostrar contador para usuários do plano gratuito
+          if (user?.planId === 'plan-free') {
+            // Escolher cor do banner baseado no uso
+            const isNearLimit = accessibleFiles >= 15;
+            const hasLockedFiles = lockedFiles > 0;
+            const bgColor = hasLockedFiles 
+              ? "from-red-50 to-red-100 border-l-4 border-red-600" 
+              : isNearLimit 
+                ? "from-yellow-50 to-yellow-100 border-l-4 border-yellow-600"
+                : "from-blue-50 to-blue-100 border-l-4 border-blue-600";
+            const iconColor = hasLockedFiles ? "text-red-600" : isNearLimit ? "text-yellow-600" : "text-blue-600";
+            
             return (
-              <LiquidGlassCard className="p-4 mb-6 bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-600">
+              <LiquidGlassCard className={`p-4 mb-6 bg-gradient-to-r ${bgColor}`}>
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
-                    <Archive className="text-red-600" size={24} />
+                    <Archive className={iconColor} size={24} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-dark-blue mb-1">
