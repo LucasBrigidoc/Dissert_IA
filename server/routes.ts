@@ -125,7 +125,7 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       return items.map(item => ({ ...item, isLocked: false }));
     }
 
-    // Free users: get all library items to count total
+    // Free users: get all library items with their SAVE dates
     const [repertoires, savedTexts, outlines, proposals, simulations, essays, structures, newsletters, conversations] = await Promise.all([
       storage.getUserSavedRepertoires(userId),
       storage.getUserSavedTexts(userId),
@@ -161,31 +161,33 @@ async function applyLibraryLimits(userId: string, items: any[], itemType: string
       itemType: itemType
     });
 
-    // Combine all items with their creation dates
+    // Combine all items using their SAVE DATE (savedAt) instead of content creation date
     const allItems = [
-      ...repertoires.map(r => ({ id: r.id, createdAt: r.createdAt, type: 'repertoire' })),
-      ...savedTexts.map(t => ({ id: t.id, createdAt: t.createdAt, type: 'text' })),
-      ...outlines.map(o => ({ id: o.id, createdAt: o.createdAt, type: 'outline' })),
-      ...proposals.map(p => ({ id: p.id, createdAt: p.createdAt, type: 'proposal' })),
-      ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, createdAt: s.createdAt, type: 'simulation' })),
-      ...essays.map(e => ({ id: e.id, createdAt: e.createdAt, type: 'essay' })),
-      ...structures.map(s => ({ id: s.id, createdAt: s.createdAt, type: 'structure' })),
-      ...newsletters.map(n => ({ id: n.id, createdAt: n.createdAt, type: 'newsletter' })),
-      ...brainstormings.map(b => ({ id: b.id, createdAt: b.createdAt, type: 'brainstorming' }))
+      ...repertoires.map(r => ({ id: r.id, savedAt: (r as any).savedAt || r.createdAt, type: 'repertoire' })),
+      ...savedTexts.map(t => ({ id: t.id, savedAt: (t as any).savedAt || t.createdAt, type: 'text' })),
+      ...outlines.map(o => ({ id: o.id, savedAt: (o as any).savedAt || o.createdAt, type: 'outline' })),
+      ...proposals.map(p => ({ id: p.id, savedAt: (p as any).savedAt || p.createdAt, type: 'proposal' })),
+      ...simulations.filter(s => s.isCompleted).map(s => ({ id: s.id, savedAt: s.createdAt, type: 'simulation' })),
+      ...essays.map(e => ({ id: e.id, savedAt: (e as any).savedAt || e.createdAt, type: 'essay' })),
+      ...structures.map(s => ({ id: s.id, savedAt: (s as any).savedAt || s.createdAt, type: 'structure' })),
+      ...newsletters.map(n => ({ id: n.id, savedAt: (n as any).savedAt || n.createdAt, type: 'newsletter' })),
+      ...brainstormings.map(b => ({ id: b.id, savedAt: b.createdAt, type: 'brainstorming' }))
     ];
 
-    // Sort by creation date (oldest first) and get first 20
+    // Sort by SAVE date (oldest saves first) and get first 20 as accessible
+    // This means the NEWEST saves will be locked when over 20 items
     const sortedItems = allItems
-      .filter(item => item.createdAt) // Filter out items without creation date
+      .filter(item => item.savedAt) // Filter out items without save date
       .sort((a, b) => 
-        new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
+        new Date(a.savedAt!).getTime() - new Date(b.savedAt!).getTime()
       );
     
     const accessibleIds = new Set(sortedItems.slice(0, 20).map(item => item.id));
     
     console.log(`[LibraryLimits] 🔒 Total: ${allItems.length} items, Accessible: ${Math.min(20, allItems.length)}, Will lock: ${Math.max(0, allItems.length - 20)}`);
+    console.log(`[LibraryLimits] 🕐 Using SAVE dates - oldest saves are accessible, newest saves get locked`);
 
-    // Mark items as locked if they're not in the first 20
+    // Mark items as locked if they're not in the first 20 (oldest saves)
     const itemsWithLocks = items.map(item => ({
       ...item,
       isLocked: !accessibleIds.has(item.id)

@@ -4284,23 +4284,20 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedRepertoires(userId: string): Promise<Repertoire[]> {
-    const saved = await db
-      .select()
+    const results = await db
+      .select({
+        repertoire: schema.repertoires,
+        savedAt: schema.savedRepertoires.createdAt
+      })
       .from(schema.savedRepertoires)
+      .innerJoin(schema.repertoires, eq(schema.savedRepertoires.repertoireId, schema.repertoires.id))
       .where(eq(schema.savedRepertoires.userId, userId));
     
-    const repertoireIds = saved.map(s => s.repertoireId);
-    
-    if (repertoireIds.length === 0) {
-      return [];
-    }
-    
-    const repertoires = await db
-      .select()
-      .from(schema.repertoires)
-      .where(inArray(schema.repertoires.id, repertoireIds));
-    
-    return repertoires;
+    // Map results to include savedAt in the repertoire object
+    return results.map(r => ({
+      ...r.repertoire,
+      savedAt: r.savedAt
+    } as any));
   }
 
   async isRepertoireSaved(userId: string, repertoireId: string): Promise<boolean> {
@@ -4376,23 +4373,20 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedProposals(userId: string): Promise<Proposal[]> {
-    const saved = await db
-      .select()
+    const results = await db
+      .select({
+        proposal: schema.proposals,
+        savedAt: schema.savedProposals.createdAt
+      })
       .from(schema.savedProposals)
+      .innerJoin(schema.proposals, eq(schema.savedProposals.proposalId, schema.proposals.id))
       .where(eq(schema.savedProposals.userId, userId));
     
-    const proposalIds = saved.map(s => s.proposalId);
-    
-    if (proposalIds.length === 0) {
-      return [];
-    }
-    
-    const proposals = await db
-      .select()
-      .from(schema.proposals)
-      .where(inArray(schema.proposals.id, proposalIds));
-    
-    return proposals;
+    // Map results to include savedAt in the proposal object
+    return results.map(r => ({
+      ...r.proposal,
+      savedAt: r.savedAt
+    } as any));
   }
 
   async isProposalSaved(userId: string, proposalId: string): Promise<boolean> {
@@ -4426,23 +4420,20 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedEssays(userId: string): Promise<Essay[]> {
-    const saved = await db
-      .select()
+    const results = await db
+      .select({
+        essay: schema.essays,
+        savedAt: schema.savedEssays.createdAt
+      })
       .from(schema.savedEssays)
+      .innerJoin(schema.essays, eq(schema.savedEssays.essayId, schema.essays.id))
       .where(eq(schema.savedEssays.userId, userId));
     
-    const essayIds = saved.map(s => s.essayId);
-    
-    if (essayIds.length === 0) {
-      return [];
-    }
-    
-    const essays = await db
-      .select()
-      .from(schema.essays)
-      .where(inArray(schema.essays.id, essayIds));
-    
-    return essays;
+    // Map results to include savedAt in the essay object
+    return results.map(r => ({
+      ...r.essay,
+      savedAt: r.savedAt
+    } as any));
   }
 
   async isEssaySaved(userId: string, essayId: string): Promise<boolean> {
@@ -4476,23 +4467,20 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedStructures(userId: string): Promise<EssayStructure[]> {
-    const saved = await db
-      .select()
+    const results = await db
+      .select({
+        structure: schema.essayStructures,
+        savedAt: schema.savedStructures.createdAt
+      })
       .from(schema.savedStructures)
+      .innerJoin(schema.essayStructures, eq(schema.savedStructures.structureId, schema.essayStructures.id))
       .where(eq(schema.savedStructures.userId, userId));
     
-    const structureIds = saved.map(s => s.structureId);
-    
-    if (structureIds.length === 0) {
-      return [];
-    }
-    
-    const structures = await db
-      .select()
-      .from(schema.essayStructures)
-      .where(inArray(schema.essayStructures.id, structureIds));
-    
-    return structures;
+    // Map results to include savedAt in the structure object
+    return results.map(r => ({
+      ...r.structure,
+      savedAt: r.savedAt
+    } as any));
   }
 
   async isStructureSaved(userId: string, structureId: string): Promise<boolean> {
@@ -4526,23 +4514,20 @@ export class DbStorage implements IStorage {
   }
 
   async getUserSavedNewsletters(userId: string): Promise<Newsletter[]> {
-    const saved = await db
-      .select()
+    const results = await db
+      .select({
+        newsletter: schema.newsletters,
+        savedAt: schema.savedNewsletters.createdAt
+      })
       .from(schema.savedNewsletters)
+      .innerJoin(schema.newsletters, eq(schema.savedNewsletters.newsletterId, schema.newsletters.id))
       .where(eq(schema.savedNewsletters.userId, userId));
     
-    const newsletterIds = saved.map(s => s.newsletterId);
-    
-    if (newsletterIds.length === 0) {
-      return [];
-    }
-    
-    const newsletters = await db
-      .select()
-      .from(schema.newsletters)
-      .where(inArray(schema.newsletters.id, newsletterIds));
-    
-    return newsletters;
+    // Map results to include savedAt in the newsletter object
+    return results.map(r => ({
+      ...r.newsletter,
+      savedAt: r.savedAt
+    } as any));
   }
 
   async isNewsletterSaved(userId: string, newsletterId: string): Promise<boolean> {
