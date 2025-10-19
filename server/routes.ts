@@ -4218,7 +4218,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get simulations (with optional filtering)
   app.get("/api/simulations", async (req, res) => {
     try {
-      const userId = req.query.userId as string;
+      // Always use session userId if authenticated (security fix)
+      const userId = req.session?.userId || (req.query.userId as string);
       const sessionId = req.query.sessionId as string;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
