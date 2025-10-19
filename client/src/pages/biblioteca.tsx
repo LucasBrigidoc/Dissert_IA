@@ -1307,7 +1307,7 @@ export default function BibliotecaPage() {
                       <div className="mt-3 flex flex-col sm:flex-row gap-2">
                         <Button
                           size="sm"
-                          onClick={() => setLocation('/subscription')}
+                          onClick={() => setLocation('/pricing')}
                           className="bg-gradient-to-r from-bright-blue to-dark-blue text-white"
                           data-testid="button-upgrade-unlock"
                         >
