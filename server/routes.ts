@@ -3101,9 +3101,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const repertoireId = req.params.id;
       const userId = req.session.userId;
       
-      // Check if already saved BEFORE calling save
+      // Check if already saved BEFORE calling save (use .id not .repertoireId)
       const beforeCount = await storage.getUserSavedRepertoires(userId);
-      const isAlreadySaved = beforeCount.some((r: any) => r.repertoireId === repertoireId);
+      const isAlreadySaved = beforeCount.some((r: any) => r.id === repertoireId);
       
       const savedRepertoire = await storage.saveRepertoire(userId, repertoireId);
       
@@ -3659,9 +3659,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const proposalId = req.params.id;
       const userId = req.session.userId!;
       
-      // Check if already saved BEFORE calling save
+      // Check if already saved BEFORE calling save (use .id not .proposalId)
       const beforeCount = await storage.getUserSavedProposals(userId);
-      const isAlreadySaved = beforeCount.some((p: any) => p.proposalId === proposalId);
+      const isAlreadySaved = beforeCount.some((p: any) => p.id === proposalId);
       
       const savedProposal = await storage.saveProposal(userId, proposalId);
       res.json({
