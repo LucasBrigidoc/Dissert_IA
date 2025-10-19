@@ -3905,6 +3905,7 @@ export class DbStorage implements IStorage {
       await tx.delete(schema.savedStructures).where(eq(schema.savedStructures.userId, userId));
       await tx.delete(schema.savedNewsletters).where(eq(schema.savedNewsletters.userId, userId));
       await tx.delete(schema.savedTexts).where(eq(schema.savedTexts.userId, userId));
+      await tx.delete(schema.savedOutlines).where(eq(schema.savedOutlines.userId, userId));
       
       // User activities
       await tx.delete(schema.simulations).where(eq(schema.simulations.userId, userId));

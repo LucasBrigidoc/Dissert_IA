@@ -461,12 +461,22 @@ function UsersTable() {
         body: { userIds: selectedUsers },
       });
 
-      toast({
-        title: "Sucesso",
-        description: response.message || `${selectedUsers.length} usuário(s) deletado(s) com sucesso!`,
-      });
+      // Check if any users were actually deleted
+      if (response.deletedCount > 0) {
+        toast({
+          title: "Sucesso",
+          description: `${response.deletedCount} usuário(s) deletado(s) com sucesso!`,
+        });
+        setSelectedUsers([]);
+      } else {
+        // No users were deleted - show warning
+        toast({
+          title: "Erro ao deletar usuários",
+          description: `Não foi possível deletar ${selectedUsers.length} usuário(s). Verifique se eles possuem dados relacionados e tente novamente.`,
+          variant: "destructive",
+        });
+      }
 
-      setSelectedUsers([]);
       queryClient.invalidateQueries({ queryKey: ['/api/admin/all-users'] });
     } catch (error: any) {
       toast({
