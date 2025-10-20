@@ -29,8 +29,8 @@ export const mockUserData = {
 export const mockFeatures = [
   {
     id: 1,
-    name: "Refinamento do Brainstorming",
-    description: "Brainstorming com IA para construção de redação",
+    name: "Refinamento de Ideias",
+    description: "Converse com uma IA para organizar suas redações",
     icon: "brain"
   },
   {

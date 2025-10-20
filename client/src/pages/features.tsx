@@ -160,11 +160,11 @@ export default function Features() {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-bright-blue rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                     <Lightbulb className="text-white" size={20} />
                   </div>
-                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Refinamento do Brainstorming
+                  <h4 className="text-base sm:text-xl font-semibold text-dark-blue">Refinamento de Ideias
 </h4>
                 </div>
                 <p className="text-sm sm:text-base text-soft-gray mb-3 sm:mb-4">
-                  Sistema que estimula a criatividade e organiza suas ideias através de técnicas de brainstorming estruturado, ajudando a mapear todos os aspectos do tema.
+                  Converse com uma IA para organizar suas redações através de técnicas de brainstorming estruturado, ajudando a mapear todos os aspectos do tema.
                 </p>
                 <ul className="text-xs sm:text-sm text-soft-gray space-y-0.5 sm:space-y-1">
                   <li>• Técnicas de associação livre e mapeamento mental</li>
