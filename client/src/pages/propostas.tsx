@@ -379,156 +379,50 @@ export default function Propostas() {
       {/* Main Content */}
       <div className="pt-20 sm:pt-32 container mx-auto px-3 sm:px-4 py-3 sm:py-8">
 
-        {/* Search Section */}
-        <LiquidGlassCard className="mb-4 sm:mb-8 p-3 sm:p-6">
-          <div className="space-y-3 sm:space-y-6">
-            <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4">
-              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-bright-blue" />
-              <h2 className="text-base sm:text-xl font-semibold text-dark-blue">Buscar Propostas de Provas Brasileiras</h2>
+        {/* AI Generation Section */}
+        <LiquidGlassCard className="mb-8 p-6">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Sparkles className="w-5 h-5 text-bright-blue" />
+              <h2 className="text-xl font-semibold text-dark-blue">Criar Propostas com Inteligência Artificial</h2>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-              <div className="flex-1">
-                <Input
-                  placeholder="Ex: educação, tecnologia, ENEM 2023..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-sm"
-                  data-testid="input-search"
-                />
-              </div>
-              <Button 
-                onClick={handleSearch}
-                disabled={searchMutation.isPending}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 h-9 sm:h-10 text-xs sm:text-sm px-4 sm:px-6"
-                data-testid="button-search"
-              >
-                {searchMutation.isPending ? (
-                  <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
-                ) : (
-                  <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                )}
-                <span>Buscar</span>
-              </Button>
-            </div>
-            
-            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-2 sm:p-3">
-              <p className="text-xs sm:text-sm text-blue-800">
-                <span className="font-semibold">💡 Como buscar:</span> Digite o tema, palavras-chave ou tipo de exame. Ex: "meio ambiente", "ENEM 2023", "FUVEST".
-              </p>
-            </div>
-
-            {/* Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
-              <div>
-                <label className="block text-[10px] sm:text-sm font-medium text-soft-gray mb-1 sm:mb-2">Tipo de Exame</label>
-                <Select value={selectedExamType} onValueChange={setSelectedExamType}>
-                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-xs sm:text-sm" data-testid="select-exam-type">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os tipos</SelectItem>
-                    <SelectItem value="enem">ENEM</SelectItem>
-                    <SelectItem value="vestibular">Vestibular</SelectItem>
-                    <SelectItem value="concurso">Concurso</SelectItem>
-                    <SelectItem value="simulado">Simulado</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] sm:text-sm font-medium text-soft-gray mb-1 sm:mb-2">Tema</label>
-                <Select value={selectedTheme} onValueChange={setSelectedTheme}>
-                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-xs sm:text-sm" data-testid="select-theme">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os temas</SelectItem>
-                    <SelectItem value="social">Sociedade</SelectItem>
-                    <SelectItem value="environment">Meio Ambiente</SelectItem>
-                    <SelectItem value="technology">Tecnologia</SelectItem>
-                    <SelectItem value="education">Educação</SelectItem>
-                    <SelectItem value="politics">Política</SelectItem>
-                    <SelectItem value="economy">Economia</SelectItem>
-                    <SelectItem value="culture">Cultura</SelectItem>
-                    <SelectItem value="health">Saúde</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] sm:text-sm font-medium text-soft-gray mb-1 sm:mb-2">Dificuldade</label>
-                <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-                  <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue h-9 sm:h-10 text-xs sm:text-sm" data-testid="select-difficulty">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas</SelectItem>
-                    <SelectItem value="facil">Fácil</SelectItem>
-                    <SelectItem value="medio">Médio</SelectItem>
-                    <SelectItem value="dificil">Difícil</SelectItem>
-                    <SelectItem value="muito-dificil">Muito Difícil</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Botão Gerar com IA - visível apenas em desktop */}
-              <div className="hidden md:flex items-end sm:col-span-2 md:col-span-1">
-                <Button 
-                  onClick={handleGenerateNew}
-                  disabled={generateMutation.isPending || searchMutation.isPending}
-                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0 h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
-                  data-testid="button-generate"
-                >
-                  {(generateMutation.isPending || searchMutation.isPending) ? (
-                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
-                  ) : (
-                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  )}
-                  <span className="text-xs sm:text-sm">{hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}</span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Context/Base Proposal for AI Generation */}
-            <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-2 sm:p-3">
-              <div className="mb-1 sm:mb-1.5">
-                <label className="block text-xs sm:text-sm font-semibold text-blue-800 mb-0.5">
-                  <Lightbulb className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
-                  Texto Base p/ IA (Opcional)
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-5">
+              <div className="mb-4">
+                <label className="block text-sm font-semibold text-dark-blue mb-2">
+                  <Lightbulb className="w-4 h-4 inline mr-2" />
+                  Contexto para Geração (Opcional)
                 </label>
-                <p className="text-[10px] sm:text-xs text-blue-700 mb-1.5 sm:mb-2 leading-tight">
-                  Cole aqui palavras-chave ou contexto para a IA gerar variações personalizadas.
+                <p className="text-sm text-blue-700 mb-3 leading-relaxed">
+                  Forneça palavras-chave, temas ou até mesmo cole uma proposta existente para a IA gerar variações personalizadas e relevantes.
                 </p>
               </div>
               <Textarea
-                placeholder="Ex: 'mobilidade urbana sustentável' ou cole uma proposta..."
+                placeholder="Ex: 'desigualdade social no Brasil', 'impactos da tecnologia na educação', ou cole uma proposta completa para gerar variações..."
                 value={generationContext}
                 onChange={(e) => setGenerationContext(e.target.value)}
-                className="min-h-[80px] sm:min-h-[100px] border-blue-200 focus:border-blue-400 bg-white resize-y text-xs sm:text-sm"
+                className="min-h-[120px] border-blue-200 focus:border-blue-400 bg-white resize-y text-sm mb-4"
                 data-testid="textarea-generation-context"
               />
-              <p className="text-[10px] sm:text-xs text-blue-600 mt-1 sm:mt-1.5">
-                💡 <span className="font-medium">Dica:</span> Mais detalhes = proposta mais personalizada.
-              </p>
-              
-              {/* Botão Gerar com IA - visível apenas em mobile e tablet */}
-              <div className="md:hidden mt-2">
-                <Button 
-                  onClick={handleGenerateNew}
-                  disabled={generateMutation.isPending || searchMutation.isPending}
-                  className="w-full bg-gradient-to-r from-bright-blue to-dark-blue hover:from-dark-blue hover:to-bright-blue text-white border-0 h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
-                  data-testid="button-generate-mobile"
-                >
-                  {(generateMutation.isPending || searchMutation.isPending) ? (
-                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
-                  ) : (
-                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  )}
-                  <span className="text-xs sm:text-sm">{hasShownInitialCacheResults ? "Mais Opções" : "Gerar com IA"}</span>
-                </Button>
+              <div className="bg-blue-100 border border-blue-300 rounded-lg p-3 mb-4">
+                <p className="text-xs text-blue-800">
+                  💡 <span className="font-semibold">Dica:</span> Quanto mais detalhes você fornecer (tema, contexto, palavras-chave), mais personalizada e relevante será a proposta gerada pela IA.
+                </p>
               </div>
+              
+              <Button 
+                onClick={handleGenerateNew}
+                disabled={generateMutation.isPending}
+                className="w-full bg-gradient-to-r from-bright-blue to-purple-600 hover:from-purple-600 hover:to-bright-blue text-white border-0 h-12 text-base font-semibold shadow-lg"
+                data-testid="button-generate"
+              >
+                {generateMutation.isPending ? (
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                ) : (
+                  <Sparkles className="w-5 h-5 mr-2" />
+                )}
+                <span>{hasShownInitialCacheResults ? "Gerar Mais Propostas" : "Gerar Propostas com IA"}</span>
+              </Button>
             </div>
           </div>
         </LiquidGlassCard>
