@@ -4396,7 +4396,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await geminiService.extractTextFromImage(req.file.buffer, req.file.mimetype);
 
       // Calculate cost (Gemini 2.0 Flash pricing: $0.10/$0.40 per million tokens)
-      const usdToB RL = await getUSDtoBRLRate();
+      const { currencyService } = await import('./currency-service');
+      const usdToBRL = await currencyService.getUSDtoBRL();
       const costUSD = (result.promptTokens * 0.10 / 1_000_000) + (result.outputTokens * 0.40 / 1_000_000);
       const costBRL = costUSD * usdToBRL;
       const costCentavos = Math.round(costBRL * 100);
