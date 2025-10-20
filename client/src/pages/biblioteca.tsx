@@ -1005,7 +1005,7 @@ export default function BibliotecaPage() {
                             (selectedCategory === "proposta" && file.type === "Proposta") ||
                             (selectedCategory === "textosModificados" && file.type === "Texto Modificado") ||
                             (selectedCategory === "roteiros" && file.type === "Roteiro Personalizado") ||
-                            (selectedCategory === "brainstormings" && file.type === "Brainstorming") ||
+                            (selectedCategory === "ideias" && file.type === "Brainstorming") ||
                             (selectedCategory === "simulados" && file.type === "Simulados");
       return matchesSearch && matchesCategory;
     })
@@ -1171,13 +1171,13 @@ export default function BibliotecaPage() {
                   Roteiros
                 </Button>
                 <Button
-                  variant={selectedCategory === "brainstormings" ? "default" : "secondary"}
+                  variant={selectedCategory === "ideias" ? "default" : "secondary"}
                   size="sm"
                   className="w-full h-8 px-2 text-xs rounded-full truncate overflow-hidden text-ellipsis whitespace-nowrap sm:w-auto sm:flex-shrink-0 sm:px-3"
-                  onClick={() => setSelectedCategory("brainstormings")}
-                  data-testid="filter-brainstormings"
+                  onClick={() => setSelectedCategory("ideias")}
+                  data-testid="filter-ideias"
                 >
-                  Brainstormings
+                  Ideias Refinadas
                 </Button>
                 <Button
                   variant={selectedCategory === "simulados" ? "default" : "secondary"}
@@ -1262,7 +1262,7 @@ export default function BibliotecaPage() {
             <LiquidGlassCard className="p-4 text-center">
               <MessageSquare className="mx-auto mb-2 text-purple-600" size={24} />
               <div className="text-2xl font-bold text-dark-blue">{bibliotecaData.brainstormings.length}</div>
-              <div className="text-sm text-soft-gray">Brainstormings</div>
+              <div className="text-sm text-soft-gray">Ideias Refinadas</div>
             </LiquidGlassCard>
 
             <LiquidGlassCard className="p-4 text-center">
