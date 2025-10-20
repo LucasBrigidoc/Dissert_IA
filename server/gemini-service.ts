@@ -1045,6 +1045,85 @@ Retorne APENAS um JSON com esta estrutura:
       };
     }
   }
+
+  // OCR - Extract text from image using Gemini Vision
+  async extractTextFromImage(imageBuffer: Buffer, mimeType: string): Promise<{ text: string; tokensUsed: number; promptTokens: number; outputTokens: number }> {
+    if (!this.hasApiKey || !this.genAI) {
+      throw new Error("GEMINI_API_KEY não configurada. Configure a chave da API para usar OCR.");
+    }
+
+    try {
+      // Use vision model
+      const visionModel = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+
+      // Convert buffer to base64
+      const base64Image = imageBuffer.toString('base64');
+
+      const prompt = `Você é um assistente especializado em OCR (reconhecimento de texto em imagens).
+
+**TAREFA**: Extraia TODO o texto desta imagem de redação escrita à mão.
+
+**INSTRUÇÕES IMPORTANTES**:
+1. Transcreva EXATAMENTE o texto como está escrito, mantendo a ortografia original (mesmo se houver erros)
+2. Preserve quebras de linha e parágrafos
+3. Se houver palavras ilegíveis, use [?] no lugar
+4. Não corrija erros ortográficos - mantenha como está escrito
+5. Não adicione comentários ou observações
+6. Retorne APENAS o texto extraído, nada mais
+
+Extraia o texto agora:`;
+
+      const result = await visionModel.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: base64Image,
+            mimeType: mimeType
+          }
+        }
+      ]);
+
+      const response = result.response;
+      const extractedText = response.text();
+
+      // Get token usage
+      const usageMetadata = response.usageMetadata || {};
+      const rawPromptTokens = usageMetadata.promptTokenCount || 0;
+      const rawOutputTokensValue = usageMetadata.candidatesTokenCount;
+      const rawOutputTokens = Array.isArray(rawOutputTokensValue) 
+        ? rawOutputTokensValue.reduce((sum: number, count: number) => sum + (count || 0), 0)
+        : (rawOutputTokensValue || 0);
+      const totalTokens = usageMetadata.totalTokenCount || 0;
+
+      // Reconcile tokens
+      let promptTokens = rawPromptTokens;
+      let outputTokens = rawOutputTokens;
+      
+      if (totalTokens > 0 && (rawPromptTokens + rawOutputTokens) !== totalTokens) {
+        const rawSum = rawPromptTokens + rawOutputTokens;
+        if (rawSum > 0) {
+          const ratio = totalTokens / rawSum;
+          promptTokens = Math.round(rawPromptTokens * ratio);
+          outputTokens = totalTokens - promptTokens;
+        } else {
+          promptTokens = Math.floor(totalTokens * 0.7);
+          outputTokens = totalTokens - promptTokens;
+        }
+      }
+
+      console.log(`📸 OCR completed - Tokens: ${promptTokens} in + ${outputTokens} out = ${totalTokens} total`);
+
+      return {
+        text: extractedText,
+        tokensUsed: totalTokens,
+        promptTokens,
+        outputTokens
+      };
+    } catch (error) {
+      console.error("❌ Erro no OCR:", error);
+      throw new Error("Erro ao extrair texto da imagem. Tente novamente.");
+    }
+  }
 }
 
 export const geminiService = new GeminiService();

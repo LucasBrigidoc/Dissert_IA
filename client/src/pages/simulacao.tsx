@@ -21,7 +21,10 @@ import {
   Lightbulb,
   X,
   Edit3,
-  BarChart3
+  BarChart3,
+  Camera,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import {
   Dialog,
@@ -95,6 +98,10 @@ export default function SimulacaoPage() {
   const [showTimeDetails, setShowTimeDetails] = useState(false);
   const [showCorrectionResult, setShowCorrectionResult] = useState(false);
   const [correctionData, setCorrectionData] = useState<any>(null);
+  
+  // OCR Upload state
+  const [isUploadingOCR, setIsUploadingOCR] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Checkpoint system
   const [checkpoints, setCheckpoints] = useState([
@@ -376,6 +383,94 @@ export default function SimulacaoPage() {
   };
 
   const { toast } = useToast();
+  
+  // OCR Upload handler
+  const handleOCRUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: "Formato inválido",
+        description: "Por favor, envie uma imagem nos formatos: JPG, PNG, WEBP ou HEIC",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "O tamanho máximo permitido é 10MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUploadingOCR(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/ocr/extract-text', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        
+        // Handle rate limit error
+        if (response.status === 403) {
+          toast({
+            title: error.upgradeRequired ? "Limite atingido" : "Limite semanal atingido",
+            description: error.message,
+            variant: "destructive",
+            duration: 7000
+          });
+          return;
+        }
+        
+        throw new Error(error.message || 'Erro ao processar imagem');
+      }
+
+      const data = await response.json();
+      
+      // Insert extracted text into essay text area
+      setEssayText(prevText => {
+        // If there's existing text, add a separator
+        const separator = prevText.trim() ? '\n\n' : '';
+        return prevText + separator + data.text;
+      });
+
+      // Refresh AI usage stats
+      await refreshAIUsageStats(queryClient);
+
+      toast({
+        title: "✅ Texto extraído com sucesso!",
+        description: `${data.text.length} caracteres foram adicionados à sua redação.`,
+        duration: 4000
+      });
+
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('OCR upload error:', error);
+      toast({
+        title: "Erro ao extrair texto",
+        description: error instanceof Error ? error.message : "Tente novamente",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploadingOCR(false);
+    }
+  };
   
   // Correction mutation
   const correctEssayMutation = useMutation({
@@ -752,7 +847,41 @@ export default function SimulacaoPage() {
         <LiquidGlassCard className="bg-gradient-to-br from-white/80 to-bright-blue/5 border-bright-blue/20">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-dark-blue">Sua Redação</h3>
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg font-semibold text-dark-blue">Sua Redação</h3>
+                
+                {/* OCR Upload Button */}
+                <div className="relative">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif"
+                    onChange={handleOCRUpload}
+                    className="hidden"
+                    data-testid="input-ocr-file"
+                  />
+                  <Button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingOCR}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs gap-1.5 border-bright-blue/30 hover:bg-bright-blue/10 hover:border-bright-blue/50 transition-all"
+                    data-testid="button-ocr-upload"
+                  >
+                    {isUploadingOCR ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <span>Processando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="h-3.5 w-3.5" />
+                        <span>Digitalizar Imagem</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
               
               {/* Word Counter - Conditional */}
               {config.showWordCount && (

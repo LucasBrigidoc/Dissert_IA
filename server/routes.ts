@@ -4342,6 +4342,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== OCR ROUTES =====================
+
+  // Configure multer for image upload in memory
+  const imageUpload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+      // Only allow image files
+      const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+      if (allowedMimes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Apenas arquivos de imagem são permitidos (JPG, PNG, WEBP, HEIC)'));
+      }
+    },
+    limits: {
+      fileSize: 10 * 1024 * 1024 // 10MB limit
+    }
+  });
+
+  // Extract text from image using OCR
+  app.post("/api/ocr/extract-text", imageUpload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Nenhuma imagem foi enviada" });
+      }
+
+      const identifier = getAITrackingIdentifier(req);
+      const planType = req.session.userId 
+        ? await subscriptionService.getUserPlanType(req.session.userId)
+        : 'free';
+
+      // Check AI usage limits
+      const estimatedCost = await weeklyCostLimitingService.getEstimatedCost(identifier, 'ocr_extract', planType);
+      const weeklyCheck = await weeklyCostLimitingService.checkWeeklyCostLimit(identifier, estimatedCost, planType);
+      
+      if (!weeklyCheck.allowed) {
+        const limitMessage = planType === 'free' 
+          ? `Limite quinzenal de R$0,90 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$0,90. Faça upgrade para o Plano Pro e tenha R$5,00 semanais!`
+          : `Limite semanal de R$5,00 atingido. Você usou ${(weeklyCheck.currentUsageCentavos / 100).toFixed(2)} de R$5,00. Aguarde ${weeklyCheck.daysUntilReset} dia(s) para resetar.`;
+        
+        return res.status(403).json({ 
+          message: limitMessage,
+          upgradeRequired: planType === 'free',
+          action: planType === 'free' ? "upgrade" : "wait",
+          daysUntilReset: weeklyCheck.daysUntilReset
+        });
+      }
+
+      console.log(`📸 OCR request for image: ${req.file.originalname} (${req.file.size} bytes)`);
+
+      // Extract text using Gemini Vision
+      const result = await geminiService.extractTextFromImage(req.file.buffer, req.file.mimetype);
+
+      // Calculate cost (Gemini 2.0 Flash pricing: $0.10/$0.40 per million tokens)
+      const usdToB RL = await getUSDtoBRLRate();
+      const costUSD = (result.promptTokens * 0.10 / 1_000_000) + (result.outputTokens * 0.40 / 1_000_000);
+      const costBRL = costUSD * usdToBRL;
+      const costCentavos = Math.round(costBRL * 100);
+
+      // Track AI usage
+      await trackAIUsage({
+        identifier,
+        operation: 'ocr_extract',
+        costCentavos,
+        planType: planType === 'pro' ? 'pro' : 'free',
+        tokensInput: result.promptTokens,
+        tokensOutput: result.outputTokens,
+        userId: req.session.userId,
+        ipAddress: (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.socket.remoteAddress || 'unknown',
+        source: 'ai',
+        modelUsed: 'gemini-2.0-flash-exp'
+      });
+
+      console.log(`✅ OCR completed - Extracted ${result.text.length} characters - Cost: R$ ${(costCentavos / 100).toFixed(2)}`);
+
+      res.json({
+        success: true,
+        text: result.text,
+        tokensUsed: result.tokensUsed,
+        cost: costCentavos / 100 // Return in BRL
+      });
+    } catch (error) {
+      console.error("OCR error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Erro ao processar imagem. Tente novamente." 
+      });
+    }
+  });
+
   // ===================== USER SCORES ROUTES =====================
 
   // Get all user scores (used by dashboard)
