@@ -386,19 +386,81 @@ export default function Propostas() {
               <Sparkles className="w-5 h-5 text-bright-blue" />
               <h2 className="text-xl font-semibold text-dark-blue">Criar Propostas com Inteligência Artificial</h2>
             </div>
+
+            {/* Filtros de Personalização */}
+            <div className="bg-white border border-blue-200 rounded-lg p-4 mb-4">
+              <h3 className="text-sm font-semibold text-dark-blue mb-3 flex items-center gap-2">
+                <span>🎯</span>
+                Personalize sua proposta
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-soft-gray mb-2">Tipo de Exame</label>
+                  <Select value={selectedExamType} onValueChange={setSelectedExamType}>
+                    <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-exam-type">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os tipos</SelectItem>
+                      <SelectItem value="enem">ENEM</SelectItem>
+                      <SelectItem value="vestibular">Vestibular</SelectItem>
+                      <SelectItem value="concurso">Concurso</SelectItem>
+                      <SelectItem value="simulado">Simulado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-soft-gray mb-2">Tema</label>
+                  <Select value={selectedTheme} onValueChange={setSelectedTheme}>
+                    <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-theme">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os temas</SelectItem>
+                      <SelectItem value="social">Sociedade</SelectItem>
+                      <SelectItem value="environment">Meio Ambiente</SelectItem>
+                      <SelectItem value="technology">Tecnologia</SelectItem>
+                      <SelectItem value="education">Educação</SelectItem>
+                      <SelectItem value="politics">Política</SelectItem>
+                      <SelectItem value="economy">Economia</SelectItem>
+                      <SelectItem value="culture">Cultura</SelectItem>
+                      <SelectItem value="health">Saúde</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-soft-gray mb-2">Dificuldade</label>
+                  <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+                    <SelectTrigger className="border-soft-gray/30 focus:border-bright-blue" data-testid="select-difficulty">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas</SelectItem>
+                      <SelectItem value="facil">Fácil</SelectItem>
+                      <SelectItem value="medio">Médio</SelectItem>
+                      <SelectItem value="dificil">Difícil</SelectItem>
+                      <SelectItem value="muito-dificil">Muito Difícil</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
             
+            {/* Campo de Contexto */}
             <div className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-5">
               <div className="mb-4">
                 <label className="block text-sm font-semibold text-dark-blue mb-2">
                   <Lightbulb className="w-4 h-4 inline mr-2" />
-                  Contexto para Geração (Opcional)
+                  Contexto Adicional (Opcional)
                 </label>
                 <p className="text-sm text-blue-700 mb-3 leading-relaxed">
-                  Forneça palavras-chave, temas ou até mesmo cole uma proposta existente para a IA gerar variações personalizadas e relevantes.
+                  Forneça palavras-chave específicas ou cole uma proposta existente para a IA gerar variações personalizadas.
                 </p>
               </div>
               <Textarea
-                placeholder="Ex: 'desigualdade social no Brasil', 'impactos da tecnologia na educação', ou cole uma proposta completa para gerar variações..."
+                placeholder="Ex: 'desigualdade social no Brasil', 'impactos da tecnologia na educação', ou cole uma proposta completa..."
                 value={generationContext}
                 onChange={(e) => setGenerationContext(e.target.value)}
                 className="min-h-[120px] border-blue-200 focus:border-blue-400 bg-white resize-y text-sm mb-4"
@@ -406,7 +468,7 @@ export default function Propostas() {
               />
               <div className="bg-blue-100 border border-blue-300 rounded-lg p-3 mb-4">
                 <p className="text-xs text-blue-800">
-                  💡 <span className="font-semibold">Dica:</span> Quanto mais detalhes você fornecer (tema, contexto, palavras-chave), mais personalizada e relevante será a proposta gerada pela IA.
+                  💡 <span className="font-semibold">Dica:</span> Combine os filtros acima com o contexto adicional para obter propostas altamente personalizadas e relevantes para seu estudo.
                 </p>
               </div>
               
