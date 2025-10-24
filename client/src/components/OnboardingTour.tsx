@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -7,56 +7,74 @@ interface OnboardingStep {
   title: string;
   description: string;
   position: 'top' | 'bottom' | 'left' | 'right' | 'center';
+  icon?: React.ReactNode;
+  featureLabel?: string;
 }
 
 const onboardingSteps: OnboardingStep[] = [
   {
     target: 'intro',
-    title: '🎉 Bem-vindo ao DISSERTIA!',
+    title: 'Bem-vindo ao DISSERTIA!',
     description: 'Vamos fazer um tour rápido para você conhecer as principais funcionalidades da plataforma. Este guia vai te ajudar a aproveitar ao máximo sua experiência.',
-    position: 'center'
+    position: 'center',
+    icon: <PartyPopper className="text-bright-blue" size={24} />,
+    featureLabel: 'Início'
   },
   {
     target: '[data-testid="card-welcome-exams"]',
-    title: '📅 Suas Próximas Provas',
+    title: 'Suas Próximas Provas',
     description: 'Aqui você pode visualizar suas próximas provas e compromissos. Clique em "Gerenciar Provas" para adicionar, editar ou remover provas. Mantenha seu calendário organizado!',
-    position: 'bottom'
+    position: 'bottom',
+    icon: <Calendar className="text-bright-blue" size={24} />,
+    featureLabel: 'Gestão de Provas'
   },
   {
     target: '[data-testid="card-goals"]',
-    title: '🎯 Metas da Semana',
+    title: 'Metas da Semana',
     description: 'Defina e acompanhe suas metas semanais. Marque as tarefas como concluídas para acompanhar seu progresso. Você pode adicionar novas metas clicando em "Gerenciar Metas".',
-    position: 'bottom'
+    position: 'bottom',
+    icon: <Target className="text-bright-blue" size={24} />,
+    featureLabel: 'Sistema de Metas'
   },
   {
     target: '[data-testid="card-improvement-points"]',
-    title: '📊 Pontos por Competência',
+    title: 'Pontos por Competência',
     description: 'Visualize seu desempenho em cada competência do ENEM. O gráfico mostra suas médias e áreas que precisam de mais atenção. Quanto mais redações você fizer, mais precisa será esta análise!',
-    position: 'bottom'
+    position: 'bottom',
+    icon: <BarChart3 className="text-bright-blue" size={24} />,
+    featureLabel: 'Análise de Desempenho'
   },
   {
     target: '[data-testid="button-nav-functionalities"]',
-    title: '🚀 Explorar Funcionalidades',
+    title: 'Explorar Funcionalidades',
     description: 'Clique aqui para ver TODAS as funcionalidades disponíveis: Correção de Redações, Banco de Repertórios, Gerador de Títulos, Análise de Competências e muito mais!',
-    position: 'bottom'
+    position: 'bottom',
+    icon: <Zap className="text-bright-blue" size={24} />,
+    featureLabel: 'Menu de Funcionalidades'
   },
   {
     target: '[data-testid="button-nav-newsletter"]',
-    title: '📰 Newsletter Semanal',
+    title: 'Newsletter Semanal',
     description: 'Receba resumos semanais com temas de atualidades, repertórios culturais e dicas para suas redações. Mantenha-se atualizado com conteúdo relevante!',
-    position: 'bottom'
+    position: 'bottom',
+    icon: <Mail className="text-bright-blue" size={24} />,
+    featureLabel: 'Conteúdo Semanal'
   },
   {
     target: '[data-testid="button-nav-settings"]',
-    title: '⚙️ Configurações',
+    title: 'Configurações',
     description: 'Personalize sua experiência, gerencie seu plano, escolha quais funcionalidades aparecem na Home e muito mais. Explore as opções disponíveis!',
-    position: 'bottom'
+    position: 'bottom',
+    icon: <Settings className="text-bright-blue" size={24} />,
+    featureLabel: 'Personalização'
   },
   {
     target: 'finish',
-    title: '✅ Você está pronto!',
+    title: 'Você está pronto!',
     description: 'Agora você conhece todas as funcionalidades principais do DISSERTIA. Comece explorando as funcionalidades ou fazendo sua primeira simulação de redação. Boa sorte nos estudos!',
-    position: 'center'
+    position: 'center',
+    icon: <CheckCircle className="text-bright-blue" size={24} />,
+    featureLabel: 'Concluído'
   }
 ];
 
@@ -171,23 +189,40 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
 
       {/* Tooltip */}
       <div
-        className="fixed z-[9999] w-[90vw] max-w-md"
+        className="fixed z-[9999] w-[90vw] max-w-lg"
         style={getTooltipPosition()}
       >
-        <div className="bg-white rounded-2xl shadow-2xl border-2 border-bright-blue/30 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-bright-blue to-dark-blue p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <Sparkles className="text-bright-blue" size={18} />
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border-2 border-bright-blue/30 overflow-hidden">
+          {/* Feature Label Badge */}
+          {step.featureLabel && (
+            <div className="bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 px-4 py-2 border-b border-bright-blue/20">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-bright-blue/20 rounded-md flex items-center justify-center">
+                  {step.icon}
                 </div>
-                <h3 className="text-lg font-bold text-white">{step.title}</h3>
+                <span className="text-xs font-semibold text-bright-blue uppercase tracking-wide">
+                  {step.featureLabel}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Header */}
+          <div className="bg-gradient-to-r from-bright-blue to-dark-blue p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    {step.icon || <Sparkles className="text-bright-blue" size={20} />}
+                  </div>
+                  <h3 className="text-xl font-bold text-white leading-tight">{step.title}</h3>
+                </div>
               </div>
               <button
                 onClick={onSkip}
-                className="text-white/80 hover:text-white transition-colors"
+                className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg flex-shrink-0"
                 data-testid="button-skip-onboarding"
+                aria-label="Pular tour"
               >
                 <X size={20} />
               </button>
@@ -196,47 +231,72 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
 
           {/* Content */}
           <div className="p-6">
-            <p className="text-soft-gray text-sm leading-relaxed mb-4">
+            <p className="text-soft-gray dark:text-gray-300 text-base leading-relaxed mb-6">
               {step.description}
             </p>
 
             {/* Progress */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-soft-gray">
-                  Passo {currentStep + 1} de {onboardingSteps.length}
-                </span>
-                <span className="text-xs text-bright-blue font-medium">
-                  {Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}%
-                </span>
+            <div className="mb-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-soft-gray dark:text-gray-400">
+                    Passo {currentStep + 1} de {onboardingSteps.length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    {onboardingSteps.map((_, idx) => (
+                      <div
+                        key={idx}
+                        className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                          idx <= currentStep
+                            ? 'bg-bright-blue w-3'
+                            : 'bg-gray-300 dark:bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-bright-blue font-bold ml-1">
+                    {Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}%
+                  </span>
+                </div>
               </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
                 <div
-                  className="h-full bg-gradient-to-r from-bright-blue to-dark-blue transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-bright-blue to-dark-blue transition-all duration-500 ease-out shadow-lg"
                   style={{ width: `${((currentStep + 1) / onboardingSteps.length) * 100}%` }}
                 />
               </div>
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
               <Button
                 onClick={handlePrevious}
                 variant="outline"
                 disabled={isFirstStep}
-                className="flex-1 border-soft-gray/30 disabled:opacity-50"
+                className="flex-1 border-soft-gray/30 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 h-11"
                 data-testid="button-previous-step"
               >
-                <ChevronLeft size={16} className="mr-1" />
+                <ChevronLeft size={18} className="mr-1" />
                 Anterior
               </Button>
               <Button
                 onClick={handleNext}
-                className="flex-1 bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:opacity-90"
+                className="flex-1 bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:opacity-90 shadow-lg hover:shadow-xl transition-all h-11 font-semibold"
                 data-testid="button-next-step"
               >
-                {isLastStep ? 'Começar' : 'Próximo'}
-                <ChevronRight size={16} className="ml-1" />
+                {isLastStep ? (
+                  <>
+                    Começar
+                    <CheckCircle size={18} className="ml-1" />
+                  </>
+                ) : (
+                  <>
+                    Próximo
+                    <ChevronRight size={18} className="ml-1" />
+                  </>
+                )}
               </Button>
             </div>
           </div>
