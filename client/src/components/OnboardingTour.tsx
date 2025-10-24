@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper, ArrowDown, ArrowUp, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -165,25 +165,116 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
     return position;
   };
 
+  const getArrowIcon = () => {
+    if (!targetRect || step.position === 'center') return null;
+    
+    switch (step.position) {
+      case 'bottom':
+        return <ArrowUp size={24} className="text-bright-blue" />;
+      case 'top':
+        return <ArrowDown size={24} className="text-bright-blue" />;
+      case 'left':
+        return <ArrowRight size={24} className="text-bright-blue" />;
+      case 'right':
+        return <ArrowLeft size={24} className="text-bright-blue" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       {/* Overlay */}
       <div className="fixed inset-0 z-[9998]">
         {/* Darkened background */}
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
         
         {/* Highlight for target element */}
         {targetRect && step.target !== 'intro' && step.target !== 'finish' && (
-          <div
-            className="absolute border-4 border-bright-blue rounded-lg shadow-2xl shadow-bright-blue/50 pointer-events-none animate-pulse"
-            style={{
-              top: targetRect.top + window.scrollY - 8,
-              left: targetRect.left - 8,
-              width: targetRect.width + 16,
-              height: targetRect.height + 16,
-              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)',
-            }}
-          />
+          <>
+            {/* Multi-layer highlight effect */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: targetRect.top + window.scrollY - 12,
+                left: targetRect.left - 12,
+                width: targetRect.width + 24,
+                height: targetRect.height + 24,
+              }}
+            >
+              {/* Outer glow - animated */}
+              <div className="absolute inset-0 border-4 border-bright-blue/40 rounded-xl animate-ping" />
+              
+              {/* Middle ring */}
+              <div className="absolute inset-0 border-4 border-bright-blue/60 rounded-xl shadow-2xl shadow-bright-blue/50" />
+              
+              {/* Inner highlight - pulsing */}
+              <div className="absolute inset-0 border-4 border-bright-blue rounded-xl shadow-2xl shadow-bright-blue/70 animate-pulse">
+                {/* Corner indicators */}
+                <div className="absolute -top-2 -left-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
+                <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
+                <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
+              </div>
+
+              {/* Spotlight effect */}
+              <div 
+                className="absolute inset-0 rounded-xl"
+                style={{
+                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(59, 130, 246, 0.3)',
+                  background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)'
+                }}
+              />
+            </div>
+
+            {/* Floating label indicator */}
+            <div
+              className="absolute pointer-events-none z-[9999] animate-bounce"
+              style={{
+                top: targetRect.top + window.scrollY - 60,
+                left: targetRect.left + targetRect.width / 2,
+                transform: 'translateX(-50%)'
+              }}
+            >
+              <div className="bg-bright-blue text-white px-4 py-2 rounded-full shadow-2xl shadow-bright-blue/50 flex items-center gap-2 font-semibold text-sm whitespace-nowrap">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                Veja aqui
+                <ArrowDown size={16} className="animate-bounce" />
+              </div>
+            </div>
+
+            {/* Connecting line/arrow from tooltip to element */}
+            {step.position !== 'center' && (
+              <div
+                className="absolute pointer-events-none z-[9999]"
+                style={(() => {
+                  const tooltipPos = getTooltipPosition();
+                  const spacing = 20;
+                  
+                  switch (step.position) {
+                    case 'bottom':
+                      return {
+                        top: targetRect.bottom + window.scrollY,
+                        left: targetRect.left + targetRect.width / 2,
+                        transform: 'translateX(-50%)'
+                      };
+                    case 'top':
+                      return {
+                        bottom: window.innerHeight - (targetRect.top + window.scrollY),
+                        left: targetRect.left + targetRect.width / 2,
+                        transform: 'translateX(-50%)'
+                      };
+                    default:
+                      return {};
+                  }
+                })()}
+              >
+                <div className="flex flex-col items-center animate-pulse">
+                  {getArrowIcon()}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
