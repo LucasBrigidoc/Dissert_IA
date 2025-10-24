@@ -230,16 +230,33 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
             {/* Floating label indicator */}
             <div
               className="absolute pointer-events-none z-[9999] animate-bounce"
-              style={{
-                top: targetRect.top + window.scrollY - 60,
-                left: targetRect.left + targetRect.width / 2,
-                transform: 'translateX(-50%)'
-              }}
+              style={(() => {
+                const isNearTop = targetRect.top < 100;
+                const isNearBottom = targetRect.bottom > window.innerHeight - 100;
+                
+                if (isNearTop) {
+                  return {
+                    top: targetRect.bottom + window.scrollY + 20,
+                    left: targetRect.left + targetRect.width / 2,
+                    transform: 'translateX(-50%)'
+                  };
+                } else {
+                  return {
+                    top: targetRect.top + window.scrollY - 60,
+                    left: targetRect.left + targetRect.width / 2,
+                    transform: 'translateX(-50%)'
+                  };
+                }
+              })()}
             >
               <div className="bg-bright-blue text-white px-4 py-2 rounded-full shadow-2xl shadow-bright-blue/50 flex items-center gap-2 font-semibold text-sm whitespace-nowrap">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                 Veja aqui
-                <ArrowDown size={16} className="animate-bounce" />
+                {targetRect.top < 100 ? (
+                  <ArrowUp size={16} className="animate-bounce" />
+                ) : (
+                  <ArrowDown size={16} className="animate-bounce" />
+                )}
               </div>
             </div>
 
