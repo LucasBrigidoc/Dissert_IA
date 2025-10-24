@@ -35,12 +35,6 @@ const onboardingSteps: OnboardingStep[] = [
     position: 'bottom'
   },
   {
-    target: '[data-testid="card-visible-features"]',
-    title: '⭐ Funcionalidades em Destaque',
-    description: 'Estas são as funcionalidades mais importantes da plataforma. Você pode personalizar quais aparecem aqui em Configurações. Clique em qualquer card para usar a funcionalidade!',
-    position: 'top'
-  },
-  {
     target: '[data-testid="button-nav-functionalities"]',
     title: '🚀 Explorar Funcionalidades',
     description: 'Clique aqui para ver TODAS as funcionalidades disponíveis: Correção de Redações, Banco de Repertórios, Gerador de Títulos, Análise de Competências e muito mais!',
