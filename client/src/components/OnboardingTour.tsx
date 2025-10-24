@@ -45,33 +45,9 @@ const onboardingSteps: OnboardingStep[] = [
     featureLabel: 'Análise de Desempenho'
   },
   {
-    target: '[data-testid="button-nav-functionalities"]',
-    title: 'Explorar Funcionalidades',
-    description: 'Clique aqui para ver TODAS as funcionalidades disponíveis: Correção de Redações, Banco de Repertórios, Gerador de Títulos, Análise de Competências e muito mais!',
-    position: 'bottom',
-    icon: <Zap className="text-bright-blue" size={24} />,
-    featureLabel: 'Menu de Funcionalidades'
-  },
-  {
-    target: '[data-testid="button-nav-newsletter"]',
-    title: 'Newsletter Semanal',
-    description: 'Receba resumos semanais com temas de atualidades, repertórios culturais e dicas para suas redações. Mantenha-se atualizado com conteúdo relevante!',
-    position: 'bottom',
-    icon: <Mail className="text-bright-blue" size={24} />,
-    featureLabel: 'Conteúdo Semanal'
-  },
-  {
-    target: '[data-testid="button-nav-settings"]',
-    title: 'Configurações',
-    description: 'Personalize sua experiência, gerencie seu plano, escolha quais funcionalidades aparecem na Home e muito mais. Explore as opções disponíveis!',
-    position: 'bottom',
-    icon: <Settings className="text-bright-blue" size={24} />,
-    featureLabel: 'Personalização'
-  },
-  {
     target: 'finish',
     title: 'Você está pronto!',
-    description: 'Agora você conhece todas as funcionalidades principais do DISSERTIA. Comece explorando as funcionalidades ou fazendo sua primeira simulação de redação. Boa sorte nos estudos!',
+    description: 'Agora você conhece as principais funcionalidades do DISSERTIA. Explore o menu superior para descobrir todas as ferramentas disponíveis: Funcionalidades, Newsletter e Configurações. Boa sorte nos estudos!',
     position: 'center',
     icon: <CheckCircle className="text-bright-blue" size={24} />,
     featureLabel: 'Concluído'
