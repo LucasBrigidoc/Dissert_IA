@@ -326,18 +326,25 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
       >
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border-2 border-bright-blue/30 overflow-hidden">
           {/* Feature Label Badge */}
-          {step.featureLabel && (
-            <div className="bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 px-4 py-2 border-b border-bright-blue/20">
+          <div className="bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 px-4 py-2 border-b border-bright-blue/20">
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-bright-blue/20 rounded-md flex items-center justify-center">
                   {step.icon}
                 </div>
                 <span className="text-xs font-semibold text-bright-blue uppercase tracking-wide">
-                  {step.featureLabel}
+                  Elementos da Home
                 </span>
               </div>
+              <button
+                onClick={onSkip}
+                className="text-bright-blue hover:text-dark-blue transition-colors text-xs font-semibold hover:underline"
+                data-testid="button-skip-onboarding"
+              >
+                Pular
+              </button>
             </div>
-          )}
+          </div>
 
           {/* Header */}
           <div className="bg-gradient-to-r from-bright-blue to-dark-blue p-5">
@@ -350,14 +357,6 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
                   <h3 className="text-xl font-bold text-white leading-tight">{step.title}</h3>
                 </div>
               </div>
-              <button
-                onClick={onSkip}
-                className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg flex-shrink-0"
-                data-testid="button-skip-onboarding"
-                aria-label="Pular tour"
-              >
-                <X size={20} />
-              </button>
             </div>
           </div>
 
