@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper, ArrowDown, ArrowUp, ArrowLeft, ArrowRight } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper, ArrowDown, ArrowUp, ArrowLeft, ArrowRight, TrendingUp, Clock, BookOpen, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -45,9 +45,57 @@ const onboardingSteps: OnboardingStep[] = [
     featureLabel: 'Análise de Desempenho'
   },
   {
+    target: '[data-testid="card-progress"]',
+    title: 'Seu Progresso Geral',
+    description: 'Acompanhe suas estatísticas gerais: média de pontuação, meta de nota, redações feitas e horas de estudo acumuladas. Defina sua meta de nota para visualizar seu progresso!',
+    position: 'bottom',
+    icon: <TrendingUp className="text-bright-blue" size={24} />,
+    featureLabel: 'Estatísticas Gerais'
+  },
+  {
+    target: '[data-testid="card-evolution-chart"]',
+    title: 'Gráfico de Evolução',
+    description: 'Visualize a evolução das suas notas ao longo do tempo. O gráfico mostra suas pontuações e você pode filtrar por período para analisar seu progresso.',
+    position: 'bottom',
+    icon: <TrendingUp className="text-bright-blue" size={24} />,
+    featureLabel: 'Evolução de Notas'
+  },
+  {
+    target: '[data-testid="card-simulator-time"]',
+    title: 'Tempo de Simulação',
+    description: 'Monitore quanto tempo você leva em cada etapa da redação: brainstorm, rascunho e passa a limpo. Isso te ajuda a gerenciar melhor o tempo durante as provas!',
+    position: 'bottom',
+    icon: <Clock className="text-bright-blue" size={24} />,
+    featureLabel: 'Gestão de Tempo'
+  },
+  {
+    target: '[data-testid="card-study-schedule"]',
+    title: 'Cronograma de Estudos',
+    description: 'Organize sua rotina semanal de estudos. Defina quantas horas você vai estudar por dia e marque os dias concluídos para manter sua disciplina!',
+    position: 'bottom',
+    icon: <BookOpen className="text-bright-blue" size={24} />,
+    featureLabel: 'Rotina de Estudos'
+  },
+  {
+    target: '[data-testid="card-newsletter"]',
+    title: 'Newsletter Semanal',
+    description: 'Acesse conteúdos semanais com temas de atualidades, repertórios culturais e dicas para suas redações. Explore os artigos disponíveis para enriquecer seu conhecimento!',
+    position: 'bottom',
+    icon: <Mail className="text-bright-blue" size={24} />,
+    featureLabel: 'Conteúdo Semanal'
+  },
+  {
+    target: '[data-testid="card-simulador-provas"]',
+    title: 'Simulador de Provas',
+    description: 'Acesse o simulador completo de redações. Pratique com temas reais e receba feedback detalhado sobre sua escrita. Ideal para treinar para o ENEM e vestibulares!',
+    position: 'bottom',
+    icon: <GraduationCap className="text-bright-blue" size={24} />,
+    featureLabel: 'Prática de Redação'
+  },
+  {
     target: 'finish',
     title: 'Você está pronto!',
-    description: 'Agora você conhece as principais funcionalidades do DISSERTIA. Explore o menu superior para descobrir todas as ferramentas disponíveis: Funcionalidades, Newsletter e Configurações. Boa sorte nos estudos!',
+    description: 'Agora você conhece todos os recursos da sua dashboard! Explore o menu superior para descobrir ainda mais ferramentas: Funcionalidades completas, Configurações e muito mais. Boa sorte nos estudos!',
     position: 'center',
     icon: <CheckCircle className="text-bright-blue" size={24} />,
     featureLabel: 'Concluído'
