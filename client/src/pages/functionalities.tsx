@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Newspaper, Archive, Grid3x3, Menu, PenTool } from "lucide-react";
@@ -6,11 +6,43 @@ import { Link, useLocation } from "wouter";
 import { mockFeatures } from "@/lib/mock-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { getInitials } from "@/lib/utils";
+import { FunctionalitiesOnboardingTour } from "@/components/FunctionalitiesOnboardingTour";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function FunctionalitiesPage() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if user should see functionalities onboarding tour
+  useEffect(() => {
+    const hasSeenFunctionalitiesOnboarding = localStorage.getItem('hasSeenFunctionalitiesOnboarding');
+    if (user && !hasSeenFunctionalitiesOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  const completeFunctionalitiesOnboardingMutation = useMutation({
+    mutationFn: async () => {
+      localStorage.setItem('hasSeenFunctionalitiesOnboarding', 'true');
+      return { success: true };
+    },
+    onSuccess: () => {
+      setShowOnboarding(false);
+    },
+  });
+
+  const handleOnboardingComplete = () => {
+    completeFunctionalitiesOnboardingMutation.mutate();
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenFunctionalitiesOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   const handleLogout = () => {
     setLocation("/");
@@ -380,6 +412,14 @@ export default function FunctionalitiesPage() {
           </div>
         </LiquidGlassCard>
       </div>
+
+      {/* Functionalities Onboarding Tour */}
+      {showOnboarding && (
+        <FunctionalitiesOnboardingTour
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
