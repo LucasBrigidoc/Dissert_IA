@@ -1473,6 +1473,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Complete onboarding tour
+  app.post("/api/complete-onboarding", requireAuth, async (req, res) => {
+    try {
+      const updatedUser = await storage.updateUser(req.user!.id, { hasCompletedOnboarding: true });
+      const { password: _, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Complete onboarding error:", error);
+      res.status(500).json({ message: "Erro ao completar onboarding" });
+    }
+  });
+
   // Get user competencies analysis (for dashboard "Pontos a Melhorar")
   app.get("/api/user-competencies", requireAuth, async (req, res) => {
     try {

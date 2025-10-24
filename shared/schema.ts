@@ -13,6 +13,7 @@ export const users = pgTable("users", {
   planId: varchar("plan_id").references(() => subscriptionPlans.id).default('plan-free'),
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  hasCompletedOnboarding: boolean("has_completed_onboarding").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

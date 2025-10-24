@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { OnboardingTour } from "@/components/OnboardingTour";
 
 interface ScoreData {
   id: number;
@@ -412,6 +413,7 @@ export default function Dashboard() {
   const [animatingGoals, setAnimatingGoals] = useState<Set<number>>(new Set());
   const [showInitialTargetSetup, setShowInitialTargetSetup] = useState(false);
   const [initialTargetScore, setInitialTargetScore] = useState(900);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Update newTargetScore when userProgress changes
   useEffect(() => {
@@ -419,6 +421,14 @@ export default function Dashboard() {
       setNewTargetScore(userProgress.targetScore ?? 900);
     }
   }, [userProgress?.targetScore]);
+
+  // Check if user should see onboarding tour
+  useEffect(() => {
+    if (user && !(user as any).hasCompletedOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
   
   // Map user exams from API to local state format with UUID mapping
   const exams = userExams?.map(exam => {
@@ -907,6 +917,24 @@ export default function Dashboard() {
       });
     },
   });
+
+  // Mutation for completing onboarding
+  const completeOnboardingMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("/api/complete-onboarding", {
+        method: "POST",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      setShowOnboarding(false);
+      toast({
+        title: "Bem-vindo ao DISSERTIA! 🎉",
+        description: "Agora você está pronto para começar a usar todas as funcionalidades!",
+      });
+    },
+  });
+
   const name = user?.name || "Usuário";
   
   // Filter scores based on selected period
@@ -3129,6 +3157,16 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
 
+        {/* Onboarding Tour */}
+        {showOnboarding && (
+          <OnboardingTour
+            onComplete={() => completeOnboardingMutation.mutate()}
+            onSkip={() => {
+              completeOnboardingMutation.mutate();
+              setShowOnboarding(false);
+            }}
+          />
+        )}
         
       </div>
     </div>
