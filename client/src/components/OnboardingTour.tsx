@@ -110,6 +110,7 @@ interface OnboardingTourProps {
 export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const [elementPreview, setElementPreview] = useState<string | null>(null);
 
   const step = onboardingSteps[currentStep];
   const isLastStep = currentStep === onboardingSteps.length - 1;
@@ -118,6 +119,7 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
   useEffect(() => {
     if (step.target === 'intro' || step.target === 'finish') {
       setTargetRect(null);
+      setElementPreview(null);
       return;
     }
 
@@ -126,6 +128,14 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
       const rect = element.getBoundingClientRect();
       setTargetRect(rect);
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Capture element preview
+      const htmlElement = element as HTMLElement;
+      const clone = htmlElement.cloneNode(true) as HTMLElement;
+      
+      // Get computed styles and create a preview
+      const computedStyle = window.getComputedStyle(htmlElement);
+      setElementPreview(htmlElement.innerHTML.substring(0, 500));
     }
   }, [currentStep, step.target]);
 
@@ -365,6 +375,48 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
             <p className="text-soft-gray dark:text-gray-300 text-base leading-relaxed mb-6">
               {step.description}
             </p>
+
+            {/* Element Preview */}
+            {targetRect && step.target !== 'intro' && step.target !== 'finish' && (
+              <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 border-2 border-bright-blue/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2 h-2 bg-bright-blue rounded-full animate-pulse" />
+                  <span className="text-xs font-semibold text-bright-blue uppercase tracking-wide">
+                    Prévia do Elemento
+                  </span>
+                </div>
+                <div 
+                  className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-inner border border-gray-200 dark:border-gray-700"
+                  style={{
+                    maxHeight: '200px',
+                    position: 'relative'
+                  }}
+                >
+                  {/* Visual representation */}
+                  <div className="p-4 flex items-center justify-center min-h-[150px]">
+                    <div className="text-center">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-2xl mb-3">
+                        {step.icon && <div className="scale-150">{step.icon}</div>}
+                      </div>
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {step.title}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 max-w-[250px]">
+                        Este elemento está destacado na página
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Decorative border effect */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-bright-blue/40 rounded-tl-lg" />
+                    <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-bright-blue/40 rounded-tr-lg" />
+                    <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-bright-blue/40 rounded-bl-lg" />
+                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-bright-blue/40 rounded-br-lg" />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Progress */}
             <div className="mb-5">
