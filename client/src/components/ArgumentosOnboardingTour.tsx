@@ -396,7 +396,7 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                       <Map className="text-sky-600 flex-shrink-0 mt-0.5" size={14} />
                       <div>
                         <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100">Ver Histórico</p>
-                        <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Visualiza toda a conversa em formato de mapa mental organizado.</p>
+                        <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Visualiza toda a conversa organizada por tópicos e seções.</p>
                       </div>
                     </div>
                   </div>
@@ -459,7 +459,7 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] text-bright-blue font-bold mt-0.5">2.</span>
-                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Clique em "Ver Histórico" para visualizar o mapa mental</p>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Clique em "Ver Histórico" para visualizar toda a estrutura</p>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] text-bright-blue font-bold mt-0.5">3.</span>
