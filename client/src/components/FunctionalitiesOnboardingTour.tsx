@@ -297,12 +297,13 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
           </div>
 
           <div className="p-4">
-            <p className="text-soft-gray dark:text-gray-300 text-sm leading-relaxed mb-4">
-              {step.description}
-            </p>
+            <div className="min-h-[320px] flex flex-col">
+              <p className="text-soft-gray dark:text-gray-300 text-sm leading-relaxed mb-4">
+                {step.description}
+              </p>
 
-            {step.target === 'categories' && (
-              <div className="mb-4 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-1">
+              {step.target === 'categories' && (
+                <div className="mb-4 flex-1 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-1">
                 <div className="space-y-2.5">
                   <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-lg p-2.5 border border-blue-200 dark:border-blue-700/50">
                     <div className="flex items-start gap-2.5">
@@ -386,10 +387,10 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                   </div>
                 </div>
               </div>
-            )}
+              )}
 
-            {targetRect && step.target !== 'intro' && step.target !== 'finish' && (
-              <div className="mb-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-3 border-2 border-bright-blue/20">
+              {targetRect && step.target !== 'intro' && step.target !== 'finish' && step.target !== 'categories' && (
+                <div className="mb-4 flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-3 border-2 border-bright-blue/20">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-bright-blue rounded-full animate-pulse" />
@@ -450,7 +451,9 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                   <span className="font-medium">Esta ferramenta está destacada abaixo na página</span>
                 </div>
               </div>
-            )}
+              )}
+            </div>
+          </div>
 
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
@@ -514,7 +517,6 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                 )}
               </Button>
             </div>
-          </div>
         </div>
       </div>
     </>
