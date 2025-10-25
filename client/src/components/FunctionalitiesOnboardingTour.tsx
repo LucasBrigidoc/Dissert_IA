@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Sparkles, Brain, GraduationCap, Lightbulb, Archive, Target, MessageCircle, BookOpen, Edit3, Rocket, Network, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Layers } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Brain, GraduationCap, Lightbulb, Archive, Target, MessageCircle, BookOpen, Edit3, Rocket, Network, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Layers, Clock, TrendingUp, Award, Zap, Search, FileText, AlertCircle, CheckSquare, PenTool } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -490,6 +490,309 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                   </div>
                 </div>
               </div>
+              )}
+
+              {step.target === '[data-testid="card-feature-argumentos"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <MessageCircle className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-purple-900 dark:text-purple-100 mb-1.5">Benefícios desta ferramenta:</p>
+                        <ul className="text-[10px] text-purple-800 dark:text-purple-200 leading-snug space-y-0.5">
+                          <li>✓ Transforma pensamentos soltos em argumentos lógicos</li>
+                          <li>✓ Desenvolve teses e contra-argumentos sólidos</li>
+                          <li>✓ Fortalece a coerência dos seus pontos</li>
+                          <li>✓ Ideal para fase de planejamento</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                    <div className="flex items-start gap-2">
+                      <Lightbulb className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-amber-900 dark:text-amber-100 mb-0.5">Quando usar:</p>
+                        <p className="text-[10px] text-amber-800 dark:text-amber-200 leading-snug">
+                          Antes de começar a escrever, quando tiver ideias desorganizadas sobre o tema
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <Award className="text-bright-blue" size={16} />
+                    <p className="text-[10px] text-blue-800 dark:text-blue-200">
+                      <strong>Competência ENEM:</strong> Melhora nota em C2 e C3
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-feature-repertorio"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Search className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-blue-900 dark:text-blue-100 mb-1.5">O que você encontra:</p>
+                        <ul className="text-[10px] text-blue-800 dark:text-blue-200 leading-snug space-y-0.5">
+                          <li>✓ Referências históricas e culturais relevantes</li>
+                          <li>✓ Dados científicos e sociológicos atualizados</li>
+                          <li>✓ Citações de especialistas e pesquisas</li>
+                          <li>✓ Exemplos concretos para seus argumentos</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-start gap-2">
+                      <TrendingUp className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Impacto na nota:</p>
+                        <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
+                          Repertório de qualidade pode aumentar até 200 pontos na sua redação
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 p-2 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                    <BookOpen className="text-amber-600 dark:text-amber-400" size={16} />
+                    <p className="text-[10px] text-amber-800 dark:text-amber-200">
+                      <strong>Dica:</strong> Use após refinar suas ideias para enriquecer
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-feature-simulador"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-3 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <GraduationCap className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-green-900 dark:text-green-100 mb-1.5">Recursos do simulador:</p>
+                        <ul className="text-[10px] text-green-800 dark:text-green-200 leading-snug space-y-0.5">
+                          <li>✓ Cronômetro real simulando condições de prova</li>
+                          <li>✓ Correção baseada nas 5 competências do ENEM</li>
+                          <li>✓ Feedback detalhado e personalizado</li>
+                          <li>✓ Gráficos de evolução e estatísticas</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-white/50 dark:bg-gray-800/30 p-2 rounded border border-green-200 dark:border-green-700/30">
+                      <Clock className="text-green-600 dark:text-green-400 mb-1" size={16} />
+                      <p className="text-[10px] font-bold text-green-900 dark:text-green-100">Tempo Real</p>
+                      <p className="text-[9px] text-green-700 dark:text-green-300">Cronômetro ativo</p>
+                    </div>
+                    <div className="bg-white/50 dark:bg-gray-800/30 p-2 rounded border border-green-200 dark:border-green-700/30">
+                      <TrendingUp className="text-green-600 dark:text-green-400 mb-1" size={16} />
+                      <p className="text-[10px] font-bold text-green-900 dark:text-green-100">Evolução</p>
+                      <p className="text-[9px] text-green-700 dark:text-green-300">Acompanhe o progresso</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                    <Target className="text-purple-600 dark:text-purple-400" size={16} />
+                    <p className="text-[10px] text-purple-800 dark:text-purple-200">
+                      <strong>Meta:</strong> Pratique ao menos 2x por semana
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-feature-controlador"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 p-3 rounded-lg border border-indigo-200 dark:border-indigo-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Edit3 className="text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-indigo-900 dark:text-indigo-100 mb-1.5">Capacidades de edição:</p>
+                        <ul className="text-[10px] text-indigo-800 dark:text-indigo-200 leading-snug space-y-0.5">
+                          <li>✓ Corrige erros gramaticais e ortográficos</li>
+                          <li>✓ Melhora coesão e coerência textual</li>
+                          <li>✓ Ajusta tom e clareza da escrita</li>
+                          <li>✓ Sugere melhorias de vocabulário</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-start gap-2">
+                      <Zap className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-0.5">Uso inteligente:</p>
+                        <p className="text-[10px] text-blue-800 dark:text-blue-200 leading-snug">
+                          Use na fase de revisão final para polimento do texto
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <CheckSquare className="text-green-600 dark:text-green-400" size={16} />
+                    <p className="text-[10px] text-green-800 dark:text-green-200">
+                      <strong>Ideal para:</strong> Revisão e aprimoramento de textos prontos
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-feature-propostas"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 p-3 rounded-lg border border-yellow-200 dark:border-yellow-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Lightbulb className="text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-yellow-900 dark:text-yellow-100 mb-1.5">O que você recebe:</p>
+                        <ul className="text-[10px] text-yellow-800 dark:text-yellow-200 leading-snug space-y-0.5">
+                          <li>✓ Temas atualizados e relevantes</li>
+                          <li>✓ Propostas completas estilo ENEM</li>
+                          <li>✓ Textos motivadores incluídos</li>
+                          <li>✓ Variedade de assuntos sociais e culturais</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-2.5 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                    <div className="flex items-start gap-2">
+                      <Sparkles className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-purple-900 dark:text-purple-100 mb-0.5">Inspiração garantida:</p>
+                        <p className="text-[10px] text-purple-800 dark:text-purple-200 leading-snug">
+                          Nunca mais fique sem saber sobre o que escrever
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <Rocket className="text-green-600 dark:text-green-400" size={16} />
+                    <p className="text-[10px] text-green-800 dark:text-green-200">
+                      <strong>Ótimo para:</strong> Começar a praticar rapidamente
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-feature-estrutura"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20 p-3 rounded-lg border border-cyan-200 dark:border-cyan-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Network className="text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-cyan-900 dark:text-cyan-100 mb-1.5">Modelos disponíveis:</p>
+                        <ul className="text-[10px] text-cyan-800 dark:text-cyan-200 leading-snug space-y-0.5">
+                          <li>✓ Estrutura clássica (4 parágrafos)</li>
+                          <li>✓ Estrutura estendida (5 parágrafos)</li>
+                          <li>✓ Modelos personalizáveis para seu estilo</li>
+                          <li>✓ Guia passo a passo para cada seção</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-start gap-2">
+                      <PenTool className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Perfeito para iniciantes:</p>
+                        <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
+                          Ganhe confiança com um roteiro claro e organizado
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <Brain className="text-bright-blue" size={16} />
+                    <p className="text-[10px] text-blue-800 dark:text-blue-200">
+                      <strong>Aprenda:</strong> Estruturas aprovadas em vestibulares
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-biblioteca"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/20 dark:to-slate-800/20 p-3 rounded-lg border border-slate-200 dark:border-slate-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Archive className="text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-slate-900 dark:text-slate-100 mb-1.5">O que fica guardado:</p>
+                        <ul className="text-[10px] text-slate-800 dark:text-slate-200 leading-snug space-y-0.5">
+                          <li>✓ Todas suas redações e correções</li>
+                          <li>✓ Repertórios salvos e favoritos</li>
+                          <li>✓ Estruturas criadas e personalizadas</li>
+                          <li>✓ Propostas geradas e histórico</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-start gap-2">
+                      <FileText className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-0.5">Organização inteligente:</p>
+                        <p className="text-[10px] text-blue-800 dark:text-blue-200 leading-snug">
+                          Tudo categorizado e fácil de encontrar quando precisar
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                    <TrendingUp className="text-purple-600 dark:text-purple-400" size={16} />
+                    <p className="text-[10px] text-purple-800 dark:text-purple-200">
+                      <strong>Vantagem:</strong> Acompanhe sua evolução ao longo do tempo
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === '[data-testid="card-quick-access"]' && (
+                <div className="mb-4 flex-1 space-y-3">
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-3 rounded-lg border border-orange-200 dark:border-orange-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Rocket className="text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-orange-900 dark:text-orange-100 mb-1.5">Fluxo recomendado:</p>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 bg-orange-600/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400">1</span>
+                            </div>
+                            <p className="text-[10px] text-orange-800 dark:text-orange-200"><strong>Refinar</strong> suas ideias primeiro</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 bg-orange-600/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400">2</span>
+                            </div>
+                            <p className="text-[10px] text-orange-800 dark:text-orange-200"><strong>Buscar</strong> repertório relevante</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 bg-orange-600/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400">3</span>
+                            </div>
+                            <p className="text-[10px] text-orange-800 dark:text-orange-200"><strong>Praticar</strong> no simulador</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-start gap-2">
+                      <Award className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Resultado comprovado:</p>
+                        <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
+                          Este fluxo é usado por +2.000 estudantes com sucesso
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <Zap className="text-bright-blue" size={16} />
+                    <p className="text-[10px] text-blue-800 dark:text-blue-200">
+                      <strong>Caminho mais rápido</strong> para a nota 1000
+                    </p>
+                  </div>
+                </div>
               )}
 
               {targetRect && step.target !== 'intro' && step.target !== 'finish' && step.target !== 'categories' && (
