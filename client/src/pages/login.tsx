@@ -112,9 +112,9 @@ export default function Login() {
                     />
                     <Label htmlFor="remember" className="text-soft-gray italic">Lembrar de mim</Label>
                   </div>
-                  <a href="#" className="text-soft-gray italic hover:text-bright-blue smooth-transition" data-testid="link-forgot-password">
+                  <Link href="/forgot-password" className="text-soft-gray italic hover:text-bright-blue smooth-transition" data-testid="link-forgot-password">
                     Esqueceu a senha?
-                  </a>
+                  </Link>
                 </div>
                 
                 <Button
