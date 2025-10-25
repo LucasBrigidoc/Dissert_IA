@@ -15,7 +15,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: 'intro',
     title: 'Bem-vindo às Funcionalidades!',
-    description: 'Aqui você encontra todas as ferramentas do DISSERTIA para revolucionar sua escrita. Vamos conhecer cada categoria e quando usar cada ferramenta.',
+    description: 'Descubra o poder da IA para transformar sua escrita! Aqui você encontra ferramentas inteligentes que cobrem todo o processo: desde a organização de ideias até a prática com correção automática.',
     position: 'center',
     icon: <PartyPopper className="text-bright-blue" size={24} />,
     category: 'Início'
@@ -94,8 +94,8 @@ const functionalitiesSteps: OnboardingStep[] = [
   },
   {
     target: 'finish',
-    title: 'Você está pronto!',
-    description: 'Agora você conhece todas as ferramentas disponíveis e quando usar cada uma. Escolha a ferramenta que melhor se encaixa na sua necessidade atual e comece a criar!',
+    title: 'Pronto para Começar!',
+    description: 'Parabéns! Você conheceu todas as 6 ferramentas de IA do DISSERTIA e entendeu quando usar cada uma. Agora é hora de colocar em prática e alcançar a nota 1000!',
     position: 'center',
     icon: <CheckCircle className="text-bright-blue" size={24} />,
     category: 'Concluído'
@@ -297,10 +297,113 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
           </div>
 
           <div className="p-4">
-            <div className="min-h-[320px] flex flex-col">
+            <div className="min-h-[340px] flex flex-col">
               <p className="text-soft-gray dark:text-gray-300 text-sm leading-relaxed mb-4">
                 {step.description}
               </p>
+
+              {(step.target === 'intro' || step.target === 'finish') && (
+                <div className="mb-4 flex-1 space-y-3">
+                  {step.target === 'intro' && (
+                    <>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700/30 text-center">
+                          <Brain className="text-bright-blue mx-auto mb-1" size={24} />
+                          <p className="text-[10px] font-semibold text-blue-900 dark:text-blue-100">Refinamento</p>
+                          <p className="text-[9px] text-blue-700 dark:text-blue-300">2 ferramentas</p>
+                        </div>
+                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/20 dark:to-gray-700/20 p-3 rounded-lg border border-gray-300 dark:border-gray-600/30 text-center">
+                          <Target className="text-gray-700 dark:text-gray-300 mx-auto mb-1" size={24} />
+                          <p className="text-[10px] font-semibold text-gray-900 dark:text-gray-100">Prática</p>
+                          <p className="text-[9px] text-gray-700 dark:text-gray-300">2 ferramentas</p>
+                        </div>
+                        <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-sky-800/20 p-3 rounded-lg border border-sky-200 dark:border-sky-700/30 text-center">
+                          <Sparkles className="text-sky-500 mx-auto mb-1" size={24} />
+                          <p className="text-[10px] font-semibold text-sky-900 dark:text-sky-100">Criação</p>
+                          <p className="text-[9px] text-sky-700 dark:text-sky-300">2 ferramentas</p>
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                        <div className="flex items-start gap-2.5">
+                          <Lightbulb className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" size={18} />
+                          <div>
+                            <p className="text-[11px] font-bold text-purple-900 dark:text-purple-100 mb-1">Por que usar as funcionalidades?</p>
+                            <ul className="text-[10px] text-purple-800 dark:text-purple-200 leading-snug space-y-0.5">
+                              <li>✓ Economize tempo na organização de ideias</li>
+                              <li>✓ Receba feedback instantâneo e detalhado</li>
+                              <li>✓ Pratique com temas reais e atualizados</li>
+                              <li>✓ Acompanhe sua evolução com gráficos</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                        <Rocket className="text-amber-600 dark:text-amber-400" size={16} />
+                        <p className="text-[10px] text-amber-800 dark:text-amber-200">
+                          <strong>Próximo passo:</strong> Vamos explorar as 3 categorias!
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  {step.target === 'finish' && (
+                    <>
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-4 rounded-lg border border-green-200 dark:border-green-700/30">
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <CheckCircle className="text-white" size={20} />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-xs font-bold text-green-900 dark:text-green-100 mb-1">Tour Concluído!</p>
+                            <p className="text-[11px] text-green-800 dark:text-green-200 leading-snug">
+                              Você conheceu todas as ferramentas e está pronto para criar redações nota 1000
+                            </p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-2 rounded">
+                            <p className="text-[10px] font-bold text-green-900 dark:text-green-100">6 Ferramentas</p>
+                            <p className="text-[9px] text-green-700 dark:text-green-300">de IA descobertas</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-2 rounded">
+                            <p className="text-[10px] font-bold text-green-900 dark:text-green-100">3 Categorias</p>
+                            <p className="text-[9px] text-green-700 dark:text-green-300">de funcionalidades</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-800/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                        <p className="text-[11px] font-bold text-blue-900 dark:text-blue-100 mb-2">Próximos Passos Recomendados:</p>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 bg-bright-blue/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-bright-blue">1</span>
+                            </div>
+                            <p className="text-[10px] text-blue-800 dark:text-blue-200">Comece com <strong>Refinamento de Ideias</strong></p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 bg-bright-blue/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-bright-blue">2</span>
+                            </div>
+                            <p className="text-[10px] text-blue-800 dark:text-blue-200">Busque <strong>Repertório</strong> para enriquecer</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 bg-bright-blue/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-bright-blue">3</span>
+                            </div>
+                            <p className="text-[10px] text-blue-800 dark:text-blue-200">Pratique no <strong>Simulador</strong> completo</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-50 to-yellow-100 dark:from-amber-900/20 dark:to-yellow-800/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                        <Sparkles className="text-amber-600 dark:text-amber-400" size={16} />
+                        <p className="text-[11px] font-bold text-amber-900 dark:text-amber-100">
+                          Clique em "Começar" para explorar! 🚀
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
 
               {step.target === 'categories' && (
                 <div className="mb-4 flex-1 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-1">
