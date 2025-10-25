@@ -9,6 +9,7 @@ import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
+import { ArgumentosOnboardingTour } from "@/components/ArgumentosOnboardingTour";
 
 // Função para remover JSON estruturado das mensagens da IA
 function removeStructuredJSON(text: string): string {
@@ -72,6 +73,7 @@ export default function Argumentos() {
   const [location, setLocation] = useLocation();
   const [backUrl, setBackUrl] = useState('/dashboard');
   const [showMindMap, setShowMindMap] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Estado unificado para o brainstorm
   const [brainstormData, setBrainstormData] = useState({
@@ -104,6 +106,25 @@ export default function Argumentos() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []); // Mantém apenas para carregamento inicial
+
+  // Check if user should see argumentos onboarding tour
+  useEffect(() => {
+    const hasSeenArgumentosOnboarding = localStorage.getItem('hasSeenArgumentosOnboarding');
+    if (!hasSeenArgumentosOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenArgumentosOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenArgumentosOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   // Scroll automático APENAS na caixa de conversa: início da mensagem da IA, final para mensagens do usuário
   useEffect(() => {
@@ -1092,6 +1113,14 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
 
         </div>
       </div>
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <ArgumentosOnboardingTour 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
