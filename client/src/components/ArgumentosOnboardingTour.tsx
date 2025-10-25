@@ -432,11 +432,6 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                       <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100 mb-0.5">✅ Visualizar Estrutura Completa</p>
                       <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Veja todo o esqueleto da redação antes de começar a escrever.</p>
                     </div>
-
-                    <div className="bg-gradient-to-r from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-800/20 p-2.5 rounded-lg border border-rose-200 dark:border-rose-700/30">
-                      <p className="text-[10px] font-bold text-rose-900 dark:text-rose-100 mb-0.5">✅ Exportar Mapa Mental</p>
-                      <p className="text-[9px] text-rose-800 dark:text-rose-200 leading-snug">Transforme toda a conversa em um mapa visual organizado por tópicos.</p>
-                    </div>
                   </div>
                 </div>
               )}
