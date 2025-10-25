@@ -29,62 +29,6 @@ const argumentosSteps: OnboardingStep[] = [
     category: 'Funcionamento'
   },
   {
-    target: '[data-testid="chat-messages"]',
-    title: 'Área de Conversa',
-    description: 'Aqui é onde acontece a mágica! A IA conversa com você, fazendo perguntas inteligentes sobre tema, tese, argumentos e estrutura da sua redação. Cada resposta sua ajuda a construir uma base sólida.',
-    position: 'bottom',
-    icon: <MessageCircle className="text-bright-blue" size={24} />,
-    category: 'Interface'
-  },
-  {
-    target: '[data-testid="input-chat-message"]',
-    title: 'Digite Suas Ideias',
-    description: 'Use este campo para conversar com a IA. Pode ser uma ideia solta, um tema de redação, ou responder às perguntas que a IA fizer. Quanto mais você compartilhar, melhor será o resultado!',
-    position: 'top',
-    icon: <Send className="text-bright-blue" size={24} />,
-    category: 'Interação'
-  },
-  {
-    target: '[data-testid="button-help-guidance"]',
-    title: 'Precisa de Ajuda?',
-    description: 'Clique neste botão sempre que precisar de orientação sobre o que fazer em cada etapa. A IA fornece dicas específicas baseadas na seção atual da conversa.',
-    position: 'top',
-    icon: <HelpCircle className="text-bright-blue" size={24} />,
-    category: 'Recursos'
-  },
-  {
-    target: '[data-testid="button-restart-conversation"]',
-    title: 'Recomeçar Conversa',
-    description: 'Quer começar do zero com um novo tema? Use este botão para reiniciar a conversa e manter apenas o histórico anterior.',
-    position: 'bottom',
-    icon: <RotateCcw className="text-bright-blue" size={24} />,
-    category: 'Recursos'
-  },
-  {
-    target: 'progress-card',
-    title: 'Acompanhe Seu Progresso',
-    description: 'Veja em tempo real o andamento da sua redação. Cada parte preenchida (tema, tese, introdução, desenvolvimentos e conclusão) aparece aqui com indicadores visuais.',
-    position: 'top',
-    icon: <Target className="text-bright-blue" size={24} />,
-    category: 'Progresso'
-  },
-  {
-    target: 'preview-card',
-    title: 'Preview da Estrutura',
-    description: 'Aqui você visualiza todos os elementos da sua redação conforme vão sendo desenvolvidos na conversa. É como um esboço em tempo real do seu texto!',
-    position: 'top',
-    icon: <Eye className="text-bright-blue" size={24} />,
-    category: 'Visualização'
-  },
-  {
-    target: '[data-testid="button-view-conversation"]',
-    title: 'Ver Histórico Completo',
-    description: 'Após desenvolver suas ideias, clique aqui para ver todo o histórico da conversa organizado em um mapa mental visual. Perfeito para revisar tudo antes de escrever!',
-    position: 'top',
-    icon: <Map className="text-bright-blue" size={24} />,
-    category: 'Visualização'
-  },
-  {
     target: 'finish',
     title: 'Pronto para Começar!',
     description: 'Agora você já sabe como usar o Refinador de Ideias. Comece conversando com a IA sobre seu tema de redação e deixe ela guiar você pelo processo de construção dos argumentos!',
@@ -108,44 +52,8 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
   const isFirstStep = currentStep === 0;
 
   useEffect(() => {
-    if (step.target === 'intro' || step.target === 'finish' || step.target === 'how-it-works') {
-      setTargetRect(null);
-      return;
-    }
-
-    if (step.target === 'progress-card') {
-      const elements = document.querySelectorAll('[class*="LiquidGlassCard"]');
-      const progressCard = Array.from(elements).find(el => 
-        el.textContent?.includes('Progresso da Redação')
-      );
-      if (progressCard) {
-        const rect = progressCard.getBoundingClientRect();
-        setTargetRect(rect);
-        progressCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return;
-    }
-
-    if (step.target === 'preview-card') {
-      const elements = document.querySelectorAll('[class*="LiquidGlassCard"]');
-      const previewCard = Array.from(elements).find(el => 
-        el.textContent?.includes('Preview da Estrutura')
-      );
-      if (previewCard) {
-        const rect = previewCard.getBoundingClientRect();
-        setTargetRect(rect);
-        previewCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return;
-    }
-
-    const element = document.querySelector(step.target);
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      setTargetRect(rect);
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currentStep, step.target]);
+    setTargetRect(null);
+  }, [currentStep]);
 
   const handleNext = () => {
     if (isLastStep) {
@@ -212,67 +120,6 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
       {/* Overlay */}
       <div className="fixed inset-0 z-[9998]">
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-        
-        {targetRect && step.target !== 'intro' && step.target !== 'finish' && step.target !== 'how-it-works' && (
-          <>
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                top: targetRect.top + window.scrollY - 12,
-                left: targetRect.left - 12,
-                width: targetRect.width + 24,
-                height: targetRect.height + 24,
-              }}
-            >
-              <div className="absolute inset-0 border-4 border-bright-blue/40 rounded-xl animate-ping" />
-              <div className="absolute inset-0 border-4 border-bright-blue/60 rounded-xl shadow-2xl shadow-bright-blue/50" />
-              <div className="absolute inset-0 border-4 border-bright-blue rounded-xl shadow-2xl shadow-bright-blue/70 animate-pulse">
-                <div className="absolute -top-2 -left-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
-                <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
-                <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-bright-blue rounded-full shadow-lg shadow-bright-blue/50" />
-              </div>
-              <div 
-                className="absolute inset-0 rounded-xl"
-                style={{
-                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(59, 130, 246, 0.3)',
-                  background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)'
-                }}
-              />
-            </div>
-
-            <div
-              className="absolute pointer-events-none z-[9999] animate-bounce"
-              style={(() => {
-                const isNearTop = targetRect.top < 100;
-                
-                if (isNearTop) {
-                  return {
-                    top: targetRect.bottom + window.scrollY + 20,
-                    left: targetRect.left + targetRect.width / 2,
-                    transform: 'translateX(-50%)'
-                  };
-                } else {
-                  return {
-                    top: targetRect.top + window.scrollY - 60,
-                    left: targetRect.left + targetRect.width / 2,
-                    transform: 'translateX(-50%)'
-                  };
-                }
-              })()}
-            >
-              <div className="bg-bright-blue text-white px-4 py-2 rounded-full shadow-2xl shadow-bright-blue/50 flex items-center gap-2 font-semibold text-sm whitespace-nowrap">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                Veja aqui
-                {targetRect.top < 100 ? (
-                  <ArrowUp size={16} className="animate-bounce" />
-                ) : (
-                  <ArrowDown size={16} className="animate-bounce" />
-                )}
-              </div>
-            </div>
-          </>
-        )}
       </div>
 
       {/* Tooltip */}
