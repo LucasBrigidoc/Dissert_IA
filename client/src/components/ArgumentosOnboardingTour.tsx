@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, Brain, MessageCircle, Eye, Target, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Lightbulb, Send, HelpCircle, RotateCcw, Map } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Brain, MessageCircle, Eye, Target, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Lightbulb, Send, HelpCircle, RotateCcw, Map, BookmarkPlus, Sparkles, Layers, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -21,12 +21,44 @@ const argumentosSteps: OnboardingStep[] = [
     category: 'Início'
   },
   {
+    target: 'objetivo',
+    title: 'Qual é o Objetivo desta Ferramenta?',
+    description: 'O Refinamento de Ideias foi criado para ser seu parceiro de brainstorming antes de escrever. Ele organiza seus pensamentos, fortalece seus argumentos e cria uma estrutura sólida para sua redação.',
+    position: 'center',
+    icon: <Target className="text-bright-blue" size={24} />,
+    category: 'Objetivo'
+  },
+  {
     target: 'how-it-works',
     title: 'Como Funciona?',
     description: 'O Refinador de Ideias IA conversa com você através de um chat inteligente, fazendo perguntas estratégicas para ajudar a organizar e desenvolver seus argumentos de forma clara e estruturada.',
     position: 'center',
     icon: <Brain className="text-bright-blue" size={24} />,
     category: 'Funcionamento'
+  },
+  {
+    target: 'elementos',
+    title: 'Elementos da Interface',
+    description: 'Vamos conhecer os principais elementos da tela e entender para que cada um serve. Cada parte foi pensada para facilitar seu processo criativo.',
+    position: 'center',
+    icon: <Layers className="text-bright-blue" size={24} />,
+    category: 'Interface'
+  },
+  {
+    target: 'capacidades',
+    title: 'O Que Você Pode Fazer Aqui?',
+    description: 'Esta ferramenta oferece diversos recursos para potencializar sua escrita. Conheça todas as possibilidades disponíveis para você.',
+    position: 'center',
+    icon: <Sparkles className="text-bright-blue" size={24} />,
+    category: 'Recursos'
+  },
+  {
+    target: 'biblioteca',
+    title: 'Salve na Biblioteca',
+    description: 'Todo seu trabalho pode ser salvo! Após desenvolver suas ideias, você pode salvar o histórico completo na Biblioteca Pessoal para consultar sempre que precisar.',
+    position: 'center',
+    icon: <BookmarkPlus className="text-bright-blue" size={24} />,
+    category: 'Salvamento'
   },
   {
     target: 'finish',
@@ -208,6 +240,51 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                 </div>
               )}
 
+              {step.target === 'objetivo' && (
+                <div className="mb-4 flex-1 space-y-2.5 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100">
+                  <div className="bg-gradient-to-br from-indigo-50 to-purple-100 dark:from-indigo-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-indigo-200 dark:border-indigo-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Target className="text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-indigo-900 dark:text-indigo-100 mb-1">Objetivo Principal:</p>
+                        <p className="text-[10px] text-indigo-800 dark:text-indigo-200 leading-snug">
+                          Transformar ideias desorganizadas em uma <strong>estrutura argumentativa completa e coesa</strong>, pronta para ser escrita.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">📝 Por que usar antes de escrever?</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Economiza tempo:</strong> Evita reescrever parágrafos inteiros</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Melhora coesão:</strong> Argumentos conectados logicamente</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Reduz bloqueios:</strong> A IA guia seu pensamento</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Fortalece tese:</strong> Desenvolve argumentação sólida</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-amber-50 to-yellow-100 dark:from-amber-900/20 dark:to-yellow-800/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                    <div className="flex items-center gap-2">
+                      <Lightbulb className="text-amber-600 dark:text-amber-400" size={14} />
+                      <p className="text-[10px] text-amber-900 dark:text-amber-100">
+                        <strong>Dica:</strong> Use esta ferramenta sempre que tiver o tema mas não souber por onde começar!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {step.target === 'how-it-works' && (
                 <div className="mb-4 flex-1 space-y-2.5">
                   <div className="space-y-2">
@@ -245,6 +322,164 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                       <p className="text-[11px] font-bold text-green-900 dark:text-green-100">
                         Resultado: Estrutura completa pronta para escrever!
                       </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'elementos' && (
+                <div className="mb-4 flex-1 space-y-2 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100">
+                  <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100 mb-2">🖥️ Conheça os elementos da tela:</p>
+                  
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-start gap-2">
+                      <MessageCircle className="text-bright-blue flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100">Chat de Conversa</p>
+                        <p className="text-[9px] text-blue-800 dark:text-blue-200 leading-snug">Onde você conversa com a IA. Suas mensagens aparecem à direita (azul) e as da IA à esquerda (cinza).</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 dark:bg-green-900/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-start gap-2">
+                      <Send className="text-green-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100">Campo de Entrada</p>
+                        <p className="text-[9px] text-green-800 dark:text-green-200 leading-snug">Digite suas ideias aqui. Pressione Enter ou clique no botão azul para enviar.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-2.5 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                    <div className="flex items-start gap-2">
+                      <Target className="text-purple-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-purple-900 dark:text-purple-100">Barra de Progresso</p>
+                        <p className="text-[9px] text-purple-800 dark:text-purple-200 leading-snug">Mostra quantos % da redação você já desenvolveu (tema, tese, introdução, etc).</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 dark:bg-amber-900/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                    <div className="flex items-start gap-2">
+                      <Eye className="text-amber-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-amber-900 dark:text-amber-100">Preview da Estrutura</p>
+                        <p className="text-[9px] text-amber-800 dark:text-amber-200 leading-snug">Visualize em cards organizados cada parte da redação conforme você desenvolve.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-indigo-50 dark:bg-indigo-900/20 p-2.5 rounded-lg border border-indigo-200 dark:border-indigo-700/30">
+                    <div className="flex items-start gap-2">
+                      <HelpCircle className="text-indigo-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-indigo-900 dark:text-indigo-100">Botão de Ajuda (?)</p>
+                        <p className="text-[9px] text-indigo-800 dark:text-indigo-200 leading-snug">Clique para receber orientações sobre a etapa atual da conversa.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-gray-800/20 p-2.5 rounded-lg border border-gray-200 dark:border-gray-700/30">
+                    <div className="flex items-start gap-2">
+                      <RotateCcw className="text-gray-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-gray-900 dark:text-gray-100">Nova Conversa</p>
+                        <p className="text-[9px] text-gray-800 dark:text-gray-200 leading-snug">Reinicia o chat para começar um novo tema do zero.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-sky-50 dark:bg-sky-900/20 p-2.5 rounded-lg border border-sky-200 dark:border-sky-700/30">
+                    <div className="flex items-start gap-2">
+                      <Map className="text-sky-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100">Ver Histórico</p>
+                        <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Visualiza toda a conversa em formato de mapa mental organizado.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'capacidades' && (
+                <div className="mb-4 flex-1 space-y-2 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100">
+                  <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100 mb-2">⚡ O que você pode fazer com esta ferramenta:</p>
+                  
+                  <div className="grid grid-cols-1 gap-2">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                      <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-0.5">✅ Desenvolver Tema e Tese</p>
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200 leading-snug">A IA ajuda você a transformar um tema vago em uma tese clara e objetiva.</p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-800/20 p-2.5 rounded-lg border border-purple-200 dark:border-purple-700/30">
+                      <p className="text-[10px] font-bold text-purple-900 dark:text-purple-100 mb-0.5">✅ Construir Argumentos Sólidos</p>
+                      <p className="text-[9px] text-purple-800 dark:text-purple-200 leading-snug">Desenvolve argumentos de desenvolvimento com fundamentação lógica e persuasiva.</p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                      <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">✅ Estruturar Parágrafos</p>
+                      <p className="text-[9px] text-green-800 dark:text-green-200 leading-snug">Organiza introdução, desenvolvimentos e conclusão de forma coesa.</p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-800/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                      <p className="text-[10px] font-bold text-amber-900 dark:text-amber-100 mb-0.5">✅ Refinar Linguagem</p>
+                      <p className="text-[9px] text-amber-800 dark:text-amber-200 leading-snug">Melhora a qualidade argumentativa e formal do seu texto.</p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-sky-900/20 dark:to-cyan-800/20 p-2.5 rounded-lg border border-sky-200 dark:border-sky-700/30">
+                      <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100 mb-0.5">✅ Visualizar Estrutura Completa</p>
+                      <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Veja todo o esqueleto da redação antes de começar a escrever.</p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-800/20 p-2.5 rounded-lg border border-rose-200 dark:border-rose-700/30">
+                      <p className="text-[10px] font-bold text-rose-900 dark:text-rose-100 mb-0.5">✅ Exportar Mapa Mental</p>
+                      <p className="text-[9px] text-rose-800 dark:text-rose-200 leading-snug">Transforme toda a conversa em um mapa visual organizado por tópicos.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'biblioteca' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-100 dark:from-violet-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-violet-200 dark:border-violet-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <BookmarkPlus className="text-violet-600 dark:text-violet-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-violet-900 dark:text-violet-100 mb-1">Salve seu Trabalho!</p>
+                        <p className="text-[10px] text-violet-800 dark:text-violet-200 leading-snug">
+                          Após desenvolver suas ideias, você pode salvar todo o histórico da conversa na <strong>Biblioteca Pessoal</strong>.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">💾 Como salvar:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">1.</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Complete a conversa com a IA sobre seu tema</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">2.</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Clique em "Ver Histórico" para visualizar o mapa mental</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">3.</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Use o botão de salvar para guardar na biblioteca</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-cyan-50 to-blue-100 dark:from-cyan-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-cyan-200 dark:border-cyan-700/30">
+                    <p className="text-[10px] font-bold text-cyan-900 dark:text-cyan-100 mb-1">📚 Por que salvar?</p>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Consulte suas estruturas a qualquer momento</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Reaproveite argumentos em redações similares</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Organize seu acervo de ideias por tema</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Revise seu processo criativo depois</p>
                     </div>
                   </div>
                 </div>
