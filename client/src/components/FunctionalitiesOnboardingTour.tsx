@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Sparkles, Brain, GraduationCap, Lightbulb, Archive, Target, MessageCircle, BookOpen, Edit3, Rocket, Network, CheckCircle, PartyPopper, ArrowDown, ArrowUp } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Brain, GraduationCap, Lightbulb, Archive, Target, MessageCircle, BookOpen, Edit3, Rocket, Network, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -19,6 +19,14 @@ const functionalitiesSteps: OnboardingStep[] = [
     position: 'center',
     icon: <PartyPopper className="text-bright-blue" size={24} />,
     category: 'Início'
+  },
+  {
+    target: 'categories',
+    title: 'As 3 Categorias de IA',
+    description: 'Para dominar a redação perfeita, organizamos as ferramentas em 3 categorias estratégicas que cobrem todo o processo de criação. Cada categoria foi pensada para uma fase específica do seu desenvolvimento como escritor.',
+    position: 'center',
+    icon: <Layers className="text-bright-blue" size={24} />,
+    category: 'Categorias'
   },
   {
     target: '[data-testid="card-feature-argumentos"]',
@@ -108,7 +116,7 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
   const isFirstStep = currentStep === 0;
 
   useEffect(() => {
-    if (step.target === 'intro' || step.target === 'finish') {
+    if (step.target === 'intro' || step.target === 'finish' || step.target === 'categories') {
       setTargetRect(null);
       return;
     }
@@ -292,6 +300,91 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
             <p className="text-soft-gray dark:text-gray-300 text-base leading-relaxed mb-6">
               {step.description}
             </p>
+
+            {step.target === 'categories' && (
+              <div className="mb-6 space-y-4">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-5 border-2 border-purple-200 dark:border-purple-700/50 shadow-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Brain className="text-white" size={28} />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="text-lg font-bold text-purple-900 dark:text-purple-100">🟣 Refinamento</h4>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-200 dark:bg-purple-700 text-purple-800 dark:text-purple-200">
+                          Fase 1
+                        </span>
+                      </div>
+                      <p className="text-sm text-purple-800 dark:text-purple-200 leading-relaxed mb-2">
+                        <strong>O que é:</strong> Ferramentas para organizar pensamentos e fortalecer argumentos antes de escrever.
+                      </p>
+                      <p className="text-xs text-purple-700 dark:text-purple-300 leading-relaxed">
+                        <strong>Quando usar:</strong> No início, quando você tem ideias mas precisa estruturá-las melhor, buscar referências e construir uma base sólida.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-5 border-2 border-green-200 dark:border-green-700/50 shadow-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Target className="text-white" size={28} />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="text-lg font-bold text-green-900 dark:text-green-100">🟢 Prática</h4>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-200">
+                          Fase 2
+                        </span>
+                      </div>
+                      <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed mb-2">
+                        <strong>O que é:</strong> Ferramentas para treinar escrita em condições reais e receber feedback detalhado.
+                      </p>
+                      <p className="text-xs text-green-700 dark:text-green-300 leading-relaxed">
+                        <strong>Quando usar:</strong> Quando estiver pronto para escrever textos completos, praticar com cronômetro e revisar suas redações.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-5 border-2 border-blue-200 dark:border-blue-700/50 shadow-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Sparkles className="text-white" size={28} />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="text-lg font-bold text-blue-900 dark:text-blue-100">🔵 Criação</h4>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-200 dark:bg-blue-700 text-blue-800 dark:text-blue-200">
+                          Fase 3
+                        </span>
+                      </div>
+                      <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed mb-2">
+                        <strong>O que é:</strong> Ferramentas para gerar conteúdo novo e experimentar diferentes abordagens criativas.
+                      </p>
+                      <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                        <strong>Quando usar:</strong> Quando precisar de inspiração, temas novos ou estruturas prontas para começar a escrever.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="flex items-start gap-3">
+                    <Rocket className="text-bright-blue flex-shrink-0 mt-0.5" size={20} />
+                    <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                      <strong className="text-bright-blue">💡 Dica:</strong> O fluxo ideal é Refinamento → Prática → Criação, mas você pode usar as ferramentas na ordem que preferir, de acordo com sua necessidade do momento!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {targetRect && step.target !== 'intro' && step.target !== 'finish' && (
               <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 border-2 border-bright-blue/20">
