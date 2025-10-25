@@ -1384,8 +1384,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Token expires in 1 hour
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
       
-      // Save token to database
-      await storage.createPasswordResetToken(user.id, token, expiresAt);
+      // Hash the token before storing (use SHA-256 for deterministic, fast hashing)
+      const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+      
+      // Save hashed token to database
+      await storage.createPasswordResetToken(user.id, hashedToken, expiresAt);
       
       // Create reset URL
       const resetUrl = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/reset-password?token=${token}`;
@@ -1455,8 +1458,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "A senha deve ter no mínimo 8 caracteres" });
       }
       
-      // Get token from database
-      const resetToken = await storage.getPasswordResetToken(token);
+      // Hash the token to match what's stored in the database
+      const crypto = await import('crypto');
+      const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+      
+      // Get token from database using hashed version
+      const resetToken = await storage.getPasswordResetToken(hashedToken);
       
       if (!resetToken) {
         return res.status(400).json({ message: "Token inválido ou expirado" });
@@ -1478,8 +1485,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update user password
       await storage.updateUser(resetToken.userId, { password: hashedPassword });
       
-      // Mark token as used
-      await storage.markPasswordResetTokenAsUsed(token);
+      // Mark token as used (using hashed version)
+      await storage.markPasswordResetTokenAsUsed(hashedToken);
       
       res.json({ message: "Senha redefinida com sucesso" });
     } catch (error) {

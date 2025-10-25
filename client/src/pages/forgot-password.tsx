@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { HeroCharacter } from "@/components/hero-character";
-import LiquidGlassCard from "@/components/LiquidGlassCard";
+import { LiquidGlassCard } from "@/components/liquid-glass-card";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
