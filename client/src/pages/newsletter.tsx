@@ -441,21 +441,11 @@ export default function NewsletterPage() {
       {/* Newsletter Content */}
       <div className="container mx-auto px-3 md:px-6 py-6 md:py-8 pt-20 md:pt-24 space-y-6 md:space-y-8">
         
-        {/* Introduction Card - Similar to Home and Functionalities */}
-        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-              <Newspaper className="text-white" size={32} />
-            </div>
-            <div className="flex-1">
-              <h1 className="text-2xl md:text-4xl font-bold text-dark-blue mb-2 md:mb-3">Newsletter Educacional</h1>
-              <p className="text-sm md:text-lg text-soft-gray leading-relaxed">
-                Conteúdo semanal curado para enriquecer suas redações com repertório sociocultural de qualidade, 
-                temas atuais e referências que farão a diferença na sua nota.
-              </p>
-            </div>
-          </div>
-        </LiquidGlassCard>
+        {/* Page Header */}
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-2xl md:text-4xl font-bold text-dark-blue mb-3 md:mb-4">Newsletter Educacional</h1>
+          <p className="text-base md:text-lg text-soft-gray">Conteúdo semanal curado para enriquecer suas redações</p>
+        </div>
 
         {/* Latest Newsletter Section */}
         <div className="mb-8 md:mb-12">
