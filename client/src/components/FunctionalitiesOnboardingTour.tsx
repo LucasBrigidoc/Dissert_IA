@@ -23,50 +23,50 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: '[data-testid="card-feature-argumentos"]',
     title: 'Refinamento de Ideias',
-    description: 'Use esta ferramenta quando precisar organizar seus pensamentos e construir argumentos sólidos. Ideal para quando você tem ideias mas precisa estruturá-las melhor.',
+    description: 'Esta ferramenta ajuda você a transformar ideias soltas em argumentos bem estruturados e convincentes. Use quando: você tiver pensamentos desorganizados sobre um tema, precisar fortalecer a lógica dos seus argumentos, ou quiser desenvolver melhor suas teses e contra-argumentos. Perfeita para a fase de planejamento antes de escrever sua redação.',
     position: 'bottom',
     icon: <MessageCircle className="text-bright-blue" size={24} />,
-    category: 'Ferramentas de Refinamento'
+    category: 'Refinamento'
   },
   {
     target: '[data-testid="card-feature-repertorio"]',
     title: 'Explorador de Repertório',
-    description: 'Use quando precisar de referências culturais, históricas ou científicas para enriquecer sua redação. Perfeito para buscar exemplos e dados que fortaleçam seus argumentos.',
+    description: 'Esta ferramenta busca referências culturais, históricas, científicas e sociológicas para enriquecer sua redação. Use quando: precisar de exemplos concretos para seus argumentos, quiser citar dados e fatos relevantes, ou necessitar de repertório sociocultural de qualidade. Essencial para aumentar a nota de competência 2 e 3 do ENEM.',
     position: 'bottom',
     icon: <BookOpen className="text-bright-blue" size={24} />,
-    category: 'Ferramentas de Refinamento'
+    category: 'Refinamento'
   },
   {
     target: '[data-testid="card-feature-simulador"]',
     title: 'Simulador de Prova',
-    description: 'Use quando quiser praticar redações completas em condições reais de prova. Controle o tempo, receba correção automática e acompanhe seu progresso ao longo do tempo.',
+    description: 'Esta ferramenta recria as condições reais do ENEM e outros vestibulares. Use quando: quiser praticar com cronômetro ativo, precisar de correção detalhada baseada nas 5 competências, ou quiser acompanhar sua evolução através de gráficos e estatísticas. Fundamental para ganhar confiança e identificar pontos de melhoria.',
     position: 'bottom',
     icon: <GraduationCap className="text-bright-blue" size={24} />,
-    category: 'Ferramentas de Prática'
+    category: 'Prática'
   },
   {
     target: '[data-testid="card-feature-controlador"]',
     title: 'Controlador de Escrita',
-    description: 'Use para ajustar e refinar textos já escritos. Ideal para melhorar a clareza, corrigir erros e adaptar o tom da sua escrita.',
+    description: 'Esta ferramenta permite editar e aprimorar textos já escritos com precisão. Use quando: precisar revisar e melhorar uma redação completa, quiser corrigir erros gramaticais e de coesão, ou necessitar ajustar o tom e clareza do texto. Perfeita para a fase de revisão e polimento final.',
     position: 'bottom',
     icon: <Edit3 className="text-bright-blue" size={24} />,
-    category: 'Ferramentas de Prática'
+    category: 'Prática'
   },
   {
     target: '[data-testid="card-feature-propostas"]',
     title: 'Gerador de Propostas',
-    description: 'Use quando precisar de inspiração para temas de redação ou quando quiser praticar com propostas variadas. Gera temas atuais e relevantes automaticamente.',
+    description: 'Esta ferramenta cria temas de redação atualizados e relevantes automaticamente. Use quando: não souber sobre o que escrever, quiser praticar com temas variados e atuais, ou precisar de inspiração para começar a estudar. Gera propostas completas com textos motivadores no estilo ENEM.',
     position: 'bottom',
     icon: <Lightbulb className="text-bright-blue" size={24} />,
-    category: 'Ferramentas de Criação'
+    category: 'Criação'
   },
   {
     target: '[data-testid="card-feature-estrutura"]',
     title: 'Estrutura Roteirizada',
-    description: 'Use quando precisar de um modelo pronto para seguir. Ideal para iniciantes ou quando quiser experimentar diferentes estruturas de redação.',
+    description: 'Esta ferramenta oferece modelos prontos e personalizáveis de estrutura de redação. Use quando: estiver começando e precisar de um roteiro claro, quiser experimentar diferentes abordagens estruturais, ou necessitar de um guia passo a passo para organizar suas ideias. Ideal para iniciantes ganharem confiança.',
     position: 'bottom',
     icon: <Network className="text-bright-blue" size={24} />,
-    category: 'Ferramentas de Criação'
+    category: 'Criação'
   },
   {
     target: '[data-testid="card-biblioteca"]',
@@ -295,39 +295,64 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
 
             {targetRect && step.target !== 'intro' && step.target !== 'finish' && (
               <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 border-2 border-bright-blue/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-2 h-2 bg-bright-blue rounded-full animate-pulse" />
-                  <span className="text-xs font-semibold text-bright-blue uppercase tracking-wide">
-                    Prévia da Ferramenta
-                  </span>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-bright-blue rounded-full animate-pulse" />
+                    <span className="text-xs font-semibold text-bright-blue uppercase tracking-wide">
+                      Visualização do Card
+                    </span>
+                  </div>
+                  {step.category && step.category !== 'Organização' && step.category !== 'Dica de Uso' && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      step.category === 'Refinamento' 
+                        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                        : step.category === 'Prática'
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                        : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                    }`}>
+                      {step.category}
+                    </span>
+                  )}
                 </div>
                 <div 
-                  className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-inner border border-gray-200 dark:border-gray-700"
-                  style={{
-                    maxHeight: '200px',
-                    position: 'relative'
-                  }}
+                  className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 transform hover:scale-[1.02] transition-transform duration-200"
+                  style={{ position: 'relative' }}
                 >
-                  <div className="p-4 flex items-center justify-center min-h-[150px]">
-                    <div className="text-center">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-2xl mb-3">
-                        {step.icon && <div className="scale-150">{step.icon}</div>}
+                  <div className="p-5">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-14 h-14 bg-gradient-to-br from-bright-blue/20 to-dark-blue/20 rounded-2xl flex items-center justify-center shadow-md">
+                          {step.icon && <div className="scale-125">{step.icon}</div>}
+                        </div>
                       </div>
-                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        {step.title}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 max-w-[250px]">
-                        Esta ferramenta está destacada na página
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1.5 line-clamp-1">
+                          {step.title}
+                        </h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                          {step.category === 'Refinamento' && 'Organize e fortaleça suas ideias antes de escrever'}
+                          {step.category === 'Prática' && 'Treine suas habilidades em condições reais'}
+                          {step.category === 'Criação' && 'Crie conteúdo novo e inspire-se'}
+                          {step.category === 'Organização' && 'Organize todo seu material de estudo'}
+                          {step.category === 'Dica de Uso' && 'Aproveite ao máximo a plataforma'}
+                        </p>
+                        <div className="mt-2 flex items-center gap-1.5">
+                          <div className="w-1 h-1 bg-bright-blue rounded-full" />
+                          <span className="text-[10px] text-gray-500 dark:text-gray-500 font-medium">
+                            Clique para explorar
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-bright-blue/40 rounded-tl-lg" />
-                    <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-bright-blue/40 rounded-tr-lg" />
-                    <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-bright-blue/40 rounded-bl-lg" />
-                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-bright-blue/40 rounded-br-lg" />
+                  <div className="absolute top-2 right-2 pointer-events-none">
+                    <div className="w-8 h-8 border-2 border-bright-blue/30 rounded-tr-lg rounded-bl-lg" />
                   </div>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-[11px] text-gray-600 dark:text-gray-400">
+                  <ArrowDown size={14} className="text-bright-blue animate-bounce" />
+                  <span className="font-medium">Esta ferramenta está destacada abaixo na página</span>
                 </div>
               </div>
             )}
