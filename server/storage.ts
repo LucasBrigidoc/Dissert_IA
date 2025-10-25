@@ -11,6 +11,12 @@ export interface IStorage {
   updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<User>;
   deleteUser(userId: string): Promise<void>;
   
+  // Password reset operations
+  createPasswordResetToken(userId: string, token: string, expiresAt: Date): Promise<void>;
+  getPasswordResetToken(token: string): Promise<{ userId: string; expiresAt: Date; usedAt: Date | null } | undefined>;
+  markPasswordResetTokenAsUsed(token: string): Promise<void>;
+  deleteExpiredPasswordResetTokens(): Promise<void>;
+  
   // User progress operations
   getUserProgress(userId: string): Promise<UserProgress | undefined>;
   createUserProgress(progress: InsertUserProgress): Promise<UserProgress>;
@@ -510,6 +516,9 @@ export class MemStorage implements IStorage {
   private userGoals: Map<string, UserGoal>;
   private userExams: Map<string, UserExam>;
   private userSchedules: Map<string, UserSchedule>;
+  
+  // Password reset tokens storage
+  private passwordResetTokens: Map<string, { userId: string; token: string; expiresAt: Date; usedAt: Date | null; createdAt: Date }>;
 
   constructor() {
     this.users = new Map();
@@ -568,6 +577,9 @@ export class MemStorage implements IStorage {
     this.userGoals = new Map();
     this.userExams = new Map();
     this.userSchedules = new Map();
+    
+    // Password reset tokens storage initialization
+    this.passwordResetTokens = new Map();
     
     // Initialize with basic repertoires
     this.initializeRepertoires();
@@ -3950,6 +3962,48 @@ export class DbStorage implements IStorage {
       // Finally, delete the user (parent table)
       await tx.delete(schema.users).where(eq(schema.users.id, userId));
     });
+  }
+
+  // ===================== PASSWORD RESET OPERATIONS =====================
+  
+  async createPasswordResetToken(userId: string, token: string, expiresAt: Date): Promise<void> {
+    await db.insert(schema.passwordResetTokens).values({
+      userId,
+      token,
+      expiresAt,
+      usedAt: null,
+    });
+  }
+
+  async getPasswordResetToken(token: string): Promise<{ userId: string; expiresAt: Date; usedAt: Date | null } | undefined> {
+    const resetToken = await db.query.passwordResetTokens.findFirst({
+      where: eq(schema.passwordResetTokens.token, token),
+    });
+    
+    if (!resetToken) return undefined;
+    
+    return {
+      userId: resetToken.userId,
+      expiresAt: resetToken.expiresAt,
+      usedAt: resetToken.usedAt,
+    };
+  }
+
+  async markPasswordResetTokenAsUsed(token: string): Promise<void> {
+    await db
+      .update(schema.passwordResetTokens)
+      .set({ usedAt: new Date() })
+      .where(eq(schema.passwordResetTokens.token, token));
+  }
+
+  async deleteExpiredPasswordResetTokens(): Promise<void> {
+    const now = new Date();
+    await db.delete(schema.passwordResetTokens).where(
+      and(
+        eq(schema.passwordResetTokens.expiresAt, now),
+        isNotNull(schema.passwordResetTokens.usedAt)
+      )
+    );
   }
 
   async deleteMultipleUsers(userIds: string[]): Promise<number> {

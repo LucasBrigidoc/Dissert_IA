@@ -1359,6 +1359,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Request password reset endpoint
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email é obrigatório" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      
+      // Always return success even if user doesn't exist (security best practice)
+      // This prevents attackers from discovering which emails are registered
+      if (!user) {
+        return res.json({ message: "Se o email existir, você receberá instruções para redefinir sua senha" });
+      }
+      
+      // Generate a random token
+      const crypto = await import('crypto');
+      const token = crypto.randomBytes(32).toString('hex');
+      
+      // Token expires in 1 hour
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+      
+      // Save token to database
+      await storage.createPasswordResetToken(user.id, token, expiresAt);
+      
+      // Create reset URL
+      const resetUrl = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/reset-password?token=${token}`;
+      
+      // Send email (if SendGrid is configured)
+      try {
+        const sgMail = await import('@sendgrid/mail');
+        
+        if (process.env.SENDGRID_API_KEY) {
+          sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
+          
+          const msg = {
+            to: email,
+            from: process.env.SENDGRID_FROM_EMAIL || 'noreply@dissertia.com',
+            subject: 'Recuperação de Senha - DISSERTIA',
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #5087ff;">Recuperação de Senha</h2>
+                <p>Olá ${user.name},</p>
+                <p>Recebemos uma solicitação para redefinir a senha da sua conta no DISSERTIA.</p>
+                <p>Clique no botão abaixo para criar uma nova senha:</p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${resetUrl}" style="background-color: #5087ff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    Redefinir Senha
+                  </a>
+                </div>
+                <p>Ou copie e cole este link no seu navegador:</p>
+                <p style="word-break: break-all; color: #666;">${resetUrl}</p>
+                <p style="color: #666; font-size: 14px;">Este link expira em 1 hora.</p>
+                <p style="color: #666; font-size: 14px;">Se você não solicitou a recuperação de senha, pode ignorar este email com segurança.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+                <p style="color: #999; font-size: 12px;">DISSERTIA - Seu assistente pessoal 24/7 para dominar a arte de escrever redações</p>
+              </div>
+            `,
+          };
+          
+          await sgMail.default.send(msg);
+          console.log(`Password reset email sent to ${email}`);
+        } else {
+          // If SendGrid is not configured, log the reset URL for development
+          console.log(`⚠️ SendGrid not configured. Password reset URL for ${email}:`);
+          console.log(resetUrl);
+        }
+      } catch (emailError) {
+        console.error("Error sending password reset email:", emailError);
+        // Don't fail the request if email sending fails
+      }
+      
+      res.json({ message: "Se o email existir, você receberá instruções para redefinir sua senha" });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(500).json({ message: "Erro ao processar solicitação" });
+    }
+  });
+
+  // Reset password with token endpoint
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ message: "Token e nova senha são obrigatórios" });
+      }
+      
+      // Validate password strength
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "A senha deve ter no mínimo 8 caracteres" });
+      }
+      
+      // Get token from database
+      const resetToken = await storage.getPasswordResetToken(token);
+      
+      if (!resetToken) {
+        return res.status(400).json({ message: "Token inválido ou expirado" });
+      }
+      
+      // Check if token has expired
+      if (new Date() > new Date(resetToken.expiresAt)) {
+        return res.status(400).json({ message: "Token expirado" });
+      }
+      
+      // Check if token has already been used
+      if (resetToken.usedAt) {
+        return res.status(400).json({ message: "Token já utilizado" });
+      }
+      
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      
+      // Update user password
+      await storage.updateUser(resetToken.userId, { password: hashedPassword });
+      
+      // Mark token as used
+      await storage.markPasswordResetTokenAsUsed(token);
+      
+      res.json({ message: "Senha redefinida com sucesso" });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      res.status(500).json({ message: "Erro ao redefinir senha" });
+    }
+  });
+
   // Update user profile endpoint
   app.put("/api/users/profile", requireAuth, async (req, res) => {
     try {
