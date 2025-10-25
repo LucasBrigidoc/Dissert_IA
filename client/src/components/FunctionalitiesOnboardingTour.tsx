@@ -296,91 +296,91 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
             </div>
           </div>
 
-          <div className="p-6">
-            <p className="text-soft-gray dark:text-gray-300 text-base leading-relaxed mb-6">
+          <div className="p-4">
+            <p className="text-soft-gray dark:text-gray-300 text-sm leading-relaxed mb-4">
               {step.description}
             </p>
 
             {step.target === 'categories' && (
-              <div className="mb-6 max-h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-1">
-                <div className="space-y-3">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-lg p-3.5 border border-blue-200 dark:border-blue-700/50">
-                    <div className="flex items-start gap-3">
+              <div className="mb-4 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-1">
+                <div className="space-y-2.5">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-lg p-2.5 border border-blue-200 dark:border-blue-700/50">
+                    <div className="flex items-start gap-2.5">
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-xl flex items-center justify-center shadow-md">
-                          <Brain className="text-white" size={20} />
+                        <div className="w-9 h-9 bg-gradient-to-br from-bright-blue to-dark-blue rounded-lg flex items-center justify-center shadow-md">
+                          <Brain className="text-white" size={18} />
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <h4 className="text-sm font-bold text-blue-900 dark:text-blue-100">Refinamento</h4>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-200 dark:bg-blue-700 text-blue-800 dark:text-blue-200">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <h4 className="text-xs font-bold text-blue-900 dark:text-blue-100">Refinamento</h4>
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-200 dark:bg-blue-700 text-blue-800 dark:text-blue-200">
                             Fase 1
                           </span>
                         </div>
-                        <p className="text-xs text-blue-800 dark:text-blue-200 leading-relaxed mb-1">
-                          Organize pensamentos e fortaleça argumentos antes de escrever.
+                        <p className="text-[11px] text-blue-800 dark:text-blue-200 leading-snug mb-0.5">
+                          Organize pensamentos e fortaleça argumentos.
                         </p>
-                        <p className="text-[11px] text-blue-700 dark:text-blue-300 leading-relaxed">
-                          <strong>Use quando:</strong> tiver ideias desorganizadas e precisar de base sólida.
+                        <p className="text-[10px] text-blue-700 dark:text-blue-300 leading-snug">
+                          <strong>Use:</strong> ideias desorganizadas
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-700/50 rounded-lg p-3.5 border border-gray-300 dark:border-gray-600">
-                    <div className="flex items-start gap-3">
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-700/50 rounded-lg p-2.5 border border-gray-300 dark:border-gray-600">
+                    <div className="flex items-start gap-2.5">
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center shadow-md">
-                          <Target className="text-white" size={20} />
+                        <div className="w-9 h-9 bg-gradient-to-br from-gray-600 to-gray-700 rounded-lg flex items-center justify-center shadow-md">
+                          <Target className="text-white" size={18} />
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100">Prática</h4>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <h4 className="text-xs font-bold text-gray-900 dark:text-gray-100">Prática</h4>
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200">
                             Fase 2
                           </span>
                         </div>
-                        <p className="text-xs text-gray-800 dark:text-gray-200 leading-relaxed mb-1">
-                          Treine escrita em condições reais e receba feedback detalhado.
+                        <p className="text-[11px] text-gray-800 dark:text-gray-200 leading-snug mb-0.5">
+                          Treine escrita em condições reais.
                         </p>
-                        <p className="text-[11px] text-gray-700 dark:text-gray-300 leading-relaxed">
-                          <strong>Use quando:</strong> estiver pronto para escrever e praticar com cronômetro.
+                        <p className="text-[10px] text-gray-700 dark:text-gray-300 leading-snug">
+                          <strong>Use:</strong> escrever textos completos
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 rounded-lg p-3.5 border border-sky-200 dark:border-sky-700/50">
-                    <div className="flex items-start gap-3">
+                  <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 rounded-lg p-2.5 border border-sky-200 dark:border-sky-700/50">
+                    <div className="flex items-start gap-2.5">
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-sky-500 rounded-xl flex items-center justify-center shadow-md">
-                          <Sparkles className="text-white" size={20} />
+                        <div className="w-9 h-9 bg-gradient-to-br from-sky-400 to-sky-500 rounded-lg flex items-center justify-center shadow-md">
+                          <Sparkles className="text-white" size={18} />
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <h4 className="text-sm font-bold text-sky-900 dark:text-sky-100">Criação</h4>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-sky-200 dark:bg-sky-700 text-sky-800 dark:text-sky-200">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <h4 className="text-xs font-bold text-sky-900 dark:text-sky-100">Criação</h4>
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-sky-200 dark:bg-sky-700 text-sky-800 dark:text-sky-200">
                             Fase 3
                           </span>
                         </div>
-                        <p className="text-xs text-sky-800 dark:text-sky-200 leading-relaxed mb-1">
-                          Gere conteúdo novo e experimente diferentes abordagens criativas.
+                        <p className="text-[11px] text-sky-800 dark:text-sky-200 leading-snug mb-0.5">
+                          Gere conteúdo novo e inspire-se.
                         </p>
-                        <p className="text-[11px] text-sky-700 dark:text-sky-300 leading-relaxed">
-                          <strong>Use quando:</strong> precisar de inspiração ou temas novos para escrever.
+                        <p className="text-[10px] text-sky-700 dark:text-sky-300 leading-snug">
+                          <strong>Use:</strong> inspiração e temas novos
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-lg p-2.5 border border-amber-200 dark:border-amber-700/50">
-                    <div className="flex items-start gap-2">
-                      <Rocket className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" size={16} />
-                      <p className="text-[11px] text-amber-800 dark:text-amber-200 leading-relaxed">
-                        <strong>Dica:</strong> Fluxo ideal é Refinamento → Prática → Criação, mas use na ordem que preferir!
+                  <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-lg p-2 border border-amber-200 dark:border-amber-700/50">
+                    <div className="flex items-start gap-1.5">
+                      <Rocket className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" size={14} />
+                      <p className="text-[10px] text-amber-800 dark:text-amber-200 leading-snug">
+                        <strong>Dica:</strong> Fluxo ideal: Refinamento → Prática → Criação
                       </p>
                     </div>
                   </div>
@@ -389,7 +389,7 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
             )}
 
             {targetRect && step.target !== 'intro' && step.target !== 'finish' && (
-              <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 border-2 border-bright-blue/20">
+              <div className="mb-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-3 border-2 border-bright-blue/20">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-bright-blue rounded-full animate-pulse" />
@@ -452,8 +452,8 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
               </div>
             )}
 
-            <div className="mb-5">
-              <div className="flex items-center justify-between mb-3">
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-soft-gray dark:text-gray-400">
                     Passo {currentStep + 1} de {functionalitiesSteps.length}
