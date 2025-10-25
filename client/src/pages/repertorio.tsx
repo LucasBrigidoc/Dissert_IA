@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Repertoire } from "@shared/schema";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
 import { Paywall } from "@/components/Paywall";
+import { RepertorioOnboardingTour } from "@/components/RepertorioOnboardingTour";
 
 interface SearchResult {
   results: Repertoire[];
@@ -33,6 +34,7 @@ export default function Repertorio() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [isGeneratingFromEmpty, setIsGeneratingFromEmpty] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const { toast } = useToast();
 
@@ -40,6 +42,25 @@ export default function Repertorio() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Check if user should see repertorio onboarding tour
+  useEffect(() => {
+    const hasSeenRepertorioOnboarding = localStorage.getItem('hasSeenRepertorioOnboarding');
+    if (!hasSeenRepertorioOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenRepertorioOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenRepertorioOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   // Função para alternar expansão da descrição
   const toggleDescription = (repertoireId: string) => {
@@ -859,6 +880,14 @@ export default function Repertorio() {
         feature="busca inteligente de repertório"
         title="Limite de Uso Atingido"
       />
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <RepertorioOnboardingTour 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
