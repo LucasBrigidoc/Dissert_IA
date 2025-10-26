@@ -296,8 +296,8 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
             </div>
           </div>
 
-          <div className="p-4">
-            <div className="min-h-[340px] flex flex-col">
+          <div className="p-4 max-h-[60vh] overflow-y-auto">
+            <div className="flex flex-col">
               <p className="text-soft-gray dark:text-gray-300 text-sm leading-relaxed mb-4">
                 {step.description}
               </p>
