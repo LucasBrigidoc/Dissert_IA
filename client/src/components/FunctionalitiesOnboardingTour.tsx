@@ -79,7 +79,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: '[data-testid="card-biblioteca"]',
     title: 'Biblioteca Pessoal',
-    description: 'Sua central de materiais de estudo! As 6 ferramentas do sistema permitem salvar o conteúdo gerado na Biblioteca. Acesse seus materiais quantas vezes quiser: redações, repertórios, estruturas e propostas. Perfeito para revisar quando precisar.',
+    description: 'Sua central de materiais de estudo! As 6 ferramentas do sistema permitem salvar o conteúdo gerado na Biblioteca. Acesse seus materiais quantas vezes quiser: redações, repertórios, roteiros, propostas, textos modificados e conversas. Perfeito para revisar quando precisar.',
     position: 'bottom',
     icon: <Archive className="text-bright-blue" size={24} />,
     category: 'Organização'
@@ -719,8 +719,10 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                         <ul className="text-[10px] text-slate-800 dark:text-slate-200 leading-snug space-y-0.5">
                           <li>✓ Redações com correções completas</li>
                           <li>✓ Repertórios pesquisados</li>
-                          <li>✓ Estruturas criadas</li>
+                          <li>✓ Roteiros criados</li>
                           <li>✓ Propostas de temas geradas</li>
+                          <li>✓ Textos modificados pelo controlador</li>
+                          <li>✓ Conversas com refinador de ideias</li>
                         </ul>
                       </div>
                     </div>
