@@ -45,14 +45,6 @@ const repertorioSteps: OnboardingStep[] = [
     category: 'Interface'
   },
   {
-    target: 'capacidades',
-    title: 'O Que Você Pode Fazer Aqui?',
-    description: 'Esta ferramenta oferece diversos recursos para enriquecer sua redação com repertórios de qualidade. Conheça todas as possibilidades.',
-    position: 'center',
-    icon: <Sparkles className="text-bright-blue" size={24} />,
-    category: 'Recursos'
-  },
-  {
     target: 'biblioteca',
     title: 'Salve na Biblioteca',
     description: 'Encontrou um repertório perfeito? Salve na sua Biblioteca Pessoal para usar em redações futuras e ter sempre à mão!',
@@ -364,39 +356,6 @@ export function RepertorioOnboardingTour({ onComplete, onSkip }: RepertorioOnboa
                         <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100">Carregar Mais</p>
                         <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Busca repertórios adicionais relacionados ao seu tema.</p>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {step.target === 'capacidades' && (
-                <div className="mb-4 flex-1 space-y-2 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-bright-blue/30 scrollbar-track-gray-100">
-                  <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100 mb-2">⚡ O que você pode fazer com esta ferramenta:</p>
-                  
-                  <div className="grid grid-cols-1 gap-2">
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
-                      <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-0.5">✅ Buscar por Tema</p>
-                      <p className="text-[9px] text-blue-800 dark:text-blue-200 leading-snug">Digite palavras-chave como "desigualdade social" ou "meio ambiente".</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-800/20 p-2.5 rounded-lg border border-purple-200 dark:border-purple-700/30">
-                      <p className="text-[10px] font-bold text-purple-900 dark:text-purple-100 mb-0.5">✅ Colar Proposta Completa</p>
-                      <p className="text-[9px] text-purple-800 dark:text-purple-200 leading-snug">Cole a proposta do vestibular e a IA encontra repertórios específicos.</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
-                      <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">✅ Filtrar por Tipo</p>
-                      <p className="text-[9px] text-green-800 dark:text-green-200 leading-snug">Escolha só filmes, só leis, só pesquisas, etc.</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-800/20 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700/30">
-                      <p className="text-[10px] font-bold text-amber-900 dark:text-amber-100 mb-0.5">✅ Gerar Mais Repertórios</p>
-                      <p className="text-[9px] text-amber-800 dark:text-amber-200 leading-snug">Use "Carregar Mais" para ver referências adicionais.</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-sky-900/20 dark:to-cyan-800/20 p-2.5 rounded-lg border border-sky-200 dark:border-sky-700/30">
-                      <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100 mb-0.5">✅ Visualizar Detalhes</p>
-                      <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Veja descrição completa, ano e tipo de cada referência.</p>
                     </div>
                   </div>
                 </div>
