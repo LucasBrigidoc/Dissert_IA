@@ -13,6 +13,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
 import { useAuth } from "@/contexts/AuthContext";
+import { SimuladorOnboardingTour } from "@/components/SimuladorOnboardingTour";
 
 export default function Simulador() {
   const [location] = useLocation();
@@ -55,6 +56,25 @@ export default function Simulador() {
     window.scrollTo(0, 0);
   }, []);
   
+  // Verificar se deve mostrar o onboarding
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenSimuladorOnboarding');
+    if (!hasSeenOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenSimuladorOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenSimuladorOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+  
   // Estados para os campos obrigatórios
   const [examType, setExamType] = useState("");
   const [timeLimit, setTimeLimit] = useState("");
@@ -77,6 +97,9 @@ export default function Simulador() {
   
   // Estado para controlar expansão de simulações
   const [expandedSimulations, setExpandedSimulations] = useState<Set<string>>(new Set());
+  
+  // Estado para onboarding
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const toggleSimulationExpansion = (simulationId: string) => {
     setExpandedSimulations(prev => {
@@ -660,6 +683,14 @@ export default function Simulador() {
 
         </div>
       </div>
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <SimuladorOnboardingTour 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
