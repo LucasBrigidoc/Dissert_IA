@@ -15,7 +15,7 @@ const onboardingSteps: OnboardingStep[] = [
   {
     target: 'intro',
     title: 'Bem-vindo ao DISSERTIA!',
-    description: 'Vamos fazer um tour rápido para você conhecer as principais funcionalidades da plataforma. Este guia vai te ajudar a aproveitar ao máximo sua experiência.',
+    description: 'Vamos fazer um tour rápido para você conhecer as principais funcionalidades da tela de Home. Em cada aba você encontrará um card de introdução para te ajudar a aproveitar ao máximo sua experiência.',
     position: 'center',
     icon: <PartyPopper className="text-bright-blue" size={24} />,
     featureLabel: 'Início'
