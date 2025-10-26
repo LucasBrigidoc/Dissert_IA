@@ -234,19 +234,19 @@ export function RepertorioOnboardingTour({ onComplete, onSkip }: RepertorioOnboa
                     <div className="space-y-1">
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] text-bright-blue mt-0.5">•</span>
-                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Competência 2 ENEM:</strong> Demonstra conhecimento cultural</p>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Conhecimento cultural:</strong> Demonstra repertório sociocultural amplo</p>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] text-bright-blue mt-0.5">•</span>
-                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Competência 3 ENEM:</strong> Fortalece argumentação</p>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Argumentação sólida:</strong> Fortalece seus pontos de vista com dados reais</p>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] text-bright-blue mt-0.5">•</span>
-                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Credibilidade:</strong> Exemplos concretos convencem mais</p>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Credibilidade:</strong> Exemplos concretos convencem mais avaliadores</p>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] text-bright-blue mt-0.5">•</span>
-                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Diferencial:</strong> Destaca sua redação das demais</p>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Diferencial:</strong> Destaca sua redação entre as demais</p>
                       </div>
                     </div>
                   </div>
