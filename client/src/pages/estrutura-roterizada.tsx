@@ -24,6 +24,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import jsPDF from "jspdf";
+import { EstruturaOnboardingTour } from "@/components/EstruturaOnboardingTour";
 
 export function EstruturaRoterizada() {
   const [, navigate] = useLocation();
@@ -33,6 +34,7 @@ export function EstruturaRoterizada() {
   const [saveTitle, setSaveTitle] = useState("");
   const [lastQuestionnaire, setLastQuestionnaire] = useState<EssayOutlineQuestionnaire | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -64,6 +66,25 @@ export function EstruturaRoterizada() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  
+  // Verificar se deve mostrar o onboarding
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenEstruturaOnboarding');
+    if (!hasSeenOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenEstruturaOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenEstruturaOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   const handleBack = () => {
     navigate(backUrl);
@@ -1133,6 +1154,14 @@ export function EstruturaRoterizada() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <EstruturaOnboardingTour 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
