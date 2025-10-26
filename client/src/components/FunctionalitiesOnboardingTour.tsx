@@ -79,7 +79,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: '[data-testid="card-biblioteca"]',
     title: 'Biblioteca Pessoal',
-    description: 'Sua central de materiais de estudo! Todas as ferramentas de IA permitem salvar o conteúdo gerado aqui na Biblioteca. Use para guardar e acessar seus materiais quantas vezes quiser: redações corrigidas, repertórios pesquisados, estruturas criadas e propostas geradas. Perfeito para revisar e estudar quando precisar.',
+    description: 'Sua central de materiais de estudo! As 6 ferramentas do sistema permitem salvar o conteúdo gerado na Biblioteca. Acesse seus materiais quantas vezes quiser: redações, repertórios, estruturas e propostas. Perfeito para revisar quando precisar.',
     position: 'bottom',
     icon: <Archive className="text-bright-blue" size={24} />,
     category: 'Organização'
@@ -711,28 +711,28 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
 
               {step.target === '[data-testid="card-biblioteca"]' && (
                 <div className="mb-4 flex-1 space-y-3">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700/30">
-                    <div className="flex items-start gap-2.5">
-                      <Archive className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={20} />
-                      <div>
-                        <p className="text-[11px] font-bold text-blue-900 dark:text-blue-100 mb-1.5">Como funciona:</p>
-                        <p className="text-[10px] text-blue-800 dark:text-blue-200 leading-snug mb-1.5">
-                          <strong>Todas as ferramentas de IA</strong> têm a opção de salvar o conteúdo gerado na Biblioteca. É simples: ao usar qualquer ferramenta, basta clicar em salvar!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                   <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/20 dark:to-slate-800/20 p-3 rounded-lg border border-slate-200 dark:border-slate-700/30">
                     <div className="flex items-start gap-2.5">
                       <FileText className="text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5" size={20} />
                       <div>
                         <p className="text-[11px] font-bold text-slate-900 dark:text-slate-100 mb-1.5">Materiais que você pode salvar:</p>
                         <ul className="text-[10px] text-slate-800 dark:text-slate-200 leading-snug space-y-0.5">
-                          <li>✓ Redações escritas com suas correções completas</li>
-                          <li>✓ Repertórios culturais pesquisados pela IA</li>
-                          <li>✓ Estruturas e roteiros criados</li>
+                          <li>✓ Redações com correções completas</li>
+                          <li>✓ Repertórios pesquisados</li>
+                          <li>✓ Estruturas criadas</li>
                           <li>✓ Propostas de temas geradas</li>
                         </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-start gap-2">
+                      <Archive className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-0.5">Como funciona:</p>
+                        <p className="text-[10px] text-blue-800 dark:text-blue-200 leading-snug">
+                          As <strong>6 ferramentas do sistema</strong> permitem salvar conteúdo aqui. Basta clicar em salvar ao usar qualquer uma delas!
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -740,9 +740,9 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                     <div className="flex items-start gap-2">
                       <TrendingUp className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
                       <div>
-                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Acesse quando quiser:</p>
+                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Estude quando quiser:</p>
                         <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
-                          Todos os materiais salvos ficam disponíveis para você estudar quantas vezes precisar, quando quiser. Seu material de estudos sempre à mão!
+                          Todo material salvo fica disponível para revisar quantas vezes precisar!
                         </p>
                       </div>
                     </div>
