@@ -24,6 +24,7 @@ import type {
   WordDifficulty
 } from "@shared/schema";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
+import { ControladorOnboardingTour } from "@/components/ControladorOnboardingTour";
 
 export default function ControladorEscrita() {
   const [location, setLocation] = useLocation();
@@ -39,6 +40,25 @@ export default function ControladorEscrita() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  
+  // Verificar se deve mostrar o onboarding
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenControladorOnboarding');
+    if (!hasSeenOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenControladorOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenControladorOnboarding', 'true');
+    setShowOnboarding(false);
+  };
   
   // Estados para o texto
   const [originalText, setOriginalText] = useState("");
@@ -72,6 +92,9 @@ export default function ControladorEscrita() {
   // Estados para feedback e ajuda
   const [feedbackText, setFeedbackText] = useState<string>("");
   const [helpSections, setHelpSections] = useState<{ [key: string]: boolean }>({});
+  
+  // Estado para onboarding
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   // Estados para salvar na biblioteca
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -1573,6 +1596,14 @@ ${recommendations}`);
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <ControladorOnboardingTour 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
