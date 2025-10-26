@@ -166,9 +166,9 @@ export function RepertorioOnboardingTour({ onComplete, onSkip }: RepertorioOnboa
                   <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700/30">
                     <div className="flex items-start gap-2.5">
                       <BookOpen className="text-bright-blue flex-shrink-0 mt-0.5" size={18} />
-                      <div>
-                        <p className="text-[11px] font-bold text-blue-900 dark:text-blue-100 mb-1">Tipos de repertório que você encontra:</p>
-                        <div className="grid grid-cols-2 gap-1.5 mt-1.5">
+                      <div className="w-full">
+                        <p className="text-[11px] font-bold text-blue-900 dark:text-blue-100 mb-1.5">Tipos de repertório que você encontra:</p>
+                        <div className="grid grid-cols-2 gap-1.5">
                           <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
                             <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📽️ Filmes</p>
                           </div>
@@ -179,7 +179,25 @@ export function RepertorioOnboardingTour({ onComplete, onSkip }: RepertorioOnboa
                             <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">⚖️ Leis</p>
                           </div>
                           <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
+                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📰 Notícias</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
+                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📅 Acontecimentos</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
+                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">🎵 Música</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
+                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📺 Séries</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
+                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">🎬 Documentários</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
                             <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">🔬 Pesquisas</p>
+                          </div>
+                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
+                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📊 Dados</p>
                           </div>
                         </div>
                       </div>
