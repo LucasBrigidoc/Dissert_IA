@@ -743,29 +743,29 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
 
               {step.target === '[data-testid="card-quick-access"]' && (
                 <div className="mb-4 flex-1 space-y-3">
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-3 rounded-lg border border-orange-200 dark:border-orange-700/30">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-purple-200 dark:border-purple-700/30">
                     <div className="flex items-start gap-2.5">
-                      <Rocket className="text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" size={20} />
+                      <Rocket className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" size={20} />
                       <div>
-                        <p className="text-[11px] font-bold text-orange-900 dark:text-orange-100 mb-1.5">Fluxo recomendado:</p>
+                        <p className="text-[11px] font-bold text-purple-900 dark:text-purple-100 mb-1.5">Fluxo recomendado:</p>
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-orange-600/20 rounded flex items-center justify-center flex-shrink-0">
-                              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400">1</span>
+                            <div className="w-5 h-5 bg-purple-600/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">1</span>
                             </div>
-                            <p className="text-[10px] text-orange-800 dark:text-orange-200"><strong>Refinar</strong> suas ideias primeiro</p>
+                            <p className="text-[10px] text-purple-800 dark:text-purple-200"><strong>Refinar</strong> suas ideias primeiro</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-orange-600/20 rounded flex items-center justify-center flex-shrink-0">
-                              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400">2</span>
+                            <div className="w-5 h-5 bg-purple-600/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">2</span>
                             </div>
-                            <p className="text-[10px] text-orange-800 dark:text-orange-200"><strong>Buscar</strong> repertório relevante</p>
+                            <p className="text-[10px] text-purple-800 dark:text-purple-200"><strong>Buscar</strong> repertório relevante</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-orange-600/20 rounded flex items-center justify-center flex-shrink-0">
-                              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400">3</span>
+                            <div className="w-5 h-5 bg-purple-600/20 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">3</span>
                             </div>
-                            <p className="text-[10px] text-orange-800 dark:text-orange-200"><strong>Praticar</strong> no simulador</p>
+                            <p className="text-[10px] text-purple-800 dark:text-purple-200"><strong>Praticar</strong> no simulador</p>
                           </div>
                         </div>
                       </div>
