@@ -738,17 +738,6 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
-                    <div className="flex items-start gap-2">
-                      <TrendingUp className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
-                      <div>
-                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Estude quando quiser:</p>
-                        <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
-                          Todo material salvo fica disponível para revisar quantas vezes precisar!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               )}
 
