@@ -771,17 +771,6 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
-                    <div className="flex items-start gap-2">
-                      <Award className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
-                      <div>
-                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Resultado comprovado:</p>
-                        <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
-                          Este fluxo é usado por +2.000 estudantes com sucesso
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                   <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-200 dark:border-blue-700/30">
                     <Zap className="text-bright-blue" size={16} />
                     <p className="text-[10px] text-blue-800 dark:text-blue-200">
