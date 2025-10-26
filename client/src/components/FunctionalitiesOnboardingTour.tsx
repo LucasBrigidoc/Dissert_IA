@@ -522,7 +522,7 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                   <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-200 dark:border-blue-700/30">
                     <Award className="text-bright-blue" size={16} />
                     <p className="text-[10px] text-blue-800 dark:text-blue-200">
-                      <strong>Competência ENEM:</strong> Melhora nota em C2 e C3
+                      <strong>Pontos fortes:</strong> Melhora repertório e argumentação
                     </p>
                   </div>
                 </div>
@@ -573,7 +573,7 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                         <p className="text-[11px] font-bold text-green-900 dark:text-green-100 mb-1.5">Recursos do simulador:</p>
                         <ul className="text-[10px] text-green-800 dark:text-green-200 leading-snug space-y-0.5">
                           <li>✓ Cronômetro real simulando condições de prova</li>
-                          <li>✓ Correção baseada nas 5 competências do ENEM</li>
+                          <li>✓ Correção completa: gramática, repertório, argumentação, coesão e proposta</li>
                           <li>✓ Feedback detalhado e personalizado</li>
                           <li>✓ Gráficos de evolução e estatísticas</li>
                         </ul>
