@@ -163,42 +163,52 @@ export function RepertorioOnboardingTour({ onComplete, onSkip }: RepertorioOnboa
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700/30">
-                    <div className="flex items-start gap-2.5">
-                      <BookOpen className="text-bright-blue flex-shrink-0 mt-0.5" size={18} />
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-start gap-2">
+                      <BookOpen className="text-bright-blue flex-shrink-0 mt-0.5" size={16} />
                       <div className="w-full">
-                        <p className="text-[11px] font-bold text-blue-900 dark:text-blue-100 mb-1.5">Tipos de repertório que você encontra:</p>
-                        <div className="grid grid-cols-2 gap-1.5">
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📽️ Filmes</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📚 Livros</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">⚖️ Leis</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📰 Notícias</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📅 Acontecimentos</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">🎵 Música</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📺 Séries</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">🎬 Documentários</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">🔬 Pesquisas</p>
-                          </div>
-                          <div className="bg-white/50 dark:bg-gray-800/30 p-1.5 rounded text-center">
-                            <p className="text-[9px] font-bold text-blue-900 dark:text-blue-100">📊 Dados</p>
-                          </div>
+                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-2">10 tipos disponíveis:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-800/40 dark:to-blue-900/40 px-2 py-1 rounded-full border border-blue-300 dark:border-blue-600/50">
+                            <span className="text-[11px]">📽️</span>
+                            <span className="text-[9px] font-semibold text-blue-900 dark:text-blue-100">Filmes</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-purple-100 to-purple-50 dark:from-purple-800/40 dark:to-purple-900/40 px-2 py-1 rounded-full border border-purple-300 dark:border-purple-600/50">
+                            <span className="text-[11px]">📚</span>
+                            <span className="text-[9px] font-semibold text-purple-900 dark:text-purple-100">Livros</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-800/40 dark:to-amber-900/40 px-2 py-1 rounded-full border border-amber-300 dark:border-amber-600/50">
+                            <span className="text-[11px]">⚖️</span>
+                            <span className="text-[9px] font-semibold text-amber-900 dark:text-amber-100">Leis</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-800/40 dark:to-slate-900/40 px-2 py-1 rounded-full border border-slate-300 dark:border-slate-600/50">
+                            <span className="text-[11px]">📰</span>
+                            <span className="text-[9px] font-semibold text-slate-900 dark:text-slate-100">Notícias</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-green-100 to-green-50 dark:from-green-800/40 dark:to-green-900/40 px-2 py-1 rounded-full border border-green-300 dark:border-green-600/50">
+                            <span className="text-[11px]">📅</span>
+                            <span className="text-[9px] font-semibold text-green-900 dark:text-green-100">Acontecimentos</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-100 to-pink-50 dark:from-pink-800/40 dark:to-pink-900/40 px-2 py-1 rounded-full border border-pink-300 dark:border-pink-600/50">
+                            <span className="text-[11px]">🎵</span>
+                            <span className="text-[9px] font-semibold text-pink-900 dark:text-pink-100">Música</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-indigo-800/40 dark:to-indigo-900/40 px-2 py-1 rounded-full border border-indigo-300 dark:border-indigo-600/50">
+                            <span className="text-[11px]">📺</span>
+                            <span className="text-[9px] font-semibold text-indigo-900 dark:text-indigo-100">Séries</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-cyan-100 to-cyan-50 dark:from-cyan-800/40 dark:to-cyan-900/40 px-2 py-1 rounded-full border border-cyan-300 dark:border-cyan-600/50">
+                            <span className="text-[11px]">🎬</span>
+                            <span className="text-[9px] font-semibold text-cyan-900 dark:text-cyan-100">Documentários</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-teal-100 to-teal-50 dark:from-teal-800/40 dark:to-teal-900/40 px-2 py-1 rounded-full border border-teal-300 dark:border-teal-600/50">
+                            <span className="text-[11px]">🔬</span>
+                            <span className="text-[9px] font-semibold text-teal-900 dark:text-teal-100">Pesquisas</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-100 to-orange-50 dark:from-orange-800/40 dark:to-orange-900/40 px-2 py-1 rounded-full border border-orange-300 dark:border-orange-600/50">
+                            <span className="text-[11px]">📊</span>
+                            <span className="text-[9px] font-semibold text-orange-900 dark:text-orange-100">Dados</span>
+                          </span>
                         </div>
                       </div>
                     </div>
