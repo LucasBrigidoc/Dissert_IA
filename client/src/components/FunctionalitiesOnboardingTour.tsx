@@ -39,7 +39,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: '[data-testid="card-feature-repertorio"]',
     title: 'Explorador de Repertório',
-    description: 'Esta ferramenta busca referências culturais, históricas, científicas e sociológicas para enriquecer sua redação. Use quando: precisar de exemplos concretos para seus argumentos, quiser citar dados e fatos relevantes, ou necessitar de repertório sociocultural de qualidade. Essencial para aumentar a nota de competência 2 e 3 do ENEM.',
+    description: 'Esta ferramenta busca referências culturais, históricas, científicas e sociológicas para enriquecer sua redação. Use quando: precisar de exemplos concretos para seus argumentos, quiser citar dados e fatos relevantes, ou necessitar de repertório sociocultural de qualidade. Essencial para melhorar a qualidade do seu texto em concursos e vestibulares.',
     position: 'bottom',
     icon: <BookOpen className="text-bright-blue" size={24} />,
     category: 'Refinamento'
@@ -47,7 +47,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: '[data-testid="card-feature-simulador"]',
     title: 'Simulador de Prova',
-    description: 'Esta ferramenta recria as condições reais do ENEM e outros vestibulares. Use quando: quiser praticar com cronômetro ativo, precisar de correção detalhada baseada nas 5 competências, ou quiser acompanhar sua evolução através de gráficos e estatísticas. Fundamental para ganhar confiança e identificar pontos de melhoria.',
+    description: 'Esta ferramenta recria as condições reais de concursos e vestibulares. Use quando: quiser praticar com cronômetro ativo, precisar de correção detalhada completa, ou quiser acompanhar sua evolução através de gráficos e estatísticas. Fundamental para ganhar confiança e identificar pontos de melhoria.',
     position: 'bottom',
     icon: <GraduationCap className="text-bright-blue" size={24} />,
     category: 'Prática'
@@ -63,7 +63,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: '[data-testid="card-feature-propostas"]',
     title: 'Gerador de Propostas',
-    description: 'Esta ferramenta cria temas de redação atualizados e relevantes automaticamente. Use quando: não souber sobre o que escrever, quiser praticar com temas variados e atuais, ou precisar de inspiração para começar a estudar. Gera propostas completas com textos motivadores no estilo ENEM.',
+    description: 'Esta ferramenta cria temas de redação atualizados e relevantes automaticamente. Use quando: não souber sobre o que escrever, quiser praticar com temas variados e atuais, ou precisar de inspiração para começar a estudar. Gera propostas completas com textos motivadores no estilo de provas de concursos e vestibulares.',
     position: 'bottom',
     icon: <Lightbulb className="text-bright-blue" size={24} />,
     category: 'Criação'
@@ -646,7 +646,7 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                         <p className="text-[11px] font-bold text-yellow-900 dark:text-yellow-100 mb-1.5">O que você recebe:</p>
                         <ul className="text-[10px] text-yellow-800 dark:text-yellow-200 leading-snug space-y-0.5">
                           <li>✓ Temas atualizados e relevantes</li>
-                          <li>✓ Propostas completas estilo ENEM</li>
+                          <li>✓ Propostas completas no estilo de concursos e vestibulares</li>
                           <li>✓ Textos motivadores incluídos</li>
                           <li>✓ Variedade de assuntos sociais e culturais</li>
                         </ul>
