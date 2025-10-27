@@ -723,9 +723,20 @@ export default function SettingsPage() {
             ) : (
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="current-password" className="text-sm font-medium text-dark-blue">
-                    Senha Atual *
-                  </Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="current-password" className="text-sm font-medium text-dark-blue">
+                      Senha Atual *
+                    </Label>
+                    <Link href="/forgot-password">
+                      <button
+                        type="button"
+                        className="text-xs text-bright-blue hover:text-dark-blue hover:underline transition-colors"
+                        data-testid="link-forgot-password"
+                      >
+                        Esqueci minha senha
+                      </button>
+                    </Link>
+                  </div>
                   <Input
                     id="current-password"
                     type="password"
