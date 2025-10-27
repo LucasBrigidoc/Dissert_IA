@@ -191,10 +191,10 @@ export default function SettingsPage() {
       return;
     }
 
-    if (passwordData.newPassword.length < 6) {
+    if (passwordData.newPassword.length < 8) {
       toast({
         title: "Senha muito curta",
-        description: "A senha deve ter no mínimo 6 caracteres.",
+        description: "A senha deve ter no mínimo 8 caracteres.",
         variant: "destructive",
       });
       return;
@@ -747,7 +747,7 @@ export default function SettingsPage() {
                     type="password"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                    placeholder="Digite a nova senha (mínimo 6 caracteres)"
+                    placeholder="Digite a nova senha (mínimo 8 caracteres)"
                     className="mt-1"
                     disabled={isSavingPassword}
                     data-testid="input-new-password"
@@ -774,7 +774,7 @@ export default function SettingsPage() {
                   <div className="flex items-start gap-2">
                     <AlertCircle className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={16} />
                     <div className="text-xs text-blue-700 dark:text-blue-400">
-                      Sua senha deve ter no mínimo 6 caracteres. Use uma combinação de letras, números e símbolos para maior segurança.
+                      Sua senha deve ter no mínimo 8 caracteres. Use uma combinação de letras, números e símbolos para maior segurança.
                     </div>
                   </div>
                 </div>
