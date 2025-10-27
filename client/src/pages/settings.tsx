@@ -571,24 +571,11 @@ export default function SettingsPage() {
                 
                 <div className="p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg">
                   <div className="text-sm text-soft-gray mb-1">Tokens Usados</div>
-                  <div className="text-lg font-bold text-dark-blue mb-2" data-testid="text-tokens-used">
+                  <div className="text-lg font-bold text-dark-blue" data-testid="text-tokens-used">
                     {limits.weeklyLimit > 0 
                       ? `${formatTokens(limits.weeklyLimit - limits.remainingCredits)} / ${formatTokens(limits.weeklyLimit)} usados`
                       : "Ilimitado"}
                   </div>
-                  {limits.weeklyLimit > 0 && (
-                    <>
-                      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mb-1">
-                        <div
-                          className="h-full bg-gradient-to-r from-bright-blue to-dark-blue transition-all duration-500"
-                          style={{ width: `${(((limits.weeklyLimit - limits.remainingCredits) / limits.weeklyLimit) * 100)}%` }}
-                        />
-                      </div>
-                      <div className="text-xs text-soft-gray">
-                        {formatTokens(limits.remainingCredits)} disponíveis
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
               
