@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Archive, Target, CheckCircle, PartyPopper, BookmarkPlus, Lightbulb, Layers, Filter, FileText, Search, Download, Trash2, Eye } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Archive, Target, CheckCircle, PartyPopper, BookmarkPlus, Lightbulb, Layers, Filter, FileText, Search, Download, Trash2, Eye, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -321,12 +321,15 @@ export function BibliotecaOnboardingTour({ onComplete, onSkip }: BibliotecaOnboa
                     </div>
                   </div>
 
-                  <div className="bg-indigo-50 dark:bg-indigo-900/20 p-2.5 rounded-lg border border-indigo-200 dark:border-indigo-700/30">
+                  <div className="bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 p-3 rounded-lg border-2 border-red-400 dark:border-red-600/50 shadow-md">
                     <div className="flex items-start gap-2">
-                      <Lightbulb className="text-indigo-600 flex-shrink-0 mt-0.5" size={14} />
+                      <XCircle className="text-red-600 dark:text-red-500 flex-shrink-0 mt-0.5" size={16} />
                       <div>
-                        <p className="text-[10px] font-bold text-indigo-900 dark:text-indigo-100">Limite de Arquivos</p>
-                        <p className="text-[9px] text-indigo-800 dark:text-indigo-200 leading-snug">Plano gratuito: 20 arquivos acessíveis. Upgrade para Pro = ilimitado!</p>
+                        <p className="text-[11px] font-bold text-red-900 dark:text-red-100">⚠️ Limite de Arquivos</p>
+                        <p className="text-[10px] text-red-800 dark:text-red-200 leading-snug font-medium">
+                          Plano gratuito: <span className="font-bold">apenas 20 arquivos</span>. 
+                          <span className="block mt-1 text-green-700 dark:text-green-400 font-bold">✨ Upgrade para Pro = ILIMITADO!</span>
+                        </p>
                       </div>
                     </div>
                   </div>
