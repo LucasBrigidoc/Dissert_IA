@@ -116,11 +116,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-blog">
-                  Blog
-                </Link>
-              </li>
-              <li>
                 <Link href="/functionalities" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-funcionalidades">
                   Funcionalidades
                 </Link>

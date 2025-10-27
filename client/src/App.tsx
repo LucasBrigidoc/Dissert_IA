@@ -43,7 +43,6 @@ import HelpCenter from "@/pages/HelpCenter";
 import FAQ from "@/pages/FAQ";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
-import Blog from "@/pages/Blog";
 
 function Router() {
   return (
@@ -56,7 +55,6 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/features" component={Features} />
       <Route path="/about" component={About} />
-      <Route path="/blog" component={Blog} />
       <Route path="/help-center" component={HelpCenter} />
       <Route path="/faq" component={FAQ} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
