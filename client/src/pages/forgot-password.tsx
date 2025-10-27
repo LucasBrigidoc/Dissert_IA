@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Sparkles, Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,14 +13,24 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [redirect, setRedirect] = useState("");
   const { toast } = useToast();
+
+  // Get redirect parameter from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectParam = params.get("redirect");
+    if (redirectParam) {
+      setRedirect(redirectParam);
+    }
+  }, []);
 
   const forgotPasswordMutation = useMutation({
     mutationFn: async (email: string) => {
       const response = await apiRequest("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, redirect }),
       });
       return response.json();
     },

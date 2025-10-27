@@ -13,6 +13,7 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 export default function ResetPassword() {
   const [, navigate] = useLocation();
   const [token, setToken] = useState("");
+  const [redirect, setRedirect] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,12 @@ export default function ResetPassword() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get("token");
+    const redirectParam = params.get("redirect");
+    
+    if (redirectParam) {
+      setRedirect(redirectParam);
+    }
+    
     if (tokenParam) {
       setToken(tokenParam);
     } else {
@@ -134,11 +141,11 @@ export default function ResetPassword() {
                     </div>
 
                     <Button
-                      onClick={() => navigate("/login")}
+                      onClick={() => navigate(redirect || "/login")}
                       className="w-full bg-bright-blue text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 smooth-transition hover-scale mt-6"
                       data-testid="button-go-to-login"
                     >
-                      Ir para Login
+                      {redirect ? "Voltar para Configurações" : "Ir para Login"}
                     </Button>
                   </div>
                 </div>

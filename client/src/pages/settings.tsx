@@ -727,7 +727,7 @@ export default function SettingsPage() {
                     <Label htmlFor="current-password" className="text-sm font-medium text-dark-blue">
                       Senha Atual *
                     </Label>
-                    <Link href="/forgot-password">
+                    <Link href="/forgot-password?redirect=/settings">
                       <button
                         type="button"
                         className="text-xs text-bright-blue hover:text-dark-blue hover:underline transition-colors"

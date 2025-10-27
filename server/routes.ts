@@ -1362,7 +1362,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Request password reset endpoint
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, redirect } = req.body;
       
       if (!email) {
         return res.status(400).json({ message: "Email é obrigatório" });
@@ -1390,8 +1390,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Save hashed token to database
       await storage.createPasswordResetToken(user.id, hashedToken, expiresAt);
       
-      // Create reset URL
-      const resetUrl = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/reset-password?token=${token}`;
+      // Create reset URL with optional redirect parameter
+      let resetUrl = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/reset-password?token=${token}`;
+      if (redirect) {
+        resetUrl += `&redirect=${encodeURIComponent(redirect)}`;
+      }
       
       // Send email (if SendGrid is configured)
       try {
