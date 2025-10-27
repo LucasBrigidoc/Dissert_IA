@@ -6,7 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle, Trash2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle, Trash2, ChevronDown, Bug } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,7 +57,10 @@ export default function SettingsPage() {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackLocation, setFeedbackLocation] = useState("");
+  const [feedbackCategory, setFeedbackCategory] = useState("");
+  const [feedbackType, setFeedbackType] = useState("");
   const [isSendingFeedback, setIsSendingFeedback] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   
   // User profile data from auth context
   const [userProfile, setUserProfile] = useState({
@@ -239,11 +244,17 @@ export default function SettingsPage() {
     try {
       setIsSendingFeedback(true);
       
+      const locationInfo = [
+        feedbackCategory && `Ferramenta: ${feedbackCategory}`,
+        feedbackType && `Tipo: ${feedbackType}`,
+        feedbackLocation && `Detalhes: ${feedbackLocation}`
+      ].filter(Boolean).join(' | ');
+      
       await apiRequest('/api/feedback', {
         method: 'POST',
         body: {
           message: feedbackMessage,
-          location: feedbackLocation,
+          location: locationInfo || null,
           userEmail: user?.email,
           userName: user?.name,
         }
@@ -256,6 +267,9 @@ export default function SettingsPage() {
       
       setFeedbackMessage("");
       setFeedbackLocation("");
+      setFeedbackCategory("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
     } catch (error) {
       toast({
         title: "Erro ao enviar feedback",
@@ -638,61 +652,117 @@ export default function SettingsPage() {
           </LiquidGlassCard>
         )}
 
-        {/* Feedback Section */}
-        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-feedback">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-              <MessageCircle className="text-white" size={20} />
-            </div>
-            <h3 className="text-xl font-semibold text-dark-blue">Feedback do Sistema</h3>
-          </div>
-          
-          <div className="space-y-4">
-            <p className="text-sm text-soft-gray">
-              Encontrou algum problema ou erro no funcionamento do sistema ou da IA? 
-              Relate aqui para nos ajudar a melhorar sua experiência.
-            </p>
+        {/* Feedback Section - Collapsible */}
+        <Collapsible open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-feedback">
+            <CollapsibleTrigger className="w-full" data-testid="button-toggle-feedback">
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <Bug className="text-white" size={20} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-dark-blue">Reportar Problema</h3>
+                </div>
+                <ChevronDown 
+                  className={`text-dark-blue transition-transform duration-200 ${isFeedbackOpen ? 'transform rotate-180' : ''}`} 
+                  size={24} 
+                />
+              </div>
+            </CollapsibleTrigger>
             
-            <div>
-              <Label htmlFor="feedback-location" className="text-sm font-medium text-dark-blue">
-                Onde aconteceu? (opcional)
-              </Label>
-              <Input
-                id="feedback-location"
-                value={feedbackLocation}
-                onChange={(e) => setFeedbackLocation(e.target.value)}
-                placeholder="Ex: Página de correção de redações, Gerador de propostas..."
-                className="mt-2"
-                data-testid="input-feedback-location"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
-                Descreva o problema *
-              </Label>
-              <Textarea
-                id="feedback-message"
-                value={feedbackMessage}
-                onChange={(e) => setFeedbackMessage(e.target.value)}
-                placeholder="Descreva detalhadamente o que aconteceu, qual erro você viu, o que você estava tentando fazer..."
-                className="mt-2"
-                rows={5}
-                data-testid="textarea-feedback-message"
-              />
-            </div>
-            
-            <Button
-              onClick={handleSendFeedback}
-              disabled={isSendingFeedback || !feedbackMessage.trim()}
-              className="w-full bg-bright-blue hover:bg-bright-blue/90"
-              data-testid="button-send-feedback"
-            >
-              <MessageCircle size={16} className="mr-2" />
-              {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
-            </Button>
-          </div>
-        </LiquidGlassCard>
+            <CollapsibleContent>
+              <div className="space-y-4 pb-3">
+                <p className="text-sm text-soft-gray">
+                  Encontrou algum problema ou erro? Relate aqui para nos ajudar a melhorar sua experiência.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="feedback-category" className="text-sm font-medium text-dark-blue">
+                      Qual ferramenta? *
+                    </Label>
+                    <Select value={feedbackCategory} onValueChange={setFeedbackCategory}>
+                      <SelectTrigger className="mt-2" data-testid="select-feedback-category">
+                        <SelectValue placeholder="Selecione a ferramenta" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="correcao-redacao">Correção de Redação</SelectItem>
+                        <SelectItem value="gerador-propostas">Gerador de Propostas</SelectItem>
+                        <SelectItem value="estrutura-roterizada">Estrutura Roterizada</SelectItem>
+                        <SelectItem value="controlador-escrita">Controlador de Escrita</SelectItem>
+                        <SelectItem value="repertorio">Banco de Repertórios</SelectItem>
+                        <SelectItem value="simulacao">Simulação ENEM</SelectItem>
+                        <SelectItem value="dashboard">Dashboard / Início</SelectItem>
+                        <SelectItem value="configuracoes">Configurações</SelectItem>
+                        <SelectItem value="planos">Planos e Pagamento</SelectItem>
+                        <SelectItem value="outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                      Tipo de problema *
+                    </Label>
+                    <Select value={feedbackType} onValueChange={setFeedbackType}>
+                      <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="erro-tecnico">Erro Técnico (bug)</SelectItem>
+                        <SelectItem value="resultado-incorreto">Resultado Incorreto da IA</SelectItem>
+                        <SelectItem value="performance-lenta">Sistema Lento</SelectItem>
+                        <SelectItem value="nao-carrega">Não Carrega / Não Funciona</SelectItem>
+                        <SelectItem value="perda-dados">Perda de Dados</SelectItem>
+                        <SelectItem value="design-problema">Problema de Interface</SelectItem>
+                        <SelectItem value="outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="feedback-location" className="text-sm font-medium text-dark-blue">
+                    Contexto adicional (opcional)
+                  </Label>
+                  <Input
+                    id="feedback-location"
+                    value={feedbackLocation}
+                    onChange={(e) => setFeedbackLocation(e.target.value)}
+                    placeholder="Ex: Ao corrigir uma redação sobre meio ambiente"
+                    className="mt-2"
+                    data-testid="input-feedback-location"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                    Descreva o que aconteceu *
+                  </Label>
+                  <Textarea
+                    id="feedback-message"
+                    value={feedbackMessage}
+                    onChange={(e) => setFeedbackMessage(e.target.value)}
+                    placeholder="Descreva detalhadamente:&#10;• O que você estava fazendo?&#10;• O que aconteceu de errado?&#10;• Qual erro apareceu?&#10;• O que você esperava que acontecesse?"
+                    className="mt-2"
+                    rows={6}
+                    data-testid="textarea-feedback-message"
+                  />
+                </div>
+                
+                <Button
+                  onClick={handleSendFeedback}
+                  disabled={isSendingFeedback || !feedbackMessage.trim() || !feedbackCategory || !feedbackType}
+                  className="w-full bg-bright-blue hover:bg-bright-blue/90"
+                  data-testid="button-send-feedback"
+                >
+                  <MessageCircle size={16} className="mr-2" />
+                  {isSendingFeedback ? "Enviando..." : "Enviar Relatório"}
+                </Button>
+              </div>
+            </CollapsibleContent>
+          </LiquidGlassCard>
+        </Collapsible>
 
         {/* Account Status + Plan Section */}
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
