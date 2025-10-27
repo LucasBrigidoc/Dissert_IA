@@ -163,10 +163,8 @@ export default function FAQ() {
           <p className="text-deep-navy/70 dark:text-white/70 mb-6">
             Entre em contato conosco e teremos prazer em ajudar
           </p>
-          <Link href="/help-center">
-            <a className="inline-block bg-bright-blue text-white px-6 py-3 rounded-lg hover:bg-bright-blue/90 smooth-transition" data-testid="button-help-center">
-              Visitar Central de Ajuda
-            </a>
+          <Link href="/help-center" className="inline-block bg-bright-blue text-white px-6 py-3 rounded-lg hover:bg-bright-blue/90 smooth-transition" data-testid="button-help-center">
+            Visitar Central de Ajuda
           </Link>
         </div>
       </section>
