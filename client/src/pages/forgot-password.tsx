@@ -70,14 +70,14 @@ export default function ForgotPassword() {
               {/* Success Message */}
               <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12">
                 <div className="mb-6 sm:mb-8">
-                  <Link 
-                    href="/login" 
-                    className="inline-flex items-center text-soft-gray hover:text-bright-blue smooth-transition"
-                    data-testid="link-back-to-login"
+                  <button
+                    onClick={() => window.history.back()}
+                    className="inline-flex items-center text-soft-gray hover:text-bright-blue smooth-transition cursor-pointer bg-transparent border-none p-0"
+                    data-testid="button-back"
                   >
                     <ArrowLeft size={20} className="mr-2" />
-                    Voltar para login
-                  </Link>
+                    Voltar
+                  </button>
                 </div>
 
                 <div className="text-center">
@@ -154,14 +154,14 @@ export default function ForgotPassword() {
             {/* Form */}
             <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12">
               <div className="mb-6 sm:mb-8">
-                <Link 
-                  href="/login" 
-                  className="inline-flex items-center text-soft-gray hover:text-bright-blue smooth-transition"
-                  data-testid="link-back-to-login"
+                <button
+                  onClick={() => window.history.back()}
+                  className="inline-flex items-center text-soft-gray hover:text-bright-blue smooth-transition cursor-pointer bg-transparent border-none p-0"
+                  data-testid="button-back"
                 >
                   <ArrowLeft size={20} className="mr-2" />
-                  Voltar para login
-                </Link>
+                  Voltar
+                </button>
               </div>
 
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 font-playfair" style={{color: '#5087ff'}}>
