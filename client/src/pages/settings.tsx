@@ -561,6 +561,35 @@ export default function SettingsPage() {
                 </div>
               </div>
               
+              {/* Token Usage Display */}
+              {limits.weeklyLimit > 0 && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="text-bright-blue" size={18} />
+                      <span className="text-sm font-medium text-dark-blue">Tokens Disponíveis</span>
+                    </div>
+                    <span className="text-xs text-soft-gray">{limits.periodLabel}</span>
+                  </div>
+                  
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <span className="text-3xl font-bold text-bright-blue" data-testid="text-tokens-remaining">
+                      {limits.remainingCredits.toLocaleString('pt-BR')}
+                    </span>
+                    <span className="text-sm text-soft-gray">
+                      de {limits.weeklyLimit.toLocaleString('pt-BR')} tokens
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs text-soft-gray">
+                      <span>Tokens usados: {limits.weeklyUsage.toLocaleString('pt-BR')}</span>
+                      <span>{limits.daysUntilReset} {limits.daysUntilReset === 1 ? 'dia' : 'dias'} até renovar</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               {!limits.canUseAI && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
                   <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
