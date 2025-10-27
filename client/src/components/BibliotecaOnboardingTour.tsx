@@ -157,31 +157,31 @@ export function BibliotecaOnboardingTour({ onComplete, onSkip }: BibliotecaOnboa
                     <div className="flex items-start gap-2">
                       <Archive className="text-bright-blue flex-shrink-0 mt-0.5" size={16} />
                       <div className="w-full">
-                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-2">6 tipos de arquivos:</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-800/40 dark:to-blue-900/40 px-2 py-1 rounded-full border border-blue-300 dark:border-blue-600/50">
-                            <span className="text-[11px]">📚</span>
-                            <span className="text-[9px] font-semibold text-blue-900 dark:text-blue-100">Repertórios</span>
+                        <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-3">6 tipos de arquivos:</p>
+                        <div className="grid grid-cols-3 gap-2">
+                          <span className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-800/40 dark:to-blue-900/40 px-3 py-2 rounded-lg border border-blue-300 dark:border-blue-600/50">
+                            <span className="text-sm">📚</span>
+                            <span className="text-[10px] font-semibold text-blue-900 dark:text-blue-100">Repertórios</span>
                           </span>
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-indigo-800/40 dark:to-indigo-900/40 px-2 py-1 rounded-full border border-indigo-300 dark:border-indigo-600/50">
-                            <span className="text-[11px]">📋</span>
-                            <span className="text-[9px] font-semibold text-indigo-900 dark:text-indigo-100">Propostas</span>
+                          <span className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-indigo-800/40 dark:to-indigo-900/40 px-3 py-2 rounded-lg border border-indigo-300 dark:border-indigo-600/50">
+                            <span className="text-sm">📋</span>
+                            <span className="text-[10px] font-semibold text-indigo-900 dark:text-indigo-100">Propostas</span>
                           </span>
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-cyan-100 to-cyan-50 dark:from-cyan-800/40 dark:to-cyan-900/40 px-2 py-1 rounded-full border border-cyan-300 dark:border-cyan-600/50">
-                            <span className="text-[11px]">📝</span>
-                            <span className="text-[9px] font-semibold text-cyan-900 dark:text-cyan-100">Textos</span>
+                          <span className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-cyan-100 to-cyan-50 dark:from-cyan-800/40 dark:to-cyan-900/40 px-3 py-2 rounded-lg border border-cyan-300 dark:border-cyan-600/50">
+                            <span className="text-sm">📝</span>
+                            <span className="text-[10px] font-semibold text-cyan-900 dark:text-cyan-100">Textos</span>
                           </span>
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-100 to-pink-50 dark:from-pink-800/40 dark:to-pink-900/40 px-2 py-1 rounded-full border border-pink-300 dark:border-pink-600/50">
-                            <span className="text-[11px]">🎯</span>
-                            <span className="text-[9px] font-semibold text-pink-900 dark:text-pink-100">Roteiros</span>
+                          <span className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-pink-100 to-pink-50 dark:from-pink-800/40 dark:to-pink-900/40 px-3 py-2 rounded-lg border border-pink-300 dark:border-pink-600/50">
+                            <span className="text-sm">🎯</span>
+                            <span className="text-[10px] font-semibold text-pink-900 dark:text-pink-100">Roteiros</span>
                           </span>
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-purple-100 to-purple-50 dark:from-purple-800/40 dark:to-purple-900/40 px-2 py-1 rounded-full border border-purple-300 dark:border-purple-600/50">
-                            <span className="text-[11px]">💡</span>
-                            <span className="text-[9px] font-semibold text-purple-900 dark:text-purple-100">Ideias</span>
+                          <span className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-100 to-purple-50 dark:from-purple-800/40 dark:to-purple-900/40 px-3 py-2 rounded-lg border border-purple-300 dark:border-purple-600/50">
+                            <span className="text-sm">💡</span>
+                            <span className="text-[10px] font-semibold text-purple-900 dark:text-purple-100">Ideias</span>
                           </span>
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-800/40 dark:to-amber-900/40 px-2 py-1 rounded-full border border-amber-300 dark:border-amber-600/50">
-                            <span className="text-[11px]">🎓</span>
-                            <span className="text-[9px] font-semibold text-amber-900 dark:text-amber-100">Simulados</span>
+                          <span className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-800/40 dark:to-amber-900/40 px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-600/50">
+                            <span className="text-sm">🎓</span>
+                            <span className="text-[10px] font-semibold text-amber-900 dark:text-amber-100">Simulados</span>
                           </span>
                         </div>
                       </div>
