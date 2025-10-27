@@ -116,9 +116,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-blog">
+                <Link href="/blog" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-blog">
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
                 <Link href="/functionalities" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-funcionalidades">
