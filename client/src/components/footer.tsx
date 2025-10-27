@@ -111,8 +111,8 @@ export function Footer() {
             <h4 className="font-semibold mb-3 md:mb-4">Company</h4>
             <ul className="space-y-1 md:space-y-2 text-white/70">
               <li>
-                <Link href="/about" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-sobre">
-                  Sobre
+                <Link href="/" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-inicio">
+                  Início
                 </Link>
               </li>
               <li>
@@ -123,6 +123,11 @@ export function Footer() {
               <li>
                 <Link href="/pricing" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-planos">
                   Planos
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-sobre">
+                  Sobre
                 </Link>
               </li>
             </ul>
