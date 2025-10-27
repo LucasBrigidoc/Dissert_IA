@@ -543,7 +543,7 @@ export default function SettingsPage() {
                 )}
               </div>
               
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div className="p-3 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg">
                   <div className="text-sm text-soft-gray">Plano</div>
                   <div className="text-lg font-bold text-dark-blue">
@@ -559,36 +559,16 @@ export default function SettingsPage() {
                       : "Ilimitado"}
                   </div>
                 </div>
-              </div>
-              
-              {/* Token Usage Display */}
-              {limits.weeklyLimit > 0 && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-bright-blue/5 to-dark-blue/5 rounded-lg border border-bright-blue/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="text-bright-blue" size={18} />
-                      <span className="text-sm font-medium text-dark-blue">Tokens Disponíveis</span>
-                    </div>
-                    <span className="text-xs text-soft-gray">{limits.periodLabel}</span>
-                  </div>
-                  
-                  <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-3xl font-bold text-bright-blue" data-testid="text-tokens-remaining">
-                      {limits.remainingCredits.toLocaleString('pt-BR')}
-                    </span>
-                    <span className="text-sm text-soft-gray">
-                      de {limits.weeklyLimit.toLocaleString('pt-BR')} tokens
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-soft-gray">
-                      <span>Tokens usados: {limits.weeklyUsage.toLocaleString('pt-BR')}</span>
-                      <span>{limits.daysUntilReset} {limits.daysUntilReset === 1 ? 'dia' : 'dias'} até renovar</span>
-                    </div>
+                
+                <div className="p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg">
+                  <div className="text-sm text-soft-gray">Tokens Disponíveis</div>
+                  <div className="text-lg font-bold text-dark-blue" data-testid="text-tokens-remaining">
+                    {limits.weeklyLimit > 0 
+                      ? `${limits.remainingCredits.toLocaleString('pt-BR')}` 
+                      : "Ilimitado"}
                   </div>
                 </div>
-              )}
+              </div>
               
               {!limits.canUseAI && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
