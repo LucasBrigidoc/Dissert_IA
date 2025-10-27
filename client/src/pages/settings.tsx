@@ -659,7 +659,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                    <Bug className="text-white" size={20} />
+                    <AlertCircle className="text-white" size={20} />
                   </div>
                   <h3 className="text-xl font-semibold text-dark-blue">Reportar Problema</h3>
                 </div>
