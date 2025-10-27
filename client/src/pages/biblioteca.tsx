@@ -11,6 +11,7 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
+import { BibliotecaOnboardingTour } from "@/components/BibliotecaOnboardingTour";
 
 // Função para remover JSON estruturado das mensagens da IA
 function removeStructuredJSON(text: string): string {
@@ -82,6 +83,7 @@ export default function BibliotecaPage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<{ id: string; type: string; title: string } | null>(null);
   const [showLockedDialog, setShowLockedDialog] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Função para obter ícone da seção
   const getSectionIcon = (section: string) => {
@@ -146,6 +148,25 @@ export default function BibliotecaPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Check if user should see biblioteca onboarding tour
+  useEffect(() => {
+    const hasSeenBibliotecaOnboarding = localStorage.getItem('hasSeenBibliotecaOnboarding');
+    if (!hasSeenBibliotecaOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenBibliotecaOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenBibliotecaOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   // Fetch all saved items from API - Always refetch to avoid stale cache
   const { data: savedRepertoires, isLoading: loadingRepertoires } = useQuery({
@@ -2393,6 +2414,13 @@ export default function BibliotecaPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <BibliotecaOnboardingTour
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
