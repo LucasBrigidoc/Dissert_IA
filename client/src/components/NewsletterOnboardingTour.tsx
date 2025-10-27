@@ -21,25 +21,17 @@ const newsletterSteps: OnboardingStep[] = [
     category: 'Início'
   },
   {
-    target: 'latest-newsletter',
-    title: 'Newsletter da Semana',
-    description: 'Toda semana publicamos uma nova newsletter com conteúdo fresco e relevante. Aqui você encontra a edição mais recente, pronta para ser lida e aproveitada nos seus estudos!',
-    position: 'top',
+    target: 'content',
+    title: 'Conteúdo Semanal de Qualidade',
+    description: 'Toda semana publicamos uma nova newsletter com temas atuais, repertórios culturais e referências que você pode usar nas suas redações. As newsletters anteriores ficam disponíveis para consulta a qualquer momento!',
+    position: 'center',
     icon: <Newspaper className="text-bright-blue" size={24} />,
-    category: 'Conteúdo Novo'
-  },
-  {
-    target: 'previous-newsletters',
-    title: 'Newsletters Anteriores',
-    description: 'Não perca nada! Todo o conteúdo educacional já publicado fica guardado aqui. Você pode acessar newsletters antigas sempre que precisar revisar um tema ou buscar referências específicas.',
-    position: 'top',
-    icon: <Archive className="text-bright-blue" size={24} />,
-    category: 'Arquivo'
+    category: 'Conteúdo'
   },
   {
     target: 'finish',
     title: 'Aproveite o Conteúdo!',
-    description: 'Pronto! Agora você sabe onde encontrar todo conteúdo educacional da DissertIA. Leia regularmente as newsletters para manter-se atualizado e turbinar suas redações com repertório de qualidade!',
+    description: 'Pronto! Leia regularmente as newsletters para manter-se atualizado e turbinar suas redações com repertório de qualidade. Bons estudos!',
     position: 'center',
     icon: <CheckCircle className="text-bright-blue" size={24} />,
     category: 'Concluído'
@@ -60,26 +52,8 @@ export function NewsletterOnboardingTour({ onComplete, onSkip }: NewsletterOnboa
   const isFirstStep = currentStep === 0;
 
   useEffect(() => {
-    if (step.target === 'intro' || step.target === 'finish') {
-      setTargetRect(null);
-      return;
-    }
-
-    const targetMap: { [key: string]: string } = {
-      'latest-newsletter': '.latest-newsletter-section',
-      'previous-newsletters': '.previous-newsletters-section'
-    };
-
-    const selector = targetMap[step.target] || step.target;
-    const element = document.querySelector(selector);
-    
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      setTargetRect(rect);
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      setTargetRect(null);
-    }
+    // All steps are centered, no need to target specific elements
+    setTargetRect(null);
   }, [currentStep, step.target]);
 
   const handleNext = () => {
@@ -97,49 +71,11 @@ export function NewsletterOnboardingTour({ onComplete, onSkip }: NewsletterOnboa
   };
 
   const getTooltipStyle = () => {
-    if (!targetRect) {
-      return {
-        position: 'fixed' as const,
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 10001,
-      };
-    }
-
-    const tooltipWidth = 380;
-    const tooltipHeight = 200;
-    const padding = 20;
-
-    let top = 0;
-    let left = 0;
-
-    switch (step.position) {
-      case 'top':
-        top = targetRect.top - tooltipHeight - padding;
-        left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
-        break;
-      case 'bottom':
-        top = targetRect.bottom + padding;
-        left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
-        break;
-      case 'left':
-        top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
-        left = targetRect.left - tooltipWidth - padding;
-        break;
-      case 'right':
-        top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
-        left = targetRect.right + padding;
-        break;
-    }
-
-    left = Math.max(padding, Math.min(left, window.innerWidth - tooltipWidth - padding));
-    top = Math.max(padding, Math.min(top, window.innerHeight - tooltipHeight - padding));
-
     return {
       position: 'fixed' as const,
-      top: `${top}px`,
-      left: `${left}px`,
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
       zIndex: 10001,
     };
   };
@@ -150,19 +86,6 @@ export function NewsletterOnboardingTour({ onComplete, onSkip }: NewsletterOnboa
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]"
         onClick={onSkip}
       />
-
-      {targetRect && (
-        <div
-          className="fixed border-4 border-bright-blue rounded-lg pointer-events-none z-[10000] animate-pulse"
-          style={{
-            top: `${targetRect.top - 4}px`,
-            left: `${targetRect.left - 4}px`,
-            width: `${targetRect.width + 8}px`,
-            height: `${targetRect.height + 8}px`,
-            boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)',
-          }}
-        />
-      )}
 
       <div
         className="bg-white rounded-2xl shadow-2xl p-6 w-[380px] max-w-[90vw]"
