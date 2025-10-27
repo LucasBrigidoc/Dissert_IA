@@ -3,13 +3,17 @@ import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCircle2, Clock, Users, RotateCcw, HelpCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Brain, Send, Map, Eye, BookOpen, Lightbulb, Target, CheckCircle2, Clock, Users, RotateCcw, HelpCircle, AlertCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
 import { ArgumentosOnboardingTour } from "@/components/ArgumentosOnboardingTour";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 // Função para remover JSON estruturado das mensagens da IA
 function removeStructuredJSON(text: string): string {
@@ -74,6 +78,14 @@ export default function Argumentos() {
   const [backUrl, setBackUrl] = useState('/dashboard');
   const [showMindMap, setShowMindMap] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  // Estados para feedback
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackType, setFeedbackType] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
 
   // Estado unificado para o brainstorm
   const [brainstormData, setBrainstormData] = useState({
@@ -124,6 +136,55 @@ export default function Argumentos() {
   const handleOnboardingSkip = () => {
     localStorage.setItem('hasSeenArgumentosOnboarding', 'true');
     setShowOnboarding(false);
+  };
+
+  // Função para enviar feedback sobre problemas com a IA
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSendingFeedback(true);
+      
+      const locationInfo = [
+        `Ferramenta: Refinador de Ideias IA`,
+        feedbackType && `Tipo de Problema: ${feedbackType}`,
+        chatState.currentSection && `Seção Atual: ${chatState.currentSection}`
+      ].filter(Boolean).join(' | ');
+      
+      await apiRequest('/api/feedback', {
+        method: 'POST',
+        body: {
+          message: feedbackMessage,
+          location: locationInfo,
+          userEmail: user?.email,
+          userName: user?.name,
+        }
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria da IA.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: "Não foi possível enviar seu feedback. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
   };
 
   // Scroll automático APENAS na caixa de conversa: início da mensagem da IA, final para mensagens do usuário
@@ -950,6 +1011,95 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                           </div>
                         </div>
                       </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  {/* Botão de Alerta para Reportar Problemas com a IA */}
+                  <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500"
+                        data-testid="button-report-problem"
+                      >
+                        <AlertCircle size={16} />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                          <AlertCircle className="h-5 w-5 text-red-500" />
+                          Reportar Problema com a IA
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-soft-gray">
+                          Encontrou algum problema com o funcionamento do Refinador de Ideias IA? Nos ajude a melhorar!
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="space-y-4 mt-4">
+                        <div>
+                          <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                            Tipo de Problema
+                          </Label>
+                          <Select value={feedbackType} onValueChange={setFeedbackType}>
+                            <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                              <SelectValue placeholder="Selecione o tipo de problema" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
+                              <SelectItem value="nao-respondeu">IA não respondeu</SelectItem>
+                              <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                              <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                              <SelectItem value="estrutura-confusa">Estrutura Confusa</SelectItem>
+                              <SelectItem value="repertorio-inadequado">Repertório Inadequado</SelectItem>
+                              <SelectItem value="outro">Outro</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                            Descreva o Problema *
+                          </Label>
+                          <Textarea
+                            id="feedback-message"
+                            value={feedbackMessage}
+                            onChange={(e) => setFeedbackMessage(e.target.value)}
+                            placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, o que você perguntou e o que a IA respondeu."
+                            className="mt-2"
+                            rows={5}
+                            data-testid="textarea-feedback-message"
+                          />
+                        </div>
+                        
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <p className="text-xs text-gray-600">
+                            <strong>Informações do Contexto:</strong><br />
+                            Seção atual: {chatState.currentSection}<br />
+                            Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <DialogFooter className="mt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsFeedbackOpen(false)}
+                          disabled={isSendingFeedback}
+                          data-testid="button-cancel-feedback"
+                        >
+                          Cancelar
+                        </Button>
+                        <Button
+                          onClick={handleSendFeedback}
+                          disabled={isSendingFeedback || !feedbackMessage.trim()}
+                          className="bg-red-500 hover:bg-red-600 text-white"
+                          data-testid="button-send-feedback"
+                        >
+                          {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+                        </Button>
+                      </DialogFooter>
                     </DialogContent>
                   </Dialog>
                   
