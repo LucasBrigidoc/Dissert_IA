@@ -11,6 +11,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Proposal } from "@shared/schema";
 import { AIUsageProgress } from "@/components/ai-usage-progress";
+import { PropostasOnboardingTour } from "@/components/PropostasOnboardingTour";
 
 interface SearchResult {
   results: Proposal[];
@@ -39,6 +40,7 @@ export default function Propostas() {
   const [hasShownInitialCacheResults, setHasShownInitialCacheResults] = useState(false);
   const [expandedProposals, setExpandedProposals] = useState<Set<string>>(new Set());
   const [generationContext, setGenerationContext] = useState("");
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const { toast } = useToast();
 
@@ -59,6 +61,25 @@ export default function Propostas() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Check if user should see propostas onboarding tour
+  useEffect(() => {
+    const hasSeenPropostasOnboarding = localStorage.getItem('hasSeenPropostasOnboarding');
+    if (!hasSeenPropostasOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenPropostasOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenPropostasOnboarding', 'true');
+    setShowOnboarding(false);
+  };
   
   // Mutation para salvar proposta na biblioteca pessoal
   const saveProposalMutation = useMutation({
@@ -718,6 +739,14 @@ export default function Propostas() {
           </LiquidGlassCard>
         )}
       </div>
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <PropostasOnboardingTour
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
