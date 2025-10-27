@@ -3,20 +3,50 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Sparkles, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Brain, Edit, Plus, Archive, ArrowRight, Eye, Menu, Newspaper, BookOpen, Loader2, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type { Newsletter } from "@shared/schema";
 import { useAuth } from "@/contexts/AuthContext";
 import { getInitials } from "@/lib/utils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { NewsletterOnboardingTour } from "@/components/NewsletterOnboardingTour";
 
 export default function NewsletterPage() {
   const [, setLocation] = useLocation();
   const { user, logout, loading } = useAuth();
   const [selectedNewsletter, setSelectedNewsletter] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const { toast } = useToast();
+
+  // Check if user should see newsletter onboarding tour
+  useEffect(() => {
+    const hasSeenNewsletterOnboarding = localStorage.getItem('hasSeenNewsletterOnboarding');
+    if (user && !hasSeenNewsletterOnboarding) {
+      const timer = setTimeout(() => setShowOnboarding(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  const completeNewsletterOnboardingMutation = useMutation({
+    mutationFn: async () => {
+      localStorage.setItem('hasSeenNewsletterOnboarding', 'true');
+      return { success: true };
+    },
+    onSuccess: () => {
+      setShowOnboarding(false);
+    },
+  });
+
+  const handleOnboardingComplete = () => {
+    completeNewsletterOnboardingMutation.mutate();
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasSeenNewsletterOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   // Fetch newsletters from API (public feed of sent newsletters)
   const { data: newsletters = [], isLoading: loadingNewsletters } = useQuery<Newsletter[]>({
@@ -448,7 +478,7 @@ export default function NewsletterPage() {
         </div>
 
         {/* Latest Newsletter Section */}
-        <div className="mb-8 md:mb-12">
+        <div className="mb-8 md:mb-12 latest-newsletter-section">
           <div className="flex items-center mb-4 md:mb-6">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center mr-3 md:mr-4">
               <Newspaper className="text-white" size={16} />
@@ -501,7 +531,7 @@ export default function NewsletterPage() {
         </div>
 
         {/* Previous Newsletters Section */}
-        <div>
+        <div className="previous-newsletters-section">
           <div className="flex items-center mb-4 md:mb-6">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-dark-blue to-soft-gray rounded-full flex items-center justify-center mr-3 md:mr-4">
               <Archive className="text-white" size={16} />
@@ -557,6 +587,14 @@ export default function NewsletterPage() {
           </div>
         </div>
       </div>
+
+      {/* Newsletter Onboarding Tour */}
+      {showOnboarding && (
+        <NewsletterOnboardingTour
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 }
