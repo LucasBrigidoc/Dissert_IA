@@ -263,6 +263,15 @@ export default function SettingsPage() {
     return limits.percentageUsed || 0;
   };
 
+  const formatTokens = (tokens: number): string => {
+    if (tokens >= 1000000) {
+      return `${(tokens / 1000000).toFixed(1)}M`;
+    } else if (tokens >= 1000) {
+      return `${(tokens / 1000).toFixed(1)}k`;
+    }
+    return tokens.toString();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Fixed Navigation Bar */}
@@ -561,12 +570,25 @@ export default function SettingsPage() {
                 </div>
                 
                 <div className="p-3 bg-gradient-to-r from-soft-gray/10 to-bright-blue/10 rounded-lg">
-                  <div className="text-sm text-soft-gray">Tokens Disponíveis</div>
-                  <div className="text-lg font-bold text-dark-blue" data-testid="text-tokens-remaining">
+                  <div className="text-sm text-soft-gray mb-1">Tokens Disponíveis</div>
+                  <div className="text-lg font-bold text-dark-blue mb-2" data-testid="text-tokens-remaining">
                     {limits.weeklyLimit > 0 
-                      ? `${limits.remainingCredits.toLocaleString('pt-BR')}` 
+                      ? formatTokens(limits.remainingCredits)
                       : "Ilimitado"}
                   </div>
+                  {limits.weeklyLimit > 0 && (
+                    <>
+                      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mb-1">
+                        <div
+                          className="h-full bg-gradient-to-r from-bright-blue to-dark-blue transition-all duration-500"
+                          style={{ width: `${((limits.remainingCredits / limits.weeklyLimit) * 100)}%` }}
+                        />
+                      </div>
+                      <div className="text-xs text-soft-gray">
+                        de {formatTokens(limits.weeklyLimit)}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               
