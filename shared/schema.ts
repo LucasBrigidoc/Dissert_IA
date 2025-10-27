@@ -262,6 +262,20 @@ export const userScores = pgTable("user_scores", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// User feedback table for system and AI issue reports
+export const userFeedback = pgTable("user_feedback", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  userEmail: text("user_email"),
+  userName: text("user_name"),
+  message: text("message").notNull(),
+  location: text("location"),
+  status: varchar("status", { enum: ["pending", "reviewing", "resolved", "dismissed"] }).notNull().default("pending"),
+  adminNotes: text("admin_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -436,6 +450,14 @@ export const insertUserScoreSchema = createInsertSchema(userScores).omit({
   scoreDate: z.coerce.date(),
 });
 
+export const insertUserFeedbackSchema = createInsertSchema(userFeedback).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  status: true,
+  adminNotes: true,
+});
+
 export const proposalSearchQuerySchema = z.object({
   query: z.string().min(1, "Query é obrigatória"),
   examType: z.string().optional(),
@@ -601,6 +623,9 @@ export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
 
 export type InsertUserScore = z.infer<typeof insertUserScoreSchema>;
 export type UserScore = typeof userScores.$inferSelect;
+
+export type InsertUserFeedback = z.infer<typeof insertUserFeedbackSchema>;
+export type UserFeedback = typeof userFeedback.$inferSelect;
 
 export const insertWeeklyUsageSchema = createInsertSchema(weeklyUsage).omit({
   id: true,

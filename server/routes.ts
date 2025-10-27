@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertUserScoreSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema, type UserScore } from "@shared/schema";
+import { insertUserSchema, updateUserProfileSchema, insertUserProgressSchema, insertUserScoreSchema, insertEssayStructureSchema, searchQuerySchema, chatMessageSchema, proposalSearchQuerySchema, generateProposalSchema, textModificationRequestSchema, insertSimulationSchema, newsletterSubscriptionSchema, createNewsletterSchema, updateNewsletterSchema, sendNewsletterSchema, createMaterialComplementarSchema, updateMaterialComplementarSchema, insertCouponSchema, validateCouponSchema, insertUserGoalSchema, insertUserExamSchema, insertUserScheduleSchema, insertUserFeedbackSchema, type UserScore, userFeedback } from "@shared/schema";
 import { textModificationService } from "./text-modification-service";
 import { optimizedAnalysisService } from "./optimized-analysis-service";
 import { optimizationTelemetry } from "./optimization-telemetry";
@@ -1537,6 +1537,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Delete account error:", error);
       res.status(500).json({ message: "Erro ao deletar conta" });
+    }
+  });
+
+  // ===================== FEEDBACK ENDPOINT =====================
+
+  // Submit user feedback
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { message, location, userEmail, userName } = insertUserFeedbackSchema.parse(req.body);
+      
+      // Store feedback in database
+      const feedback = await db.insert(userFeedback).values({
+        userId: req.user?.id || null,
+        userEmail: userEmail || req.user?.email || null,
+        userName: userName || req.user?.name || null,
+        message,
+        location: location || null,
+      }).returning();
+      
+      console.log('📝 Feedback received:', {
+        userId: req.user?.id || 'anonymous',
+        location: location || 'not specified',
+        messagePreview: message.substring(0, 100)
+      });
+      
+      res.json({ 
+        message: "Feedback enviado com sucesso",
+        feedbackId: feedback[0].id
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Dados inválidos", 
+          errors: error.errors 
+        });
+      }
+      console.error("Submit feedback error:", error);
+      res.status(500).json({ message: "Erro ao enviar feedback" });
     }
   });
 

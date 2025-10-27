@@ -53,6 +53,9 @@ export default function SettingsPage() {
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackLocation, setFeedbackLocation] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
   
   // User profile data from auth context
   const [userProfile, setUserProfile] = useState({
@@ -220,6 +223,47 @@ export default function SettingsPage() {
         variant: "destructive",
       });
       setIsUpgrading(false);
+    }
+  };
+
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSendingFeedback(true);
+      
+      await apiRequest('/api/feedback', {
+        method: 'POST',
+        body: {
+          message: feedbackMessage,
+          location: feedbackLocation,
+          userEmail: user?.email,
+          userName: user?.name,
+        }
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria do sistema.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackLocation("");
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: "Não foi possível enviar seu feedback. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
     }
   };
 
@@ -593,6 +637,62 @@ export default function SettingsPage() {
             </div>
           </LiquidGlassCard>
         )}
+
+        {/* Feedback Section */}
+        <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-feedback">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+              <MessageCircle className="text-white" size={20} />
+            </div>
+            <h3 className="text-xl font-semibold text-dark-blue">Feedback do Sistema</h3>
+          </div>
+          
+          <div className="space-y-4">
+            <p className="text-sm text-soft-gray">
+              Encontrou algum problema ou erro no funcionamento do sistema ou da IA? 
+              Relate aqui para nos ajudar a melhorar sua experiência.
+            </p>
+            
+            <div>
+              <Label htmlFor="feedback-location" className="text-sm font-medium text-dark-blue">
+                Onde aconteceu? (opcional)
+              </Label>
+              <Input
+                id="feedback-location"
+                value={feedbackLocation}
+                onChange={(e) => setFeedbackLocation(e.target.value)}
+                placeholder="Ex: Página de correção de redações, Gerador de propostas..."
+                className="mt-2"
+                data-testid="input-feedback-location"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                Descreva o problema *
+              </Label>
+              <Textarea
+                id="feedback-message"
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                placeholder="Descreva detalhadamente o que aconteceu, qual erro você viu, o que você estava tentando fazer..."
+                className="mt-2"
+                rows={5}
+                data-testid="textarea-feedback-message"
+              />
+            </div>
+            
+            <Button
+              onClick={handleSendFeedback}
+              disabled={isSendingFeedback || !feedbackMessage.trim()}
+              className="w-full bg-bright-blue hover:bg-bright-blue/90"
+              data-testid="button-send-feedback"
+            >
+              <MessageCircle size={16} className="mr-2" />
+              {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+            </Button>
+          </div>
+        </LiquidGlassCard>
 
         {/* Account Status + Plan Section */}
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
