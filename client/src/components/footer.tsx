@@ -138,24 +138,24 @@ export function Footer() {
             <h4 className="font-semibold mb-3 md:mb-4">Recursos</h4>
             <ul className="space-y-1 md:space-y-2 text-white/70">
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-help">
-                  Help Center
-                </a>
+                <Link href="/help-center" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-help">
+                  Central de Ajuda
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-faq">
-                  FAQ
-                </a>
+                <Link href="/faq" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-faq">
+                  Perguntas Frequentes
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-privacy">
-                  Privacy Policy
-                </a>
+                <Link href="/privacy-policy" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-privacy">
+                  Política de Privacidade
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-terms">
-                  Terms of Service
-                </a>
+                <Link href="/terms-of-service" className="hover:text-bright-blue smooth-transition text-sm md:text-base" data-testid="link-footer-terms">
+                  Termos de Serviço
+                </Link>
               </li>
             </ul>
           </div>

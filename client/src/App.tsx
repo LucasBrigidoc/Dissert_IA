@@ -38,6 +38,10 @@ import AdminMateriais from "@/pages/admin-materiais";
 import AdminCoupons from "@/pages/admin-coupons";
 import Checkout from "@/pages/checkout";
 import SubscriptionPage from "@/pages/subscription";
+import HelpCenter from "@/pages/HelpCenter";
+import FAQ from "@/pages/FAQ";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
 
 function Router() {
   return (
@@ -50,6 +54,10 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/features" component={Features} />
       <Route path="/about" component={About} />
+      <Route path="/help-center" component={HelpCenter} />
+      <Route path="/faq" component={FAQ} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
       
       <Route path="/newsletter">
         <ProtectedRoute>
