@@ -8,7 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle, Trash2, ChevronDown, Bug } from "lucide-react";
+import { MessageCircle, Search, GraduationCap, Sliders, Calendar, TrendingUp, Book, Lightbulb, Plus, LogOut, Home, Settings, Target, Clock, CheckCircle2, Timer, User, CreditCard, Shield, Edit3, Save, X, Menu, AlertTriangle, Sparkles, DollarSign, XCircle, RefreshCw, AlertCircle, Trash2, ChevronDown, Key } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -61,6 +61,14 @@ export default function SettingsPage() {
   const [feedbackType, setFeedbackType] = useState("");
   const [isSendingFeedback, setIsSendingFeedback] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
   
   // User profile data from auth context
   const [userProfile, setUserProfile] = useState({
@@ -162,6 +170,76 @@ export default function SettingsPage() {
   const handleCancelProfile = () => {
     setTempProfile(userProfile);
     setIsEditingProfile(false);
+  };
+
+  const handleSavePassword = async () => {
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos de senha.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({
+        title: "Senhas não conferem",
+        description: "A nova senha e a confirmação devem ser iguais.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      toast({
+        title: "Senha muito curta",
+        description: "A senha deve ter no mínimo 6 caracteres.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSavingPassword(true);
+      
+      const response = await apiRequest("/api/users/change-password", {
+        method: "POST",
+        body: {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }
+      });
+
+      toast({
+        title: "Senha atualizada",
+        description: "Sua senha foi alterada com sucesso.",
+      });
+      
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      });
+      setIsEditingPassword(false);
+    } catch (error) {
+      toast({
+        title: "Erro ao alterar senha",
+        description: error instanceof Error ? error.message : "Não foi possível alterar a senha. Verifique sua senha atual.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handleCancelPassword = () => {
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: ""
+    });
+    setIsEditingPassword(false);
   };
 
   const handleCancelSubscription = async () => {
@@ -579,6 +657,129 @@ export default function SettingsPage() {
                 )}
               </div>
             </div>
+          </LiquidGlassCard>
+
+          {/* Password Change Card */}
+          <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20" data-testid="card-password">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Key className="text-white" size={20} />
+                </div>
+                <h3 className="text-xl font-semibold text-dark-blue">Segurança</h3>
+              </div>
+              {!isEditingPassword ? (
+                <Button
+                  onClick={() => setIsEditingPassword(true)}
+                  variant="outline"
+                  size="sm"
+                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                  data-testid="button-change-password"
+                >
+                  <Edit3 size={16} className="mr-2" />
+                  Alterar Senha
+                </Button>
+              ) : (
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={handleSavePassword}
+                    size="sm"
+                    disabled={isSavingPassword}
+                    className="bg-bright-blue text-white hover:bg-bright-blue/90"
+                    data-testid="button-save-password"
+                  >
+                    <Save size={16} className="mr-2" />
+                    {isSavingPassword ? "Salvando..." : "Salvar"}
+                  </Button>
+                  <Button
+                    onClick={handleCancelPassword}
+                    variant="outline"
+                    size="sm"
+                    disabled={isSavingPassword}
+                    className="text-soft-gray border-soft-gray/30"
+                    data-testid="button-cancel-password"
+                  >
+                    <X size={16} />
+                  </Button>
+                </div>
+              )}
+            </div>
+            
+            {!isEditingPassword ? (
+              <div className="space-y-4">
+                <div className="p-4 bg-gradient-to-r from-bright-blue/10 to-dark-blue/10 rounded-lg border border-bright-blue/20">
+                  <div className="flex items-center gap-3">
+                    <Key className="text-bright-blue" size={20} />
+                    <div>
+                      <div className="font-medium text-dark-blue">Senha</div>
+                      <div className="text-sm text-soft-gray">••••••••</div>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm text-soft-gray">
+                  Mantenha sua conta segura usando uma senha forte e única.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="current-password" className="text-sm font-medium text-dark-blue">
+                    Senha Atual *
+                  </Label>
+                  <Input
+                    id="current-password"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                    placeholder="Digite sua senha atual"
+                    className="mt-1"
+                    disabled={isSavingPassword}
+                    data-testid="input-current-password"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="new-password" className="text-sm font-medium text-dark-blue">
+                    Nova Senha *
+                  </Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                    placeholder="Digite a nova senha (mínimo 6 caracteres)"
+                    className="mt-1"
+                    disabled={isSavingPassword}
+                    data-testid="input-new-password"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="confirm-password" className="text-sm font-medium text-dark-blue">
+                    Confirmar Nova Senha *
+                  </Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                    placeholder="Digite a nova senha novamente"
+                    className="mt-1"
+                    disabled={isSavingPassword}
+                    data-testid="input-confirm-password"
+                  />
+                </div>
+                
+                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={16} />
+                    <div className="text-xs text-blue-700 dark:text-blue-400">
+                      Sua senha deve ter no mínimo 6 caracteres. Use uma combinação de letras, números e símbolos para maior segurança.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </LiquidGlassCard>
         </div>
 
