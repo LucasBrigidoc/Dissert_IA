@@ -61,6 +61,14 @@ const argumentosSteps: OnboardingStep[] = [
     category: 'Salvamento'
   },
   {
+    target: 'alert-feedback',
+    title: 'Reporte Problemas com a IA',
+    description: 'Sua opinião é fundamental! Use o botão de alerta sempre que a IA gerar uma resposta incorreta, confusa ou irrelevante. Seu feedback nos ajuda a melhorar continuamente.',
+    position: 'center',
+    icon: <AlertCircle className="text-red-600" size={24} />,
+    category: 'Feedback'
+  },
+  {
     target: 'finish',
     title: 'Pronto para Começar!',
     description: 'Agora você já sabe como usar o Refinador de Ideias. Comece conversando com a IA sobre seu tema de redação e deixe ela guiar você pelo processo de construção dos argumentos!',
@@ -486,6 +494,65 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                       <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Reaproveite argumentos em redações similares</p>
                       <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Organize seu acervo de ideias por tema</p>
                       <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Revise seu processo criativo depois</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'alert-feedback' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-red-50 to-rose-100 dark:from-red-900/20 dark:to-rose-800/20 p-3 rounded-lg border border-red-200 dark:border-red-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <p className="text-[11px] font-bold text-red-900 dark:text-red-100 mb-1">Botão de Alerta (⚠️)</p>
+                        <p className="text-[10px] text-red-800 dark:text-red-200 leading-snug">
+                          Encontrou na interface ao lado de cada resposta da IA. Use-o sempre que algo não estiver correto!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">🚨 Quando usar o botão de alerta:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-red-600 mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta incorreta:</strong> Quando a IA fornece informações erradas ou contraditórias</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-red-600 mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta confusa:</strong> Quando a resposta não faz sentido ou é difícil de entender</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-red-600 mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta irrelevante:</strong> Quando a IA não responde ao que você perguntou</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-red-600 mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Argumentos fracos:</strong> Quando os argumentos gerados são superficiais ou inadequados</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-100 dark:from-amber-900/20 dark:to-orange-800/20 p-3 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Lightbulb className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" size={16} />
+                      <div>
+                        <p className="text-[11px] font-bold text-amber-900 dark:text-amber-100 mb-1">Por que seu feedback é importante?</p>
+                        <p className="text-[10px] text-amber-800 dark:text-amber-200 leading-snug">
+                          Cada alerta que você envia nos ajuda a identificar problemas e melhorar a qualidade das respostas. Sua contribuição é <strong>essencial</strong> para aprimorar a IA!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="text-green-600 dark:text-green-400" size={16} />
+                      <p className="text-[10px] font-bold text-green-900 dark:text-green-100">
+                        Não hesite em reportar! Cada feedback nos torna melhores 💪
+                      </p>
                     </div>
                   </div>
                 </div>
