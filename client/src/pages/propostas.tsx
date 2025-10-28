@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, BookmarkPlus, Clock, Loader2, Trophy, GraduationCap, Lightbulb } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, Search, FileText, Calendar, Sparkles, BookOpen, BookmarkPlus, Clock, Loader2, Trophy, GraduationCap, Lightbulb, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -42,6 +44,12 @@ export default function Propostas() {
   const [generationContext, setGenerationContext] = useState("");
   const [showOnboarding, setShowOnboarding] = useState(false);
   
+  // Estados para o feedback de problemas com a IA
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
+  
   const { toast } = useToast();
 
   // Toggle supporting text expansion
@@ -79,6 +87,47 @@ export default function Propostas() {
   const handleOnboardingSkip = () => {
     localStorage.setItem('hasSeenPropostasOnboarding', 'true');
     setShowOnboarding(false);
+  };
+  
+  // Função para enviar feedback sobre problemas com a IA
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Mensagem obrigatória",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSendingFeedback(true);
+
+    try {
+      await apiRequest("/api/feedback", {
+        method: "POST",
+        body: {
+          message: `[Gerador de Propostas] ${feedbackType ? `Tipo: ${feedbackType} - ` : ''}${feedbackMessage}`,
+          location: "Gerador de Propostas com IA",
+        },
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria da IA.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
   };
   
   // Mutation para salvar proposta na biblioteca pessoal
@@ -403,9 +452,101 @@ export default function Propostas() {
         {/* AI Generation Section */}
         <LiquidGlassCard className="mb-8 p-6">
           <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-4">
-              <Sparkles className="w-5 h-5 text-bright-blue" />
-              <h2 className="text-xl font-semibold text-dark-blue">Criar Propostas com Inteligência Artificial</h2>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-bright-blue" />
+                <h2 className="text-xl font-semibold text-dark-blue">Criar Propostas com Inteligência Artificial</h2>
+              </div>
+              
+              {/* Botão de Feedback */}
+              <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500 flex items-center gap-1.5 h-8 px-2 sm:px-3"
+                    data-testid="button-report-problem-propostas"
+                  >
+                    <AlertCircle size={14} />
+                    <span className="hidden sm:inline text-xs">Reportar</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                      <AlertCircle className="h-5 w-5 text-red-500" />
+                      Reportar Problema com a IA
+                    </DialogTitle>
+                    <DialogDescription className="text-sm text-soft-gray">
+                      Encontrou algum problema com o Gerador de Propostas? Nos ajude a melhorar!
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <Label htmlFor="feedback-type-propostas" className="text-sm font-medium text-dark-blue">
+                        Tipo de Problema
+                      </Label>
+                      <Select value={feedbackType} onValueChange={setFeedbackType}>
+                        <SelectTrigger className="mt-2" data-testid="select-feedback-type-propostas">
+                          <SelectValue placeholder="Selecione o tipo de problema" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="proposta-incorreta">Proposta Incorreta ou Confusa</SelectItem>
+                          <SelectItem value="proposta-irrelevante">Proposta Irrelevante</SelectItem>
+                          <SelectItem value="geracao-nao-funcionou">Geração não Funcionou</SelectItem>
+                          <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                          <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                          <SelectItem value="outro">Outro</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="feedback-message-propostas" className="text-sm font-medium text-dark-blue">
+                        Descreva o Problema *
+                      </Label>
+                      <Textarea
+                        id="feedback-message-propostas"
+                        value={feedbackMessage}
+                        onChange={(e) => setFeedbackMessage(e.target.value)}
+                        placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, os filtros usados e o contexto fornecido."
+                        className="mt-2"
+                        rows={5}
+                        data-testid="textarea-feedback-message-propostas"
+                      />
+                    </div>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-xs text-gray-600">
+                        <strong>Informações do Contexto:</strong><br />
+                        {generationContext && `Contexto fornecido: ${generationContext.substring(0, 100)}${generationContext.length > 100 ? '...' : ''}`}<br />
+                        Filtros: Exame: {selectedExamType}, Tema: {selectedTheme}, Dificuldade: {selectedDifficulty}<br />
+                        Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <DialogFooter className="mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsFeedbackOpen(false)}
+                      disabled={isSendingFeedback}
+                      data-testid="button-cancel-feedback-propostas"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      onClick={handleSendFeedback}
+                      disabled={isSendingFeedback || !feedbackMessage.trim()}
+                      className="bg-red-500 hover:bg-red-600 text-white"
+                      data-testid="button-send-feedback-propostas"
+                    >
+                      {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* Filtros de Personalização */}
