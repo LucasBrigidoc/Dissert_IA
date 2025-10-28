@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, Brain, MessageCircle, Eye, Target, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Lightbulb, Send, HelpCircle, RotateCcw, Map, BookmarkPlus, Sparkles, Layers, Zap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Brain, MessageCircle, Eye, Target, CheckCircle, PartyPopper, ArrowDown, ArrowUp, Lightbulb, Send, HelpCircle, RotateCcw, Map, BookmarkPlus, Sparkles, Layers, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -387,6 +387,17 @@ export function ArgumentosOnboardingTour({ onComplete, onSkip }: ArgumentosOnboa
                       <div>
                         <p className="text-[10px] font-bold text-gray-900 dark:text-gray-100">Nova Conversa</p>
                         <p className="text-[9px] text-gray-800 dark:text-gray-200 leading-snug">Reinicia o chat para começar um novo tema do zero.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-red-50 dark:bg-red-900/20 p-2.5 rounded-lg border border-red-200 dark:border-red-700/30">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-red-900 dark:text-red-100">Botão de Alerta (⚠️)</p>
+                        <p className="text-[9px] text-red-800 dark:text-red-200 leading-snug mb-1">Reporta problemas com a IA. Use quando a resposta estiver incorreta, confusa ou irrelevante.</p>
+                        <p className="text-[9px] text-red-700 dark:text-red-300 font-semibold">Seu feedback é essencial para melhorar a qualidade da IA!</p>
                       </div>
                     </div>
                   </div>
