@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Edit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save, Download } from "lucide-react";
+import { ArrowLeft, Edit, BookOpen, Brain, Lightbulb, Target, Settings2, CheckCircle2, AlertTriangle, Sparkles, Save, Download, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { AIUsageProgress, refreshAIUsageStats } from "@/components/ai-usage-progress";
@@ -21,8 +21,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import jsPDF from "jspdf";
 import { EstruturaOnboardingTour } from "@/components/EstruturaOnboardingTour";
 
@@ -35,6 +37,12 @@ export function EstruturaRoterizada() {
   const [lastQuestionnaire, setLastQuestionnaire] = useState<EssayOutlineQuestionnaire | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // Estados para o feedback de problemas com a IA
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
   const fromPage = urlParams.get('from') || 'dashboard';
@@ -478,6 +486,47 @@ export function EstruturaRoterizada() {
     });
   };
 
+  // Função para enviar feedback sobre problemas com a IA
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Mensagem obrigatória",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSendingFeedback(true);
+
+    try {
+      await apiRequest("/api/feedback", {
+        method: "POST",
+        body: {
+          message: `[Estrutura Roteirizada] ${feedbackType ? `Tipo: ${feedbackType} - ` : ''}${feedbackMessage}`,
+          location: "Estrutura Roteirizada",
+        },
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria da IA.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
+  };
+
   const onSubmit = async (data: EssayOutlineQuestionnaire) => {
     generateOutlineMutation.mutate(data);
   };
@@ -550,11 +599,102 @@ export function EstruturaRoterizada() {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             {/* Questionário em um único card - Estilo Simulador */}
             <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                  <Target className="text-white" size={14} />
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                    <Target className="text-white" size={14} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-dark-blue">Questionário de Roteirização</h3>
                 </div>
-                <h3 className="text-xl font-semibold text-dark-blue">Questionário de Roteirização</h3>
+                
+                {/* Botão de Feedback */}
+                <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500 flex items-center gap-1.5 h-8 px-2 sm:px-3"
+                      data-testid="button-report-problem-estrutura"
+                    >
+                      <AlertCircle size={14} />
+                      <span className="hidden sm:inline text-xs">Reportar</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-red-500" />
+                        Reportar Problema com a IA
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-soft-gray">
+                        Encontrou algum problema com a Estrutura Roteirizada? Nos ajude a melhorar!
+                      </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="space-y-4 mt-4">
+                      <div>
+                        <Label htmlFor="feedback-type-estrutura" className="text-sm font-medium text-dark-blue">
+                          Tipo de Problema
+                        </Label>
+                        <Select value={feedbackType} onValueChange={setFeedbackType}>
+                          <SelectTrigger className="mt-2" data-testid="select-feedback-type-estrutura">
+                            <SelectValue placeholder="Selecione o tipo de problema" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="resposta-incorreta">Resposta Incorreta ou Confusa</SelectItem>
+                            <SelectItem value="roteiro-inadequado">Roteiro Inadequado ou Irrelevante</SelectItem>
+                            <SelectItem value="geracao-nao-funcionou">Geração não Funcionou</SelectItem>
+                            <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                            <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                            <SelectItem value="outro">Outro</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="feedback-message-estrutura" className="text-sm font-medium text-dark-blue">
+                          Descreva o Problema *
+                        </Label>
+                        <Textarea
+                          id="feedback-message-estrutura"
+                          value={feedbackMessage}
+                          onChange={(e) => setFeedbackMessage(e.target.value)}
+                          placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, qual foi o questionário preenchido e o que a IA respondeu."
+                          className="mt-2"
+                          rows={5}
+                          data-testid="textarea-feedback-message-estrutura"
+                        />
+                      </div>
+                      
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-xs text-gray-600">
+                          <strong>Informações do Contexto:</strong><br />
+                          {proposalText && `Proposta atual: ${proposalText.substring(0, 100)}${proposalText.length > 100 ? '...' : ''}`}<br />
+                          Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <DialogFooter className="mt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsFeedbackOpen(false)}
+                        disabled={isSendingFeedback}
+                        data-testid="button-cancel-feedback-estrutura"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        onClick={handleSendFeedback}
+                        disabled={isSendingFeedback || !feedbackMessage.trim()}
+                        className="bg-red-500 hover:bg-red-600 text-white"
+                        data-testid="button-send-feedback-estrutura"
+                      >
+                        {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="space-y-8">
