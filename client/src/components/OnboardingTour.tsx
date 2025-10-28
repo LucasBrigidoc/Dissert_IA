@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper, ArrowDown, ArrowUp, ArrowLeft, ArrowRight, TrendingUp, Clock, BookOpen, GraduationCap } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Calendar, Target, BarChart3, Zap, Mail, Settings, CheckCircle, PartyPopper, ArrowDown, ArrowUp, ArrowLeft, ArrowRight, TrendingUp, Clock, BookOpen, GraduationCap, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -83,6 +83,14 @@ const onboardingSteps: OnboardingStep[] = [
     position: 'bottom',
     icon: <Mail className="text-bright-blue" size={24} />,
     featureLabel: 'Conteúdo Semanal'
+  },
+  {
+    target: '[data-testid="card-material-complementar"]',
+    title: 'Material Complementar',
+    description: 'Acesse materiais de apoio cuidadosamente preparados para ajudar você a aprender sobre redação. Encontre guias, dicas e recursos educativos que vão aprimorar suas habilidades de escrita!',
+    position: 'bottom',
+    icon: <FileText className="text-bright-blue" size={24} />,
+    featureLabel: 'Materiais de Apoio'
   },
   {
     target: '[data-testid="card-simulador-provas"]',
