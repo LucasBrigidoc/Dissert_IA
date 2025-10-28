@@ -620,101 +620,11 @@ export default function Repertorio() {
                 <span>Voltar</span>
               </Button>
             </Link>
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="flex items-center space-x-2 min-w-0">
-                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
-                  <Search className="text-white" size={14} />
-                </div>
-                <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Repertório</h1>
+            <div className="flex items-center space-x-2 min-w-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+                <Search className="text-white" size={14} />
               </div>
-              {/* Botão de Feedback - Mobile */}
-              <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500 h-8 px-2"
-                    data-testid="button-report-problem"
-                  >
-                    <AlertCircle size={14} />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
-                      <AlertCircle className="h-5 w-5 text-red-500" />
-                      Reportar Problema com a IA
-                    </DialogTitle>
-                    <DialogDescription className="text-sm text-soft-gray">
-                      Encontrou algum problema com o Explorador de Repertório? Nos ajude a melhorar!
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="space-y-4 mt-4">
-                    <div>
-                      <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
-                        Tipo de Problema
-                      </Label>
-                      <Select value={feedbackType} onValueChange={setFeedbackType}>
-                        <SelectTrigger className="mt-2" data-testid="select-feedback-type">
-                          <SelectValue placeholder="Selecione o tipo de problema" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
-                          <SelectItem value="repertorio-inadequado">Repertório Inadequado ou Fraco</SelectItem>
-                          <SelectItem value="busca-nao-funcionou">Busca não Funcionou</SelectItem>
-                          <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
-                          <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
-                          <SelectItem value="outro">Outro</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
-                        Descreva o Problema *
-                      </Label>
-                      <Textarea
-                        id="feedback-message"
-                        value={feedbackMessage}
-                        onChange={(e) => setFeedbackMessage(e.target.value)}
-                        placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, o que você buscou e o que a IA respondeu."
-                        className="mt-2"
-                        rows={5}
-                        data-testid="textarea-feedback-message"
-                      />
-                    </div>
-                    
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p className="text-xs text-gray-600">
-                        <strong>Informações do Contexto:</strong><br />
-                        {searchQuery && `Busca atual: ${searchQuery}`}
-                        {selectedType !== 'all' && ` | Tipo: ${selectedType}`}<br />
-                        Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <DialogFooter className="mt-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsFeedbackOpen(false)}
-                      disabled={isSendingFeedback}
-                      data-testid="button-cancel-feedback"
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      onClick={handleSendFeedback}
-                      disabled={isSendingFeedback || !feedbackMessage.trim()}
-                      className="bg-red-500 hover:bg-red-600 text-white"
-                      data-testid="button-send-feedback"
-                    >
-                      {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <h1 className="text-sm font-bold text-dark-blue truncate">Explorador de Repertório</h1>
             </div>
           </div>
           
@@ -738,20 +648,7 @@ export default function Repertorio() {
                 <h1 className="text-2xl font-bold text-dark-blue">Explorador de Repertório</h1>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <p className="text-soft-gray">Descubra referências para enriquecer suas redações</p>
-              {/* Botão de Feedback - Desktop (compartilha o mesmo Dialog do mobile) */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsFeedbackOpen(true)}
-                className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500 flex items-center gap-2"
-                data-testid="button-report-problem-desktop"
-              >
-                <AlertCircle size={16} />
-                <span className="hidden lg:inline">Reportar Problema</span>
-              </Button>
-            </div>
+            <p className="text-soft-gray">Descubra referências para enriquecer suas redações</p>
           </div>
         </div>
         
@@ -770,14 +667,106 @@ export default function Repertorio() {
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
             <div className="space-y-4">
               {/* Header Section */}
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
-                  <Search className="text-white" size={14} />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3 min-w-0">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center flex-shrink-0">
+                    <Search className="text-white" size={14} />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-dark-blue text-sm sm:text-base">Buscar Repertório</h3>
+                    <p className="text-xs text-soft-gray hidden sm:block">Busque por proposta de redação, tema específico ou qualquer palavra-chave</p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-dark-blue text-sm sm:text-base">Buscar Repertório</h3>
-                  <p className="text-xs text-soft-gray hidden sm:block">Busque por proposta de redação, tema específico ou qualquer palavra-chave</p>
-                </div>
+                
+                {/* Botão de Feedback */}
+                <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500 flex items-center gap-1.5 h-8 px-2 sm:px-3 flex-shrink-0"
+                      data-testid="button-report-problem"
+                    >
+                      <AlertCircle size={14} />
+                      <span className="hidden sm:inline text-xs">Reportar</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-red-500" />
+                        Reportar Problema com a IA
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-soft-gray">
+                        Encontrou algum problema com o Explorador de Repertório? Nos ajude a melhorar!
+                      </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="space-y-4 mt-4">
+                      <div>
+                        <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                          Tipo de Problema
+                        </Label>
+                        <Select value={feedbackType} onValueChange={setFeedbackType}>
+                          <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                            <SelectValue placeholder="Selecione o tipo de problema" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
+                            <SelectItem value="repertorio-inadequado">Repertório Inadequado ou Fraco</SelectItem>
+                            <SelectItem value="busca-nao-funcionou">Busca não Funcionou</SelectItem>
+                            <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                            <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                            <SelectItem value="outro">Outro</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                          Descreva o Problema *
+                        </Label>
+                        <Textarea
+                          id="feedback-message"
+                          value={feedbackMessage}
+                          onChange={(e) => setFeedbackMessage(e.target.value)}
+                          placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, o que você buscou e o que a IA respondeu."
+                          className="mt-2"
+                          rows={5}
+                          data-testid="textarea-feedback-message"
+                        />
+                      </div>
+                      
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-xs text-gray-600">
+                          <strong>Informações do Contexto:</strong><br />
+                          {searchQuery && `Busca atual: ${searchQuery}`}
+                          {selectedType !== 'all' && ` | Tipo: ${selectedType}`}<br />
+                          Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <DialogFooter className="mt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsFeedbackOpen(false)}
+                        disabled={isSendingFeedback}
+                        data-testid="button-cancel-feedback"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        onClick={handleSendFeedback}
+                        disabled={isSendingFeedback || !feedbackMessage.trim()}
+                        className="bg-red-500 hover:bg-red-600 text-white"
+                        data-testid="button-send-feedback"
+                      >
+                        {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
               
               {/* Search Form - Mobile First */}
