@@ -910,16 +910,107 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                   </div>
                   <h3 className="text-xs font-semibold text-dark-blue">Refinador de Ideias IA</h3>
                 </div>
-                <Button
-                  onClick={handleRestartConversation}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center space-x-1 sm:space-x-2 text-xs border-bright-blue/20 text-bright-blue hover:bg-bright-blue/10"
-                  data-testid="button-restart-conversation"
-                >
-                  <RotateCcw size={12} />
-                  <span className="hidden sm:inline">Nova Conversa</span>
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={handleRestartConversation}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center space-x-1 sm:space-x-2 text-xs border-bright-blue/20 text-bright-blue hover:bg-bright-blue/10"
+                    data-testid="button-restart-conversation"
+                  >
+                    <RotateCcw size={12} />
+                    <span className="hidden sm:inline">Nova Conversa</span>
+                  </Button>
+                  
+                  {/* Botão de Alerta para Reportar Problemas com a IA */}
+                  <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500"
+                        data-testid="button-report-problem"
+                      >
+                        <AlertCircle size={14} />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+                          <AlertCircle className="h-5 w-5 text-red-500" />
+                          Reportar Problema com a IA
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-soft-gray">
+                          Encontrou algum problema com o funcionamento do Refinador de Ideias IA? Nos ajude a melhorar!
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="space-y-4 mt-4">
+                        <div>
+                          <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                            Tipo de Problema
+                          </Label>
+                          <Select value={feedbackType} onValueChange={setFeedbackType}>
+                            <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                              <SelectValue placeholder="Selecione o tipo de problema" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
+                              <SelectItem value="nao-respondeu">IA não respondeu</SelectItem>
+                              <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                              <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                              <SelectItem value="estrutura-confusa">Estrutura Confusa</SelectItem>
+                              <SelectItem value="repertorio-inadequado">Repertório Inadequado</SelectItem>
+                              <SelectItem value="outro">Outro</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                            Descreva o Problema *
+                          </Label>
+                          <Textarea
+                            id="feedback-message"
+                            value={feedbackMessage}
+                            onChange={(e) => setFeedbackMessage(e.target.value)}
+                            placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, o que você perguntou e o que a IA respondeu."
+                            className="mt-2"
+                            rows={5}
+                            data-testid="textarea-feedback-message"
+                          />
+                        </div>
+                        
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <p className="text-xs text-gray-600">
+                            <strong>Informações do Contexto:</strong><br />
+                            Seção atual: {chatState.currentSection}<br />
+                            Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <DialogFooter className="mt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsFeedbackOpen(false)}
+                          disabled={isSendingFeedback}
+                          data-testid="button-cancel-feedback"
+                        >
+                          Cancelar
+                        </Button>
+                        <Button
+                          onClick={handleSendFeedback}
+                          disabled={isSendingFeedback || !feedbackMessage.trim()}
+                          className="bg-red-500 hover:bg-red-600 text-white"
+                          data-testid="button-send-feedback"
+                        >
+                          {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
 
               {/* Messages Area */}
@@ -1011,95 +1102,6 @@ Compartilhe comigo o tema da sua redação (proposta de vestibular, tema social,
                           </div>
                         </div>
                       </div>
-                    </DialogContent>
-                  </Dialog>
-                  
-                  {/* Botão de Alerta para Reportar Problemas com a IA */}
-                  <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500"
-                        data-testid="button-report-problem"
-                      >
-                        <AlertCircle size={16} />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md">
-                      <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-red-500" />
-                          Reportar Problema com a IA
-                        </DialogTitle>
-                        <DialogDescription className="text-sm text-soft-gray">
-                          Encontrou algum problema com o funcionamento do Refinador de Ideias IA? Nos ajude a melhorar!
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                      <div className="space-y-4 mt-4">
-                        <div>
-                          <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
-                            Tipo de Problema
-                          </Label>
-                          <Select value={feedbackType} onValueChange={setFeedbackType}>
-                            <SelectTrigger className="mt-2" data-testid="select-feedback-type">
-                              <SelectValue placeholder="Selecione o tipo de problema" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
-                              <SelectItem value="nao-respondeu">IA não respondeu</SelectItem>
-                              <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
-                              <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
-                              <SelectItem value="estrutura-confusa">Estrutura Confusa</SelectItem>
-                              <SelectItem value="repertorio-inadequado">Repertório Inadequado</SelectItem>
-                              <SelectItem value="outro">Outro</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
-                            Descreva o Problema *
-                          </Label>
-                          <Textarea
-                            id="feedback-message"
-                            value={feedbackMessage}
-                            onChange={(e) => setFeedbackMessage(e.target.value)}
-                            placeholder="Descreva detalhadamente o que aconteceu. Inclua, se possível, o que você perguntou e o que a IA respondeu."
-                            className="mt-2"
-                            rows={5}
-                            data-testid="textarea-feedback-message"
-                          />
-                        </div>
-                        
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                          <p className="text-xs text-gray-600">
-                            <strong>Informações do Contexto:</strong><br />
-                            Seção atual: {chatState.currentSection}<br />
-                            Seu feedback nos ajuda a melhorar constantemente a qualidade das respostas da IA.
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <DialogFooter className="mt-4">
-                        <Button
-                          variant="outline"
-                          onClick={() => setIsFeedbackOpen(false)}
-                          disabled={isSendingFeedback}
-                          data-testid="button-cancel-feedback"
-                        >
-                          Cancelar
-                        </Button>
-                        <Button
-                          onClick={handleSendFeedback}
-                          disabled={isSendingFeedback || !feedbackMessage.trim()}
-                          className="bg-red-500 hover:bg-red-600 text-white"
-                          data-testid="button-send-feedback"
-                        >
-                          {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
-                        </Button>
-                      </DialogFooter>
                     </DialogContent>
                   </Dialog>
                   
