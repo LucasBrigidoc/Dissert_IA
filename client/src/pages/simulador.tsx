@@ -6,7 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb, Edit3, Info } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, GraduationCap, Clock, FileText, Award, Target, Play, CheckCircle, Sparkles, Copy, MoreHorizontal, Calendar, ChevronDown, ChevronRight, TrendingUp, ThumbsUp, Lightbulb, Edit3, Info, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -100,6 +102,12 @@ export default function Simulador() {
   
   // Estado para onboarding
   const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // Estados para reportar problemas com a IA
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
   
   const toggleSimulationExpansion = (simulationId: string) => {
     setExpandedSimulations(prev => {
@@ -208,6 +216,56 @@ export default function Simulador() {
       title: "Proposta selecionada!",
       description: "A proposta foi copiada para o campo de texto e está selecionada.",
     });
+  };
+  
+  // Função para enviar feedback sobre problemas com a IA
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSendingFeedback(true);
+      
+      const locationInfo = [
+        `Ferramenta: Simulador de Redação`,
+        feedbackType && `Tipo de Problema: ${feedbackType}`,
+        examType && `Tipo de Exame: ${examType}`,
+        theme && `Tema: ${theme}`
+      ].filter(Boolean).join(' | ');
+      
+      await apiRequest('/api/feedback', {
+        method: 'POST',
+        body: {
+          message: feedbackMessage,
+          location: locationInfo,
+          userEmail: user?.email,
+          userName: user?.name,
+        }
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria da IA.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: "Não foi possível enviar seu feedback. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
   };
 
   // Buscar simulações da API usando React Query
@@ -393,11 +451,25 @@ export default function Simulador() {
 
           {/* Exam Selection */}
           <LiquidGlassCard className="bg-gradient-to-br from-bright-blue/5 to-dark-blue/5 border-bright-blue/20">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
-                <Target className="text-white" size={14} />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center">
+                  <Target className="text-white" size={14} />
+                </div>
+                <h3 className="text-xl font-semibold text-dark-blue">Configurar Simulação</h3>
               </div>
-              <h3 className="text-xl font-semibold text-dark-blue">Configurar Simulação</h3>
+              <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500"
+                    data-testid="button-report-problem"
+                  >
+                    <AlertCircle size={16} />
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
             </div>
             
             <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -683,6 +755,85 @@ export default function Simulador() {
 
         </div>
       </div>
+
+      {/* Dialog para reportar problemas com a IA */}
+      <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              Reportar Problema com a IA
+            </DialogTitle>
+            <DialogDescription className="text-sm text-soft-gray">
+              Encontrou algum problema com o funcionamento do Simulador? Nos ajude a melhorar!
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                Tipo de Problema
+              </Label>
+              <Select value={feedbackType} onValueChange={setFeedbackType}>
+                <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                  <SelectValue placeholder="Selecione o tipo de problema" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
+                  <SelectItem value="nao-respondeu">IA não respondeu</SelectItem>
+                  <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                  <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                  <SelectItem value="proposta-inadequada">Proposta Gerada Inadequada</SelectItem>
+                  <SelectItem value="erro-configuracao">Erro na Configuração</SelectItem>
+                  <SelectItem value="outro">Outro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                Descreva o Problema
+              </Label>
+              <Textarea
+                id="feedback-message"
+                placeholder="Por favor, descreva em detalhes o problema que você encontrou. Isso nos ajudará a melhorar a IA."
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                className="mt-2 min-h-[100px]"
+                data-testid="textarea-feedback-message"
+              />
+            </div>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs text-soft-gray">
+                <strong>Dica:</strong> Quanto mais detalhes você fornecer, melhor poderemos identificar e corrigir o problema.
+              </p>
+            </div>
+            
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsFeedbackOpen(false);
+                  setFeedbackMessage("");
+                  setFeedbackType("");
+                }}
+                data-testid="button-cancel-feedback"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSendFeedback}
+                disabled={isSendingFeedback || !feedbackMessage.trim()}
+                className="bg-red-500 hover:bg-red-600 text-white"
+                data-testid="button-send-feedback"
+              >
+                {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Onboarding Tour */}
       {showOnboarding && (
