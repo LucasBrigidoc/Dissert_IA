@@ -5,10 +5,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target, HelpCircle, Lightbulb, Search, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target, HelpCircle, Lightbulb, Search, ExternalLink, AlertCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
@@ -29,6 +31,7 @@ import { ControladorOnboardingTour } from "@/components/ControladorOnboardingTou
 export default function ControladorEscrita() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const isMobile = useIsMobile();
   const isDesktop = !isMobile;
   
@@ -106,6 +109,12 @@ export default function ControladorEscrita() {
   const [showRepertoireDialog, setShowRepertoireDialog] = useState(false);
   const [selectedRepertoire, setSelectedRepertoire] = useState<any>(null);
   
+  // Estados para reportar problemas com a IA
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
+  
   // Query para buscar textos salvos (para validação de duplicatas)
   const { data: savedTexts } = useQuery({
     queryKey: ['/api/saved-texts'],
@@ -146,6 +155,55 @@ export default function ControladorEscrita() {
       });
     },
   });
+  
+  // Função para enviar feedback sobre problemas com a IA
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSendingFeedback(true);
+      
+      const locationInfo = [
+        `Ferramenta: Controlador de Escrita`,
+        feedbackType && `Tipo de Problema: ${feedbackType}`,
+        modificationType && `Tipo de Modificação: ${modificationType}`
+      ].filter(Boolean).join(' | ');
+      
+      await apiRequest('/api/feedback', {
+        method: 'POST',
+        body: {
+          message: feedbackMessage,
+          location: locationInfo,
+          userEmail: user?.email,
+          userName: user?.name,
+        }
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria da IA.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: "Não foi possível enviar seu feedback. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
+  };
   
   // Função para alternar seções de ajuda
   const toggleHelpSection = (cardId: string) => {
@@ -1383,6 +1441,18 @@ ${recommendations}`);
                     <span className="hidden sm:inline">Limpar</span>
                     <span className="sm:hidden">Limpar</span>
                   </Button>
+                  <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500 h-8 sm:h-9 px-2 sm:px-3"
+                        data-testid="button-report-problem"
+                      >
+                        <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
                 </div>
               </div>
               <Textarea
@@ -1594,6 +1664,84 @@ ${recommendations}`);
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para reportar problemas com a IA */}
+      <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              Reportar Problema com a IA
+            </DialogTitle>
+            <DialogDescription className="text-sm text-soft-gray">
+              Encontrou algum problema com o funcionamento do Controlador de Escrita? Nos ajude a melhorar!
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                Tipo de Problema
+              </Label>
+              <Select value={feedbackType} onValueChange={setFeedbackType}>
+                <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                  <SelectValue placeholder="Selecione o tipo de problema" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="resposta-incorreta">Resposta Incorreta ou Irrelevante</SelectItem>
+                  <SelectItem value="nao-respondeu">IA não respondeu</SelectItem>
+                  <SelectItem value="erro-formatacao">Erro na Formatação</SelectItem>
+                  <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                  <SelectItem value="estrutura-confusa">Estrutura Confusa</SelectItem>
+                  <SelectItem value="modificacao-inadequada">Modificação Inadequada</SelectItem>
+                  <SelectItem value="outro">Outro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                Descreva o Problema
+              </Label>
+              <Textarea
+                id="feedback-message"
+                placeholder="Por favor, descreva em detalhes o problema que você encontrou. Isso nos ajudará a melhorar a IA."
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                className="mt-2 min-h-[100px]"
+                data-testid="textarea-feedback-message"
+              />
+            </div>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs text-soft-gray">
+                <strong>Dica:</strong> Quanto mais detalhes você fornecer, melhor poderemos identificar e corrigir o problema.
+              </p>
+            </div>
+            
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsFeedbackOpen(false);
+                  setFeedbackMessage("");
+                  setFeedbackType("");
+                }}
+                data-testid="button-cancel-feedback"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSendFeedback}
+                disabled={isSendingFeedback || !feedbackMessage.trim()}
+                data-testid="button-send-feedback"
+              >
+                {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
