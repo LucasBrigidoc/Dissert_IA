@@ -1736,6 +1736,7 @@ ${recommendations}`);
               <Button
                 onClick={handleSendFeedback}
                 disabled={isSendingFeedback || !feedbackMessage.trim()}
+                className="bg-red-500 hover:bg-red-600 text-white"
                 data-testid="button-send-feedback"
               >
                 {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
