@@ -24,21 +24,30 @@ import {
   BarChart3,
   Camera,
   Upload,
-  Loader2
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { AIUsageProgress, refreshAIUsageStats } from '@/components/ai-usage-progress';
 
 export default function SimulacaoPage() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const { user } = useAuth();
   
   // Configuration settings from simulator
   const [config] = useState(() => {
@@ -98,6 +107,12 @@ export default function SimulacaoPage() {
   const [showTimeDetails, setShowTimeDetails] = useState(false);
   const [showCorrectionResult, setShowCorrectionResult] = useState(false);
   const [correctionData, setCorrectionData] = useState<any>(null);
+  
+  // Estados para reportar problemas com a IA
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
   
   // OCR Upload state
   const [isUploadingOCR, setIsUploadingOCR] = useState(false);
@@ -381,8 +396,55 @@ export default function SimulacaoPage() {
   const handleFinish = () => {
     setShowFinishDialog(true);
   };
+  
+  // Função para enviar feedback sobre problemas com a IA
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, descreva o problema encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  const { toast } = useToast();
+    try {
+      setIsSendingFeedback(true);
+      
+      const locationInfo = [
+        `Ferramenta: Simulação de Redação`,
+        feedbackType && `Tipo de Problema: ${feedbackType}`,
+        correctionData && `Nota: ${correctionData.totalScore}/1000`
+      ].filter(Boolean).join(' | ');
+      
+      await apiRequest('/api/feedback', {
+        method: 'POST',
+        body: {
+          message: feedbackMessage,
+          location: locationInfo,
+          userEmail: user?.email,
+          userName: user?.name,
+        }
+      });
+
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado pelo seu feedback. Vamos analisar e trabalhar na melhoria da IA.",
+      });
+      
+      setFeedbackMessage("");
+      setFeedbackType("");
+      setIsFeedbackOpen(false);
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar feedback",
+        description: "Não foi possível enviar seu feedback. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
+  };
   
   // OCR Upload handler
   const handleOCRUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1035,10 +1097,24 @@ export default function SimulacaoPage() {
       <Dialog open={showCorrectionResult} onOpenChange={setShowCorrectionResult}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="dialog-correction-result">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-dark-blue flex items-center">
-              <Award className="mr-3 text-yellow-600" size={24} />
-              Resultado da Correção
-            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-2xl font-bold text-dark-blue flex items-center">
+                <Award className="mr-3 text-yellow-600" size={24} />
+                Resultado da Correção
+              </DialogTitle>
+              <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-500/40 text-red-500 hover:bg-red-50 hover:border-red-500"
+                    data-testid="button-report-problem"
+                  >
+                    <AlertCircle size={16} />
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
+            </div>
           </DialogHeader>
           
           {correctionData && (
@@ -1252,6 +1328,85 @@ export default function SimulacaoPage() {
                 data-testid="button-confirm-save"
               >
                 Salvar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para reportar problemas com a IA */}
+      <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-dark-blue flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              Reportar Problema com a IA
+            </DialogTitle>
+            <DialogDescription className="text-sm text-soft-gray">
+              Encontrou algum problema com a correção da redação? Nos ajude a melhorar!
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label htmlFor="feedback-type" className="text-sm font-medium text-dark-blue">
+                Tipo de Problema
+              </Label>
+              <Select value={feedbackType} onValueChange={setFeedbackType}>
+                <SelectTrigger className="mt-2" data-testid="select-feedback-type">
+                  <SelectValue placeholder="Selecione o tipo de problema" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="correcao-incorreta">Correção Incorreta ou Injusta</SelectItem>
+                  <SelectItem value="nota-inadequada">Nota Inadequada</SelectItem>
+                  <SelectItem value="feedback-confuso">Feedback Confuso ou Vago</SelectItem>
+                  <SelectItem value="competencia-errada">Competência Avaliada Incorretamente</SelectItem>
+                  <SelectItem value="nao-corrigiu">IA não corrigiu o texto</SelectItem>
+                  <SelectItem value="lentidao">Lentidão ou Timeout</SelectItem>
+                  <SelectItem value="outro">Outro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="feedback-message" className="text-sm font-medium text-dark-blue">
+                Descreva o Problema
+              </Label>
+              <Textarea
+                id="feedback-message"
+                placeholder="Por favor, descreva em detalhes o problema que você encontrou. Isso nos ajudará a melhorar a IA."
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                className="mt-2 min-h-[100px]"
+                data-testid="textarea-feedback-message"
+              />
+            </div>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs text-soft-gray">
+                <strong>Dica:</strong> Quanto mais detalhes você fornecer, melhor poderemos identificar e corrigir o problema.
+              </p>
+            </div>
+            
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsFeedbackOpen(false);
+                  setFeedbackMessage("");
+                  setFeedbackType("");
+                }}
+                data-testid="button-cancel-feedback"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSendFeedback}
+                disabled={isSendingFeedback || !feedbackMessage.trim()}
+                className="bg-red-500 hover:bg-red-600 text-white"
+                data-testid="button-send-feedback"
+              >
+                {isSendingFeedback ? "Enviando..." : "Enviar Feedback"}
               </Button>
             </div>
           </div>
