@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, Target, CheckCircle, PartyPopper, Lightbulb, Sparkles, Sliders, FileText, Shuffle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Edit3, Target, CheckCircle, PartyPopper, Lightbulb, Sparkles, Sliders, FileText, Shuffle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -43,6 +43,14 @@ const controladorSteps: OnboardingStep[] = [
     position: 'center',
     icon: <Sliders className="text-bright-blue" size={24} />,
     category: 'Controles'
+  },
+  {
+    target: 'report-problems',
+    title: 'Reportar Problemas com a IA',
+    description: 'Encontrou uma resposta incorreta, confusa ou irrelevante? Use o botão de reportar para nos ajudar a melhorar a qualidade dos textos gerados.',
+    position: 'center',
+    icon: <AlertTriangle className="text-bright-blue" size={24} />,
+    category: 'Feedback'
   },
   {
     target: 'finish',
@@ -304,6 +312,58 @@ export function ControladorOnboardingTour({ onComplete, onSkip }: ControladorOnb
                       <Lightbulb className="text-blue-600 dark:text-blue-400" size={14} />
                       <p className="text-[10px] text-blue-900 dark:text-blue-100">
                         <strong>Dica:</strong> Você pode combinar múltiplos controles ao mesmo tempo!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'report-problems' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-red-50 to-orange-100 dark:from-red-900/20 dark:to-orange-800/20 p-3 rounded-lg border border-red-200 dark:border-red-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <AlertTriangle className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-red-900 dark:text-red-100 mb-1">Ajude a Melhorar a IA!</p>
+                        <p className="text-[10px] text-red-800 dark:text-red-200 leading-snug">
+                          Quando encontrar um texto gerado que não está adequado, use o botão <strong>"Reportar Problema"</strong> para nos avisar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">⚠️ Quando reportar?</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta incorreta:</strong> Informações factualmente erradas ou imprecisas</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta confusa:</strong> Difícil de entender ou mal explicada</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta irrelevante:</strong> Não tem relação com o texto original</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-1">🎯 Como funciona:</p>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200">1. Clique em "Reportar Problema" no resultado</p>
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200">2. Descreva o que está errado</p>
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200">3. Envie o feedback</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="text-green-600 dark:text-green-400" size={14} />
+                      <p className="text-[10px] text-green-900 dark:text-green-100">
+                        <strong>Seu feedback nos ajuda a treinar a IA e melhorar os resultados!</strong>
                       </p>
                     </div>
                   </div>
