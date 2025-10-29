@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, Target, CheckCircle, PartyPopper, Lightbulb, Sparkles, Sliders, FileText, Shuffle, AlertTriangle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Edit3, Target, CheckCircle, PartyPopper, Lightbulb, Sparkles, Sliders, FileText, Shuffle, AlertTriangle, BookmarkPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -51,6 +51,14 @@ const controladorSteps: OnboardingStep[] = [
     position: 'center',
     icon: <AlertTriangle className="text-bright-blue" size={24} />,
     category: 'Feedback'
+  },
+  {
+    target: 'biblioteca',
+    title: 'Salve na Biblioteca',
+    description: 'Encontrou uma versão perfeita do seu texto? Salve na sua Biblioteca Pessoal para usar em redações futuras e ter sempre à mão!',
+    position: 'center',
+    icon: <BookmarkPlus className="text-bright-blue" size={24} />,
+    category: 'Salvamento'
   },
   {
     target: 'finish',
@@ -364,6 +372,58 @@ export function ControladorOnboardingTour({ onComplete, onSkip }: ControladorOnb
                       <CheckCircle className="text-green-600 dark:text-green-400" size={14} />
                       <p className="text-[10px] text-green-900 dark:text-green-100">
                         <strong>Seu feedback nos ajuda a treinar a IA e melhorar os resultados!</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'biblioteca' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-100 dark:from-violet-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-violet-200 dark:border-violet-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <BookmarkPlus className="text-violet-600 dark:text-violet-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-violet-900 dark:text-violet-100 mb-1">Salve seus Textos Refinados!</p>
+                        <p className="text-[10px] text-violet-800 dark:text-violet-200 leading-snug">
+                          Encontrou uma versão perfeita? Salve na <strong>Biblioteca Pessoal</strong> para ter sempre disponível!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">💾 Como salvar:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">1.</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Gere as modificações do seu texto</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">2.</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Compare as diferentes versões geradas</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">3.</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300">Clique em "Salvar" na versão que você mais gostou</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-cyan-50 to-blue-100 dark:from-cyan-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-cyan-200 dark:border-cyan-700/30">
+                    <p className="text-[10px] font-bold text-cyan-900 dark:text-cyan-100 mb-1">📚 Por que salvar?</p>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Acesse textos refinados a qualquer momento</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Organize suas melhores versões por tema</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Reutilize em redações sobre temas similares</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="text-green-600 dark:text-green-400" size={14} />
+                      <p className="text-[10px] text-green-900 dark:text-green-100">
+                        <strong>Construa sua própria coleção de textos refinados!</strong>
                       </p>
                     </div>
                   </div>
