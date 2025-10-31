@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, GraduationCap, Target, CheckCircle, PartyPopper, Lightbulb, Clock, Sparkles, Timer, FileText } from 'lucide-react';
+import { ChevronRight, ChevronLeft, GraduationCap, Target, CheckCircle, PartyPopper, Lightbulb, Clock, Sparkles, Timer, FileText, AlertTriangle, BookmarkPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -51,6 +51,22 @@ const simuladorSteps: OnboardingStep[] = [
     position: 'center',
     icon: <Sparkles className="text-bright-blue" size={24} />,
     category: 'IA'
+  },
+  {
+    target: 'report-problems',
+    title: 'Reportar Problemas com a IA',
+    description: 'Encontrou uma proposta inadequada ou análise incorreta? Use o botão de reportar para nos ajudar a melhorar a qualidade das propostas e análises geradas.',
+    position: 'center',
+    icon: <AlertTriangle className="text-bright-blue" size={24} />,
+    category: 'Feedback'
+  },
+  {
+    target: 'biblioteca',
+    title: 'Salvar na Biblioteca',
+    description: 'Após finalizar o simulado, ele é automaticamente salvo na sua Biblioteca Pessoal com nota, redação, análise completa e configurações usadas.',
+    position: 'center',
+    icon: <BookmarkPlus className="text-bright-blue" size={24} />,
+    category: 'Salvamento'
   },
   {
     target: 'finish',
@@ -352,6 +368,114 @@ export function SimuladorOnboardingTour({ onComplete, onSkip }: SimuladorOnboard
                   <div className="bg-gradient-to-r from-cyan-50 to-blue-100 dark:from-cyan-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-cyan-200 dark:border-cyan-700/30">
                     <p className="text-[10px] font-bold text-cyan-900 dark:text-cyan-100 mb-1">💡 Dica profissional:</p>
                     <p className="text-[9px] text-cyan-800 dark:text-cyan-200">Você também pode colar uma proposta personalizada se preferir praticar com um tema específico!</p>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'report-problems' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-red-50 to-orange-100 dark:from-red-900/20 dark:to-orange-800/20 p-3 rounded-lg border border-red-200 dark:border-red-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <AlertTriangle className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-red-900 dark:text-red-100 mb-1">Ajude a Melhorar a IA!</p>
+                        <p className="text-[10px] text-red-800 dark:text-red-200 leading-snug">
+                          Encontrou uma proposta inadequada ou análise incorreta? Use o botão <strong>"Reportar Problema"</strong> para nos avisar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">⚠️ Quando reportar?</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Proposta inadequada:</strong> Tema confuso ou textos de apoio irrelevantes</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Análise incorreta:</strong> Avaliação da redação com erros ou injusta</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Nota inconsistente:</strong> Pontuação não condiz com o feedback dado</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100 mb-1">🎯 Como funciona:</p>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200">1. Clique em "Reportar Problema" na proposta ou análise</p>
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200">2. Descreva o que está errado</p>
+                      <p className="text-[9px] text-blue-800 dark:text-blue-200">3. Envie o feedback</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="text-green-600 dark:text-green-400" size={14} />
+                      <p className="text-[10px] text-green-900 dark:text-green-100">
+                        <strong>Seu feedback nos ajuda a treinar a IA e melhorar os resultados!</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'biblioteca' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-100 dark:from-violet-900/20 dark:to-purple-800/20 p-3 rounded-lg border border-violet-200 dark:border-violet-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <BookmarkPlus className="text-violet-600 dark:text-violet-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-violet-900 dark:text-violet-100 mb-1">Salvamento Automático!</p>
+                        <p className="text-[10px] text-violet-800 dark:text-violet-200 leading-snug">
+                          Ao finalizar o simulado, tudo é <strong>salvo automaticamente</strong> na sua Biblioteca Pessoal!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">💾 O que é salvo:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Redação completa:</strong> Todo o texto que você escreveu</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Nota e análise:</strong> Pontuação detalhada e feedback da IA</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Configurações:</strong> Tipo de exame, tempo usado, tema e dificuldade</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Proposta:</strong> Textos de apoio e enunciado utilizados</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-cyan-50 to-blue-100 dark:from-cyan-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-cyan-200 dark:border-cyan-700/30">
+                    <p className="text-[10px] font-bold text-cyan-900 dark:text-cyan-100 mb-1">📚 Por que isso é útil?</p>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Acompanhe sua evolução ao longo do tempo</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Revise redações anteriores e aprenda com erros</p>
+                      <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Compare notas de diferentes simulados</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="text-green-600 dark:text-green-400" size={14} />
+                      <p className="text-[10px] text-green-900 dark:text-green-100">
+                        <strong>Seu histórico completo de simulados sempre disponível!</strong>
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
