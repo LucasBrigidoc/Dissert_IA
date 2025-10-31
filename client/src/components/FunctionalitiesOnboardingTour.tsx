@@ -693,12 +693,12 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                     <div className="flex items-start gap-2.5">
                       <Network className="text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" size={20} />
                       <div>
-                        <p className="text-[11px] font-bold text-cyan-900 dark:text-cyan-100 mb-1.5">Modelos disponíveis:</p>
+                        <p className="text-[11px] font-bold text-cyan-900 dark:text-cyan-100 mb-1.5">Como funciona:</p>
                         <ul className="text-[10px] text-cyan-800 dark:text-cyan-200 leading-snug space-y-0.5">
-                          <li>✓ Estrutura clássica (4 parágrafos)</li>
-                          <li>✓ Estrutura estendida (5 parágrafos)</li>
-                          <li>✓ Modelos personalizáveis para seu estilo</li>
-                          <li>✓ Guia passo a passo para cada seção</li>
+                          <li>✓ A ferramenta pergunta o quanto você sabe sobre o tema</li>
+                          <li>✓ Com base nas suas respostas, cria um roteiro personalizado</li>
+                          <li>✓ Explica exatamente como deve ser sua redação</li>
+                          <li>✓ Guia passo a passo adaptado ao seu nível</li>
                         </ul>
                       </div>
                     </div>
@@ -707,9 +707,9 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                     <div className="flex items-start gap-2">
                       <PenTool className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" size={16} />
                       <div>
-                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Perfeito para iniciantes:</p>
+                        <p className="text-[10px] font-bold text-green-900 dark:text-green-100 mb-0.5">Roteiro personalizado:</p>
                         <p className="text-[10px] text-green-800 dark:text-green-200 leading-snug">
-                          Ganhe confiança com um roteiro claro e organizado
+                          Receba um plano de redação adaptado ao seu conhecimento sobre o assunto
                         </p>
                       </div>
                     </div>
@@ -717,7 +717,7 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                   <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-200 dark:border-blue-700/30">
                     <Brain className="text-bright-blue" size={16} />
                     <p className="text-[10px] text-blue-800 dark:text-blue-200">
-                      <strong>Aprenda:</strong> Estruturas aprovadas em vestibulares
+                      <strong>Ideal para:</strong> Quem precisa de direção para organizar as ideias
                     </p>
                   </div>
                 </div>
