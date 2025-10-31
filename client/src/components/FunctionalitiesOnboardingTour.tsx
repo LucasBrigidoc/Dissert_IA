@@ -15,7 +15,7 @@ const functionalitiesSteps: OnboardingStep[] = [
   {
     target: 'intro',
     title: 'Bem-vindo às Funcionalidades!',
-    description: 'Descubra o poder da IA para transformar sua escrita! Aqui você encontra ferramentas inteligentes que cobrem todo o processo: desde a organização de ideias até a prática com correção automática.',
+    description: 'Descubra o poder da IA para transformar sua escrita! Aqui você encontra 6 ferramentas inteligentes alimentadas por Inteligência Artificial que cobrem todo o processo: desde a organização de ideias até a prática com correção automática. Cada ferramenta usa IA e possui limites de uso de acordo com seu plano de assinatura.',
     position: 'center',
     icon: <PartyPopper className="text-bright-blue" size={24} />,
     category: 'Início'
@@ -333,6 +333,20 @@ export function FunctionalitiesOnboardingTour({ onComplete, onSkip }: Functional
                               <li>✓ Receba feedback instantâneo e detalhado</li>
                               <li>✓ Pratique com temas reais e atualizados</li>
                               <li>✓ Acompanhe sua evolução com gráficos</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 p-3 rounded-lg border border-indigo-200 dark:border-indigo-700/30">
+                        <div className="flex items-start gap-2.5">
+                          <Sparkles className="text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" size={18} />
+                          <div>
+                            <p className="text-[11px] font-bold text-indigo-900 dark:text-indigo-100 mb-1">Limites de Uso de IA</p>
+                            <ul className="text-[10px] text-indigo-800 dark:text-indigo-200 leading-snug space-y-0.5">
+                              <li>✓ Cada ferramenta usa Inteligência Artificial</li>
+                              <li>✓ Seu plano define quantas vezes pode usar cada mês</li>
+                              <li>✓ Uma barra no topo de cada tela mostra seu uso</li>
+                              <li>✓ Acompanhe seu consumo em tempo real</li>
                             </ul>
                           </div>
                         </div>
