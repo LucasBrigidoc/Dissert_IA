@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Lightbulb, Target, CheckCircle, PartyPopper, BookmarkPlus, Sparkles, Layers, Filter, FileText, GraduationCap, Zap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Lightbulb, Target, CheckCircle, PartyPopper, BookmarkPlus, Sparkles, Layers, Filter, FileText, GraduationCap, Zap, AlertTriangle, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -45,12 +45,20 @@ const propostasSteps: OnboardingStep[] = [
     category: 'Interface'
   },
   {
+    target: 'reportar',
+    title: 'Reportar Problemas com a IA',
+    description: 'Se a resposta da IA estiver incorreta, confusa ou irrelevante, use o botão "Reportar Problema" para nos ajudar a melhorar.',
+    position: 'center',
+    icon: <AlertTriangle className="text-bright-blue" size={24} />,
+    category: 'Feedback'
+  },
+  {
     target: 'biblioteca',
-    title: 'Salve na Biblioteca',
+    title: 'Salvar na Biblioteca',
     description: 'Encontrou uma proposta interessante? Salve na sua Biblioteca Pessoal para treinar depois e ter sempre à mão!',
     position: 'center',
-    icon: <BookmarkPlus className="text-bright-blue" size={24} />,
-    category: 'Salvamento'
+    icon: <Archive className="text-bright-blue" size={24} />,
+    category: 'Organização'
   },
   {
     target: 'finish',
@@ -330,6 +338,49 @@ export function PropostasOnboardingTour({ onComplete, onSkip }: PropostasOnboard
                         <p className="text-[10px] font-bold text-sky-900 dark:text-sky-100">Carregar Mais</p>
                         <p className="text-[9px] text-sky-800 dark:text-sky-200 leading-snug">Busca propostas adicionais relacionadas aos seus filtros.</p>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'reportar' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-900/20 dark:to-amber-800/20 p-3 rounded-lg border border-orange-200 dark:border-orange-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <AlertTriangle className="text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-orange-900 dark:text-orange-100 mb-1">Botão "Reportar Problema"</p>
+                        <p className="text-[10px] text-orange-800 dark:text-orange-200 leading-snug">
+                          Encontre este botão ao lado das propostas geradas pela IA. Use-o para nos ajudar a melhorar a qualidade das respostas.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">⚠️ Quando reportar:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Proposta incorreta:</strong> Informações erradas ou dados imprecisos</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Proposta confusa:</strong> Enunciado pouco claro ou desorganizado</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Proposta irrelevante:</strong> Tema que não se relaciona com os filtros escolhidos</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-center gap-2">
+                      <Lightbulb className="text-bright-blue" size={16} />
+                      <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100">
+                        Seu feedback é essencial para melhorarmos continuamente! ✨
+                      </p>
                     </div>
                   </div>
                 </div>
