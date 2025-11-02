@@ -60,7 +60,7 @@ interface Exam {
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
-  const { user } = useAuth();
+  const { user, checkAuth } = useAuth();
   const { toast } = useToast();
   
   // Fetch user progress data
@@ -925,8 +925,9 @@ export default function Dashboard() {
         method: "POST",
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+    onSuccess: async () => {
+      // Atualiza o estado do usuário no AuthContext
+      await checkAuth();
       setShowOnboarding(false);
       toast({
         title: "Bem-vindo ao DISSERTIA! 🎉",
