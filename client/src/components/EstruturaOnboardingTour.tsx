@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Edit, Target, CheckCircle, PartyPopper, Lightbulb, Sparkles, BookOpen, Brain, Settings2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Edit, Target, CheckCircle, PartyPopper, Lightbulb, Sparkles, BookOpen, Brain, Settings2, AlertTriangle, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface OnboardingStep {
@@ -51,6 +51,22 @@ const estruturaSteps: OnboardingStep[] = [
     position: 'center',
     icon: <Sparkles className="text-bright-blue" size={24} />,
     category: 'Roteiro'
+  },
+  {
+    target: 'reportar',
+    title: 'Reportar Problemas com a IA',
+    description: 'Se a resposta da IA estiver incorreta, confusa ou irrelevante, use o botão "Reportar Problema" para nos ajudar a melhorar.',
+    position: 'center',
+    icon: <AlertTriangle className="text-bright-blue" size={24} />,
+    category: 'Feedback'
+  },
+  {
+    target: 'salvar',
+    title: 'Salvar na Biblioteca',
+    description: 'Você pode salvar o roteiro gerado na sua Biblioteca Pessoal para acessar sempre que precisar.',
+    position: 'center',
+    icon: <Archive className="text-bright-blue" size={24} />,
+    category: 'Organização'
   },
   {
     target: 'finish',
@@ -357,6 +373,92 @@ export function EstruturaOnboardingTour({ onComplete, onSkip }: EstruturaOnboard
                       <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Baixar o roteiro em PDF</p>
                       <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Salvar na sua Biblioteca Pessoal</p>
                       <p className="text-[9px] text-cyan-800 dark:text-cyan-200">• Usar como guia durante a escrita</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'reportar' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-900/20 dark:to-amber-800/20 p-3 rounded-lg border border-orange-200 dark:border-orange-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <AlertTriangle className="text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-orange-900 dark:text-orange-100 mb-1">Botão "Reportar Problema"</p>
+                        <p className="text-[10px] text-orange-800 dark:text-orange-200 leading-snug">
+                          Encontre este botão ao lado do roteiro gerado. Use-o para nos ajudar a melhorar a qualidade das respostas da IA.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">⚠️ Quando reportar:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta incorreta:</strong> Informações erradas ou dados imprecisos</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta confusa:</strong> Explicações pouco claras ou desorganizadas</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Resposta irrelevante:</strong> Conteúdo que não se relaciona com a proposta</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-2.5 rounded-lg border border-blue-200 dark:border-blue-700/30">
+                    <div className="flex items-center gap-2">
+                      <Lightbulb className="text-bright-blue" size={16} />
+                      <p className="text-[10px] font-bold text-blue-900 dark:text-blue-100">
+                        Seu feedback é essencial para melhorarmos continuamente! ✨
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step.target === 'salvar' && (
+                <div className="mb-4 flex-1 space-y-2.5">
+                  <div className="bg-gradient-to-br from-indigo-50 to-blue-100 dark:from-indigo-900/20 dark:to-blue-800/20 p-3 rounded-lg border border-indigo-200 dark:border-indigo-700/30">
+                    <div className="flex items-start gap-2.5">
+                      <Archive className="text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-[11px] font-bold text-indigo-900 dark:text-indigo-100 mb-1">Salvar na Biblioteca</p>
+                        <p className="text-[10px] text-indigo-800 dark:text-indigo-200 leading-snug">
+                          Após gerar o roteiro, você pode salvá-lo na sua Biblioteca Pessoal para consultar sempre que precisar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-dark-blue dark:text-gray-100">📚 Vantagens de salvar:</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Acesso fácil:</strong> Encontre seus roteiros a qualquer momento</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Organização:</strong> Todos seus materiais em um só lugar</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] text-bright-blue font-bold mt-0.5">•</span>
+                        <p className="text-[10px] text-soft-gray dark:text-gray-300"><strong>Reutilização:</strong> Aproveite roteiros para temas similares</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 p-2.5 rounded-lg border border-green-200 dark:border-green-700/30">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="text-green-600 dark:text-green-400" size={16} />
+                      <p className="text-[10px] font-bold text-green-900 dark:text-green-100">
+                        Clique em "Salvar" após gerar o roteiro! 💾
+                      </p>
                     </div>
                   </div>
                 </div>
