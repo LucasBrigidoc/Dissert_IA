@@ -321,47 +321,14 @@ export function BibliotecaOnboardingTour({ onComplete, onSkip }: BibliotecaOnboa
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 dark:from-amber-900/20 dark:via-orange-900/20 dark:to-amber-800/20 p-4 rounded-xl border-2 border-amber-300 dark:border-amber-600/40 shadow-lg">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-md">
-                          <XCircle className="text-white" size={18} />
-                        </div>
-                        <p className="text-[12px] font-bold text-amber-900 dark:text-amber-100">Limites de Armazenamento</p>
-                      </div>
-                      
-                      <div className="bg-white/60 dark:bg-gray-800/40 rounded-lg p-2.5 border border-amber-200 dark:border-amber-700/30">
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[10px] font-semibold text-amber-900 dark:text-amber-100">Plano Gratuito</span>
-                          <span className="px-2 py-0.5 bg-amber-200 dark:bg-amber-700/50 rounded-full text-[9px] font-bold text-amber-900 dark:text-amber-100">
-                            Atual
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/40 rounded-lg flex items-center justify-center border border-red-300 dark:border-red-700/50">
-                            <span className="text-[16px] font-bold text-red-700 dark:text-red-300">20</span>
-                          </div>
-                          <p className="text-[10px] text-amber-800 dark:text-amber-200 leading-tight">
-                            arquivos máximo
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-emerald-50 to-green-100 dark:from-emerald-900/30 dark:to-green-800/30 rounded-lg p-2.5 border-2 border-emerald-400 dark:border-emerald-600/50 shadow-md">
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[10px] font-semibold text-emerald-900 dark:text-emerald-100">✨ Plano Pro</span>
-                          <span className="px-2 py-0.5 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full text-[9px] font-bold text-white shadow-sm">
-                            Upgrade
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center shadow-md">
-                            <span className="text-[12px] font-black text-white">∞</span>
-                          </div>
-                          <p className="text-[11px] font-bold text-emerald-900 dark:text-emerald-100 leading-tight">
-                            ILIMITADO
-                          </p>
-                        </div>
+                  <div className="bg-red-50 dark:bg-red-900/20 p-2.5 rounded-lg border border-red-200 dark:border-red-700/30">
+                    <div className="flex items-start gap-2">
+                      <XCircle className="text-red-600 dark:text-red-500 flex-shrink-0 mt-0.5" size={14} />
+                      <div>
+                        <p className="text-[10px] font-bold text-red-900 dark:text-red-100">⚠️ Limite de Arquivos</p>
+                        <p className="text-[9px] text-red-800 dark:text-red-200 leading-snug">
+                          Plano gratuito: apenas <strong>20 arquivos</strong>. Upgrade para Pro = <strong className="text-green-700 dark:text-green-400">ILIMITADO!</strong>
+                        </p>
                       </div>
                     </div>
                   </div>
