@@ -1006,17 +1006,17 @@ export default function SettingsPage() {
               </div>
               
               <div className="p-4 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-medium text-red-700 dark:text-red-400">Deletar permanentemente</div>
-                    <div className="text-sm text-red-600 dark:text-red-500">Zona de Perigo</div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="font-medium text-red-700 dark:text-red-400 text-sm sm:text-base">Deletar permanentemente</div>
+                    <div className="text-xs sm:text-sm text-red-600 dark:text-red-500 mt-0.5">Zona de Perigo</div>
                   </div>
                   <Button
                     variant="destructive"
                     size="sm"
                     onClick={() => setShowDeleteAccountDialog(true)}
                     data-testid="button-delete-account"
-                    className="bg-red-600 hover:bg-red-700 text-white"
+                    className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto shrink-0"
                   >
                     <Trash2 className="mr-2" size={16} />
                     Deletar Conta
