@@ -114,9 +114,9 @@ export const mockPricingPlans = [
 export const mockTestimonials = [
   {
     id: 1,
-    name: "Maria Fernanda",
-    initials: "MF",
-    text: "Passei na USP graças ao Dissert IA! A ferramenta me ajudou a estruturar melhor meus argumentos.",
+    name: "Irlanda Araújo",
+    initials: "IA",
+    text: "O Dissert IA transformou minha escrita! Uso diariamente o /repertorio para enriquecer meus textos, o /argumentos para fortalecer minhas teses, e o /controlador-escrita ajusta perfeitamente meu tom. O /simulado me preparou completamente, a /estrutura-roterizada organiza minhas ideias e as /propostas são excelentes!",
     rating: 5
   },
   {
