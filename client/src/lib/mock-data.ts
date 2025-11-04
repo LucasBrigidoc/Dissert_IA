@@ -116,7 +116,7 @@ export const mockTestimonials = [
     id: 1,
     name: "Irlanda Araújo",
     initials: "IA",
-    text: "A funcionalidade de Repertório é sensacional! Nunca mais tive dificuldade em encontrar referências para minhas redações. O banco de dados é completo, com citações, dados estatísticos e exemplos históricos que enriquecem meus textos. Minha nota melhorou muito!",
+    text: "O Repertório transformou minhas redações! Agora consigo fundamentar meus argumentos com dados reais e citações relevantes. Passei de 700 para 920 pontos!",
     rating: 5
   },
   {
