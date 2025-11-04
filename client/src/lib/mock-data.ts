@@ -123,7 +123,7 @@ export const mockTestimonials = [
     id: 2,
     name: "Claúdio Sergio",
     initials: "CS",
-    text: "A ferramenta Simulador me ajudou muito! Treino diariamente em um ambiente idêntico à prova real, com tempo cronometrado e interface igual ao ENEM. Com cada simulado, vejo minha evolução e ganho mais confiança!",
+    text: "A ferramenta Simulador me ajudou muito! Treino diariamente em um ambiente idêntico à prova real, com tempo cronometrado e interface igual ao meu concurso. Com cada simulado, vejo minha evolução e ganho mais confiança!",
     rating: 5
   },
   {
