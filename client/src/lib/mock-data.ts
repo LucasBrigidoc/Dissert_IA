@@ -121,9 +121,9 @@ export const mockTestimonials = [
   },
   {
     id: 2,
-    name: "João Silva",
-    initials: "JS",
-    text: "Minha nota em redação subiu de 600 para 920. O simulador é idêntico à prova real!",
+    name: "Claúdio Sergio",
+    initials: "CS",
+    text: "A ferramenta Simulador me ajudou muito! Treino diariamente em um ambiente idêntico à prova real, com tempo cronometrado e interface igual ao ENEM. Com cada simulado, vejo minha evolução e ganho mais confiança!",
     rating: 5
   },
   {
