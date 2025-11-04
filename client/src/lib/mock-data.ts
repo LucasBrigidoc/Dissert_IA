@@ -128,9 +128,9 @@ export const mockTestimonials = [
   },
   {
     id: 3,
-    name: "Ana Clara",
-    initials: "AC",
-    text: "O repertório cultural nunca mais foi um problema. Consegui 980 na redação!",
+    name: "Alicia Aguiar",
+    initials: "AA",
+    text: "A ferramenta de Estrutura Roterizada é incrível! Consigo visualizar e organizar toda minha redação antes de escrever. Ela me guia na estruturação com base na proposta, deixando meus textos muito mais coesos e bem argumentados!",
     rating: 5
   }
 ];
