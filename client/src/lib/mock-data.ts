@@ -116,7 +116,7 @@ export const mockTestimonials = [
     id: 1,
     name: "Irlanda Araújo",
     initials: "IA",
-    text: "O Dissert IA transformou minha escrita! Uso diariamente o /repertorio para enriquecer meus textos, o /argumentos para fortalecer minhas teses, e o /controlador-escrita ajusta perfeitamente meu tom. O /simulado me preparou completamente, a /estrutura-roterizada organiza minhas ideias e as /propostas são excelentes!",
+    text: "A funcionalidade de Repertório é sensacional! Nunca mais tive dificuldade em encontrar referências para minhas redações. O banco de dados é completo, com citações, dados estatísticos e exemplos históricos que enriquecem meus textos. Minha nota melhorou muito!",
     rating: 5
   },
   {
