@@ -41,10 +41,6 @@ export default function Landing() {
                 <Sparkles size={20} />
                 Começar Agora
               </Link>
-              <div className="mt-4 sm:mt-8 text-white/70 text-xs sm:text-base" data-testid="text-online-students">
-                <Users className="inline mr-2" size={14} />
-                <span>Mais de 2.000 estudantes refinando sua escrita</span>
-              </div>
             </div>
             
             <div className="w-full lg:w-[45%] relative flex justify-center lg:justify-start">
