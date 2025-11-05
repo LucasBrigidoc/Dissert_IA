@@ -396,16 +396,13 @@ export default function FunctionalitiesPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 w-full max-w-5xl mx-auto">
-              <CarouselPrevious className="hidden md:flex relative left-0 top-0 translate-y-0 bg-gray-200 hover:bg-gray-300 text-gray-700 border border-gray-300" data-testid="button-carousel-prev" />
-              
-              <Carousel 
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                className="flex-1"
-              >
+            <Carousel 
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full max-w-4xl mx-auto"
+            >
                 <CarouselContent>
                   {/* Objetivo 1: Praticar a Escrita */}
                   <CarouselItem>
@@ -591,13 +588,10 @@ export default function FunctionalitiesPage() {
                   </CarouselItem>
                 </CarouselContent>
               </Carousel>
-              
-              <CarouselNext className="hidden md:flex relative right-0 top-0 translate-y-0 bg-gray-200 hover:bg-gray-300 text-gray-700 border border-gray-300" data-testid="button-carousel-next" />
-            </div>
 
             <div className="text-center mt-4">
               <p className="text-xs text-soft-gray/60">
-                💡 Navegue entre os objetivos usando as setas laterais
+                💡 Arraste para navegar entre os objetivos
               </p>
             </div>
           </div>
