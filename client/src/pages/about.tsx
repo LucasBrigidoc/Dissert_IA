@@ -3,7 +3,7 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
-import { Heart, Lightbulb, Users, Trophy, GraduationCap, Brain, Target, Globe, Layers } from "lucide-react";
+import { Heart, Lightbulb, Users, Trophy, GraduationCap, Brain, Target, Globe, Layers, BookOpen, Mail, TrendingUp, Calendar } from "lucide-react";
 
 export default function About() {
   return (
@@ -99,6 +99,54 @@ export default function About() {
                 <div>
                   <h3 className="text-xl font-semibold text-dark-blue mb-3">Aprendizagem Multidimensional</h3>
                   <p className="text-soft-gray">Combinamos desenvolvimento de competências técnicas (gramática, estrutura) com habilidades metacognitivas (autoconhecimento, reflexão crítica) e socioemocionais (gestão de ansiedade, autoconfiança), oferecendo ferramentas para refinar sua escrita.</p>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            <LiquidGlassCard className="p-8" data-testid="card-exclusive-material">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                  <BookOpen className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-dark-blue mb-3">Material Complementar Exclusivo</h3>
+                  <p className="text-soft-gray">Acesso a uma biblioteca completa de materiais educacionais exclusivos, incluindo guias detalhados, exemplos de redações nota 1000, análises de temas recorrentes e conteúdos especializados que aprofundam seu conhecimento.</p>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            <LiquidGlassCard className="p-8" data-testid="card-newsletter">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                  <Mail className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-dark-blue mb-3">Newsletter Educacional Semanal</h3>
+                  <p className="text-soft-gray">Receba semanalmente conteúdos curados sobre temas atuais, dicas de redação, análises de propostas recentes e estratégias para se destacar nos principais vestibulares e concursos do país.</p>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            <LiquidGlassCard className="p-8" data-testid="card-progress-tracking">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                  <TrendingUp className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-dark-blue mb-3">Registro de Evolução pela Dashboard</h3>
+                  <p className="text-soft-gray">Acompanhe seu progresso em tempo real através de uma dashboard intuitiva que registra todas as suas redações, notas, pontos fortes e áreas de melhoria, permitindo visualizar sua jornada de aprendizado com métricas detalhadas.</p>
+                </div>
+              </div>
+            </LiquidGlassCard>
+
+            <LiquidGlassCard className="p-8" data-testid="card-study-planner">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                  <Calendar className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-dark-blue mb-3">Ferramentas de Planejamento de Estudos</h3>
+                  <p className="text-soft-gray">Organize seus estudos de forma eficiente com nossas ferramentas de planner que permitem criar cronogramas personalizados, definir metas, acompanhar seu progresso diário e otimizar sua rotina de estudos para máxima produtividade.</p>
                 </div>
               </div>
             </LiquidGlassCard>
