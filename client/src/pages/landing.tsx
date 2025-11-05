@@ -33,7 +33,7 @@ export default function Landing() {
               <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-6 text-[#5087ff]" data-testid="text-hero-title">
                 Revolucione Sua Escrita com IA
               </h1>
-              <p className="text-base sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-hero-subtitle">O Dissert IA é uma plataforma educacional online para lhe ensinar a arte de escrever redações incríveis para vestibulares e concursos por meio de ferramentas com IA </p>
+              <p className="text-lg sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-hero-subtitle">O Dissert IA é uma plataforma educacional online para lhe ensinar a arte de escrever redações incríveis para vestibulares e concursos por meio de ferramentas com IA </p>
               <p className="text-sm sm:text-lg mb-4 sm:mb-8 text-white/80" data-testid="text-hero-description">
                 Sua Redação Nota 1000 Apenas a Passos de Distância 
               </p>
