@@ -396,13 +396,14 @@ export default function FunctionalitiesPage() {
               </p>
             </div>
 
-            <Carousel 
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full max-w-4xl mx-auto"
-            >
+            <div className="relative w-full max-w-5xl mx-auto px-16">
+              <Carousel 
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
                 <CarouselContent>
                   {/* Objetivo 1: Praticar a Escrita */}
                   <CarouselItem>
@@ -587,11 +588,14 @@ export default function FunctionalitiesPage() {
                     </div>
                   </CarouselItem>
                 </CarouselContent>
+                <CarouselPrevious className="hidden md:flex -left-14 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 shadow-md" data-testid="button-carousel-prev" />
+                <CarouselNext className="hidden md:flex -right-14 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 shadow-md" data-testid="button-carousel-next" />
               </Carousel>
+            </div>
 
             <div className="text-center mt-4">
               <p className="text-xs text-soft-gray/60">
-                💡 Arraste para navegar entre os objetivos
+                💡 Use as setas laterais ou arraste para navegar entre os objetivos
               </p>
             </div>
           </div>
