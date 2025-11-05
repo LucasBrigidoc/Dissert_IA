@@ -67,7 +67,7 @@ export default function About() {
           <div className="space-y-6 sm:space-y-8">
             <LiquidGlassCard className="p-8" data-testid="card-neuropsychological-methodology">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Target className="text-white" size={24} />
                 </div>
                 <div>
@@ -79,7 +79,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-brazilian-ai">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Globe className="text-white" size={24} />
                 </div>
                 <div>
@@ -93,7 +93,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-multidimensional-learning">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Layers className="text-white" size={24} />
                 </div>
                 <div>
@@ -105,7 +105,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-exclusive-material">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <BookOpen className="text-white" size={24} />
                 </div>
                 <div>
@@ -117,7 +117,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-newsletter">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Mail className="text-white" size={24} />
                 </div>
                 <div>
@@ -129,7 +129,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-progress-tracking">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <TrendingUp className="text-white" size={24} />
                 </div>
                 <div>
@@ -141,7 +141,7 @@ export default function About() {
 
             <LiquidGlassCard className="p-8" data-testid="card-study-planner">
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
+                <div className="w-12 h-12 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mr-6 mt-1">
                   <Calendar className="text-white" size={24} />
                 </div>
                 <div>
@@ -160,28 +160,28 @@ export default function About() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <LiquidGlassCard className="p-6 text-center" data-testid="card-value-empathy">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="text-white" size={24} />
               </div>
               <h3 className="font-semibold text-dark-blue mb-2">Empatia</h3>
               <p className="text-soft-gray text-sm">Entendemos as dificuldades únicas de cada estudante brasileiro</p>
             </LiquidGlassCard>
             <LiquidGlassCard className="p-6 text-center" data-testid="card-value-innovation">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lightbulb className="text-white" size={24} />
               </div>
               <h3 className="font-semibold text-dark-blue mb-2">Inovação</h3>
               <p className="text-soft-gray text-sm">Tecnologia de ponta aplicada à educação brasileira</p>
             </LiquidGlassCard>
             <LiquidGlassCard className="p-6 text-center" data-testid="card-value-democratization">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="text-white" size={24} />
               </div>
               <h3 className="font-semibold text-dark-blue mb-2">Democratização</h3>
               <p className="text-soft-gray text-sm">Acesso igualitário à excelência educacional</p>
             </LiquidGlassCard>
             <LiquidGlassCard className="p-6 text-center" data-testid="card-value-excellence">
-              <div className="w-16 h-16 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 flex-shrink-0 bg-bright-blue rounded-full flex items-center justify-center mx-auto mb-4">
                 <Trophy className="text-white" size={24} />
               </div>
               <h3 className="font-semibold text-dark-blue mb-2">Excelência</h3>
