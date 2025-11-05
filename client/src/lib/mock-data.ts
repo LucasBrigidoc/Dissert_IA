@@ -159,7 +159,7 @@ export const mockFAQ = [
   {
     id: 5,
     question: "Posso cancelar minha assinatura a qualquer momento?",
-    answer: "Sim, você pode cancelar sua assinatura a qualquer momento sem penalidades. O cancelamento pode ser feito através do seu dashboard ou entrando em contato conosco."
+    answer: "Sim, você pode cancelar sua assinatura a qualquer momento sem penalidades. O cancelamento pode ser feito pela tela de configurações ou entrando em contato conosco."
   },
   {
     id: 6,
