@@ -30,7 +30,7 @@ export default function Landing() {
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-0">
             <div className="w-full lg:w-[55%] text-white text-center lg:text-left">
-              <h1 className="text-xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-6 text-[#5087ff] whitespace-nowrap" data-testid="text-hero-title">
+              <h1 className="text-xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-6 text-[#5087ff] whitespace-nowrap sm:whitespace-normal" data-testid="text-hero-title">
                 Revolucione Sua Escrita com IA
               </h1>
               <p className="text-lg sm:text-xl lg:text-2xl mb-3 sm:mb-4 text-white/90" data-testid="text-hero-subtitle">O Dissert IA é uma plataforma educacional online para lhe ensinar a arte de escrever redações incríveis para vestibulares e concursos por meio de ferramentas com IA </p>
