@@ -529,9 +529,9 @@ export default function FunctionalitiesPage() {
                 {/* Objetivo 3: Desenvolver Argumentação */}
                 <CarouselItem>
                   <div className="p-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow border border-amber-500/20">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow border border-bright-blue/20">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center shrink-0">
                           <Lightbulb className="text-white" size={18} />
                         </div>
                         <div>
@@ -545,7 +545,7 @@ export default function FunctionalitiesPage() {
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => handleFeatureAccess("Refinamento de Ideias")}
-                          className="bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700 w-full justify-start h-auto py-3 px-4"
+                          className="bg-gradient-to-r from-bright-blue to-purple-600 text-white hover:from-bright-blue/90 hover:to-purple-700 w-full justify-start h-auto py-3 px-4"
                           data-testid="button-path3-step1"
                         >
                           <div className="flex items-center gap-3 w-full">
@@ -558,7 +558,7 @@ export default function FunctionalitiesPage() {
                         </Button>
                         <Button 
                           onClick={() => handleFeatureAccess("Explorador de Repertório")}
-                          className="bg-gradient-to-r from-orange-500 to-orange-700 text-white hover:from-orange-600 hover:to-orange-800 w-full justify-start h-auto py-3 px-4"
+                          className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800 w-full justify-start h-auto py-3 px-4"
                           data-testid="button-path3-step2"
                         >
                           <div className="flex items-center gap-3 w-full">
@@ -571,7 +571,7 @@ export default function FunctionalitiesPage() {
                         </Button>
                         <Button 
                           onClick={() => handleFeatureAccess("Simulador de Prova")}
-                          className="bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 w-full justify-start h-auto py-3 px-4"
+                          className="bg-gradient-to-r from-purple-600 to-dark-blue text-white hover:from-purple-700 hover:to-dark-blue/90 w-full justify-start h-auto py-3 px-4"
                           data-testid="button-path3-step3"
                         >
                           <div className="flex items-center gap-3 w-full">
@@ -587,8 +587,8 @@ export default function FunctionalitiesPage() {
                   </div>
                 </CarouselItem>
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex" data-testid="button-carousel-prev" />
-              <CarouselNext className="hidden md:flex" data-testid="button-carousel-next" />
+              <CarouselPrevious className="hidden md:flex -left-3 bg-bright-blue hover:bg-bright-blue/90 text-white border-none" data-testid="button-carousel-prev" />
+              <CarouselNext className="hidden md:flex -right-3 bg-bright-blue hover:bg-bright-blue/90 text-white border-none" data-testid="button-carousel-next" />
             </Carousel>
 
             <div className="text-center mt-4">
