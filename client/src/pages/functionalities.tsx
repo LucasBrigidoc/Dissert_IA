@@ -587,8 +587,8 @@ export default function FunctionalitiesPage() {
                   </div>
                 </CarouselItem>
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex -left-3 bg-bright-blue hover:bg-bright-blue/90 text-white border-none" data-testid="button-carousel-prev" />
-              <CarouselNext className="hidden md:flex -right-3 bg-bright-blue hover:bg-bright-blue/90 text-white border-none" data-testid="button-carousel-next" />
+              <CarouselPrevious className="hidden md:flex left-2 bg-gray-200 hover:bg-gray-300 text-gray-700 border border-gray-300" data-testid="button-carousel-prev" />
+              <CarouselNext className="hidden md:flex right-2 bg-gray-200 hover:bg-gray-300 text-gray-700 border border-gray-300" data-testid="button-carousel-next" />
             </Carousel>
 
             <div className="text-center mt-4">
