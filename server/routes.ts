@@ -2085,7 +2085,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const planType = await subscriptionService.getUserPlanType(req.user!.id);
       const weeklyStats = await weeklyCostLimitingService.getWeeklyUsageStats(identifier, planType);
       
-      const weeklyLimit = planType === 'free' ? 219 : 875; // 219 centavos for free, 875 for pro
+      const weeklyLimit = planType === 'free' ? 17 : 400; // 17 centavos for free, 400 for pro (same as weekly-cost-limiting.ts)
       const weeklyUsage = weeklyStats.currentUsageCentavos;
       const percentageUsed = Math.min(100, (weeklyUsage / weeklyLimit) * 100);
       const canUseAI = weeklyUsage < weeklyLimit;

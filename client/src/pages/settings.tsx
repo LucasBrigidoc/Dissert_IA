@@ -843,7 +843,7 @@ export default function SettingsPage() {
                   <div className="text-sm text-soft-gray mb-1">Tokens Usados</div>
                   <div className="text-lg font-bold text-dark-blue" data-testid="text-tokens-used">
                     {limits.weeklyLimit > 0 
-                      ? `${formatTokens(limits.weeklyLimit - limits.remainingCredits)} / ${formatTokens(limits.weeklyLimit)} usados`
+                      ? `${formatTokens((limits.weeklyLimit - limits.remainingCredits) * 10)} / ${formatTokens(limits.weeklyLimit * 10)} usados`
                       : "Ilimitado"}
                   </div>
                 </div>
