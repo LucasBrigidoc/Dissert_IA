@@ -5290,6 +5290,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const totalTokens = uniqueCosts.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
         const operationCount = uniqueCosts.length;
 
+        // Calculate usage for last 30 days
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const recentCosts = uniqueCosts.filter(cost => new Date(cost.createdAt) >= thirtyDaysAgo);
+        const cost30Days = recentCosts.reduce((sum, cost) => sum + cost.costBrl, 0);
+        const tokens30Days = recentCosts.reduce((sum, cost) => sum + (cost.tokensInput || 0) + (cost.tokensOutput || 0), 0);
+
         return {
           id: user.id,
           name: user.name,
@@ -5308,7 +5315,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           usage: {
             totalCost: totalCostCentavos,
             totalTokens,
-            operationCount
+            operationCount,
+            cost30Days,
+            tokens30Days
           }
         };
       }));

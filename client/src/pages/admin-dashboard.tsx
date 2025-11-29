@@ -412,6 +412,8 @@ function UsersTable() {
         totalCost: number;
         totalTokens: number;
         operationCount: number;
+        cost30Days: number;
+        tokens30Days: number;
       };
     }>;
     total: number;
@@ -624,12 +626,14 @@ function UsersTable() {
               <th className="text-left p-3 font-medium">Pro desde</th>
               <th className="text-left p-3 font-medium">Tokens</th>
               <th className="text-left p-3 font-medium">Gasto (R$)</th>
+              <th className="text-left p-3 font-medium text-blue-600">Tokens (30d)</th>
+              <th className="text-left p-3 font-medium text-blue-600">Gasto R$ (30d)</th>
             </tr>
           </thead>
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-8 text-gray-500">
+                <td colSpan={11} className="text-center py-8 text-gray-500">
                   Nenhum usuário encontrado com "{searchTerm}"
                 </td>
               </tr>
@@ -673,6 +677,8 @@ function UsersTable() {
                 </td>
                 <td className="p-3 text-sm">{user.usage.totalTokens.toLocaleString('pt-BR')}</td>
                 <td className="p-3 text-sm font-medium">{formatCurrency(user.usage.totalCost)}</td>
+                <td className="p-3 text-sm text-blue-600">{(user.usage.tokens30Days || 0).toLocaleString('pt-BR')}</td>
+                <td className="p-3 text-sm font-medium text-blue-600">{formatCurrency(user.usage.cost30Days || 0)}</td>
               </tr>
             ))
             )}
