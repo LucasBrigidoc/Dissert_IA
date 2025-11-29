@@ -15,7 +15,8 @@ import {
   GraduationCap,
   Clock,
   Download,
-  Loader2
+  Loader2,
+  X
 } from "lucide-react";
 import { useLocation } from "wouter";
 import jsPDF from 'jspdf';
@@ -311,31 +312,36 @@ export default function MaterialComplementarPage() {
 
       {/* PDF Viewer Modal */}
       <Dialog open={showPdfViewer} onOpenChange={(open) => !open && closePdfViewer()}>
-        <DialogContent className="max-w-5xl h-[90vh] p-0">
-          <DialogHeader className="p-4 border-b">
+        <DialogContent hideClose className="max-w-5xl h-[90vh] p-0 flex flex-col">
+          <DialogHeader className="px-6 py-4 border-b bg-gradient-to-r from-green-50 to-white flex-shrink-0">
             <div className="flex items-center justify-between">
-              <div>
-                <DialogTitle className="text-lg font-bold text-dark-blue flex items-center gap-2">
-                  <Eye size={18} className="text-green-600" />
-                  {selectedMaterial?.title}
-                </DialogTitle>
-                <DialogDescription className="sr-only">
-                  Visualizador de PDF do material {selectedMaterial?.title}
-                </DialogDescription>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center shadow-md">
+                  <FileText className="text-white" size={18} />
+                </div>
+                <div>
+                  <DialogTitle className="text-lg font-bold text-dark-blue">
+                    {selectedMaterial?.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-sm text-soft-gray mt-0.5">
+                    Visualizador de documento
+                  </DialogDescription>
+                </div>
               </div>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={closePdfViewer}
-                className="text-soft-gray hover:text-dark-blue"
+                className="border-gray-300 hover:bg-gray-100 text-gray-700 gap-2"
                 data-testid="button-close-pdf-viewer"
               >
+                <X size={16} />
                 Fechar
               </Button>
             </div>
           </DialogHeader>
           
-          <div className="flex-1 h-[calc(90vh-80px)]">
+          <div className="flex-1 min-h-0">
             {pdfUrl ? (
               <iframe
                 src={pdfUrl}
@@ -344,8 +350,11 @@ export default function MaterialComplementarPage() {
                 data-testid="pdf-viewer-iframe"
               />
             ) : (
-              <div className="flex items-center justify-center h-full">
-                <Loader2 className="animate-spin text-bright-blue" size={32} />
+              <div className="flex items-center justify-center h-full bg-gray-50">
+                <div className="text-center">
+                  <Loader2 className="animate-spin text-green-600 mx-auto mb-3" size={40} />
+                  <p className="text-soft-gray text-sm">Carregando documento...</p>
+                </div>
               </div>
             )}
           </div>
