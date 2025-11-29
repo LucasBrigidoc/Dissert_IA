@@ -204,6 +204,392 @@ interface AdminUser {
   planId: string;
 }
 
+// ===== FEEDBACK/BUGS MANAGEMENT =====
+interface FeedbackItem {
+  id: string;
+  userId: string | null;
+  userEmail: string | null;
+  userName: string | null;
+  message: string;
+  location: string | null;
+  status: 'pending' | 'reviewing' | 'resolved' | 'dismissed';
+  adminNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface FeedbackStatistics {
+  totalOperations: number;
+  totalBugs: number;
+  pendingBugs: number;
+  reviewingBugs: number;
+  resolvedBugs: number;
+  dismissedBugs: number;
+  overallAccuracyRate: number;
+  resolutionRate: number;
+}
+
+interface ToolStat {
+  operation: string;
+  name: string;
+  totalUses: number;
+  bugs: number;
+  accuracyRate: number;
+}
+
+interface FeedbackData {
+  feedbacks: FeedbackItem[];
+  statistics: FeedbackStatistics;
+  toolStats: ToolStat[];
+}
+
+function FeedbackManagement() {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [editingNotes, setEditingNotes] = useState<string | null>(null);
+  const [notesValue, setNotesValue] = useState('');
+
+  const { data: feedbackData, isLoading } = useQuery<FeedbackData>({
+    queryKey: ['/api/admin/feedback'],
+    refetchInterval: 30000,
+  });
+
+  const updateFeedbackMutation = useMutation({
+    mutationFn: async ({ id, status, adminNotes }: { id: string; status?: string; adminNotes?: string }) => {
+      return await apiRequest(`/api/admin/feedback/${id}`, {
+        method: 'PATCH',
+        body: { status, adminNotes },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/feedback'] });
+      toast({
+        title: "Sucesso",
+        description: "Feedback atualizado com sucesso!",
+      });
+      setEditingNotes(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao atualizar feedback",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const statistics = feedbackData?.statistics;
+  const toolStats = feedbackData?.toolStats || [];
+  const feedbacks = feedbackData?.feedbacks || [];
+
+  const filteredFeedbacks = feedbacks.filter(fb => {
+    const matchesSearch = !searchTerm || 
+      fb.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      fb.userEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      fb.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      fb.location?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'all' || fb.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
+
+  const getStatusBadge = (status: string) => {
+    const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }> = {
+      pending: { variant: 'destructive', label: 'Pendente' },
+      reviewing: { variant: 'secondary', label: 'Em Análise' },
+      resolved: { variant: 'default', label: 'Resolvido' },
+      dismissed: { variant: 'outline', label: 'Dispensado' },
+    };
+    return variants[status] || { variant: 'outline', label: status };
+  };
+
+  const getAccuracyColor = (rate: number) => {
+    if (rate >= 99) return 'text-green-600 bg-green-50 dark:bg-green-950';
+    if (rate >= 95) return 'text-blue-600 bg-blue-50 dark:bg-blue-950';
+    if (rate >= 90) return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-950';
+    return 'text-red-600 bg-red-50 dark:bg-red-950';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Target className="h-4 w-4 text-green-600" />
+              Taxa de Acerto Geral
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${getAccuracyColor(statistics?.overallAccuracyRate || 0)}`}>
+              {(statistics?.overallAccuracyRate || 0).toFixed(2)}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {statistics?.totalOperations.toLocaleString('pt-BR')} operações totais
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-red-500" />
+              Bugs Reportados
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {statistics?.totalBugs || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {statistics?.pendingBugs || 0} pendentes
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Activity className="h-4 w-4 text-yellow-500" />
+              Em Análise
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">
+              {statistics?.reviewingBugs || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              sendo analisados
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-green-500" />
+              Taxa de Resolução
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {(statistics?.resolutionRate || 0).toFixed(1)}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {statistics?.resolvedBugs || 0} resolvidos
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tool Accuracy Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Taxa de Acerto por Ferramenta
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {toolStats.map((tool) => (
+              <div 
+                key={tool.operation} 
+                className={`p-4 rounded-lg border ${getAccuracyColor(tool.accuracyRate)}`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-sm">{tool.name}</span>
+                  <Badge variant="outline" className="text-xs">
+                    {tool.accuracyRate.toFixed(1)}%
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{tool.totalUses.toLocaleString('pt-BR')} usos</span>
+                  <span>{tool.bugs} bugs</span>
+                </div>
+                <div className="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-current h-2 rounded-full transition-all" 
+                    style={{ width: `${tool.accuracyRate}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          {toolStats.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              Nenhuma estatística de ferramenta disponível ainda.
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Feedbacks Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5" />
+            Bugs Reportados pelos Usuários
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por mensagem, email, usuário ou página..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+                data-testid="input-feedback-search"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]" data-testid="select-feedback-status">
+                <SelectValue placeholder="Filtrar por status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="pending">Pendentes</SelectItem>
+                <SelectItem value="reviewing">Em Análise</SelectItem>
+                <SelectItem value="resolved">Resolvidos</SelectItem>
+                <SelectItem value="dismissed">Dispensados</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Results counter */}
+          <div className="text-sm text-muted-foreground mb-4">
+            Mostrando {filteredFeedbacks.length} de {feedbacks.length} feedbacks
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th className="text-left p-3 font-medium">Usuário</th>
+                  <th className="text-left p-3 font-medium">Email</th>
+                  <th className="text-left p-3 font-medium max-w-[300px]">Mensagem</th>
+                  <th className="text-left p-3 font-medium">Página</th>
+                  <th className="text-left p-3 font-medium">Status</th>
+                  <th className="text-left p-3 font-medium">Data</th>
+                  <th className="text-left p-3 font-medium">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredFeedbacks.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-8 text-gray-500">
+                      {searchTerm || statusFilter !== 'all' 
+                        ? "Nenhum feedback encontrado com os filtros aplicados"
+                        : "Nenhum bug reportado ainda"}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredFeedbacks.map((fb) => (
+                    <tr key={fb.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-900" data-testid={`row-feedback-${fb.id}`}>
+                      <td className="p-3 text-sm">{fb.userName || 'Anônimo'}</td>
+                      <td className="p-3 text-sm">{fb.userEmail || '-'}</td>
+                      <td className="p-3 text-sm max-w-[300px]">
+                        <div className="line-clamp-2" title={fb.message}>
+                          {fb.message}
+                        </div>
+                        {fb.adminNotes && (
+                          <div className="mt-1 text-xs text-blue-600 bg-blue-50 dark:bg-blue-950 p-1 rounded">
+                            <strong>Notas:</strong> {fb.adminNotes}
+                          </div>
+                        )}
+                      </td>
+                      <td className="p-3 text-sm">
+                        <Badge variant="outline">{fb.location || 'N/A'}</Badge>
+                      </td>
+                      <td className="p-3 text-sm">
+                        <Badge variant={getStatusBadge(fb.status).variant}>
+                          {getStatusBadge(fb.status).label}
+                        </Badge>
+                      </td>
+                      <td className="p-3 text-sm">
+                        {new Date(fb.createdAt).toLocaleDateString('pt-BR')}
+                      </td>
+                      <td className="p-3 text-sm">
+                        <div className="flex flex-col gap-2">
+                          <Select
+                            value={fb.status}
+                            onValueChange={(value) => updateFeedbackMutation.mutate({ id: fb.id, status: value })}
+                          >
+                            <SelectTrigger className="w-[130px] h-8 text-xs" data-testid={`select-status-${fb.id}`}>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pendente</SelectItem>
+                              <SelectItem value="reviewing">Em Análise</SelectItem>
+                              <SelectItem value="resolved">Resolvido</SelectItem>
+                              <SelectItem value="dismissed">Dispensado</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          
+                          {editingNotes === fb.id ? (
+                            <div className="flex gap-1">
+                              <Input
+                                value={notesValue}
+                                onChange={(e) => setNotesValue(e.target.value)}
+                                placeholder="Notas..."
+                                className="h-8 text-xs"
+                                data-testid={`input-notes-${fb.id}`}
+                              />
+                              <Button
+                                size="sm"
+                                className="h-8"
+                                onClick={() => {
+                                  updateFeedbackMutation.mutate({ id: fb.id, adminNotes: notesValue });
+                                }}
+                                disabled={updateFeedbackMutation.isPending}
+                                data-testid={`button-save-notes-${fb.id}`}
+                              >
+                                OK
+                              </Button>
+                            </div>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs"
+                              onClick={() => {
+                                setEditingNotes(fb.id);
+                                setNotesValue(fb.adminNotes || '');
+                              }}
+                              data-testid={`button-edit-notes-${fb.id}`}
+                            >
+                              {fb.adminNotes ? 'Editar Notas' : 'Add Notas'}
+                            </Button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function AdminManagement() {
   const { toast } = useToast();
   const [adminSearchTerm, setAdminSearchTerm] = useState('');
@@ -1016,11 +1402,12 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview" data-testid="tab-overview">Visão Geral</TabsTrigger>
           <TabsTrigger value="trends" data-testid="tab-trends">Tendências</TabsTrigger>
           <TabsTrigger value="operations" data-testid="tab-operations">Operações</TabsTrigger>
           <TabsTrigger value="users" data-testid="tab-users">Usuários</TabsTrigger>
+          <TabsTrigger value="bugs" data-testid="tab-bugs">Bugs</TabsTrigger>
           <TabsTrigger value="admins" data-testid="tab-admins">Administradores</TabsTrigger>
         </TabsList>
 
@@ -1229,6 +1616,10 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="bugs">
+          <FeedbackManagement />
         </TabsContent>
 
         <TabsContent value="admins">
