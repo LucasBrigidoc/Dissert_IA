@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { 
   ArrowLeft, 
   FileText, 
@@ -61,6 +61,8 @@ export default function MaterialComplementarPage() {
   const [, setLocation] = useLocation();
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialComplementar | null>(null);
   const [showMaterialModal, setShowMaterialModal] = useState(false);
+  const [showPdfViewer, setShowPdfViewer] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   // Fetch published materials from API
   const { data: materials = [], isLoading } = useQuery<MaterialComplementar[]>({
@@ -96,6 +98,31 @@ export default function MaterialComplementarPage() {
       doc.text(material.content, 20, 60, { maxWidth: 170 });
       doc.save(`${material.title}.pdf`);
     }
+  };
+
+  const viewPDF = (material: MaterialComplementar) => {
+    if (material.pdfUrl) {
+      setPdfUrl(material.pdfUrl);
+    } else {
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text(material.title, 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Categoria: ${material.category}`, 20, 35);
+      doc.text(`Tempo: ${material.readTime}`, 20, 45);
+      doc.text(material.content, 20, 60, { maxWidth: 170 });
+      const blobUrl = doc.output('bloburl');
+      setPdfUrl(blobUrl.toString());
+    }
+    setShowPdfViewer(true);
+  };
+
+  const closePdfViewer = () => {
+    setShowPdfViewer(false);
+    if (pdfUrl && pdfUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(pdfUrl);
+    }
+    setPdfUrl(null);
   };
 
   return (
@@ -224,6 +251,9 @@ export default function MaterialComplementarPage() {
                 <DialogTitle className="text-xl font-bold text-dark-blue">
                   {selectedMaterial?.title}
                 </DialogTitle>
+                <DialogDescription className="sr-only">
+                  {selectedMaterial?.description}
+                </DialogDescription>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge className={`${selectedMaterial ? (categoryColorMap[selectedMaterial.category as keyof typeof categoryColorMap] || categoryColorMap.Fundamental) : 'bg-green-100 text-green-800'} text-xs`}>
                     {selectedMaterial?.category}
@@ -253,17 +283,72 @@ export default function MaterialComplementarPage() {
                 >
                   Fechar
                 </Button>
-                <Button
-                  variant="outline"
-                  className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
-                  onClick={() => downloadAsPDF(selectedMaterial)}
-                >
-                  <Download size={14} className="mr-2" />
-                  Download PDF
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="text-green-600 border-green-300 hover:bg-green-50"
+                    onClick={() => viewPDF(selectedMaterial)}
+                    data-testid="button-view-pdf"
+                  >
+                    <Eye size={14} className="mr-2" />
+                    Ler PDF
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="text-bright-blue border-bright-blue/30 hover:bg-bright-blue/10"
+                    onClick={() => downloadAsPDF(selectedMaterial)}
+                    data-testid="button-download-pdf"
+                  >
+                    <Download size={14} className="mr-2" />
+                    Download PDF
+                  </Button>
+                </div>
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* PDF Viewer Modal */}
+      <Dialog open={showPdfViewer} onOpenChange={(open) => !open && closePdfViewer()}>
+        <DialogContent className="max-w-5xl h-[90vh] p-0">
+          <DialogHeader className="p-4 border-b">
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle className="text-lg font-bold text-dark-blue flex items-center gap-2">
+                  <Eye size={18} className="text-green-600" />
+                  {selectedMaterial?.title}
+                </DialogTitle>
+                <DialogDescription className="sr-only">
+                  Visualizador de PDF do material {selectedMaterial?.title}
+                </DialogDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={closePdfViewer}
+                className="text-soft-gray hover:text-dark-blue"
+                data-testid="button-close-pdf-viewer"
+              >
+                Fechar
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          <div className="flex-1 h-[calc(90vh-80px)]">
+            {pdfUrl ? (
+              <iframe
+                src={pdfUrl}
+                className="w-full h-full border-0"
+                title="Visualizador de PDF"
+                data-testid="pdf-viewer-iframe"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="animate-spin text-bright-blue" size={32} />
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
