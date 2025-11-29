@@ -1619,6 +1619,170 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== ADMIN FEEDBACK MANAGEMENT =====================
+
+  // Get all feedbacks with statistics and accuracy rates per tool
+  app.get("/api/admin/feedback", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      // Get all feedbacks
+      const allFeedbacks = await db.query.userFeedback.findMany({
+        orderBy: (feedback, { desc }) => [desc(feedback.createdAt)]
+      });
+
+      // Get all AI operations from user_costs for accuracy calculation
+      const allOperations = await db.query.userCosts.findMany();
+
+      // Map operation names to friendly names
+      const operationNameMap: Record<string, string> = {
+        'chat-response': 'Refinador de Ideias',
+        'chat_argumentative': 'Refinador de Ideias',
+        'structure-analysis': 'Análise de Estrutura',
+        'essay-generation': 'Gerador de Redação',
+        'essay_outline': 'Gerador de Roteiro',
+        'repertoire_generation': 'Gerador de Repertórios',
+        'repertoire-search': 'Busca de Repertórios',
+        'proposal_knowledge_search': 'Busca de Propostas',
+        'proposal_search_generate': 'Gerador de Propostas',
+        'proposal_generation': 'Gerador de Propostas',
+        'text-simplify': 'Controlador - Simplificar',
+        'text-formal': 'Controlador - Formalizar',
+        'text-expand': 'Controlador - Expandir',
+        'text-summarize': 'Controlador - Resumir',
+        'text_modification_simplify': 'Controlador - Simplificar',
+        'text_modification_formal': 'Controlador - Formalizar',
+        'text_modification_expand': 'Controlador - Expandir',
+        'text_modification_summarize': 'Controlador - Resumir',
+        'ocr_extract': 'OCR - Digitalizar Imagem',
+        'essay_correction': 'Corretor de Redação',
+      };
+
+      // Map feedback locations to tool categories
+      const locationToToolMap: Record<string, string[]> = {
+        'argumentos': ['chat-response', 'chat_argumentative'],
+        'refinador': ['chat-response', 'chat_argumentative'],
+        'estrutura': ['structure-analysis', 'essay-generation', 'essay_outline'],
+        'roteiro': ['essay_outline'],
+        'repertorio': ['repertoire_generation', 'repertoire-search'],
+        'proposta': ['proposal_knowledge_search', 'proposal_search_generate', 'proposal_generation'],
+        'controlador': ['text-simplify', 'text-formal', 'text-expand', 'text-summarize', 'text_modification_simplify', 'text_modification_formal', 'text_modification_expand', 'text_modification_summarize'],
+        'simulador': ['essay_correction', 'ocr_extract'],
+        'ocr': ['ocr_extract'],
+      };
+
+      // Count operations per tool category
+      const operationsByTool: Record<string, number> = {};
+      allOperations.forEach(op => {
+        const opName = op.operation || 'unknown';
+        operationsByTool[opName] = (operationsByTool[opName] || 0) + 1;
+      });
+
+      // Count bugs per tool based on location
+      const bugsByTool: Record<string, number> = {};
+      allFeedbacks.forEach(fb => {
+        const location = fb.location?.toLowerCase() || 'unknown';
+        // Find matching tool category
+        for (const [key, operations] of Object.entries(locationToToolMap)) {
+          if (location.includes(key)) {
+            operations.forEach(op => {
+              bugsByTool[op] = (bugsByTool[op] || 0) + 1;
+            });
+            break;
+          }
+        }
+      });
+
+      // Calculate accuracy per tool
+      const toolStats = Object.entries(operationsByTool).map(([operation, totalUses]) => {
+        const bugs = bugsByTool[operation] || 0;
+        const successfulUses = totalUses - bugs;
+        const accuracyRate = totalUses > 0 ? (successfulUses / totalUses) * 100 : 100;
+        
+        return {
+          operation,
+          name: operationNameMap[operation] || operation,
+          totalUses,
+          bugs,
+          accuracyRate: Math.max(0, Math.min(100, accuracyRate))
+        };
+      }).filter(t => t.totalUses > 0).sort((a, b) => b.totalUses - a.totalUses);
+
+      // Calculate overall statistics
+      const totalOperations = allOperations.length;
+      const totalBugs = allFeedbacks.length;
+      const pendingBugs = allFeedbacks.filter(f => f.status === 'pending').length;
+      const reviewingBugs = allFeedbacks.filter(f => f.status === 'reviewing').length;
+      const resolvedBugs = allFeedbacks.filter(f => f.status === 'resolved').length;
+      const dismissedBugs = allFeedbacks.filter(f => f.status === 'dismissed').length;
+      
+      // Overall accuracy rate
+      const overallAccuracyRate = totalOperations > 0 
+        ? ((totalOperations - totalBugs) / totalOperations) * 100 
+        : 100;
+
+      res.json({
+        feedbacks: allFeedbacks.map(f => ({
+          id: f.id,
+          userId: f.userId,
+          userEmail: f.userEmail,
+          userName: f.userName,
+          message: f.message,
+          location: f.location,
+          status: f.status,
+          adminNotes: f.adminNotes,
+          createdAt: f.createdAt,
+          updatedAt: f.updatedAt
+        })),
+        statistics: {
+          totalOperations,
+          totalBugs,
+          pendingBugs,
+          reviewingBugs,
+          resolvedBugs,
+          dismissedBugs,
+          overallAccuracyRate: Math.max(0, Math.min(100, overallAccuracyRate)),
+          resolutionRate: totalBugs > 0 ? (resolvedBugs / totalBugs) * 100 : 100
+        },
+        toolStats
+      });
+    } catch (error) {
+      console.error("Error getting admin feedback:", error);
+      res.status(500).json({ message: "Failed to get feedback data" });
+    }
+  });
+
+  // Update feedback status and admin notes
+  app.patch("/api/admin/feedback/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, adminNotes } = req.body;
+
+      if (status && !['pending', 'reviewing', 'resolved', 'dismissed'].includes(status)) {
+        return res.status(400).json({ message: "Status inválido" });
+      }
+
+      const updateData: any = { updatedAt: new Date() };
+      if (status) updateData.status = status;
+      if (adminNotes !== undefined) updateData.adminNotes = adminNotes;
+
+      const updated = await db.update(userFeedback)
+        .set(updateData)
+        .where(eq(userFeedback.id, id))
+        .returning();
+
+      if (updated.length === 0) {
+        return res.status(404).json({ message: "Feedback não encontrado" });
+      }
+
+      res.json({
+        message: "Feedback atualizado com sucesso",
+        feedback: updated[0]
+      });
+    } catch (error) {
+      console.error("Error updating feedback:", error);
+      res.status(500).json({ message: "Erro ao atualizar feedback" });
+    }
+  });
+
   // ===================== USER PROGRESS ENDPOINTS =====================
 
   // Get user progress
