@@ -1624,13 +1624,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all feedbacks with statistics and accuracy rates per tool
   app.get("/api/admin/feedback", requireAuth, requireAdmin, async (req, res) => {
     try {
-      // Get all feedbacks
+      // Parse days parameter for filtering (null means all time)
+      const daysParam = req.query.days ? parseInt(req.query.days as string) : null;
+      const cutoffDate = daysParam ? new Date(Date.now() - daysParam * 24 * 60 * 60 * 1000) : null;
+
+      // Get all feedbacks (always show all feedbacks in the table)
       const allFeedbacks = await db.query.userFeedback.findMany({
         orderBy: (feedback, { desc }) => [desc(feedback.createdAt)]
       });
 
+      // Filter feedbacks for statistics based on period
+      const filteredFeedbacks = cutoffDate 
+        ? allFeedbacks.filter(f => f.createdAt && new Date(f.createdAt) >= cutoffDate)
+        : allFeedbacks;
+
       // Get all AI operations from user_costs for accuracy calculation
-      const allOperations = await db.query.userCosts.findMany();
+      const allOperationsData = await db.query.userCosts.findMany();
+      
+      // Filter operations based on period for statistics
+      const allOperations = cutoffDate
+        ? allOperationsData.filter(op => op.createdAt && new Date(op.createdAt) >= cutoffDate)
+        : allOperationsData;
 
       // Map operation names to friendly names
       const operationNameMap: Record<string, string> = {
@@ -1676,9 +1690,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         operationsByTool[opName] = (operationsByTool[opName] || 0) + 1;
       });
 
-      // Count bugs per tool based on location
+      // Count bugs per tool based on location (using filtered feedbacks for period)
       const bugsByTool: Record<string, number> = {};
-      allFeedbacks.forEach(fb => {
+      filteredFeedbacks.forEach(fb => {
         const location = fb.location?.toLowerCase() || 'unknown';
         // Find matching tool category
         for (const [key, operations] of Object.entries(locationToToolMap)) {
@@ -1706,13 +1720,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       }).filter(t => t.totalUses > 0).sort((a, b) => b.totalUses - a.totalUses);
 
-      // Calculate overall statistics
+      // Calculate overall statistics (using filtered data for period)
       const totalOperations = allOperations.length;
-      const totalBugs = allFeedbacks.length;
-      const pendingBugs = allFeedbacks.filter(f => f.status === 'pending').length;
-      const reviewingBugs = allFeedbacks.filter(f => f.status === 'reviewing').length;
-      const resolvedBugs = allFeedbacks.filter(f => f.status === 'resolved').length;
-      const dismissedBugs = allFeedbacks.filter(f => f.status === 'dismissed').length;
+      const totalBugs = filteredFeedbacks.length;
+      const pendingBugs = filteredFeedbacks.filter(f => f.status === 'pending').length;
+      const reviewingBugs = filteredFeedbacks.filter(f => f.status === 'reviewing').length;
+      const resolvedBugs = filteredFeedbacks.filter(f => f.status === 'resolved').length;
+      const dismissedBugs = filteredFeedbacks.filter(f => f.status === 'dismissed').length;
       
       // Overall accuracy rate
       const overallAccuracyRate = totalOperations > 0 

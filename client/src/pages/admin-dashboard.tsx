@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -249,9 +249,18 @@ function FeedbackManagement() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [editingNotes, setEditingNotes] = useState<string | null>(null);
   const [notesValue, setNotesValue] = useState('');
+  const [periodDays, setPeriodDays] = useState<string>('all');
 
   const { data: feedbackData, isLoading } = useQuery<FeedbackData>({
-    queryKey: ['/api/admin/feedback'],
+    queryKey: ['/api/admin/feedback', periodDays],
+    queryFn: async () => {
+      const url = periodDays === 'all' 
+        ? '/api/admin/feedback' 
+        : `/api/admin/feedback?days=${periodDays}`;
+      const response = await fetch(url, { credentials: 'include' });
+      if (!response.ok) throw new Error('Failed to fetch feedback');
+      return response.json();
+    },
     refetchInterval: 30000,
   });
 
@@ -320,8 +329,45 @@ function FeedbackManagement() {
     );
   }
 
+  const getPeriodLabel = (value: string) => {
+    const labels: Record<string, string> = {
+      '1': 'Último dia',
+      '3': 'Últimos 3 dias',
+      '7': 'Últimos 7 dias',
+      '30': 'Últimos 30 dias',
+      '90': 'Últimos 90 dias',
+      '120': 'Últimos 120 dias',
+      '180': 'Últimos 180 dias',
+      'all': 'Todo o período',
+    };
+    return labels[value] || value;
+  };
+
   return (
     <div className="space-y-6">
+      {/* Period Filter */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Período das estatísticas:</span>
+        </div>
+        <Select value={periodDays} onValueChange={setPeriodDays}>
+          <SelectTrigger className="w-[200px]" data-testid="select-period-filter">
+            <SelectValue placeholder="Selecionar período" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="1">Último dia</SelectItem>
+            <SelectItem value="3">Últimos 3 dias</SelectItem>
+            <SelectItem value="7">Últimos 7 dias</SelectItem>
+            <SelectItem value="30">Últimos 30 dias</SelectItem>
+            <SelectItem value="90">Últimos 90 dias</SelectItem>
+            <SelectItem value="120">Últimos 120 dias</SelectItem>
+            <SelectItem value="180">Últimos 180 dias</SelectItem>
+            <SelectItem value="all">Todo o período</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
