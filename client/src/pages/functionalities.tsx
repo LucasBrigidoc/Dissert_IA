@@ -396,7 +396,7 @@ export default function FunctionalitiesPage() {
               </p>
             </div>
 
-            <div className="relative w-full max-w-5xl mx-auto px-16">
+            <div className="relative w-full max-w-5xl mx-auto px-2 sm:px-16">
               <Carousel 
                 opts={{
                   align: "start",
@@ -407,57 +407,57 @@ export default function FunctionalitiesPage() {
                 <CarouselContent>
                   {/* Objetivo 1: Praticar a Escrita */}
                   <CarouselItem>
-                    <div className="p-4">
-                      <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow border border-bright-blue/20">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center shrink-0">
-                            <Edit3 className="text-white" size={18} />
+                    <div className="p-1 sm:p-4">
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5 shadow border border-bright-blue/20">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-dark-blue rounded-full flex items-center justify-center shrink-0">
+                            <Edit3 className="text-white" size={14} />
                           </div>
-                          <div>
-                            <h4 className="text-lg font-bold text-dark-blue">Praticar a Escrita</h4>
-                            <p className="text-xs text-soft-gray">Refine seu texto e aprimore suas habilidades</p>
+                          <div className="min-w-0">
+                            <h4 className="text-base sm:text-lg font-bold text-dark-blue leading-tight">Praticar a Escrita</h4>
+                            <p className="text-[10px] sm:text-xs text-soft-gray truncate">Refine seu texto e aprimore suas habilidades</p>
                           </div>
                         </div>
-                        <p className="text-sm text-soft-gray mb-4">
+                        <p className="hidden sm:block text-sm text-soft-gray mb-4">
                           Use o controlador de escrita para melhorar seus textos, enriqueça com repertório cultural e pratique no simulador para consolidar o aprendizado.
                         </p>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1.5 sm:gap-2">
                           <Button 
                             onClick={() => handleFeatureAccess("Controlador de Escrita")}
-                            className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-bright-blue to-dark-blue text-white hover:from-bright-blue/90 hover:to-dark-blue/90 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path1-step1"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">1</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Controlador de Escrita</div>
-                                <div className="text-xs opacity-80">Refine e melhore seu texto com IA</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">1</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Controlador de Escrita</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Refine e melhore seu texto com IA</div>
                               </div>
                             </div>
                           </Button>
                           <Button 
                             onClick={() => handleFeatureAccess("Explorador de Repertório")}
-                            className="bg-gradient-to-r from-dark-blue to-soft-gray text-white hover:from-dark-blue/90 hover:to-soft-gray/90 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-dark-blue to-soft-gray text-white hover:from-dark-blue/90 hover:to-soft-gray/90 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path1-step2"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">2</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Explorador de Repertório</div>
-                                <div className="text-xs opacity-80">Enriqueça com citações e referências</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">2</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Explorador de Repertório</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Enriqueça com citações e referências</div>
                               </div>
                             </div>
                           </Button>
                           <Button 
                             onClick={() => handleFeatureAccess("Simulador de Prova")}
-                            className="bg-gradient-to-r from-soft-gray to-bright-blue text-white hover:from-soft-gray/90 hover:to-bright-blue/90 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-soft-gray to-bright-blue text-white hover:from-soft-gray/90 hover:to-bright-blue/90 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path1-step3"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">3</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Simulador de Prova</div>
-                                <div className="text-xs opacity-80">Pratique em ambiente realista</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">3</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Simulador de Prova</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Pratique em ambiente realista</div>
                               </div>
                             </div>
                           </Button>
@@ -468,57 +468,57 @@ export default function FunctionalitiesPage() {
 
                   {/* Objetivo 2: Conhecer e Estruturar Propostas */}
                   <CarouselItem>
-                    <div className="p-4">
-                      <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow border border-purple-500/20">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center shrink-0">
-                            <BookOpen className="text-white" size={18} />
+                    <div className="p-1 sm:p-4">
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5 shadow border border-purple-500/20">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center shrink-0">
+                            <BookOpen className="text-white" size={14} />
                           </div>
-                          <div>
-                            <h4 className="text-lg font-bold text-dark-blue">Conhecer Propostas</h4>
-                            <p className="text-xs text-soft-gray">Explore, estruture e reescreva temas</p>
+                          <div className="min-w-0">
+                            <h4 className="text-base sm:text-lg font-bold text-dark-blue leading-tight">Conhecer Propostas</h4>
+                            <p className="text-[10px] sm:text-xs text-soft-gray truncate">Explore, estruture e reescreva temas</p>
                           </div>
                         </div>
-                        <p className="text-sm text-soft-gray mb-4">
+                        <p className="hidden sm:block text-sm text-soft-gray mb-4">
                           Descubra propostas relevantes, visualize de forma roterizada e use o controlador para reescrever e melhorar sua compreensão dos temas.
                         </p>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1.5 sm:gap-2">
                           <Button 
                             onClick={() => handleFeatureAccess("Explorador de Propostas")}
-                            className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path2-step1"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">1</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Explorador de Propostas</div>
-                                <div className="text-xs opacity-80">Conheça propostas atuais e relevantes</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">1</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Explorador de Propostas</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Conheça propostas atuais e relevantes</div>
                               </div>
                             </div>
                           </Button>
                           <Button 
                             onClick={() => handleFeatureAccess("Estrutura Roterizada")}
-                            className="bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:from-purple-700 hover:to-purple-900 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:from-purple-700 hover:to-purple-900 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path2-step2"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">2</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Estrutura Roterizada</div>
-                                <div className="text-xs opacity-80">Veja propostas de forma estruturada</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">2</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Estrutura Roterizada</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Veja propostas de forma estruturada</div>
                               </div>
                             </div>
                           </Button>
                           <Button 
                             onClick={() => handleFeatureAccess("Controlador de Escrita")}
-                            className="bg-gradient-to-r from-purple-700 to-purple-900 text-white hover:from-purple-800 hover:to-purple-950 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-purple-700 to-purple-900 text-white hover:from-purple-800 hover:to-purple-950 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path2-step3"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">3</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Controlador de Escrita</div>
-                                <div className="text-xs opacity-80">Reescreva e visualize melhor</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">3</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Controlador de Escrita</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Reescreva e visualize melhor</div>
                               </div>
                             </div>
                           </Button>
@@ -529,57 +529,57 @@ export default function FunctionalitiesPage() {
 
                   {/* Objetivo 3: Desenvolver Argumentação */}
                   <CarouselItem>
-                    <div className="p-4">
-                      <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow border border-bright-blue/20">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center shrink-0">
-                            <Lightbulb className="text-white" size={18} />
+                    <div className="p-1 sm:p-4">
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5 shadow border border-bright-blue/20">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-bright-blue to-purple-600 rounded-full flex items-center justify-center shrink-0">
+                            <Lightbulb className="text-white" size={14} />
                           </div>
-                          <div>
-                            <h4 className="text-lg font-bold text-dark-blue">Desenvolver Argumentação</h4>
-                            <p className="text-xs text-soft-gray">Construa ideias sólidas e convincentes</p>
+                          <div className="min-w-0">
+                            <h4 className="text-base sm:text-lg font-bold text-dark-blue leading-tight">Desenvolver Argumentação</h4>
+                            <p className="text-[10px] sm:text-xs text-soft-gray truncate">Construa ideias sólidas e convincentes</p>
                           </div>
                         </div>
-                        <p className="text-sm text-soft-gray mb-4">
+                        <p className="hidden sm:block text-sm text-soft-gray mb-4">
                           Refine suas ideias, busque repertório cultural e teste seus argumentos em redações completas no simulador.
                         </p>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1.5 sm:gap-2">
                           <Button 
                             onClick={() => handleFeatureAccess("Refinamento de Ideias")}
-                            className="bg-gradient-to-r from-bright-blue to-purple-600 text-white hover:from-bright-blue/90 hover:to-purple-700 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-bright-blue to-purple-600 text-white hover:from-bright-blue/90 hover:to-purple-700 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path3-step1"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">1</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Refinamento de Ideias</div>
-                                <div className="text-xs opacity-80">Construa argumentos fortes</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">1</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Refinamento de Ideias</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Construa argumentos fortes</div>
                               </div>
                             </div>
                           </Button>
                           <Button 
                             onClick={() => handleFeatureAccess("Explorador de Repertório")}
-                            className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-purple-500 to-purple-700 text-white hover:from-purple-600 hover:to-purple-800 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path3-step2"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">2</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Explorador de Repertório</div>
-                                <div className="text-xs opacity-80">Fundamente com conhecimento</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">2</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Explorador de Repertório</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Fundamente com conhecimento</div>
                               </div>
                             </div>
                           </Button>
                           <Button 
                             onClick={() => handleFeatureAccess("Simulador de Prova")}
-                            className="bg-gradient-to-r from-purple-600 to-dark-blue text-white hover:from-purple-700 hover:to-dark-blue/90 w-full justify-start h-auto py-3 px-4"
+                            className="bg-gradient-to-r from-purple-600 to-dark-blue text-white hover:from-purple-700 hover:to-dark-blue/90 w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4"
                             data-testid="button-path3-step3"
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className="text-lg font-bold">3</span>
-                              <div className="text-left flex-1">
-                                <div className="font-semibold text-sm">Simulador de Prova</div>
-                                <div className="text-xs opacity-80">Aplique na prática completa</div>
+                            <div className="flex items-center gap-2 sm:gap-3 w-full">
+                              <span className="text-base sm:text-lg font-bold w-5 text-center">3</span>
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold text-xs sm:text-sm truncate">Simulador de Prova</div>
+                                <div className="text-[10px] sm:text-xs opacity-80 truncate">Aplique na prática completa</div>
                               </div>
                             </div>
                           </Button>
