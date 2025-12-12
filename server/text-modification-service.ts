@@ -81,7 +81,47 @@ export class TextModificationService {
     return cleaned;
   }
 
+  private getParagraphTypeInstructions(paragraphType?: string): string {
+    switch (paragraphType) {
+      case 'introducao':
+        return `
+TIPO DE PARÁGRAFO: INTRODUÇÃO
+• Foque na contextualização do tema e apresentação do problema
+• Inclua uma tese clara e bem definida que guiará a redação
+• Use uma abertura impactante (repertório, dado, pergunta retórica)
+• Estrutura ideal: Contextualização → Apresentação do tema → Tese
+• Tom: Apresentativo, instigante, estabelece o direcionamento argumentativo`;
+      case 'desenvolvimento1':
+        return `
+TIPO DE PARÁGRAFO: DESENVOLVIMENTO 1 (Primeiro Argumento)
+• Apresente o primeiro e principal argumento que sustenta a tese
+• Inclua repertório legitimador (dados, citações, fatos históricos)
+• Desenvolva a argumentação com profundidade e evidências
+• Estrutura ideal: Tópico frasal → Argumentação → Repertório → Fechamento
+• Tom: Argumentativo, analítico, fundamentado`;
+      case 'desenvolvimento2':
+        return `
+TIPO DE PARÁGRAFO: DESENVOLVIMENTO 2 (Segundo Argumento)
+• Apresente um segundo argumento que complementa ou amplia a discussão
+• Explore uma perspectiva diferente ou aprofunde o tema
+• Mantenha conexão com o D1 e a tese da introdução
+• Estrutura ideal: Tópico frasal → Nova perspectiva → Repertório → Conexão com tese
+• Tom: Complementar, aprofundador, mantém coesão com parágrafo anterior`;
+      case 'conclusao':
+        return `
+TIPO DE PARÁGRAFO: CONCLUSÃO (Proposta de Intervenção para ENEM)
+• Retome a tese de forma sintética
+• Apresente proposta de intervenção completa (Agente + Ação + Modo + Efeito + Detalhamento)
+• Conecte a proposta com os argumentos desenvolvidos
+• Estrutura ideal: Retomada da tese → Proposta com 5 elementos → Fechamento esperançoso
+• Tom: Propositivo, resolutivo, conecta com toda a argumentação anterior`;
+      default:
+        return '';
+    }
+  }
+
   private buildPrompt(text: string, type: string, config: TextModificationConfig): string {
+    const paragraphInstructions = this.getParagraphTypeInstructions(config.paragraphType);
     switch (type) {
       case 'formalidade':
         const tamanhoPercent = config.textLength || 100; // Default: keep same size
@@ -98,7 +138,7 @@ export class TextModificationService {
 
 TEXTO ORIGINAL:
 "${text}"
-
+${paragraphInstructions}
 INSTRUÇÕES:
 • Tamanho: ${tamanhoInstrucao}
 • Vocabulário: ${dificuldade === 'simples' ? 'palavras simples e diretas' : dificuldade === 'complexo' ? 'vocabulário sofisticado e técnico' : 'vocabulário equilibrado'}
@@ -239,7 +279,7 @@ Responda APENAS com o texto com argumentação invertida e bem fundamentada.`;
 
 TEXTO ORIGINAL:
 "${text}"
-
+${paragraphInstructions}
 TAREFA: Reestruture aplicando relações causais claras e convincentes para redação ENEM/vestibular.
 
 ESTRUTURA CAUSAL SOLICITADA:
@@ -325,7 +365,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura causal indic
 
 TEXTO ORIGINAL:
 "${text}"
-
+${paragraphInstructions}
 TAREFA: Reestruture usando comparações e analogias que fortaleçam a argumentação em redação ENEM/vestibular.
 
 ESTRUTURA COMPARATIVA SOLICITADA:
@@ -414,7 +454,7 @@ Responda APENAS com o parágrafo reestruturado seguindo a estrutura comparativa 
 
 TEXTO ORIGINAL:
 "${text}"
-
+${paragraphInstructions}
 TAREFA: Reestruture demonstrando maturidade argumentativa através de concessões e contraposições para redação ENEM/vestibular.
 
 ESTRUTURA DE OPOSIÇÃO SOLICITADA:

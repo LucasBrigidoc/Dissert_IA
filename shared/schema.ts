@@ -537,6 +537,8 @@ export const structureTypeSchema = z.enum([
   "entretanto"
 ]);
 
+export const paragraphTypeSchema = z.enum(["introducao", "desenvolvimento1", "desenvolvimento2", "conclusao"]);
+
 export const textModificationConfigSchema = z.object({
   textLength: z.number().min(50).max(200).optional(), // Percentage: 50% to 200% of original length
   wordDifficulty: wordDifficultySchema.optional(),
@@ -545,6 +547,7 @@ export const textModificationConfigSchema = z.object({
   argumentativeLevel: z.number().min(0).max(100).optional(),
   argumentStructure: argumentStructureSchema.optional(),
   structureType: structureTypeSchema.optional(),
+  paragraphType: paragraphTypeSchema.optional(), // Tipo de parágrafo: Introdução, D1, D2, Conclusão
 });
 
 export const textModificationResultSchema = z.object({
@@ -644,6 +647,7 @@ export type TextModificationType = z.infer<typeof textModificationTypeSchema>;
 export type WordDifficulty = z.infer<typeof wordDifficultySchema>;
 export type ArgumentTechnique = z.infer<typeof argumentTechniqueSchema>;
 export type ArgumentStructure = z.infer<typeof argumentStructureSchema>;
+export type ParagraphType = z.infer<typeof paragraphTypeSchema>;
 export type TextModificationConfig = z.infer<typeof textModificationConfigSchema>;
 export type TextModificationResult = z.infer<typeof textModificationResultSchema>;
 export type TextModificationRequest = z.infer<typeof textModificationRequestSchema>;
