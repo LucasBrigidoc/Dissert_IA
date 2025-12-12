@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target, HelpCircle, Lightbulb, Search, ExternalLink, AlertCircle } from "lucide-react";
+import { ArrowLeft, Copy, Save, RefreshCw, RotateCcw, Edit3, ChevronDown, ChevronUp, FileText, Shuffle, BookOpen, Target, HelpCircle, Lightbulb, Search, ExternalLink, AlertCircle, AlignLeft, ListOrdered, CheckCircle2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -87,6 +87,9 @@ export default function ControladorEscrita() {
   // Estados para estruturas dissertativas
   const [selectedStructure, setSelectedStructure] = useState<string>("causal");
   const [structureType, setStructureType] = useState<string>("tese-argumento");
+  
+  // Estado para tipo de parágrafo
+  const [paragraphType, setParagraphType] = useState<"introducao" | "desenvolvimento1" | "desenvolvimento2" | "conclusao">("desenvolvimento1");
   
   // Estados para integração com repertório
   const [suggestedRepertoires, setSuggestedRepertoires] = useState<any[]>([]);
@@ -535,7 +538,9 @@ ${recommendations}`);
     try {
       // Apply each selected modification in sequence
       for (const modificationType of Array.from(activeModifications)) {
-        const config: any = {};
+        const config: any = {
+          paragraphType: paragraphType
+        };
         
         if (modificationType === 'formalidade') {
           config.textLength = textLength[0];
@@ -631,7 +636,9 @@ ${recommendations}`);
     
     try {
       // Build configuration based on current settings
-      const config: any = {};
+      const config: any = {
+        paragraphType: paragraphType
+      };
       
       if (type === 'formalidade') {
         config.textLength = textLength[0];
@@ -869,6 +876,59 @@ ${recommendations}`);
                 className="min-h-[280px] sm:min-h-[200px] text-sm sm:text-base leading-relaxed resize-none"
                 data-testid="textarea-original"
               />
+            </div>
+          </LiquidGlassCard>
+        </div>
+
+        {/* Seletor de Tipo de Parágrafo */}
+        <div className="mb-4">
+          <LiquidGlassCard className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <Label className="text-sm font-semibold text-dark-blue whitespace-nowrap">
+                Tipo de Parágrafo:
+              </Label>
+              <div className="grid grid-cols-2 sm:flex gap-2 flex-1">
+                <Button
+                  variant={paragraphType === "introducao" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setParagraphType("introducao")}
+                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "introducao" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" : ""}`}
+                  data-testid="button-paragraph-introducao"
+                >
+                  <AlignLeft size={14} />
+                  Introdução
+                </Button>
+                <Button
+                  variant={paragraphType === "desenvolvimento1" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setParagraphType("desenvolvimento1")}
+                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "desenvolvimento1" ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white" : ""}`}
+                  data-testid="button-paragraph-dev1"
+                >
+                  <ListOrdered size={14} />
+                  Desenvolvimento 1
+                </Button>
+                <Button
+                  variant={paragraphType === "desenvolvimento2" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setParagraphType("desenvolvimento2")}
+                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "desenvolvimento2" ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white" : ""}`}
+                  data-testid="button-paragraph-dev2"
+                >
+                  <ListOrdered size={14} />
+                  Desenvolvimento 2
+                </Button>
+                <Button
+                  variant={paragraphType === "conclusao" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setParagraphType("conclusao")}
+                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "conclusao" ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white" : ""}`}
+                  data-testid="button-paragraph-conclusao"
+                >
+                  <CheckCircle2 size={14} />
+                  Conclusão
+                </Button>
+              </div>
             </div>
           </LiquidGlassCard>
         </div>
