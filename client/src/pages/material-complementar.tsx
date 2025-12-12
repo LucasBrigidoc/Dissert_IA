@@ -101,21 +101,41 @@ export default function MaterialComplementarPage() {
     }
   };
 
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  };
+
   const viewPDF = (material: MaterialComplementar) => {
-    if (material.pdfUrl) {
-      setPdfUrl(material.pdfUrl);
+    if (isMobile()) {
+      if (material.pdfUrl) {
+        window.open(material.pdfUrl, '_blank');
+      } else {
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text(material.title, 20, 20);
+        doc.setFontSize(12);
+        doc.text(`Categoria: ${material.category}`, 20, 35);
+        doc.text(`Tempo: ${material.readTime}`, 20, 45);
+        doc.text(material.content, 20, 60, { maxWidth: 170 });
+        const blobUrl = doc.output('bloburl');
+        window.open(blobUrl.toString(), '_blank');
+      }
     } else {
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text(material.title, 20, 20);
-      doc.setFontSize(12);
-      doc.text(`Categoria: ${material.category}`, 20, 35);
-      doc.text(`Tempo: ${material.readTime}`, 20, 45);
-      doc.text(material.content, 20, 60, { maxWidth: 170 });
-      const blobUrl = doc.output('bloburl');
-      setPdfUrl(blobUrl.toString());
+      if (material.pdfUrl) {
+        setPdfUrl(material.pdfUrl);
+      } else {
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text(material.title, 20, 20);
+        doc.setFontSize(12);
+        doc.text(`Categoria: ${material.category}`, 20, 35);
+        doc.text(`Tempo: ${material.readTime}`, 20, 45);
+        doc.text(material.content, 20, 60, { maxWidth: 170 });
+        const blobUrl = doc.output('bloburl');
+        setPdfUrl(blobUrl.toString());
+      }
+      setShowPdfViewer(true);
     }
-    setShowPdfViewer(true);
   };
 
   const closePdfViewer = () => {
