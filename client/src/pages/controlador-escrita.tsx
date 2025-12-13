@@ -882,51 +882,55 @@ ${recommendations}`);
 
         {/* Seletor de Tipo de Parágrafo */}
         <div className="mb-4">
-          <LiquidGlassCard className="p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <Label className="text-sm font-semibold text-dark-blue whitespace-nowrap">
+          <LiquidGlassCard className="p-2 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+              <Label className="text-xs sm:text-sm font-semibold text-dark-blue whitespace-nowrap">
                 Tipo de Parágrafo:
               </Label>
-              <div className="grid grid-cols-2 sm:flex gap-2 flex-1">
+              <div className="grid grid-cols-1 min-[320px]:grid-cols-2 sm:flex gap-1.5 sm:gap-2 flex-1">
                 <Button
                   variant={paragraphType === "introducao" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setParagraphType("introducao")}
-                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "introducao" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" : ""}`}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 h-auto min-h-[32px] sm:min-h-[36px] ${paragraphType === "introducao" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" : ""}`}
                   data-testid="button-paragraph-introducao"
                 >
-                  <AlignLeft size={14} />
-                  Introdução
+                  <AlignLeft className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  <span className="sm:hidden">Intro</span>
+                  <span className="hidden sm:inline">Introdução</span>
                 </Button>
                 <Button
                   variant={paragraphType === "desenvolvimento1" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setParagraphType("desenvolvimento1")}
-                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "desenvolvimento1" ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white" : ""}`}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 h-auto min-h-[32px] sm:min-h-[36px] ${paragraphType === "desenvolvimento1" ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white" : ""}`}
                   data-testid="button-paragraph-dev1"
                 >
-                  <ListOrdered size={14} />
-                  Desenvolvimento 1
+                  <ListOrdered className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  <span className="sm:hidden">D1</span>
+                  <span className="hidden sm:inline">Desenvolvimento 1</span>
                 </Button>
                 <Button
                   variant={paragraphType === "desenvolvimento2" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setParagraphType("desenvolvimento2")}
-                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "desenvolvimento2" ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white" : ""}`}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 h-auto min-h-[32px] sm:min-h-[36px] ${paragraphType === "desenvolvimento2" ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white" : ""}`}
                   data-testid="button-paragraph-dev2"
                 >
-                  <ListOrdered size={14} />
-                  Desenvolvimento 2
+                  <ListOrdered className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  <span className="sm:hidden">D2</span>
+                  <span className="hidden sm:inline">Desenvolvimento 2</span>
                 </Button>
                 <Button
                   variant={paragraphType === "conclusao" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setParagraphType("conclusao")}
-                  className={`flex items-center gap-2 text-xs sm:text-sm ${paragraphType === "conclusao" ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white" : ""}`}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 h-auto min-h-[32px] sm:min-h-[36px] ${paragraphType === "conclusao" ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white" : ""}`}
                   data-testid="button-paragraph-conclusao"
                 >
-                  <CheckCircle2 size={14} />
-                  Conclusão
+                  <CheckCircle2 className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  <span className="sm:hidden">Concl</span>
+                  <span className="hidden sm:inline">Conclusão</span>
                 </Button>
               </div>
             </div>
