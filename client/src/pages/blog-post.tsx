@@ -160,7 +160,7 @@ export default function BlogPost() {
               {post.title}
             </h1>
             
-            <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
+            <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm mb-8">
               <span className="flex items-center gap-2">
                 <User size={16} />
                 {post.author}
@@ -172,6 +172,21 @@ export default function BlogPost() {
               <span className="flex items-center gap-2">
                 <Clock size={16} />
                 {post.readTime} de leitura
+              </span>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <Link href="/pricing">
+                <Button 
+                  className="bg-white text-bright-blue px-8 py-3 font-semibold"
+                  data-testid="button-post-hero-start"
+                >
+                  Começar Agora
+                  <ArrowRight className="ml-2" size={18} />
+                </Button>
+              </Link>
+              <span className="text-white/90 text-sm">
+                Melhore suas redações com IA e alcance a nota 1000!
               </span>
             </div>
           </div>
