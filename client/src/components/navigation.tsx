@@ -10,7 +10,7 @@ export function Navigation() {
   const closeMenu = () => setIsMenuOpen(false);
 
   // Verifica se é uma página de landing (não internas)
-  const isLandingPage = ['/', '/features', '/pricing', '/about'].includes(location);
+  const isLandingPage = ['/', '/features', '/pricing', '/about', '/blog'].includes(location);
   
   // Função para verificar se o link está ativo
   const isActive = (href: string) => {
@@ -60,6 +60,9 @@ export function Navigation() {
           </Link>
           <Link href="/about" className={getNavLinkClasses("/about")} data-testid="link-sobre">
             <span className="font-medium">Sobre</span>
+          </Link>
+          <Link href="/blog" className={getNavLinkClasses("/blog")} data-testid="link-blog">
+            <span className="font-medium">Blog</span>
           </Link>
         </div>
         
@@ -121,6 +124,14 @@ export function Navigation() {
               onClick={closeMenu}
             >
               <span className="font-medium">Sobre</span>
+            </Link>
+            <Link 
+              href="/blog" 
+              className={getMobileNavLinkClasses("/blog")}
+              data-testid="link-blog-mobile"
+              onClick={closeMenu}
+            >
+              <span className="font-medium">Blog</span>
             </Link>
             <div className="border-t pt-4">
               <Link 
