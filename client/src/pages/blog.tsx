@@ -43,7 +43,7 @@ export default function Blog() {
               Blog Dissert IA
             </h1>
             <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto mb-8">
-              Informações, dicas e estratégias para você aprender a escrever redações incríveis
+              Informações, dicas e estratégias completas para você aprender a escrever redações incríveis. Aprenda técnicas de argumentação, estruturação de texto, uso de repertório sociocultural e muito mais para conquistar a nota máxima!
             </p>
             <Link href="/pricing">
               <Button 
