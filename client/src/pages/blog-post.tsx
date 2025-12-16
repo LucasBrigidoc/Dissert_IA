@@ -142,15 +142,26 @@ export default function BlogPost() {
   const postUrl = `https://dissertia.com.br/blog/${post.slug}`;
   const postDescription = post.excerpt.length > 160 ? post.excerpt.substring(0, 157) + '...' : post.excerpt;
   const ogImage = "https://dissertia.com.br/og-blog.png";
+  
+  const titleWords = post.title.toLowerCase().split(' ').filter(word => word.length > 3);
+  const keywordArray = [
+    ...post.tags,
+    post.category,
+    ...titleWords.slice(0, 5),
+    'redação vestibular',
+    'redação concurso',
+    'como escrever redação'
+  ];
+  const topicKeywords = Array.from(new Set(keywordArray)).join(', ');
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>{post.title} | Blog Dissert IA</title>
+        <title>{post.title} | Dicas de Redação - Dissert IA</title>
         <meta name="description" content={postDescription} />
-        <meta name="keywords" content={`${post.tags.join(', ')}, redação ENEM, Dissert IA`} />
+        <meta name="keywords" content={topicKeywords} />
         <link rel="canonical" href={postUrl} />
-        <meta property="og:title" content={`${post.title} | Blog Dissert IA`} />
+        <meta property="og:title" content={`${post.title} | Dicas de Redação - Dissert IA`} />
         <meta property="og:description" content={postDescription} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={postUrl} />
@@ -161,7 +172,7 @@ export default function BlogPost() {
           <meta key={index} property="article:tag" content={tag} />
         ))}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${post.title} | Blog Dissert IA`} />
+        <meta name="twitter:title" content={`${post.title} | Dicas de Redação - Dissert IA`} />
         <meta name="twitter:description" content={postDescription} />
         <meta name="twitter:image" content={ogImage} />
       </Helmet>

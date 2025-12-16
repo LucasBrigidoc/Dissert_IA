@@ -20,17 +20,17 @@ export default function Blog() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Blog Dissert IA - Dicas de Redação para o ENEM</title>
-        <meta name="description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação e alcançar a nota 1000 no ENEM. Aprenda técnicas comprovadas com a Dissert IA." />
-        <meta name="keywords" content="redação ENEM, dicas redação, nota 1000, ENEM 2024, como escrever redação, técnicas de redação, Dissert IA" />
+        <title>Blog Dissert IA - Dicas de Redação para Vestibulares e Concursos</title>
+        <meta name="description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação e alcançar a nota máxima em vestibulares e concursos públicos. Aprenda técnicas comprovadas com a Dissert IA." />
+        <meta name="keywords" content="redação vestibular, redação concurso, dicas redação, como escrever redação, técnicas de redação, proposta de intervenção, repertório sociocultural, Dissert IA" />
         <link rel="canonical" href="https://dissertia.com.br/blog" />
-        <meta property="og:title" content="Blog Dissert IA - Dicas de Redação para o ENEM" />
-        <meta property="og:description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação e alcançar a nota 1000 no ENEM." />
+        <meta property="og:title" content="Blog Dissert IA - Dicas de Redação para Vestibulares e Concursos" />
+        <meta property="og:description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação e alcançar a nota máxima em vestibulares e concursos." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://dissertia.com.br/blog" />
         <meta property="og:image" content="https://dissertia.com.br/og-blog.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Blog Dissert IA - Dicas de Redação para o ENEM" />
+        <meta name="twitter:title" content="Blog Dissert IA - Dicas de Redação para Vestibulares e Concursos" />
         <meta name="twitter:description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação." />
         <meta name="twitter:image" content="https://dissertia.com.br/og-blog.png" />
       </Helmet>
