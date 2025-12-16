@@ -43,7 +43,7 @@ export default function Blog() {
               Blog Dissert IA
             </h1>
             <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto mb-8">
-              Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação. Receba newsletters exclusivas com dicas semanais direto na sua caixa de entrada!
+              Além do blog, a plataforma oferece newsletter semanal exclusiva e ferramentas de IA para você praticar e aperfeiçoar sua redação!
             </p>
             <Link href="/pricing">
               <Button 
