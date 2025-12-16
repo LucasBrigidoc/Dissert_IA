@@ -26,9 +26,18 @@ export default function Blog() {
             <h1 className="font-bold mb-4 text-3xl sm:text-4xl md:text-5xl" data-testid="text-blog-title">
               Blog Dissert IA
             </h1>
-            <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto">
+            <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto mb-8">
               Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação
             </p>
+            <Link href="/pricing">
+              <Button 
+                className="bg-white text-bright-blue px-8 py-3 font-semibold"
+                data-testid="button-blog-hero-start"
+              >
+                Começar Agora
+                <ArrowRight className="ml-2" size={18} />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
