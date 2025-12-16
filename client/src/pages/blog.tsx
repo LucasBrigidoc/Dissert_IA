@@ -43,14 +43,14 @@ export default function Blog() {
               Blog Dissert IA
             </h1>
             <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto mb-8">
-              Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação
+              Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação. Receba newsletters exclusivas com dicas semanais direto na sua caixa de entrada!
             </p>
             <Link href="/pricing">
               <Button 
                 className="bg-white text-bright-blue px-8 py-3 font-semibold"
                 data-testid="button-blog-hero-start"
               >
-                Começar Agora
+                Pratique com as Ferramentas de IA
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </Link>
