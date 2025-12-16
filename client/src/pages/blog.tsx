@@ -134,7 +134,7 @@ export default function Blog() {
               className="bg-gradient-to-r from-bright-blue to-dark-blue text-white px-8 py-3"
               data-testid="button-blog-cta"
             >
-              Comece Agora Gratuitamente
+              Comece Agora
               <ArrowRight className="ml-2" size={18} />
             </Button>
           </Link>
