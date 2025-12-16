@@ -109,10 +109,10 @@ export default function Blog() {
             Quer ir além do blog?
           </h2>
           <p className="text-lg text-soft-gray mb-4 max-w-2xl mx-auto">
-            A plataforma Dissert IA oferece muito mais! Dentro da plataforma você tem acesso a uma Newsletter exclusiva com notícias e dicas da semana para te manter atualizado e preparado.
+            A plataforma Dissert IA oferece muito mais! Dentro da plataforma você tem acesso a uma Newsletter exclusiva com notícias atualizadas, temas prováveis para vestibulares e concursos, além de dicas semanais para te manter informado e preparado para qualquer prova.
           </p>
           <p className="text-lg text-soft-gray mb-8 max-w-2xl mx-auto">
-            Além disso, utilize nossas ferramentas de IA para praticar sua escrita e receber correções personalizadas!
+            Utilize nossas ferramentas de IA para praticar sua escrita, receber correções detalhadas com feedback em cada competência do ENEM, sugestões de melhorias e análise de repertório sociocultural. Aprenda de forma interativa e evolua a cada redação!
           </p>
           <Link href="/pricing">
             <Button 
