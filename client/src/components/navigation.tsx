@@ -58,11 +58,11 @@ export function Navigation() {
           <Link href="/pricing" className={getNavLinkClasses("/pricing")} data-testid="link-planos">
             <span className="font-medium">Planos</span>
           </Link>
-          <Link href="/about" className={getNavLinkClasses("/about")} data-testid="link-sobre">
-            <span className="font-medium">Sobre</span>
-          </Link>
           <Link href="/blog" className={getNavLinkClasses("/blog")} data-testid="link-blog">
             <span className="font-medium">Blog</span>
+          </Link>
+          <Link href="/about" className={getNavLinkClasses("/about")} data-testid="link-sobre">
+            <span className="font-medium">Sobre</span>
           </Link>
         </div>
         
@@ -118,20 +118,20 @@ export function Navigation() {
               <span className="font-medium">Planos</span>
             </Link>
             <Link 
-              href="/about" 
-              className={getMobileNavLinkClasses("/about")}
-              data-testid="link-sobre-mobile"
-              onClick={closeMenu}
-            >
-              <span className="font-medium">Sobre</span>
-            </Link>
-            <Link 
               href="/blog" 
               className={getMobileNavLinkClasses("/blog")}
               data-testid="link-blog-mobile"
               onClick={closeMenu}
             >
               <span className="font-medium">Blog</span>
+            </Link>
+            <Link 
+              href="/about" 
+              className={getMobileNavLinkClasses("/about")}
+              data-testid="link-sobre-mobile"
+              onClick={closeMenu}
+            >
+              <span className="font-medium">Sobre</span>
             </Link>
             <div className="border-t pt-4">
               <Link 
