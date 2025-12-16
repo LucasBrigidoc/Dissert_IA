@@ -1,4 +1,5 @@
 import { Link, useParams } from "wouter";
+import { Helmet } from "react-helmet-async";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -138,8 +139,32 @@ export default function BlogPost() {
     return elements;
   };
 
+  const postUrl = `https://dissertia.com.br/blog/${post.slug}`;
+  const postDescription = post.excerpt.length > 160 ? post.excerpt.substring(0, 157) + '...' : post.excerpt;
+  const ogImage = "https://dissertia.com.br/og-blog.png";
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>{post.title} | Blog Dissert IA</title>
+        <meta name="description" content={postDescription} />
+        <meta name="keywords" content={`${post.tags.join(', ')}, redação ENEM, Dissert IA`} />
+        <link rel="canonical" href={postUrl} />
+        <meta property="og:title" content={`${post.title} | Blog Dissert IA`} />
+        <meta property="og:description" content={postDescription} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={postUrl} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="article:author" content={post.author} />
+        <meta property="article:section" content={post.category} />
+        {post.tags.map((tag, index) => (
+          <meta key={index} property="article:tag" content={tag} />
+        ))}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${post.title} | Blog Dissert IA`} />
+        <meta name="twitter:description" content={postDescription} />
+        <meta name="twitter:image" content={ogImage} />
+      </Helmet>
       <Navigation />
       
       <section className="gradient-bg min-h-[40vh] flex flex-col justify-center relative overflow-hidden pt-24 pb-12">

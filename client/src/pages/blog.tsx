@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Helmet } from "react-helmet-async";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
@@ -18,6 +19,21 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Blog Dissert IA - Dicas de Redação para o ENEM</title>
+        <meta name="description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação e alcançar a nota 1000 no ENEM. Aprenda técnicas comprovadas com a Dissert IA." />
+        <meta name="keywords" content="redação ENEM, dicas redação, nota 1000, ENEM 2024, como escrever redação, técnicas de redação, Dissert IA" />
+        <link rel="canonical" href="https://dissertia.com.br/blog" />
+        <meta property="og:title" content="Blog Dissert IA - Dicas de Redação para o ENEM" />
+        <meta property="og:description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação e alcançar a nota 1000 no ENEM." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://dissertia.com.br/blog" />
+        <meta property="og:image" content="https://dissertia.com.br/og-blog.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Blog Dissert IA - Dicas de Redação para o ENEM" />
+        <meta name="twitter:description" content="Dicas, estratégias e conteúdos exclusivos para ajudar você a dominar a arte da redação." />
+        <meta name="twitter:image" content="https://dissertia.com.br/og-blog.png" />
+      </Helmet>
       <Navigation />
       
       <section className="gradient-bg min-h-[50vh] flex flex-col justify-center relative overflow-hidden pt-24 pb-12">
