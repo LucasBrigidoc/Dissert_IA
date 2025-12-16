@@ -105,13 +105,13 @@ export default function Blog() {
         </div>
 
         <div className="text-center mt-12">
-          <h2 className="text-2xl font-bold text-dark-blue mb-4">
+          <h2 className="text-3xl font-bold text-dark-blue mb-6">
             Quer ir além do blog?
           </h2>
-          <p className="text-soft-gray mb-4 max-w-2xl mx-auto">
+          <p className="text-lg text-soft-gray mb-4 max-w-2xl mx-auto">
             A plataforma Dissert IA oferece muito mais! Dentro da plataforma você tem acesso a uma Newsletter exclusiva com notícias e dicas da semana para te manter atualizado e preparado.
           </p>
-          <p className="text-soft-gray mb-6 max-w-2xl mx-auto">
+          <p className="text-lg text-soft-gray mb-8 max-w-2xl mx-auto">
             Além disso, utilize nossas ferramentas de IA para praticar sua escrita e receber correções personalizadas!
           </p>
           <Link href="/pricing">
