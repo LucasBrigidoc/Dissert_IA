@@ -129,7 +129,7 @@ export default function Blog() {
           <p className="text-soft-gray mb-6">
             Em breve, mais conteúdos exclusivos para ajudar você a alcançar a nota 1000!
           </p>
-          <Link href="/signup">
+          <Link href="/pricing">
             <Button 
               className="bg-gradient-to-r from-bright-blue to-dark-blue text-white px-8 py-3"
               data-testid="button-blog-cta"
