@@ -277,15 +277,21 @@ export default function BlogPost() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-soft-gray mb-6">
-              Pronto para melhorar suas redações com a ajuda da IA?
+            <h2 className="text-3xl font-bold text-dark-blue mb-6">
+              Quer ir além do blog?
+            </h2>
+            <p className="text-lg text-soft-gray mb-4 max-w-2xl mx-auto">
+              A plataforma Dissert IA oferece muito mais! Dentro da plataforma você tem acesso a uma Newsletter exclusiva com notícias atualizadas, temas prováveis para vestibulares e concursos, além de dicas semanais para te manter informado e preparado para qualquer prova.
+            </p>
+            <p className="text-lg text-soft-gray mb-8 max-w-2xl mx-auto">
+              Utilize nossas ferramentas de IA para praticar sua escrita, receber correções detalhadas com feedback em cada competência do ENEM, sugestões de melhorias e análise de repertório sociocultural. Aprenda de forma interativa e evolua a cada redação!
             </p>
             <Link href="/pricing">
               <Button 
                 className="bg-gradient-to-r from-bright-blue to-dark-blue text-white px-8 py-3"
                 data-testid="button-post-cta"
               >
-                Comece Agora
+                Conhecer a Plataforma
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </Link>
