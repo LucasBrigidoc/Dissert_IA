@@ -1408,6 +1408,51 @@ export const essayOutlineQuestionnaireSchema = z.object({
 
 export type EssayOutlineQuestionnaire = z.infer<typeof essayOutlineQuestionnaireSchema>;
 
+// ===================== BLOG POSTS =====================
+
+export const blogPosts = pgTable("blog_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  excerpt: text("excerpt").notNull(),
+  content: text("content").notNull(),
+  coverImage: text("cover_image"),
+  authorId: varchar("author_id").references(() => users.id),
+  category: varchar("category", { 
+    enum: ["redacao", "portugues", "vestibular", "enem", "concursos", "dicas", "novidades"] 
+  }).notNull().default("dicas"),
+  tags: json("tags").notNull().default([]),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  metaKeywords: text("meta_keywords"),
+  isPublished: boolean("is_published").default(false).notNull(),
+  isFeatured: boolean("is_featured").default(false).notNull(),
+  viewCount: integer("view_count").default(0).notNull(),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  slugIdx: uniqueIndex("idx_blog_posts_slug").on(table.slug),
+  categoryIdx: index("idx_blog_posts_category").on(table.category),
+  publishedIdx: index("idx_blog_posts_published").on(table.isPublished),
+}));
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
+  id: true,
+  viewCount: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  title: z.string().min(5, "O título deve ter pelo menos 5 caracteres"),
+  slug: z.string().min(3, "O slug deve ter pelo menos 3 caracteres").regex(/^[a-z0-9-]+$/, "O slug deve conter apenas letras minúsculas, números e hífens"),
+  excerpt: z.string().min(10, "O resumo deve ter pelo menos 10 caracteres").max(300, "O resumo deve ter no máximo 300 caracteres"),
+  content: z.string().min(50, "O conteúdo deve ter pelo menos 50 caracteres"),
+  tags: z.array(z.string()).default([]),
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+
 // ===================== DRIZZLE ORM RELATIONS =====================
 
 export const subscriptionPlansRelations = relations(subscriptionPlans, ({ many }) => ({
