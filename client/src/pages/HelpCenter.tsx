@@ -112,7 +112,7 @@ export default function HelpCenter() {
   ];
 
   const quickLinks = [
-    { icon: FileText, title: "Começar a praticar", description: "Crie sua conta", href: "/register" },
+    { icon: FileText, title: "Começar a praticar", description: "Crie sua conta", href: "/signup" },
     { icon: CreditCard, title: "Ver Planos", description: "Compare recursos e preços", href: "/pricing" },
     { icon: HelpCircle, title: "FAQ Completo", description: "Todas as perguntas frequentes", href: "/faq" },
     { icon: Mail, title: "Contato", description: "Fale com nossa equipe", href: "mailto:suporte@dissertia.com" }
