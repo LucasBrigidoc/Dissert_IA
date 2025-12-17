@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAdminCheck } from "@/hooks/use-admin-check";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import type { BlogPost } from "@shared/schema";
 
 const categories = [
@@ -627,14 +628,11 @@ export default function AdminBlog() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="content">Conteúdo *</Label>
-                <Textarea
-                  id="content"
-                  value={formData.content}
-                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="Conteúdo do post (suporta Markdown)"
-                  rows={10}
-                  data-testid="input-content"
+                <Label>Conteúdo *</Label>
+                <RichTextEditor
+                  content={formData.content}
+                  onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+                  placeholder="Comece a escrever o conteúdo do seu post..."
                 />
               </div>
 

@@ -74,107 +74,8 @@ export default function BlogPost() {
   const prevPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
   const nextPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
 
-  const renderContent = (content: string) => {
-    const lines = content.split('\n');
-    const elements: JSX.Element[] = [];
-    let currentList: string[] = [];
-    let listType: 'ul' | 'ol' | null = null;
-    let keyCounter = 0;
-
-    const getKey = () => `elem-${keyCounter++}`;
-
-    const flushList = () => {
-      if (currentList.length > 0 && listType) {
-        const listKey = getKey();
-        if (listType === 'ul') {
-          elements.push(
-            <ul key={listKey} className="list-disc list-inside space-y-2 text-soft-gray mb-6 ml-4">
-              {currentList.map((item, i) => (
-                <li key={`${listKey}-${i}`}>{item}</li>
-              ))}
-            </ul>
-          );
-        } else {
-          elements.push(
-            <ol key={listKey} className="list-decimal list-inside space-y-2 text-soft-gray mb-6 ml-4">
-              {currentList.map((item, i) => (
-                <li key={`${listKey}-${i}`}>{item}</li>
-              ))}
-            </ol>
-          );
-        }
-        currentList = [];
-        listType = null;
-      }
-    };
-
-    lines.forEach((line) => {
-      const trimmedLine = line.trim();
-
-      if (trimmedLine.startsWith('# ')) {
-        flushList();
-        elements.push(
-          <h1 key={getKey()} className="text-3xl font-bold text-dark-blue mb-6 mt-8">
-            {trimmedLine.substring(2)}
-          </h1>
-        );
-      } else if (trimmedLine.startsWith('## ')) {
-        flushList();
-        elements.push(
-          <h2 key={getKey()} className="text-2xl font-semibold text-dark-blue mb-4 mt-8">
-            {trimmedLine.substring(3)}
-          </h2>
-        );
-      } else if (trimmedLine.startsWith('### ')) {
-        flushList();
-        elements.push(
-          <h3 key={getKey()} className="text-xl font-semibold text-dark-blue mb-3 mt-6">
-            {trimmedLine.substring(4)}
-          </h3>
-        );
-      } else if (trimmedLine.startsWith('- **') || trimmedLine.startsWith('* **')) {
-        if (listType !== 'ul') {
-          flushList();
-          listType = 'ul';
-        }
-        const itemContent = trimmedLine.substring(2).replace(/\*\*/g, '');
-        currentList.push(itemContent);
-      } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
-        if (listType !== 'ul') {
-          flushList();
-          listType = 'ul';
-        }
-        currentList.push(trimmedLine.substring(2));
-      } else if (/^\d+\.\s/.test(trimmedLine)) {
-        if (listType !== 'ol') {
-          flushList();
-          listType = 'ol';
-        }
-        currentList.push(trimmedLine.replace(/^\d+\.\s/, '').replace(/\*\*/g, ''));
-      } else if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**')) {
-        flushList();
-        elements.push(
-          <p key={getKey()} className="font-semibold text-dark-blue mb-4">
-            {trimmedLine.replace(/\*\*/g, '')}
-          </p>
-        );
-      } else if (trimmedLine.length > 0) {
-        flushList();
-        const formattedLine = trimmedLine
-          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-          .replace(/`([^`]+)`/g, '<code class="bg-gray-100 px-1 rounded text-sm">$1</code>');
-        elements.push(
-          <p 
-            key={getKey()} 
-            className="text-soft-gray mb-4 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: formattedLine }}
-          />
-        );
-      }
-    });
-
-    flushList();
-    return elements;
+  const isHtmlContent = (content: string) => {
+    return content.startsWith('<') || content.includes('<p>') || content.includes('<h1>') || content.includes('<div>');
   };
 
   const postUrl = `https://dissertia.com.br/blog/${post.slug}`;
@@ -281,9 +182,10 @@ export default function BlogPost() {
       <div className="container mx-auto px-4 sm:px-6 py-12">
         <div className="max-w-4xl mx-auto">
           <LiquidGlassCard className="p-8 md:p-12" data-testid="card-post-content">
-            <article className="prose prose-lg max-w-none">
-              {renderContent(post.content)}
-            </article>
+            <article 
+              className="prose prose-lg max-w-none blog-content"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
             
             {postTags.length > 0 && (
               <div className="mt-8 pt-8 border-t">
