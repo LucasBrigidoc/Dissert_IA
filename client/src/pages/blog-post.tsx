@@ -1,17 +1,54 @@
 import { Link, useParams } from "wouter";
 import { Helmet } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { getBlogPostBySlug, getAllBlogPosts } from "@shared/blog-posts";
-import { Calendar, Clock, ArrowLeft, ArrowRight, Tag, User } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, ArrowRight, Tag, User, Loader2, Eye } from "lucide-react";
 import { LiquidGlassCard } from "@/components/liquid-glass-card";
+import type { BlogPost as BlogPostType } from "@shared/schema";
+
+const formatDate = (dateStr: string | Date | null | undefined) => {
+  if (!dateStr) return "";
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
+  return date.toLocaleDateString('pt-BR', { 
+    day: '2-digit', 
+    month: 'short', 
+    year: 'numeric'
+  });
+};
+
+const estimateReadTime = (content: string) => {
+  const wordsPerMinute = 200;
+  const words = content.split(/\s+/).length;
+  const minutes = Math.ceil(words / wordsPerMinute);
+  return `${minutes} min`;
+};
 
 export default function BlogPost() {
   const params = useParams();
   const slug = params.slug as string;
-  const post = getBlogPostBySlug(slug);
-  const allPosts = getAllBlogPosts();
+
+  const { data: post, isLoading: postLoading } = useQuery<BlogPostType>({
+    queryKey: ['/api/blog', slug],
+    enabled: !!slug,
+  });
+
+  const { data: allPosts } = useQuery<BlogPostType[]>({
+    queryKey: ['/api/blog'],
+  });
+
+  if (postLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation />
+        <div className="container mx-auto px-4 sm:px-6 py-24 flex items-center justify-center">
+          <Loader2 className="animate-spin text-bright-blue" size={48} />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -32,9 +69,10 @@ export default function BlogPost() {
     );
   }
 
-  const currentIndex = allPosts.findIndex(p => p.slug === slug);
-  const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
-  const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  const posts = allPosts || [];
+  const currentIndex = posts.findIndex(p => p.slug === slug);
+  const prevPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
+  const nextPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
 
   const renderContent = (content: string) => {
     const lines = content.split('\n');
@@ -141,39 +179,39 @@ export default function BlogPost() {
 
   const postUrl = `https://dissertia.com.br/blog/${post.slug}`;
   const postDescription = post.excerpt.length > 160 ? post.excerpt.substring(0, 157) + '...' : post.excerpt;
-  const ogImage = "https://dissertia.com.br/og-blog.png";
+  const ogImage = post.coverImage || "https://dissertia.com.br/og-blog.png";
   
+  const postTags = (post.tags as string[]) || [];
   const titleWords = post.title.toLowerCase().split(' ').filter(word => word.length > 3);
   const keywordArray = [
-    ...post.tags,
+    ...postTags,
     post.category,
     ...titleWords.slice(0, 5),
     'redação vestibular',
     'redação concurso',
     'como escrever redação'
   ];
-  const topicKeywords = Array.from(new Set(keywordArray)).join(', ');
+  const topicKeywords = post.metaKeywords || Array.from(new Set(keywordArray)).join(', ');
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>{post.title} | Dicas de Redação - Dissert IA</title>
-        <meta name="description" content={postDescription} />
+        <title>{post.metaTitle || post.title} | Dicas de Redação - Dissert IA</title>
+        <meta name="description" content={post.metaDescription || postDescription} />
         <meta name="keywords" content={topicKeywords} />
         <link rel="canonical" href={postUrl} />
-        <meta property="og:title" content={`${post.title} | Dicas de Redação - Dissert IA`} />
-        <meta property="og:description" content={postDescription} />
+        <meta property="og:title" content={`${post.metaTitle || post.title} | Dicas de Redação - Dissert IA`} />
+        <meta property="og:description" content={post.metaDescription || postDescription} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={postUrl} />
         <meta property="og:image" content={ogImage} />
-        <meta property="article:author" content={post.author} />
         <meta property="article:section" content={post.category} />
-        {post.tags.map((tag, index) => (
+        {postTags.map((tag, index) => (
           <meta key={index} property="article:tag" content={tag} />
         ))}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${post.title} | Dicas de Redação - Dissert IA`} />
-        <meta name="twitter:description" content={postDescription} />
+        <meta name="twitter:title" content={`${post.metaTitle || post.title} | Dicas de Redação - Dissert IA`} />
+        <meta name="twitter:description" content={post.metaDescription || postDescription} />
         <meta name="twitter:image" content={ogImage} />
       </Helmet>
       <Navigation />
@@ -190,6 +228,11 @@ export default function BlogPost() {
               <span className="text-sm font-medium text-white bg-white/20 px-3 py-1 rounded-full">
                 {post.category}
               </span>
+              {post.isFeatured && (
+                <span className="text-sm font-medium text-yellow-300 bg-yellow-400/20 px-3 py-1 rounded-full">
+                  Destaque
+                </span>
+              )}
             </div>
             
             <h1 className="font-bold text-white text-3xl sm:text-4xl md:text-5xl mb-6" data-testid="text-post-title">
@@ -199,16 +242,22 @@ export default function BlogPost() {
             <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm mb-8">
               <span className="flex items-center gap-2">
                 <User size={16} />
-                {post.author}
+                Equipe Dissert IA
               </span>
               <span className="flex items-center gap-2">
                 <Calendar size={16} />
-                {post.date}
+                {formatDate(post.publishedAt || post.createdAt)}
               </span>
               <span className="flex items-center gap-2">
                 <Clock size={16} />
-                {post.readTime} de leitura
+                {estimateReadTime(post.content)} de leitura
               </span>
+              {post.viewCount > 0 && (
+                <span className="flex items-center gap-2">
+                  <Eye size={16} />
+                  {post.viewCount} {post.viewCount === 1 ? 'visualização' : 'visualizações'}
+                </span>
+              )}
             </div>
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -236,19 +285,21 @@ export default function BlogPost() {
               {renderContent(post.content)}
             </article>
             
-            <div className="mt-8 pt-8 border-t">
-              <div className="flex flex-wrap items-center gap-2">
-                <Tag size={16} className="text-soft-gray" />
-                {post.tags.map((tag, index) => (
-                  <span 
-                    key={index}
-                    className="text-xs font-medium text-bright-blue bg-bright-blue/10 px-3 py-1 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
+            {postTags.length > 0 && (
+              <div className="mt-8 pt-8 border-t">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Tag size={16} className="text-soft-gray" />
+                  {postTags.map((tag, index) => (
+                    <span 
+                      key={index}
+                      className="text-xs font-medium text-bright-blue bg-bright-blue/10 px-3 py-1 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </LiquidGlassCard>
 
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
