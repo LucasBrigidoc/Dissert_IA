@@ -1179,6 +1179,178 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===================== BLOG POSTS ENDPOINTS =====================
+
+  // Public: Get all published blog posts
+  app.get("/api/blog", async (req, res) => {
+    try {
+      const posts = await storage.getPublishedBlogPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error("Get published blog posts error:", error);
+      res.status(500).json({ message: "Erro ao buscar posts do blog" });
+    }
+  });
+
+  // Public: Get featured blog posts
+  app.get("/api/blog/featured", async (req, res) => {
+    try {
+      const posts = await storage.getFeaturedBlogPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error("Get featured blog posts error:", error);
+      res.status(500).json({ message: "Erro ao buscar posts em destaque" });
+    }
+  });
+
+  // Public: Get blog posts by category
+  app.get("/api/blog/category/:category", async (req, res) => {
+    try {
+      const { category } = req.params;
+      const posts = await storage.getBlogPostsByCategory(category);
+      res.json(posts);
+    } catch (error) {
+      console.error("Get blog posts by category error:", error);
+      res.status(500).json({ message: "Erro ao buscar posts por categoria" });
+    }
+  });
+
+  // Public: Get single blog post by slug
+  app.get("/api/blog/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const post = await storage.getBlogPostBySlug(slug);
+      if (!post) {
+        return res.status(404).json({ message: "Post não encontrado" });
+      }
+      // Increment view count
+      await storage.incrementBlogPostViewCount(post.id);
+      res.json(post);
+    } catch (error) {
+      console.error("Get blog post by slug error:", error);
+      res.status(500).json({ message: "Erro ao buscar post" });
+    }
+  });
+
+  // Admin: Get all blog posts (including drafts)
+  app.get("/api/admin/blog", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const posts = await storage.getAllBlogPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error("Admin get all blog posts error:", error);
+      res.status(500).json({ message: "Erro ao buscar posts" });
+    }
+  });
+
+  // Admin: Get single blog post by ID
+  app.get("/api/admin/blog/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const post = await storage.getBlogPostById(id);
+      if (!post) {
+        return res.status(404).json({ message: "Post não encontrado" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Admin get blog post error:", error);
+      res.status(500).json({ message: "Erro ao buscar post" });
+    }
+  });
+
+  // Admin: Create blog post
+  app.post("/api/admin/blog", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = req.session.userId;
+      const postData = {
+        ...req.body,
+        authorId: userId,
+        publishedAt: req.body.isPublished ? new Date() : null,
+      };
+      const post = await storage.createBlogPost(postData);
+      res.status(201).json(post);
+    } catch (error) {
+      console.error("Admin create blog post error:", error);
+      res.status(500).json({ message: "Erro ao criar post" });
+    }
+  });
+
+  // Admin: Update blog post
+  app.put("/api/admin/blog/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const existingPost = await storage.getBlogPostById(id);
+      
+      // Set publishedAt if publishing for the first time
+      const updateData = {
+        ...req.body,
+        publishedAt: req.body.isPublished && !existingPost?.publishedAt 
+          ? new Date() 
+          : existingPost?.publishedAt,
+      };
+      
+      const post = await storage.updateBlogPost(id, updateData);
+      res.json(post);
+    } catch (error) {
+      console.error("Admin update blog post error:", error);
+      res.status(500).json({ message: "Erro ao atualizar post" });
+    }
+  });
+
+  // Admin: Delete blog post
+  app.delete("/api/admin/blog/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteBlogPost(id);
+      res.json({ message: "Post removido com sucesso" });
+    } catch (error) {
+      console.error("Admin delete blog post error:", error);
+      res.status(500).json({ message: "Erro ao remover post" });
+    }
+  });
+
+  // Admin: Toggle publish status
+  app.patch("/api/admin/blog/:id/publish", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const existingPost = await storage.getBlogPostById(id);
+      if (!existingPost) {
+        return res.status(404).json({ message: "Post não encontrado" });
+      }
+      
+      const newPublishStatus = !existingPost.isPublished;
+      const post = await storage.updateBlogPost(id, {
+        isPublished: newPublishStatus,
+        publishedAt: newPublishStatus && !existingPost.publishedAt ? new Date() : existingPost.publishedAt,
+      });
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Admin toggle publish error:", error);
+      res.status(500).json({ message: "Erro ao alterar status de publicação" });
+    }
+  });
+
+  // Admin: Toggle featured status
+  app.patch("/api/admin/blog/:id/featured", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const existingPost = await storage.getBlogPostById(id);
+      if (!existingPost) {
+        return res.status(404).json({ message: "Post não encontrado" });
+      }
+      
+      const post = await storage.updateBlogPost(id, {
+        isFeatured: !existingPost.isFeatured,
+      });
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Admin toggle featured error:", error);
+      res.status(500).json({ message: "Erro ao alterar destaque" });
+    }
+  });
+
   // User registration endpoint
   app.post("/api/auth/register", async (req, res) => {
     try {

@@ -6578,6 +6578,80 @@ export class DbStorage implements IStorage {
     await db.delete(schema.userSchedule).where(eq(schema.userSchedule.id, id));
     return true;
   }
+
+  // ===================== BLOG POSTS OPERATIONS =====================
+
+  async getAllBlogPosts(): Promise<schema.BlogPost[]> {
+    return await db.query.blogPosts.findMany({
+      orderBy: [desc(schema.blogPosts.createdAt)],
+    });
+  }
+
+  async getPublishedBlogPosts(): Promise<schema.BlogPost[]> {
+    return await db.query.blogPosts.findMany({
+      where: eq(schema.blogPosts.isPublished, true),
+      orderBy: [desc(schema.blogPosts.publishedAt)],
+    });
+  }
+
+  async getBlogPostById(id: string): Promise<schema.BlogPost | undefined> {
+    return await db.query.blogPosts.findFirst({
+      where: eq(schema.blogPosts.id, id),
+    });
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<schema.BlogPost | undefined> {
+    return await db.query.blogPosts.findFirst({
+      where: eq(schema.blogPosts.slug, slug),
+    });
+  }
+
+  async createBlogPost(post: schema.InsertBlogPost): Promise<schema.BlogPost> {
+    const [result] = await db.insert(schema.blogPosts).values(post).returning();
+    return result;
+  }
+
+  async updateBlogPost(id: string, post: Partial<schema.BlogPost>): Promise<schema.BlogPost> {
+    const [updated] = await db
+      .update(schema.blogPosts)
+      .set({ ...removeUndefined(post), updatedAt: new Date() })
+      .where(eq(schema.blogPosts.id, id))
+      .returning();
+    if (!updated) throw new Error("Blog post not found");
+    return updated;
+  }
+
+  async deleteBlogPost(id: string): Promise<boolean> {
+    await db.delete(schema.blogPosts).where(eq(schema.blogPosts.id, id));
+    return true;
+  }
+
+  async incrementBlogPostViewCount(id: string): Promise<void> {
+    await db
+      .update(schema.blogPosts)
+      .set({ viewCount: sqlQuery`${schema.blogPosts.viewCount} + 1` })
+      .where(eq(schema.blogPosts.id, id));
+  }
+
+  async getBlogPostsByCategory(category: string): Promise<schema.BlogPost[]> {
+    return await db.query.blogPosts.findMany({
+      where: and(
+        eq(schema.blogPosts.category, category as any),
+        eq(schema.blogPosts.isPublished, true)
+      ),
+      orderBy: [desc(schema.blogPosts.publishedAt)],
+    });
+  }
+
+  async getFeaturedBlogPosts(): Promise<schema.BlogPost[]> {
+    return await db.query.blogPosts.findMany({
+      where: and(
+        eq(schema.blogPosts.isFeatured, true),
+        eq(schema.blogPosts.isPublished, true)
+      ),
+      orderBy: [desc(schema.blogPosts.publishedAt)],
+    });
+  }
 }
 
 // Export DbStorage as the default storage implementation
