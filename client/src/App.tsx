@@ -37,6 +37,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import AdminNewsletter from "@/pages/admin-newsletter";
 import AdminMateriais from "@/pages/admin-materiais";
 import AdminCoupons from "@/pages/admin-coupons";
+import AdminBlog from "@/pages/admin-blog";
 import Checkout from "@/pages/checkout";
 import SubscriptionPage from "@/pages/subscription";
 import HelpCenter from "@/pages/HelpCenter";
@@ -177,6 +178,11 @@ function Router() {
       <Route path="/admin/coupons">
         <ProtectedRoute>
           <AdminCoupons />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/blog">
+        <ProtectedRoute>
+          <AdminBlog />
         </ProtectedRoute>
       </Route>
       
