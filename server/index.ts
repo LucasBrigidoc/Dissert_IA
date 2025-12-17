@@ -3,10 +3,18 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
+import { fileURLToPath } from "url";
+import path from "path";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeCronJobs } from "./cron-jobs";
 import { initializeDatabase } from "./db-init";
+
+// Detect if running from bundled dist/ directory (production)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Check if we're running from the dist directory specifically (not just any path containing "dist")
+const isProductionBuild = path.basename(__dirname) === 'dist';
 
 const app = express();
 app.set('trust proxy', true); // Enable accurate client IPs for rate limiting on Replit
@@ -117,9 +125,13 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  // Check for production: NODE_ENV=production OR running from dist/ directory (bundled build)
+  const isProduction = process.env.NODE_ENV === 'production' || isProductionBuild;
+  
+  if (!isProduction) {
     await setupVite(app, server);
   } else {
+    console.log('🚀 Running in production mode - serving static files');
     serveStatic(app);
   }
 
