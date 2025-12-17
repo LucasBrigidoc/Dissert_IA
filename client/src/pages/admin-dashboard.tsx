@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search, Calendar } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search, Calendar, FileText } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -1331,6 +1331,12 @@ export default function AdminDashboard() {
             <Button variant="outline" className="gap-2" data-testid="button-admin-coupons">
               <Tag size={16} />
               Admin Cupons
+            </Button>
+          </Link>
+          <Link href="/admin/blog">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-blog">
+              <FileText size={16} />
+              Admin Blog
             </Button>
           </Link>
         </div>

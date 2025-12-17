@@ -372,6 +372,12 @@ export default function AdminMateriais() {
               Admin Cupons
             </Button>
           </Link>
+          <Link href="/admin/blog">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-blog">
+              <FileText size={16} />
+              Admin Blog
+            </Button>
+          </Link>
         </div>
       </div>
 

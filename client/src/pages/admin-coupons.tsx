@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Tag, Plus, Edit, Trash2, RefreshCw, TrendingUp, Users, DollarSign, Percent, CheckCircle2, XCircle, BarChart3, Mail, Book } from "lucide-react";
+import { Tag, Plus, Edit, Trash2, RefreshCw, TrendingUp, Users, DollarSign, Percent, CheckCircle2, XCircle, BarChart3, Mail, Book, FileText } from "lucide-react";
 import { Link } from "wouter";
 import { useAdminCheck } from "@/hooks/use-admin-check";
 
@@ -356,6 +356,12 @@ export default function AdminCoupons() {
             <Tag size={16} />
             Admin Cupons
           </Button>
+          <Link href="/admin/blog">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-blog">
+              <FileText size={16} />
+              Admin Blog
+            </Button>
+          </Link>
         </div>
       </div>
 

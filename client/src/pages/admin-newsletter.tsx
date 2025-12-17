@@ -19,7 +19,8 @@ import {
   BookOpen,
   BarChart3,
   Book,
-  Tag
+  Tag,
+  FileText
 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -308,6 +309,12 @@ export default function AdminNewsletter() {
             <Button variant="outline" className="gap-2" data-testid="button-admin-coupons">
               <Tag size={16} />
               Admin Cupons
+            </Button>
+          </Link>
+          <Link href="/admin/blog">
+            <Button variant="outline" className="gap-2" data-testid="button-admin-blog">
+              <FileText size={16} />
+              Admin Blog
             </Button>
           </Link>
         </div>
