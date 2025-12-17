@@ -1,15 +1,11 @@
 import { Link } from "wouter";
-import { ArrowLeft, Search, BookOpen, MessageCircle, Mail, CreditCard, Settings, Sparkles, FileText, Shield, HelpCircle, ChevronRight, Clock, Users } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ArrowLeft, BookOpen, MessageCircle, Mail, CreditCard, Settings, Sparkles, FileText, Shield, HelpCircle, ChevronRight, Clock, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
-import { useState } from "react";
 
 export default function HelpCenter() {
-  const [searchQuery, setSearchQuery] = useState("");
-
   const categories = [
     {
       icon: BookOpen,
@@ -147,17 +143,6 @@ export default function HelpCenter() {
           <p className="text-lg text-deep-navy/70 dark:text-white/70 mb-8 max-w-2xl mx-auto">
             Encontre respostas rápidas para suas dúvidas sobre o DissertIA. Explore nossos guias, tutoriais e perguntas frequentes.
           </p>
-          
-          <div className="max-w-2xl mx-auto relative mb-8">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-deep-navy/40 dark:text-white/40" />
-            <Input
-              placeholder="Pesquisar: como corrigir redação, planos, competências..."
-              className="pl-12 h-12 text-base"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              data-testid="input-search-help"
-            />
-          </div>
 
           <div className="flex flex-wrap justify-center gap-4">
             {quickLinks.map((link, index) => (
