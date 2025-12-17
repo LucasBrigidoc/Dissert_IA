@@ -140,12 +140,21 @@ export default function HelpCenter() {
 
           <div className="flex flex-wrap justify-center gap-4">
             {quickLinks.map((link, index) => (
-              <Link key={index} href={link.href}>
-                <Button variant="outline" className="gap-2" data-testid={`button-quick-${index}`}>
-                  <link.icon className="h-4 w-4" />
-                  {link.title}
-                </Button>
-              </Link>
+              link.href.startsWith("mailto:") ? (
+                <a key={index} href={link.href}>
+                  <Button variant="outline" className="gap-2" data-testid={`button-quick-${index}`}>
+                    <link.icon className="h-4 w-4" />
+                    {link.title}
+                  </Button>
+                </a>
+              ) : (
+                <Link key={index} href={link.href}>
+                  <Button variant="outline" className="gap-2" data-testid={`button-quick-${index}`}>
+                    <link.icon className="h-4 w-4" />
+                    {link.title}
+                  </Button>
+                </Link>
+              )
             ))}
           </div>
         </div>
