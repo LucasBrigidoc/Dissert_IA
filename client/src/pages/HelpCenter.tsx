@@ -9,105 +9,106 @@ export default function HelpCenter() {
   const categories = [
     {
       icon: BookOpen,
-      title: "Primeiros Passos",
-      description: "Aprenda como usar o DissertIA pela primeira vez",
+      title: "Aprenda a Escrever",
+      description: "Domine a arte da redação dissertativa-argumentativa",
       articles: [
-        { title: "Como criar sua conta", content: "Acesse a página inicial e clique em 'Criar Conta'. Preencha seus dados e confirme seu email." },
-        { title: "Escrevendo sua primeira redação", content: "No painel, clique em 'Nova Redação', escolha um tema e comece a escrever. A IA irá analisar seu texto em tempo real." },
-        { title: "Entendendo o painel de controle", content: "O painel mostra suas redações recentes, estatísticas de progresso e acesso rápido às ferramentas de escrita." },
-        { title: "Configurando seu perfil", content: "Acesse 'Configurações' para personalizar seu perfil, definir metas de estudo e preferências de notificação." }
+        { title: "Estrutura da redação perfeita", content: "Aprenda a construir introdução com contextualização e tese, desenvolvimento com argumentos sólidos e conclusão com proposta de intervenção completa." },
+        { title: "Como desenvolver argumentos", content: "Use nossa IA para aprender técnicas de argumentação: causa e consequência, comparação, exemplificação e citação de autoridades." },
+        { title: "Repertório sociocultural", content: "Acesse nossa base de repertórios organizados por tema: filosofia, sociologia, história, literatura e atualidades para enriquecer seus textos." },
+        { title: "Proposta de intervenção nota 200", content: "Domine os 5 elementos obrigatórios: agente, ação, meio, detalhamento e finalidade respeitando os direitos humanos." }
       ]
     },
     {
       icon: Sparkles,
       title: "Ferramentas de IA",
-      description: "Tudo sobre o assistente de redação inteligente",
+      description: "Tecnologia avançada para acelerar seu aprendizado",
       articles: [
-        { title: "Como funciona a correção automática", content: "Nossa IA analisa sua redação baseada nas 5 competências do ENEM, oferecendo feedback detalhado em cada aspecto." },
-        { title: "Análise de repertório sociocultural", content: "A IA identifica e avalia suas referências culturais, sugerindo melhorias e citações relevantes para seu argumento." },
-        { title: "Feedback em tempo real", content: "Enquanto você escreve, a IA destaca problemas de gramática, coesão e argumentação instantaneamente." },
-        { title: "Sugestões de melhoria personalizadas", content: "Receba dicas específicas baseadas no seu histórico de redações e pontos que precisam de mais atenção." }
+        { title: "Correção inteligente em segundos", content: "Nossa IA analisa sua redação nas 5 competências do ENEM, identificando pontos fortes e fracos com feedback detalhado e nota estimada de 0 a 1000." },
+        { title: "Sugestões de repertório", content: "A IA sugere citações, dados estatísticos e referências culturais relevantes para fortalecer sua argumentação em qualquer tema." },
+        { title: "Análise de coesão e coerência", content: "Identifique problemas de conexão entre parágrafos, uso inadequado de conectivos e falhas na progressão de ideias." },
+        { title: "Evolução personalizada", content: "Acompanhe seu progresso com gráficos e estatísticas. A IA identifica padrões de erro e sugere exercícios específicos para suas dificuldades." }
       ]
     },
     {
       icon: FileText,
       title: "Competências do ENEM",
-      description: "Entenda cada competência avaliada",
+      description: "Entenda o que os corretores avaliam",
       articles: [
-        { title: "Competência 1: Norma culta", content: "Avalia o domínio da modalidade escrita formal da língua portuguesa, incluindo ortografia, acentuação e pontuação." },
-        { title: "Competência 2: Tema e gênero", content: "Verifica a compreensão da proposta de redação e aplicação de conceitos de diversas áreas do conhecimento." },
-        { title: "Competência 3: Argumentação", content: "Analisa a seleção, organização e interpretação de informações para defender seu ponto de vista." },
-        { title: "Competência 4: Coesão textual", content: "Avalia o uso de mecanismos linguísticos para construir a argumentação de forma conectada." },
-        { title: "Competência 5: Proposta de intervenção", content: "Verifica a elaboração de proposta detalhada, respeitando os direitos humanos." }
+        { title: "Competência 1: Norma culta (0-200)", content: "Domínio da escrita formal: ortografia, acentuação, pontuação, concordância, regência e uso adequado do registro formal." },
+        { title: "Competência 2: Tema e gênero (0-200)", content: "Compreensão da proposta, uso de repertório sociocultural produtivo e manutenção do tipo textual dissertativo-argumentativo." },
+        { title: "Competência 3: Argumentação (0-200)", content: "Seleção e organização de argumentos, interpretação de dados e informações para construir um projeto de texto autoral." },
+        { title: "Competência 4: Coesão (0-200)", content: "Uso de conectivos variados, referenciação adequada e articulação entre parágrafos e ideias do texto." },
+        { title: "Competência 5: Proposta (0-200)", content: "Elaboração de proposta de intervenção detalhada com agente, ação, meio, finalidade e detalhamento, respeitando os direitos humanos." }
       ]
     },
     {
       icon: CreditCard,
-      title: "Planos e Pagamentos",
-      description: "Informações sobre assinaturas e cobrança",
+      title: "Planos e Preços",
+      description: "Escolha o plano ideal para seus estudos",
       articles: [
-        { title: "Comparando os planos disponíveis", content: "Oferecemos planos Gratuito, Básico e Premium com diferentes quantidades de redações e recursos exclusivos." },
-        { title: "Como fazer upgrade do plano", content: "Acesse 'Minha Assinatura' nas configurações e escolha o novo plano. A cobrança é proporcional." },
-        { title: "Formas de pagamento aceitas", content: "Aceitamos cartões de crédito, débito, Pix e boleto bancário para sua comodidade." },
-        { title: "Política de reembolso", content: "Oferecemos reembolso integral em até 7 dias após a compra, sem perguntas." }
+        { title: "Plano Gratuito", content: "Ideal para conhecer a plataforma: 3 correções por mês, feedback básico nas 5 competências e acesso ao histórico de redações." },
+        { title: "Plano Estudante (R$29,90/mês)", content: "Para quem quer praticar mais: 15 correções por mês, análise detalhada, sugestões de repertório e acompanhamento de evolução." },
+        { title: "Plano Premium (R$49,90/mês)", content: "Preparação completa: correções ilimitadas, análise aprofundada de repertório, newsletter semanal com temas prováveis e suporte prioritário." },
+        { title: "Como assinar ou fazer upgrade", content: "Acesse 'Minha Conta' e escolha seu plano. Pagamos via Pix, cartão de crédito ou boleto. Upgrade é instantâneo e proporcional." },
+        { title: "Cancelamento e reembolso", content: "Cancele a qualquer momento sem multa. Oferecemos reembolso integral em até 7 dias após a primeira compra." }
       ]
     },
     {
       icon: Settings,
-      title: "Conta e Configurações",
-      description: "Gerencie sua conta e preferências",
+      title: "Sua Conta",
+      description: "Gerencie perfil, assinatura e preferências",
       articles: [
-        { title: "Alterando dados pessoais", content: "Acesse 'Configurações > Perfil' para atualizar nome, email e outras informações pessoais." },
-        { title: "Redefinindo sua senha", content: "Use a opção 'Esqueci minha senha' na tela de login ou altere em 'Configurações > Segurança'." },
-        { title: "Gerenciando notificações", content: "Configure quais emails deseja receber: newsletter, dicas de estudo, lembretes e novidades." },
-        { title: "Excluindo sua conta", content: "Você pode excluir sua conta em 'Configurações > Conta'. Todos os dados serão removidos permanentemente." }
+        { title: "Criar e acessar sua conta", content: "Cadastre-se com email ou Google. Confirme seu email para ativar todos os recursos da plataforma." },
+        { title: "Gerenciar assinatura", content: "Em 'Minha Conta' você pode ver seu plano atual, histórico de pagamentos, fazer upgrade ou cancelar a assinatura." },
+        { title: "Alterar dados e senha", content: "Atualize nome, email e senha em 'Configurações'. Use senhas fortes com letras, números e símbolos." },
+        { title: "Notificações e newsletter", content: "Configure alertas de correção, dicas semanais e nossa newsletter com temas prováveis e repertórios atualizados." }
       ]
     },
     {
       icon: Shield,
       title: "Privacidade e Segurança",
-      description: "Proteção dos seus dados e redações",
+      description: "Seus dados e redações protegidos",
       articles: [
-        { title: "Como protegemos seus dados", content: "Utilizamos criptografia de ponta a ponta e servidores seguros para proteger todas as suas informações." },
-        { title: "Política de privacidade", content: "Seus dados nunca são compartilhados com terceiros. Leia nossa política completa para mais detalhes." },
-        { title: "Suas redações são privadas", content: "Apenas você tem acesso às suas redações. Nem nossa equipe pode visualizar seu conteúdo." },
-        { title: "Autenticação em duas etapas", content: "Ative a verificação em duas etapas para adicionar uma camada extra de segurança à sua conta." }
+        { title: "Suas redações são privadas", content: "Apenas você tem acesso às suas redações. Nem nossa equipe pode visualizar seu conteúdo. Tudo é criptografado." },
+        { title: "Proteção de dados (LGPD)", content: "Seguimos a Lei Geral de Proteção de Dados. Seus dados nunca são vendidos ou compartilhados com terceiros." },
+        { title: "Pagamento seguro", content: "Processamos pagamentos via Stripe, líder mundial em segurança. Não armazenamos dados do seu cartão." },
+        { title: "Exclusão de conta", content: "Você pode solicitar a exclusão completa da sua conta e todos os dados associados a qualquer momento." }
       ]
     }
   ];
 
   const popularQuestions = [
     {
-      question: "Como funciona a correção automática de redações?",
-      answer: "O DissertIA utiliza inteligência artificial avançada baseada nas 5 competências do ENEM para analisar sua redação. A IA avalia gramática, coesão, coerência, estrutura argumentativa, uso de repertório sociocultural e proposta de intervenção. Você recebe uma nota estimada de 0 a 1000, com feedback detalhado em cada competência e sugestões específicas de melhoria."
+      question: "O DissertIA realmente me ensina a escrever ou só corrige?",
+      answer: "O DissertIA vai muito além da correção! Nossa plataforma é um sistema completo de aprendizado: você recebe feedback detalhado explicando por que errou, sugestões de como melhorar, exemplos de repertório sociocultural, técnicas de argumentação e acompanhamento da sua evolução. A IA identifica seus pontos fracos e sugere exercícios específicos para você melhorar."
     },
     {
-      question: "Quantas redações posso escrever por mês?",
-      answer: "O número de redações depende do seu plano: o plano Gratuito permite 3 redações por mês com feedback básico, o plano Básico (R$29,90/mês) permite 15 redações com análise completa, e o plano Premium (R$49,90/mês) oferece redações ilimitadas, análise aprofundada de repertório e acesso à newsletter exclusiva com temas prováveis."
+      question: "Como funciona a correção com IA?",
+      answer: "Você escreve sua redação na plataforma e nossa IA analisa em segundos, avaliando as 5 competências do ENEM (norma culta, tema, argumentação, coesão e proposta de intervenção). Você recebe nota estimada de 0 a 1000, comentários em cada parágrafo, sugestões de repertório e um plano de melhoria personalizado."
     },
     {
-      question: "A IA substitui um professor de redação?",
-      answer: "A IA do DissertIA é uma ferramenta complementar poderosa que oferece feedback instantâneo e consistente. Ela ajuda você a praticar mais e identificar pontos de melhoria rapidamente. No entanto, recomendamos combinar o uso da plataforma com orientação de professores quando possível, especialmente para desenvolver seu estilo próprio de escrita."
+      question: "Quantas redações posso corrigir por mês?",
+      answer: "Depende do seu plano: Gratuito tem 3 correções/mês com feedback básico, Estudante (R$29,90/mês) tem 15 correções com análise completa, e Premium (R$49,90/mês) tem correções ilimitadas, newsletter com temas prováveis e suporte prioritário."
     },
     {
-      question: "Como funciona a newsletter com temas prováveis?",
-      answer: "Assinantes do plano Premium recebem semanalmente uma newsletter exclusiva com análise de notícias atuais, temas prováveis para vestibulares e concursos, dicas de repertório sociocultural e exercícios práticos. Nossa equipe analisa tendências e eventos relevantes para mantê-lo preparado para qualquer tema."
+      question: "A IA pode me ajudar a encontrar repertório sociocultural?",
+      answer: "Sim! Essa é uma das funcionalidades mais poderosas do DissertIA. A IA sugere citações de filósofos, dados estatísticos, referências históricas e culturais relevantes para o tema da sua redação. Você aprende repertórios novos enquanto pratica e pode salvá-los para usar em futuras redações."
     },
     {
-      question: "Posso cancelar minha assinatura a qualquer momento?",
-      answer: "Sim! Você pode cancelar sua assinatura a qualquer momento através das configurações da sua conta, sem multas ou burocracia. O acesso aos recursos premium permanecerá ativo até o final do período já pago. Suas redações e histórico ficam salvos mesmo após o cancelamento."
+      question: "Como acompanho minha evolução?",
+      answer: "Seu painel mostra gráficos de evolução por competência, histórico de notas, pontos que melhoraram e os que ainda precisam de atenção. A IA identifica padrões nos seus erros e cria um plano de estudos personalizado para você evoluir mais rápido."
     },
     {
-      question: "Como a IA analisa o repertório sociocultural?",
-      answer: "Nossa IA identifica referências a filósofos, autores, eventos históricos, dados estatísticos e outras fontes que você utiliza. Ela avalia a pertinência dessas referências ao tema, a profundidade da análise e sugere citações e repertórios adicionais que poderiam fortalecer sua argumentação."
+      question: "O DissertIA serve para outros vestibulares além do ENEM?",
+      answer: "Sim! A estrutura dissertativa-argumentativa e as competências avaliadas são similares na maioria dos vestibulares e concursos brasileiros (FUVEST, UNICAMP, UNESP, concursos públicos). Nossa análise se adapta e você pode praticar para qualquer prova."
     },
     {
-      question: "Minhas redações ficam salvas na plataforma?",
-      answer: "Sim! Todas as suas redações são salvas automaticamente na nuvem, organizadas por data. Você pode acessar seu histórico completo, revisar feedbacks anteriores e acompanhar sua evolução ao longo do tempo através de gráficos e estatísticas detalhadas."
+      question: "Posso cancelar minha assinatura quando quiser?",
+      answer: "Sim! Cancele a qualquer momento pelo seu painel, sem multas ou burocracia. O acesso continua até o fim do período pago. Oferecemos reembolso integral em até 7 dias após a primeira compra, sem perguntas."
     },
     {
-      question: "O DissertIA funciona para outros vestibulares além do ENEM?",
-      answer: "Sim! Embora a análise principal seja baseada nas competências do ENEM (que são similares às de muitos vestibulares), nossa IA também oferece feedback sobre estrutura dissertativa-argumentativa, que é o formato mais comum em vestibulares e concursos públicos no Brasil."
+      question: "Minhas redações ficam salvas?",
+      answer: "Todas as suas redações, correções e feedbacks ficam salvos na nuvem para sempre. Você pode revisar textos antigos, comparar com os novos e ver exatamente o quanto evoluiu ao longo do tempo."
     }
   ];
 
