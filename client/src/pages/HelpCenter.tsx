@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowLeft, BookOpen, MessageCircle, Mail, CreditCard, Settings, Sparkles, FileText, Shield, HelpCircle, ChevronRight, Clock, Users } from "lucide-react";
+import { ArrowLeft, BookOpen, MessageCircle, Mail, CreditCard, Settings, Sparkles, FileText, Shield, HelpCircle, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -118,12 +118,6 @@ export default function HelpCenter() {
     { icon: Mail, title: "Contato", description: "Fale com nossa equipe", href: "mailto:suporte@dissertia.com" }
   ];
 
-  const stats = [
-    { icon: Users, value: "50.000+", label: "Estudantes ativos" },
-    { icon: FileText, value: "1M+", label: "Redações corrigidas" },
-    { icon: Clock, value: "< 30s", label: "Tempo médio de análise" }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-bright-blue/10 to-white dark:from-bright-blue/5 dark:to-gray-900">
       <header className="border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
@@ -152,22 +146,6 @@ export default function HelpCenter() {
                   {link.title}
                 </Button>
               </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-8 bg-bright-blue/5 dark:bg-bright-blue/10">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="flex items-center justify-center gap-4 py-4">
-                <stat.icon className="h-8 w-8 text-bright-blue" />
-                <div className="text-left">
-                  <div className="text-2xl font-bold text-deep-navy dark:text-white">{stat.value}</div>
-                  <div className="text-sm text-deep-navy/70 dark:text-white/70">{stat.label}</div>
-                </div>
-              </div>
             ))}
           </div>
         </div>
