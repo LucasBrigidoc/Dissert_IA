@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search, Calendar, FileText } from "lucide-react";
+import { Activity, BarChart3, Users, DollarSign, TrendingUp, AlertTriangle, RefreshCw, CreditCard, Target, Brain, Users as UsersIcon, Mail, BookOpen, Book, Tag, ArrowDownToLine, ArrowUpFromLine, Trash2, Search, Calendar, FileText, User, X, Filter } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -250,13 +250,21 @@ function FeedbackManagement() {
   const [editingNotes, setEditingNotes] = useState<string | null>(null);
   const [notesValue, setNotesValue] = useState('');
   const [periodDays, setPeriodDays] = useState<string>('all');
+  const [selectedUserId, setSelectedUserId] = useState<string>('all');
+
+  // Fetch users for user filter dropdown
+  const { data: usersData } = useQuery<{ users: AdminUser[]; total: number }>({
+    queryKey: ['/api/admin/users/all'],
+  });
 
   const { data: feedbackData, isLoading } = useQuery<FeedbackData>({
-    queryKey: ['/api/admin/feedback', periodDays],
+    queryKey: ['/api/admin/feedback', periodDays, selectedUserId],
     queryFn: async () => {
-      const url = periodDays === 'all' 
-        ? '/api/admin/feedback' 
-        : `/api/admin/feedback?days=${periodDays}`;
+      const params = new URLSearchParams();
+      if (periodDays !== 'all') params.append('days', periodDays);
+      if (selectedUserId !== 'all') params.append('userId', selectedUserId);
+      const queryString = params.toString();
+      const url = queryString ? `/api/admin/feedback?${queryString}` : '/api/admin/feedback';
       const response = await fetch(url, { credentials: 'include' });
       if (!response.ok) throw new Error('Failed to fetch feedback');
       return response.json();
@@ -343,30 +351,74 @@ function FeedbackManagement() {
     return labels[value] || value;
   };
 
+  const users = usersData?.users || [];
+  const selectedUser = users.find(u => u.id === selectedUserId);
+
   return (
     <div className="space-y-6">
-      {/* Period Filter */}
-      <div className="flex items-center justify-between">
+      {/* Filters Row */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        {/* Period Filter */}
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">Período das estatísticas:</span>
+          <span className="text-sm text-muted-foreground">Período:</span>
+          <Select value={periodDays} onValueChange={setPeriodDays}>
+            <SelectTrigger className="w-[180px]" data-testid="select-period-filter">
+              <SelectValue placeholder="Selecionar período" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">Último dia</SelectItem>
+              <SelectItem value="3">Últimos 3 dias</SelectItem>
+              <SelectItem value="7">Últimos 7 dias</SelectItem>
+              <SelectItem value="30">Últimos 30 dias</SelectItem>
+              <SelectItem value="90">Últimos 90 dias</SelectItem>
+              <SelectItem value="120">Últimos 120 dias</SelectItem>
+              <SelectItem value="180">Últimos 180 dias</SelectItem>
+              <SelectItem value="all">Todo o período</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={periodDays} onValueChange={setPeriodDays}>
-          <SelectTrigger className="w-[200px]" data-testid="select-period-filter">
-            <SelectValue placeholder="Selecionar período" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1">Último dia</SelectItem>
-            <SelectItem value="3">Últimos 3 dias</SelectItem>
-            <SelectItem value="7">Últimos 7 dias</SelectItem>
-            <SelectItem value="30">Últimos 30 dias</SelectItem>
-            <SelectItem value="90">Últimos 90 dias</SelectItem>
-            <SelectItem value="120">Últimos 120 dias</SelectItem>
-            <SelectItem value="180">Últimos 180 dias</SelectItem>
-            <SelectItem value="all">Todo o período</SelectItem>
-          </SelectContent>
-        </Select>
+
+        {/* User Filter */}
+        <div className="flex items-center gap-2">
+          <User className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Usuário:</span>
+          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+            <SelectTrigger className="w-[220px]" data-testid="select-user-filter">
+              <SelectValue placeholder="Todos os usuários" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os usuários</SelectItem>
+              {users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name} ({user.email})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {selectedUserId !== 'all' && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setSelectedUserId('all')}
+              className="h-8 px-2"
+              data-testid="button-clear-user-filter"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* Active Filters Badge */}
+      {selectedUserId !== 'all' && (
+        <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+          <Filter className="h-4 w-4 text-blue-600" />
+          <span className="text-sm text-blue-700 dark:text-blue-300">
+            Exibindo estatísticas de: <strong>{selectedUser?.name || 'Usuário'}</strong>
+          </span>
+        </div>
+      )}
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

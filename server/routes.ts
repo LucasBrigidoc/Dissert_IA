@@ -1799,24 +1799,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Parse days parameter for filtering (null means all time)
       const daysParam = req.query.days ? parseInt(req.query.days as string) : null;
       const cutoffDate = daysParam ? new Date(Date.now() - daysParam * 24 * 60 * 60 * 1000) : null;
+      
+      // Parse userId parameter for user-specific filtering
+      const userIdParam = req.query.userId as string | undefined;
 
       // Get all feedbacks (always show all feedbacks in the table)
       const allFeedbacks = await db.query.userFeedback.findMany({
         orderBy: (feedback, { desc }) => [desc(feedback.createdAt)]
       });
 
-      // Filter feedbacks for statistics based on period
-      const filteredFeedbacks = cutoffDate 
+      // Filter feedbacks for statistics based on period and user
+      let filteredFeedbacks = cutoffDate 
         ? allFeedbacks.filter(f => f.createdAt && new Date(f.createdAt) >= cutoffDate)
         : allFeedbacks;
+      
+      // Filter by user if specified
+      if (userIdParam) {
+        filteredFeedbacks = filteredFeedbacks.filter(f => f.userId === userIdParam);
+      }
 
       // Get all AI operations from user_costs for accuracy calculation
       const allOperationsData = await db.query.userCosts.findMany();
       
       // Filter operations based on period for statistics
-      const allOperations = cutoffDate
+      let allOperations = cutoffDate
         ? allOperationsData.filter(op => op.createdAt && new Date(op.createdAt) >= cutoffDate)
         : allOperationsData;
+      
+      // Filter by user if specified
+      if (userIdParam) {
+        allOperations = allOperations.filter(op => op.userId === userIdParam);
+      }
 
       // Define all AI tools on the platform with their operation codes
       const allToolsDefinition: { id: string; name: string; operations: string[] }[] = [
@@ -1906,8 +1919,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? ((totalOperations - totalBugs) / totalOperations) * 100 
         : 100;
 
+      // Filter feedbacks for table display (by user if specified)
+      const displayFeedbacks = userIdParam 
+        ? allFeedbacks.filter(f => f.userId === userIdParam)
+        : allFeedbacks;
+
       res.json({
-        feedbacks: allFeedbacks.map(f => ({
+        feedbacks: displayFeedbacks.map(f => ({
           id: f.id,
           userId: f.userId,
           userEmail: f.userEmail,
