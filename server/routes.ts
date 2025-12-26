@@ -1818,79 +1818,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? allOperationsData.filter(op => op.createdAt && new Date(op.createdAt) >= cutoffDate)
         : allOperationsData;
 
-      // Map operation names to friendly names
-      const operationNameMap: Record<string, string> = {
-        'chat-response': 'Refinador de Ideias',
-        'chat_argumentative': 'Refinador de Ideias',
-        'structure-analysis': 'Análise de Estrutura',
-        'essay-generation': 'Gerador de Redação',
-        'essay_outline': 'Gerador de Roteiro',
-        'repertoire_generation': 'Gerador de Repertórios',
-        'repertoire-search': 'Busca de Repertórios',
-        'proposal_knowledge_search': 'Busca de Propostas',
-        'proposal_search_generate': 'Gerador de Propostas',
-        'proposal_generation': 'Gerador de Propostas',
-        'text-simplify': 'Controlador - Simplificar',
-        'text-formal': 'Controlador - Formalizar',
-        'text-expand': 'Controlador - Expandir',
-        'text-summarize': 'Controlador - Resumir',
-        'text_modification_simplify': 'Controlador - Simplificar',
-        'text_modification_formal': 'Controlador - Formalizar',
-        'text_modification_expand': 'Controlador - Expandir',
-        'text_modification_summarize': 'Controlador - Resumir',
-        'ocr_extract': 'OCR - Digitalizar Imagem',
-        'essay_correction': 'Corretor de Redação',
+      // Define all AI tools on the platform with their operation codes
+      const allToolsDefinition: { id: string; name: string; operations: string[] }[] = [
+        { id: 'refinador', name: 'Refinamento de Ideias', operations: ['chat-response', 'chat_argumentative'] },
+        { id: 'repertorio', name: 'Explorador de Repertório', operations: ['repertoire_generation', 'repertoire-search'] },
+        { id: 'controlador', name: 'Controlador de Escrita', operations: ['text-simplify', 'text-formal', 'text-expand', 'text-summarize', 'text_modification_simplify', 'text_modification_formal', 'text_modification_expand', 'text_modification_summarize'] },
+        { id: 'estrutura', name: 'Estrutura Roterizada', operations: ['essay_outline', 'structure-analysis', 'essay-generation'] },
+        { id: 'simulador', name: 'Simulador ENEM', operations: ['essay_correction', 'ocr_extract'] },
+        { id: 'propostas', name: 'Gerador de Propostas', operations: ['proposal_knowledge_search', 'proposal_search_generate', 'proposal_generation'] },
+      ];
+
+      // Map feedback locations to tool IDs
+      const locationToToolMap: Record<string, string> = {
+        'argumentos': 'refinador',
+        'refinador': 'refinador',
+        'refinamento': 'refinador',
+        'ideias': 'refinador',
+        'repertorio': 'repertorio',
+        'explorador': 'repertorio',
+        'controlador': 'controlador',
+        'escrita': 'controlador',
+        'estrutura': 'estrutura',
+        'roteiro': 'estrutura',
+        'roterizada': 'estrutura',
+        'simulador': 'simulador',
+        'simulacao': 'simulador',
+        'enem': 'simulador',
+        'correcao': 'simulador',
+        'ocr': 'simulador',
+        'proposta': 'propostas',
+        'gerador': 'propostas',
       };
 
-      // Map feedback locations to tool categories
-      const locationToToolMap: Record<string, string[]> = {
-        'argumentos': ['chat-response', 'chat_argumentative'],
-        'refinador': ['chat-response', 'chat_argumentative'],
-        'estrutura': ['structure-analysis', 'essay-generation', 'essay_outline'],
-        'roteiro': ['essay_outline'],
-        'repertorio': ['repertoire_generation', 'repertoire-search'],
-        'proposta': ['proposal_knowledge_search', 'proposal_search_generate', 'proposal_generation'],
-        'controlador': ['text-simplify', 'text-formal', 'text-expand', 'text-summarize', 'text_modification_simplify', 'text_modification_formal', 'text_modification_expand', 'text_modification_summarize'],
-        'simulador': ['essay_correction', 'ocr_extract'],
-        'ocr': ['ocr_extract'],
-      };
-
-      // Count operations per tool category
+      // Count operations per tool
       const operationsByTool: Record<string, number> = {};
       allOperations.forEach(op => {
         const opName = op.operation || 'unknown';
-        operationsByTool[opName] = (operationsByTool[opName] || 0) + 1;
-      });
-
-      // Count bugs per tool based on location (using filtered feedbacks for period)
-      const bugsByTool: Record<string, number> = {};
-      filteredFeedbacks.forEach(fb => {
-        const location = fb.location?.toLowerCase() || 'unknown';
-        // Find matching tool category
-        for (const [key, operations] of Object.entries(locationToToolMap)) {
-          if (location.includes(key)) {
-            operations.forEach(op => {
-              bugsByTool[op] = (bugsByTool[op] || 0) + 1;
-            });
+        // Find which tool this operation belongs to
+        for (const tool of allToolsDefinition) {
+          if (tool.operations.includes(opName)) {
+            operationsByTool[tool.id] = (operationsByTool[tool.id] || 0) + 1;
             break;
           }
         }
       });
 
-      // Calculate accuracy per tool
-      const toolStats = Object.entries(operationsByTool).map(([operation, totalUses]) => {
-        const bugs = bugsByTool[operation] || 0;
+      // Count bugs per tool based on location (using filtered feedbacks for period)
+      const bugsByTool: Record<string, number> = {};
+      filteredFeedbacks.forEach(fb => {
+        const location = fb.location?.toLowerCase() || '';
+        // Find matching tool
+        for (const [key, toolId] of Object.entries(locationToToolMap)) {
+          if (location.includes(key)) {
+            bugsByTool[toolId] = (bugsByTool[toolId] || 0) + 1;
+            break;
+          }
+        }
+      });
+
+      // Calculate accuracy per tool - show ALL tools, even unused ones
+      const toolStats = allToolsDefinition.map(tool => {
+        const totalUses = operationsByTool[tool.id] || 0;
+        const bugs = bugsByTool[tool.id] || 0;
         const successfulUses = totalUses - bugs;
+        // If no uses and no bugs, show 100%. If uses but no bugs, also 100%.
         const accuracyRate = totalUses > 0 ? (successfulUses / totalUses) * 100 : 100;
         
         return {
-          operation,
-          name: operationNameMap[operation] || operation,
+          operation: tool.id,
+          name: tool.name,
           totalUses,
           bugs,
           accuracyRate: Math.max(0, Math.min(100, accuracyRate))
         };
-      }).filter(t => t.totalUses > 0).sort((a, b) => b.totalUses - a.totalUses);
+      }).sort((a, b) => b.totalUses - a.totalUses);
 
       // Calculate overall statistics (using filtered data for period)
       const totalOperations = allOperations.length;
