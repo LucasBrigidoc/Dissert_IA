@@ -27,6 +27,8 @@ export function useSubscription() {
 
   const limitsQuery = useQuery<SubscriptionLimits>({
     queryKey: ["/api/subscription/limits"],
+    refetchInterval: 30000, // Atualiza a cada 30 segundos
+    refetchIntervalInBackground: false, // Não atualiza quando a aba está em segundo plano
   });
 
   const transactionsQuery = useQuery<Transaction[]>({
